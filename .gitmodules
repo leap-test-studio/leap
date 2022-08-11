@@ -1,0 +1,12 @@
+[submodule "agent"]
+	path = agent
+	url = https://github.com/vinashak-studio/agent.git
+[submodule "orchestrator"]
+	path = orchestrator
+	url = https://github.com/vinashak-studio/orchestrator.git
+[submodule "studio"]
+	path = studio
+	url = https://github.com/vinashak-studio/studio.git
+[submodule "html-dnd"]
+	path = html-dnd
+	url = https://github.com/vinashak-studio/html-dnd.git
