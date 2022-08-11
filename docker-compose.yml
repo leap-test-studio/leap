@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    ports:
+        - 6380:6379
+    command: >
+      --requirepass automation
+
+  database:
+    image: mysql:5.7
+    ports:
+        - 33061:3306
+    command: --init-file /data/application/init.sql
+    volumes:
+        - ./init.sql:/data/application/init.sql
+        - ./data/mysql/:/var/lib/mysql/
+    environment:
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: S3cret
+        MYSQL_DATABASE: automation
+        MYSQL_USER: automation
+        MYSQL_PASSWORD: S3cret
