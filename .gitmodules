@@ -7,6 +7,3 @@
 [submodule "studio"]
 	path = studio
 	url = https://github.com/vinashak-studio/studio.git
-[submodule "html-dnd"]
-	path = html-dnd
-	url = https://github.com/vinashak-studio/html-dnd.git
