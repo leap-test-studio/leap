@@ -1,7 +1,7 @@
-VINASHAK_HOME=`pwd`;
-cd $VINASHAK_HOME/agent;
+AUTOMATION_HOME=`pwd`;
+cd $AUTOMATION_HOME/agent;
 npm install;
-cd $VINASHAK_HOME/orchestrator;
+cd $AUTOMATION_HOME/orchestrator;
 npm install;
-cd $VINASHAK_HOME/studio;
+cd $AUTOMATION_HOME/studio;
 npm install;
