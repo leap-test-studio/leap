@@ -1,12 +1,12 @@
 [submodule "docs"]
 	path = docs
-	url = https://github.com/vinashak-studio/docs.git
+	url = git@github.com:vinashak-studio/docs.git
 [submodule "agent"]
 	path = agent
-	url = https://github.com/vinashak-studio/agent.git
+	url = git@github.com:vinashak-studio/agent.git
 [submodule "orchestrator"]
 	path = orchestrator
-	url = https://github.com/vinashak-studio/orchestrator.git
+	url = git@github.com:vinashak-studio/orchestrator.git
 [submodule "studio"]
 	path = studio
-	url = https://github.com/vinashak-studio/studio.git
+	url = git@github.com:vinashak-studio/studio.git
