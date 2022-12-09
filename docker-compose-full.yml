@@ -1,22 +1,18 @@
-version: "3.9"
+version: '3'
 
 services:
   redis:
     image: redis
-    container_name: vinashak-cache
     ports:
-      - "6379:6379"
+      - 6379:6379
     command: >
       --requirepass automation
-    volumes:
-      - ./data/redis/:/var/lib/redis/
 
   database:
     image: mysql:5.7
-    container_name: vinashak-db
     ports:
-      - "3306:3306"
-    #command: --init-file /data/application/init.sql
+      - 3306:3306
+    command: --init-file /data/application/init.sql
     volumes:
       - ./init.sql:/data/application/init.sql
       - ./data/mysql/:/var/lib/mysql/
@@ -27,51 +23,33 @@ services:
       MYSQL_USER: automation
       MYSQL_PASSWORD: S3cret
     healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-      timeout: 20s
-      retries: 10
+        test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+        timeout: 20s
+        retries: 10
 
-#  studio:
-#    image: vinashak/studio:latest
-#    container_name: vinashak-studio
-#    build: ./studio
-#    stdin_open: true
-#    environment:
-#      - APIGW=http://orchestrator:5001
-#    volumes:
-#      - /app/web/node_modules
-#      - ./data/web:/app/web
-#    links:
-#      - orchestrator
-#    ports:
-#      - "5000:5000"
-#    depends_on:
-#      - orchestrator
-
-#  orchestrator:
-#    image: vinashak/orchestrator:latest
-#    container_name: vinashak-orchestrator
-#    build: ./orchestrator
-#    links:
-#      - database
-#      - redis
-#    ports:
-#      - "5001:5001"
-#    depends_on:
-#      database:
-#        condition: service_healthy
-#      redis:
-#        condition: service_started
-#    healthcheck:
-#      test: [ "CMD", "curl -i localhost:5001/healthcheck" ]
-#      timeout: 20s
-#      retries: 10
-#    environment:
-#      - DATABASE_HOST=database
-#      - REDIS_HOST=redis
-#      - LOG_DIR=/logs
-#    volumes:
-#      - ./data/vinashak/:/logs
+  orchestrator:
+    image: orchestrator
+    build:
+      context: ./orchestrator
+      dockerfile: Dockerfile
+      links:
+          - database
+          - redis
+      ports: 
+          - 5001
+      depends_on:
+          - database:
+              condition: service_healthy
+          - redis
+    healthcheck:
+        test: ["CMD", "curl -i localhost:5001/healthcheck"]
+        timeout: 20s
+        retries: 10
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_NAME=automation
+      - REDIS_HOST=redis
+      - LOG_DIR=/root/workspace/logs
 
   selenium-event-bus:
     image: selenium/event-bus:4.4.0-20220831
