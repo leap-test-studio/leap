@@ -4,18 +4,14 @@ services:
   redis:
     image: redis
     container_name: vinashak-cache
-    ports:
-      - "6379:6379"
     command: >
-      --requirepass automation
+      --requirepass S3cret
     volumes:
-      - ./data/redis/:/var/lib/redis/
+      - ./data/redis/:/etc/redis/
 
   database:
     image: mysql:5.7
     container_name: vinashak-db
-    ports:
-      - "3306:3306"
     #command: --init-file /data/application/init.sql
     volumes:
       - ./init.sql:/data/application/init.sql
@@ -31,47 +27,37 @@ services:
       timeout: 20s
       retries: 10
 
-#  studio:
-#    image: vinashak/studio:latest
-#    container_name: vinashak-studio
-#    build: ./studio
-#    stdin_open: true
-#    environment:
-#      - APIGW=http://orchestrator:5001
-#    volumes:
-#      - /app/web/node_modules
-#      - ./data/web:/app/web
-#    links:
-#      - orchestrator
-#    ports:
-#      - "5000:5000"
-#    depends_on:
-#      - orchestrator
+  orchestrator:
+    image: vinashak/orchestrator:latest
+    container_name: vinashak-orchestrator
+    build: ./orchestrator
+    links:
+      - database
+      - redis
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - DATABASE_HOST=database
+      - REDIS_HOST=redis
+      - LOG_DIR=/logs
+    volumes:
+      - ./data/vinashak/:/logs
 
-#  orchestrator:
-#    image: vinashak/orchestrator:latest
-#    container_name: vinashak-orchestrator
-#    build: ./orchestrator
-#    links:
-#      - database
-#      - redis
-#    ports:
-#      - "5001:5001"
-#    depends_on:
-#      database:
-#        condition: service_healthy
-#      redis:
-#        condition: service_started
-#    healthcheck:
-#      test: [ "CMD", "curl -i localhost:5001/healthcheck" ]
-#      timeout: 20s
-#      retries: 10
-#    environment:
-#      - DATABASE_HOST=database
-#      - REDIS_HOST=redis
-#      - LOG_DIR=/logs
-#    volumes:
-#      - ./data/vinashak/:/logs
+  vinashak-client:
+    image: vinashak/client:latest
+    container_name: vinashak-client
+    build: .
+    stdin_open: true
+    links:
+      - orchestrator
+    ports:
+      - 80:80
+    depends_on:
+      orchestrator:
+        condition: service_started
 
   selenium-event-bus:
     image: selenium/event-bus:4.4.0-20220831
