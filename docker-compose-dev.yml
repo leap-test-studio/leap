@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    container_name: vinashak-cache
+    ports:
+      - "6379:6379"
+    command: >
+      --requirepass S3cret
+    volumes:
+      - ./data/redis/:/var/lib/redis/
+
+  database:
+    image: mysql:5.7
+    container_name: vinashak-db
+    ports:
+      - "3306:3306"
+    #command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+      - ./data/mysql/:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: S3cret
+      MYSQL_DATABASE: automation
+      MYSQL_USER: automation
+      MYSQL_PASSWORD: S3cret
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
