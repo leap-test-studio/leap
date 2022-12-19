@@ -5,7 +5,7 @@ services:
     image: redis
     container_name: vinashak-cache
     ports:
-      - "6379:6379"
+      - 6379:6379
     command: >
       --requirepass S3cret
     volumes:
@@ -15,8 +15,7 @@ services:
     image: mysql:5.7
     container_name: vinashak-db
     ports:
-      - "3306:3306"
-    #command: --init-file /data/application/init.sql
+      - 3306:3306
     volumes:
       - ./init.sql:/data/application/init.sql
       - ./data/mysql/:/var/lib/mysql/
