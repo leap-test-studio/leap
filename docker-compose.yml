@@ -4,6 +4,8 @@ services:
   redis:
     image: redis
     container_name: vinashak-cache
+    ports:
+      - "6379:6379"
     command: >
       --requirepass S3cret
     volumes:
@@ -12,6 +14,8 @@ services:
   database:
     image: mysql:5.7
     container_name: vinashak-db
+    ports:
+      - "3306:3306"
     #command: --init-file /data/application/init.sql
     volumes:
       - ./init.sql:/data/application/init.sql
@@ -27,7 +31,7 @@ services:
       timeout: 20s
       retries: 10
 
-  orchestrator:
+  vinashak-orchestrator:
     image: vinashak/orchestrator:latest
     container_name: vinashak-orchestrator
     build: ./orchestrator
@@ -42,9 +46,9 @@ services:
     environment:
       - DATABASE_HOST=database
       - REDIS_HOST=redis
-      - LOG_DIR=/logs
+      - LOG_DIR=/app/logs
     volumes:
-      - ./data/vinashak/:/logs
+      - ./data/vinashak/:/app/logs
 
   vinashak-client:
     image: vinashak/client:latest
@@ -52,12 +56,31 @@ services:
     build: .
     stdin_open: true
     links:
-      - orchestrator
+      - vinashak-orchestrator
     ports:
       - 80:80
     depends_on:
-      orchestrator:
+      vinashak-orchestrator:
         condition: service_started
+
+  vinashak-agent:
+    image: vinashak/agent:latest
+    container_name: vinashak-agent
+    build: ./agent
+    links:
+      - vinashak-orchestrator
+      - selenium-router
+    depends_on:
+      vinashak-orchestrator:
+        condition: service_started
+      selenium-router:
+        condition: service_started
+    environment:
+      - SERVER_URL=http://vinashak-orchestrator
+      - SELENIUM_GRID_URL=http://selenium-router
+      - LOG_DIR=/app/logs
+    volumes:
+      - ./data/vinashak/:/app/logs
 
   selenium-event-bus:
     image: selenium/event-bus:4.4.0-20220831
