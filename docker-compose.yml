@@ -158,22 +158,22 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
 
-  edge:
-    image: selenium/node-edge:4.4.0-20220831
-    shm_size: 2gb
-    depends_on:
-      - selenium-event-bus
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-event-bus
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+#  edge:
+#    image: selenium/node-edge:4.4.0-20220831
+#    shm_size: 2gb
+#    depends_on:
+#      - selenium-event-bus
+#    environment:
+#      - SE_EVENT_BUS_HOST=selenium-event-bus
+#      - SE_EVENT_BUS_PUBLISH_PORT=4442
+#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
 
-  firefox:
-    image: selenium/node-firefox:4.4.0-20220831
-    shm_size: 2gb
-    depends_on:
-      - selenium-event-bus
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-event-bus
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+#  firefox:
+#    image: selenium/node-firefox:4.4.0-20220831
+#    shm_size: 2gb
+#    depends_on:
+#      - selenium-event-bus
+#    environment:
+#      - SE_EVENT_BUS_HOST=selenium-event-bus
+#      - SE_EVENT_BUS_PUBLISH_PORT=4442
+#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
