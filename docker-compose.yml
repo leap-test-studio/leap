@@ -150,7 +150,7 @@ services:
 
   chrome:
     image: selenium/node-chrome:4.4.0-20220831
-    shm_size: 2gb
+    #shm_size: 2gb
     depends_on:
       - selenium-event-bus
     environment:
