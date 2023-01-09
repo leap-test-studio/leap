@@ -6,11 +6,10 @@ services:
     container_name: vinashak-cache
     ports:
       - 6379:6379
-    command: >
-      --requirepass S3cret
-      --notify-keyspace-events KEA
+    environment: 
+      REDIS_ARGS: "--requirepass S3cret"
     volumes:
-      - ./data/redis/:/etc/redis/
+      - ./data/redis/:/data
 
   database:
     image: mysql:5.7
