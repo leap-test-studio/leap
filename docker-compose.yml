@@ -6,7 +6,7 @@ services:
     container_name: vinashak-cache
     ports:
       - 6379:6379
-    environment: 
+    environment:
       REDIS_ARGS: "--requirepass S3cret"
     volumes:
       - ./data/redis/:/data
@@ -70,6 +70,7 @@ services:
     links:
       - vinashak-orchestrator
       - selenium-router
+      - redis
     depends_on:
       vinashak-orchestrator:
         condition: service_started
@@ -80,6 +81,7 @@ services:
       - GRPC_SERVER_ENDPOINT=vinashak-orchestrator:50000
       - SELENIUM_GRID_URL=http://selenium-router:4444
       - LOG_DIR=/app/logs
+      - REDIS_HOST=redis
     volumes:
       - ./data/vinashak/:/app/logs
 
