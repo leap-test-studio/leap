@@ -46,6 +46,7 @@ services:
       - DATABASE_HOST=database
       - REDIS_HOST=redis
       - LOG_DIR=/app/logs
+      - LOG_LEVEL=all
       - GRPC_PORT=50000
     volumes:
       - ./data/vinashak/:/app/logs
@@ -76,11 +77,14 @@ services:
         condition: service_started
       selenium-router:
         condition: service_started
+      redis:
+        condition: service_started
     environment:
       - SERVER_URL=http://vinashak-orchestrator
       - GRPC_SERVER_ENDPOINT=vinashak-orchestrator:50000
       - SELENIUM_GRID_URL=http://selenium-router:4444
       - LOG_DIR=/app/logs
+      - LOG_LEVEL=all
       - REDIS_HOST=redis
     volumes:
       - ./data/vinashak/:/app/logs
