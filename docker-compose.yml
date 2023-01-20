@@ -79,7 +79,7 @@ services:
     environment:
       - SERVER_URL=http://vinashak-orchestrator
       - GRPC_SERVER_ENDPOINT=vinashak-orchestrator:50000
-      - SELENIUM_GRID_URL=http://kontronbng141:4444
+      - SELENIUM_GRID_URL=http://10.27.21.38:4444
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - REDIS_HOST=redis
