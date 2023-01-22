@@ -1,9 +1,26 @@
-# ------------------------------------------------------
-# Production Build
-# ------------------------------------------------------
-FROM nginx:1.23.2-alpine
-COPY --from=vinashak/studio:latest /app/web/build /usr/share/nginx/web
-COPY --from=vinashak/docs:latest /app/docs/build /usr/share/nginx/docs
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+FROM node:18.12.1-alpine as studio
+WORKDIR /app/studio
+COPY studio/package.json .
+COPY studio/package-lock.json .
+RUN npm ci
+COPY studio/. .
+RUN npm run build
+
+FROM node:18.12.1-alpine as docs
+WORKDIR /app/docs
+COPY docs/package.json .
+COPY docs/package-lock.json .
+RUN npm ci
+COPY docs/. .
+RUN npm run build
+
+FROM node:18.12.1-alpine
+WORKDIR /app/orchestrator
+COPY --from=studio /app/studio/build /app/orchestrator/distribution/web
+COPY --from=docs /app/docs/build /app/orchestrator/distribution/docs
+COPY orchestrator/package.json .
+COPY orchestrator/package-lock.json .
+RUN npm ci
+COPY orchestrator/. .
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD npm start;

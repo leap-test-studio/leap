@@ -30,10 +30,10 @@ services:
       timeout: 20s
       retries: 10
 
-  vinashak-orchestrator:
-    image: vinashak/orchestrator:latest
-    container_name: vinashak-orchestrator
-    build: ./orchestrator
+  vinashak-studio:
+    image: vinashak/studio:latest
+    container_name: vinashak-studio
+    build: .
     links:
       - database
       - redis
@@ -48,37 +48,27 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - GRPC_PORT=50000
-    volumes:
-      - ./data/vinashak/:/app/logs
-
-  vinashak-client:
-    image: vinashak/client:latest
-    container_name: vinashak-client
-    build: .
-    stdin_open: true
-    links:
-      - vinashak-orchestrator
+      - PORT=80
     ports:
       - 80:80
-    depends_on:
-      vinashak-orchestrator:
-        condition: service_started
+    volumes:
+      - ./data/vinashak/:/app/logs
 
   vinashak-agent:
     image: vinashak/agent:latest
     container_name: vinashak-agent
     build: ./agent
     links:
-      - vinashak-orchestrator
+      - vinashak-studio
       - redis
     depends_on:
-      vinashak-orchestrator:
+      vinashak-studio:
         condition: service_started
       redis:
         condition: service_started
     environment:
-      - SERVER_URL=http://vinashak-orchestrator
-      - GRPC_SERVER_ENDPOINT=vinashak-orchestrator:50000
+      - SERVER_URL=http://vinashak-studio
+      - GRPC_SERVER_ENDPOINT=vinashak-studio:50000
       - SELENIUM_GRID_URL=http://10.27.21.38:4444
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all

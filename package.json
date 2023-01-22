@@ -1,0 +1,23 @@
+{
+  "name": "vinashak",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "docker compose -f docker-compose.yml up -d --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinashak-studio/vinashak.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinashak-studio/vinashak/issues"
+  },
+  "homepage": "https://github.com/vinashak-studio/vinashak#readme"
+}
