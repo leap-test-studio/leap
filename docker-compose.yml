@@ -43,37 +43,14 @@ services:
       redis:
         condition: service_started
     environment:
+      - SELENIUM_GRID_URL=http://10.27.21.38:4444
       - DATABASE_HOST=database
       - REDIS_HOST=redis
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
-      - GRPC_PORT=50000
       - PORT=80
     ports:
       - 80:80
-      - 50000:50000
 
-    volumes:
-      - ./data/vinashak/:/app/logs
-
-  vinashak-agent:
-    image: vinashak/agent:latest
-    container_name: vinashak-agent
-    build: ./agent
-    links:
-      - vinashak-studio
-      - redis
-    depends_on:
-      vinashak-studio:
-        condition: service_started
-      redis:
-        condition: service_started
-    environment:
-      - SERVER_URL=http://vinashak-studio
-      - GRPC_SERVER_ENDPOINT=vinashak-studio:50000
-      - SELENIUM_GRID_URL=http://10.27.21.38:4444
-      - LOG_DIR=/app/logs
-      - LOG_LEVEL=all
-      - REDIS_HOST=redis
     volumes:
       - ./data/vinashak/:/app/logs
