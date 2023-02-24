@@ -8,8 +8,8 @@
   },
   "scripts": {
     "start": "docker compose -f docker-compose.yml up -d",
-    "build": "npm run clean & docker compose -f docker-compose.yml --build",
-    "down": "docker compose -f docker-compose.yml down",
+    "build": "docker compose -f docker-compose.yml up -d --build",
+    "stop": "docker compose -f docker-compose.yml down",
     "clean": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force"
   },
   "repository": {
