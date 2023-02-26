@@ -1,4 +1,6 @@
-FROM node:18.12.1-alpine as studio
+FROM node:18.12.1-slim as studio
+RUN apt-get update || : && apt-get install python make g++ -y
+
 WORKDIR /app/studio
 COPY studio/package.json .
 COPY studio/package-lock.json .
@@ -6,7 +8,7 @@ RUN npm ci
 COPY studio/. .
 RUN npm run build
 
-FROM node:18.12.1-alpine
+FROM node:18.12.1-slim
 WORKDIR /app/orchestrator
 COPY --from=studio /app/studio/build /app/orchestrator/distribution/web
 COPY orchestrator/package.json .
