@@ -10,6 +10,8 @@ services:
       REDIS_ARGS: "--requirepass S3cret"
     volumes:
       - ./data/redis/:/data
+    networks:
+      - vinashak
 
   database:
     image: mysql:5.7
@@ -29,6 +31,8 @@ services:
       test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       timeout: 20s
       retries: 10
+    networks:
+      - vinashak
 
   vinashak-studio:
     image: vinashak/studio:latest
@@ -51,6 +55,11 @@ services:
       - PORT=80
     ports:
       - 80:80
-
     volumes:
       - ./data/vinashak/:/app/logs
+    networks:
+      - vinashak
+
+networks:
+  vinashak:
+    driver: bridge
