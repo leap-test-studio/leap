@@ -9,6 +9,7 @@
   "scripts": {
     "start": "docker compose -f docker-compose.yml up -d",
     "build": "docker compose -f docker-compose.yml up -d --build --remove-orphans",
+    "prepublish": "npm run clean",
     "stop": "docker compose -f docker-compose.yml down",
     "clean": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force"
   },
