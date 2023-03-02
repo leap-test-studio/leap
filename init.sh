@@ -7,5 +7,5 @@ npm run dev:upgrade
 
 cd $AUTOMATION_HOME/studio;
 npm install;
-npm run prettier:fix
+npm run prettify
 npm run dev:upgrade
