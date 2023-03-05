@@ -14,7 +14,10 @@
     "clean": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
     "dev:upgrade": "npm run dev:upgrade:orchestrator && npm run dev:upgrade:studio",
     "dev:upgrade:orchestrator": "cd orchestrator && npm ci && npm run prettify && npm run dev:upgrade",
-    "dev:upgrade:studio": "cd studio && npm ci && npm run prettify && npm run dev:upgrade"
+    "dev:upgrade:studio": "cd studio && npm ci && npm run prettify && npm run dev:upgrade",
+    "dev:prettify": "npm run dev:prettify:orchestrator && npm run dev:prettify:studio",
+    "dev:prettify:orchestrator": "cd orchestrator && npm run prettify",
+    "dev:prettify:studio": "cd studio && npm run prettify"
   },
   "repository": {
     "type": "git",
