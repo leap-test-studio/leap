@@ -9,9 +9,10 @@
   "scripts": {
     "start": "docker compose -f docker-compose.yml up -d",
     "build": "docker compose -f docker-compose.yml up -d --build --remove-orphans",
-    "prebuild": "npm run clean",
     "stop": "docker compose -f docker-compose.yml down",
-    "clean": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
+    "clean:images": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
+    "clean:node_modules": "rm -rf */node_modules",
+    "clean": "npm run clean:node_modules && npm run clean:images",
     "dev:upgrade": "npm run dev:upgrade:orchestrator && npm run dev:upgrade:studio",
     "dev:upgrade:orchestrator": "cd orchestrator && npm ci && npm run prettify && npm run dev:upgrade",
     "dev:upgrade:studio": "cd studio && npm ci && npm run prettify && npm run dev:upgrade",
