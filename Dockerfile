@@ -4,7 +4,7 @@ RUN apt-get update || : && apt-get install python make g++ -y
 WORKDIR /app/studio
 COPY studio/package.json .
 COPY studio/package-lock.json .
-RUN npm npm i --force
+RUN npm i --force
 COPY studio/. .
 RUN npm run build
 
