@@ -4,7 +4,7 @@ RUN apt-get update || : && apt-get install python make g++ -y
 WORKDIR /app/studio
 COPY studio/package.json .
 COPY studio/package-lock.json .
-RUN npm ci
+RUN npm npm i --force
 COPY studio/. .
 RUN npm run build
 
@@ -13,7 +13,7 @@ WORKDIR /app/orchestrator
 COPY --from=studio /app/studio/build /app/orchestrator/distribution/web
 COPY orchestrator/package.json .
 COPY orchestrator/package-lock.json .
-RUN npm ci
+RUN npm i --force --production
 COPY orchestrator/. .
 EXPOSE 80
 CMD npm start;
