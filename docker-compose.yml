@@ -34,10 +34,11 @@ services:
     networks:
       - vinashak
 
-  vinashak-studio:
-    image: vinashak/studio:latest
-    container_name: vinashak-studio
-    build: .
+  vinashak-api:
+    image: vinashak/api:latest
+    container_name: vinashak-api
+    build:
+      context: ./orchestrator
     links:
       - database
       - redis
@@ -53,10 +54,24 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
-    ports:
-      - 80:80
     volumes:
       - ./data/vinashak/:/app/logs
+    networks:
+      - vinashak
+
+  vinashak-studio:
+    image: vinashak/studio:latest
+    container_name: vinashak-studio
+    build: .
+    links:
+      - vinashak-api
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - 80:80
     networks:
       - vinashak
 

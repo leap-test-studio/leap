@@ -8,12 +8,9 @@ RUN npm i --force
 COPY studio/. .
 RUN npm run build
 
-FROM node:18.12.1-slim
-WORKDIR /app/orchestrator
-COPY --from=studio /app/studio/build /app/orchestrator/distribution/web
-COPY orchestrator/package.json .
-COPY orchestrator/package-lock.json .
-RUN npm i --force --production
-COPY orchestrator/. .
+FROM nginx
+COPY --from=studio /app/studio/build /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx-prod.conf /etc/nginx/conf.d/app.conf
 EXPOSE 80
-CMD npm start;
+CMD ["nginx", "-g", "daemon off;"]
