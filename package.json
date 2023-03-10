@@ -19,7 +19,8 @@
     "dev:upgrade:studio": "cd studio && npm ci && npm run prettify && npm run dev:upgrade",
     "dev:prettify": "npm run dev:prettify:orchestrator && npm run dev:prettify:studio",
     "dev:prettify:orchestrator": "cd orchestrator && npm run prettify",
-    "dev:prettify:studio": "cd studio && npm run prettify"
+    "dev:prettify:studio": "cd studio && npm run prettify",
+    "dev:pull": "git pull --recurse-submodules"
   },
   "repository": {
     "type": "git",
