@@ -1,18 +1,23 @@
-version: '3'
+version: "3.9"
 
 services:
   redis:
-    image: redis
+    image: redis/redis-stack-server:latest
+    container_name: vinashak-cache
     ports:
       - 6379:6379
-    command: >
-      --requirepass automation
+    environment:
+      REDIS_ARGS: "--requirepass S3cret"
+    volumes:
+      - ./data/redis/:/data
+    networks:
+      - vinashak
 
   database:
     image: mysql:5.7
+    container_name: vinashak-db
     ports:
       - 3306:3306
-    command: --init-file /data/application/init.sql
     volumes:
       - ./init.sql:/data/application/init.sql
       - ./data/mysql/:/var/lib/mysql/
@@ -23,71 +28,89 @@ services:
       MYSQL_USER: automation
       MYSQL_PASSWORD: S3cret
     healthcheck:
-        test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-        timeout: 20s
-        retries: 10
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
+    networks:
+      - vinashak
 
-  orchestrator:
-    image: orchestrator
+  vinashak-api:
+    image: vinashak/api:latest
+    container_name: vinashak-api
     build:
       context: ./orchestrator
-      dockerfile: Dockerfile
-      links:
-          - database
-          - redis
-      ports: 
-          - 5001
-      depends_on:
-          - database:
-              condition: service_healthy
-          - redis
-    healthcheck:
-        test: ["CMD", "curl -i localhost:5001/healthcheck"]
-        timeout: 20s
-        retries: 10
+    links:
+      - database
+      - redis
+      - selenium-router
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      selenium-router:
+        condition: service_started
     environment:
+      - SELENIUM_GRID_URL=http://selenium-router:4444
       - DATABASE_HOST=database
-      - DATABASE_NAME=automation
       - REDIS_HOST=redis
-      - LOG_DIR=/root/workspace/logs
+      - LOG_DIR=/app/logs
+      - LOG_LEVEL=all
+      - PORT=80
+    volumes:
+      - ./data/vinashak/:/app/logs
+    networks:
+      - vinashak
+
+  vinashak-studio:
+    image: vinashak/studio:latest
+    container_name: vinashak-studio
+    build: .
+    links:
+      - vinashak-api
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - 80:80
+    networks:
+      - vinashak
 
   selenium-event-bus:
     image: selenium/event-bus:4.4.0-20220831
     container_name: selenium-event-bus
-    ports:
-      - "4442:4442"
-      - "4443:4443"
-      - "5557:5557"
+    networks:
+      - vinashak
 
   selenium-sessions:
     image: selenium/sessions:4.4.0-20220831
     container_name: selenium-sessions
-    ports:
-      - "5556:5556"
     depends_on:
       - selenium-event-bus
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
 
   selenium-session-queue:
     image: selenium/session-queue:4.4.0-20220831
     container_name: selenium-session-queue
-    ports:
-      - "5559:5559"
     depends_on:
       - selenium-event-bus
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
 
   selenium-distributor:
     image: selenium/distributor:4.4.0-20220831
     container_name: selenium-distributor
-    ports:
-      - "5553:5553"
     depends_on:
       - selenium-event-bus
       - selenium-sessions
@@ -100,12 +123,12 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
+    networks:
+      - vinashak
 
   selenium-router:
     image: selenium/router:4.4.0-20220831
     container_name: selenium-router
-    ports:
-      - "4444:4444"
     depends_on:
       - selenium-distributor
       - selenium-sessions
@@ -117,6 +140,8 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
+    networks:
+      - vinashak
 
   chrome:
     image: selenium/node-chrome:4.4.0-20220831
@@ -127,23 +152,9 @@ services:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
 
-  edge:
-    image: selenium/node-edge:4.4.0-20220831
-    shm_size: 2gb
-    depends_on:
-      - selenium-event-bus
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-event-bus
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-
-  firefox:
-    image: selenium/node-firefox:4.4.0-20220831
-    shm_size: 2gb
-    depends_on:
-      - selenium-event-bus
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-event-bus
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+networks:
+  vinashak:
+    driver: bridge

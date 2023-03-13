@@ -1,47 +1,128 @@
-# To execute this docker-compose yml file use `docker-compose -f docker-compose-v2.yml up`
-# Add the `-d` flag at the end for detached execution
-# To stop the execution, hit Ctrl+C, and then `docker-compose -f docker-compose-v2.yml down`
-version: '2'
+version: "3.9"
+
 services:
-  chrome:
-    image: selenium/node-chrome:4.7.0-20221202
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: vinashak-cache
     ports:
-      - "6900:5900"
-
-  edge:
-    image: selenium/node-edge:4.7.0-20221202
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
+      - 6379:6379
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    ports:
-      - "6901:5900"
+      REDIS_ARGS: "--requirepass S3cret"
+    volumes:
+      - ./data/redis/:/data
+    networks:
+      - vinashak
 
-  firefox:
-    image: selenium/node-firefox:4.7.0-20221202
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
+  database:
+    image: mysql:5.7
+    container_name: vinashak-db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./init.sql:/data/application/init.sql
+      - ./data/mysql/:/var/lib/mysql/
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    ports:
-      - "6902:5900"
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: S3cret
+      MYSQL_DATABASE: automation
+      MYSQL_USER: automation
+      MYSQL_PASSWORD: S3cret
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
+    networks:
+      - vinashak
 
-  selenium-hub:
-    image: selenium/hub:4.7.0-20221202
+  selenium-event-bus:
+    image: selenium/event-bus:4.4.0-20220831
+    container_name: selenium-event-bus
     ports:
       - "4442:4442"
       - "4443:4443"
+      - "5557:5557"
+    networks:
+      - vinashak
+
+  selenium-sessions:
+    image: selenium/sessions:4.4.0-20220831
+    container_name: selenium-sessions
+    ports:
+      - "5556:5556"
+    depends_on:
+      - selenium-event-bus
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-event-bus
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
+
+  selenium-session-queue:
+    image: selenium/session-queue:4.4.0-20220831
+    container_name: selenium-session-queue
+    ports:
+      - "5559:5559"
+    depends_on:
+      - selenium-event-bus
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-event-bus
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
+
+  selenium-distributor:
+    image: selenium/distributor:4.4.0-20220831
+    container_name: selenium-distributor
+    ports:
+      - "5553:5553"
+    depends_on:
+      - selenium-event-bus
+      - selenium-sessions
+      - selenium-session-queue
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-event-bus
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_SESSIONS_MAP_HOST=selenium-sessions
+      - SE_SESSIONS_MAP_PORT=5556
+      - SE_SESSION_QUEUE_HOST=selenium-session-queue
+      - SE_SESSION_QUEUE_PORT=5559
+    networks:
+      - vinashak
+
+  selenium-router:
+    image: selenium/router:4.4.0-20220831
+    container_name: selenium-router
+    ports:
       - "4444:4444"
+    depends_on:
+      - selenium-distributor
+      - selenium-sessions
+      - selenium-session-queue
+    environment:
+      - SE_DISTRIBUTOR_HOST=selenium-distributor
+      - SE_DISTRIBUTOR_PORT=5553
+      - SE_SESSIONS_MAP_HOST=selenium-sessions
+      - SE_SESSIONS_MAP_PORT=5556
+      - SE_SESSION_QUEUE_HOST=selenium-session-queue
+      - SE_SESSION_QUEUE_PORT=5559
+    networks:
+      - vinashak
+
+  chrome:
+    image: selenium/node-chrome:4.4.0-20220831
+    shm_size: 2gb
+    depends_on:
+      - selenium-event-bus
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-event-bus
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    networks:
+      - vinashak
+
+networks:
+  vinashak:
+    driver: bridge

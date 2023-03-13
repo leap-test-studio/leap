@@ -1,56 +1,15 @@
 version: "3.9"
 
 services:
-  redis:
-    image: redis/redis-stack-server:latest
-    container_name: vinashak-cache
-    ports:
-      - 6379:6379
-    environment:
-      REDIS_ARGS: "--requirepass S3cret"
-    volumes:
-      - ./data/redis/:/data
-    networks:
-      - vinashak
-
-  database:
-    image: mysql:5.7
-    container_name: vinashak-db
-    ports:
-      - 3306:3306
-    volumes:
-      - ./init.sql:/data/application/init.sql
-      - ./data/mysql/:/var/lib/mysql/
-    environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: S3cret
-      MYSQL_DATABASE: automation
-      MYSQL_USER: automation
-      MYSQL_PASSWORD: S3cret
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-      timeout: 20s
-      retries: 10
-    networks:
-      - vinashak
-
   vinashak-api:
     image: vinashak/api:latest
     container_name: vinashak-api
     build:
       context: ./orchestrator
-    links:
-      - database
-      - redis
-    depends_on:
-      database:
-        condition: service_healthy
-      redis:
-        condition: service_started
     environment:
       - SELENIUM_GRID_URL=http://10.27.21.38:4444
-      - DATABASE_HOST=database
-      - REDIS_HOST=redis
+      - DATABASE_HOST=10.27.21.38
+      - REDIS_HOST=10.27.21.38
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
@@ -66,9 +25,7 @@ services:
     links:
       - vinashak-api
     depends_on:
-      database:
-        condition: service_healthy
-      redis:
+      vinashak-api:
         condition: service_started
     ports:
       - 80:80
