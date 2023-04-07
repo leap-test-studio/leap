@@ -1,4 +1,4 @@
-FROM node:18.12.1-slim as studio
+FROM node:19.8-slim as studio
 RUN apt-get update || : && apt-get install python make g++ -y
 
 WORKDIR /app/studio
