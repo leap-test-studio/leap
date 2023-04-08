@@ -1,37 +1,22 @@
 {
   "name": "vinashak",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "start": "docker compose -f docker-compose-full.yml up -d",
     "build": "docker compose -f docker-compose-full.yml up -d --build --remove-orphans",
-    "stop": "docker compose -f docker-compose.yml down",
+    "stop": "docker compose -f docker-compose-full.yml down",
     "clean:images": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
     "clean:node_modules": "rm -rf */node_modules",
     "clean": "npm run clean:node_modules && npm run clean:images",
     "dev":"npm run dev:upgrade && npm run dev:prettify",
     "dev:upgrade": "npm run dev:upgrade:orchestrator && npm run dev:upgrade:studio",
-    "dev:upgrade:orchestrator": "cd orchestrator && npm ci && npm run prettify && npm run dev:upgrade",
-    "dev:upgrade:studio": "cd studio && npm ci && npm run prettify && npm run dev:upgrade",
+    "dev:upgrade:orchestrator": "cd orchestrator && npm run upgrade",
+    "dev:upgrade:studio": "cd studio && npm run upgrade",
     "dev:prettify": "npm run dev:prettify:orchestrator && npm run dev:prettify:studio",
     "dev:prettify:orchestrator": "cd orchestrator && npm run prettify",
     "dev:prettify:studio": "cd studio && npm run prettify",
     "dev:pull": "git pull --recurse-submodules",
     "dev:prune": "docker system prune --volumes -a"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vinashak-studio/vinashak.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vinashak-studio/vinashak/issues"
-  },
-  "homepage": "https://github.com/vinashak-studio/vinashak#readme"
+  }
 }
