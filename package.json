@@ -17,6 +17,7 @@
     "dev:prettify:orchestrator": "cd orchestrator && npm run prettify",
     "dev:prettify:studio": "cd studio && npm run prettify",
     "dev:pull": "git pull --recurse-submodules",
-    "dev:prune": "docker system prune --volumes -a"
+    "dev:prune": "docker system prune --volumes -a",
+    "first-time": "npm i -g npm-check-updates && npm run dev"
   }
 }
