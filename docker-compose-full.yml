@@ -54,6 +54,7 @@ services:
       - SELENIUM_GRID_URL=http://selenium-router:4444
       - DATABASE_HOST=database
       - REDIS_HOST=redis
+      - JWT_TOKEN_EXPIRY=1d
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
