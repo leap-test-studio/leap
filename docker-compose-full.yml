@@ -11,7 +11,8 @@ services:
     volumes:
       - ./data/redis/:/data
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.5
 
   database:
     image: mysql:5.7
@@ -32,7 +33,17 @@ services:
       timeout: 20s
       retries: 10
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.6
+
+  symor-studio:
+    image: symor:latest
+    container_name: symor
+    ports:
+      - 8888:8888
+    networks:
+      vinashak:
+        ipv4_address: 10.5.0.7
 
   vinashak-api:
     image: vinashak/api:latest
@@ -43,6 +54,7 @@ services:
       - database
       - redis
       - selenium-router
+      - symor-studio
     depends_on:
       database:
         condition: service_healthy
@@ -58,10 +70,13 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
+      - proxy=http://10.1.100.18:3128
+      - http_proxy=http://10.1.100.18:3128
     volumes:
       - ./data/vinashak/:/app/logs
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.8
 
   vinashak-studio:
     image: vinashak/studio:latest
@@ -77,37 +92,47 @@ services:
     ports:
       - 80:80
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.9
 
   selenium-event-bus:
     image: selenium/event-bus:4.4.0-20220831
     container_name: selenium-event-bus
+    links:
+      - symor-studio
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.10
 
   selenium-sessions:
     image: selenium/sessions:4.4.0-20220831
     container_name: selenium-sessions
     depends_on:
       - selenium-event-bus
+    links:
+      - symor-studio
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.11
 
   selenium-session-queue:
     image: selenium/session-queue:4.4.0-20220831
     container_name: selenium-session-queue
     depends_on:
       - selenium-event-bus
+    links:
+      - symor-studio
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.12
 
   selenium-distributor:
     image: selenium/distributor:4.4.0-20220831
@@ -116,6 +141,8 @@ services:
       - selenium-event-bus
       - selenium-sessions
       - selenium-session-queue
+    links:
+      - symor-studio
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
@@ -125,15 +152,20 @@ services:
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.13
 
   selenium-router:
     image: selenium/router:4.4.0-20220831
     container_name: selenium-router
+    ports:
+      - 4444:4444
     depends_on:
       - selenium-distributor
       - selenium-sessions
       - selenium-session-queue
+    links:
+      - symor-studio
     environment:
       - SE_DISTRIBUTOR_HOST=selenium-distributor
       - SE_DISTRIBUTOR_PORT=5553
@@ -142,7 +174,8 @@ services:
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.14
 
   chrome:
     image: selenium/node-chrome:4.4.0-20220831
@@ -153,9 +186,16 @@ services:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    links:
+      - symor-studio
     networks:
-      - vinashak
+      vinashak:
+        ipv4_address: 10.5.0.15
 
 networks:
   vinashak:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
