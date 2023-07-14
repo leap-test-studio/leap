@@ -5,8 +5,6 @@ WORKDIR /app/studio
 RUN rm -rf /app/studio/build
 COPY studio/package.json .
 COPY studio/package-lock.json .
-RUN npm config set proxy http://10.1.100.18:3128
-RUN npm config set https-proxy http://10.1.100.18:3128
 RUN npm config set strict-ssl false
 RUN npm config set fetch-retry-maxtimeout 120000
 RUN npm config set fetch-timeout 120000
