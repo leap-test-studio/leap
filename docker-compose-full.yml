@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  redis:
+  vinashak-cache:
     image: redis/redis-stack-server:latest
     container_name: vinashak-cache
     ports:
@@ -14,9 +14,9 @@ services:
       vinashak:
         ipv4_address: 10.5.0.5
 
-  database:
+  vinashak-database:
     image: mysql:5.7
-    container_name: vinashak-db
+    container_name: vinashak-database
     ports:
       - 3306:3306
     volumes:
@@ -36,26 +36,26 @@ services:
       vinashak:
         ipv4_address: 10.5.0.6
 
-  vinashak-api:
-    image: vinashak/api:latest
-    container_name: vinashak-api
+  vinashak-controller:
+    image: yuvarajsomavamshi/vinashak-controller:latest
+    container_name: vinashak-controller
     build:
       context: ./orchestrator
     links:
-      - database
-      - redis
+      - vinashak-database
+      - vinashak-cache
       - selenium-router
     depends_on:
-      database:
+      vinashak-database:
         condition: service_healthy
-      redis:
+      vinashak-cache:
         condition: service_started
       selenium-router:
         condition: service_started
     environment:
       - SELENIUM_GRID_URL=http://selenium-router:4444
-      - DATABASE_HOST=database
-      - REDIS_HOST=redis
+      - DATABASE_HOST=vinashak-database
+      - REDIS_HOST=vinashak-cache
       - JWT_TOKEN_EXPIRY=1d
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
@@ -67,15 +67,15 @@ services:
         ipv4_address: 10.5.0.8
 
   vinashak-studio:
-    image: vinashak/studio:latest
+    image: yuvarajsomavamshi/vinashak-studio:latest
     container_name: vinashak-studio
     build: .
     links:
-      - vinashak-api
+      - vinashak-controller
     depends_on:
-      database:
+      vinashak-database:
         condition: service_healthy
-      redis:
+      vinashak-cache:
         condition: service_started
     ports:
       - 80:80
@@ -84,14 +84,14 @@ services:
         ipv4_address: 10.5.0.9
 
   selenium-event-bus:
-    image: selenium/event-bus:4.4.0-20220831
+    image: selenium/event-bus:latest
     container_name: selenium-event-bus
     networks:
       vinashak:
         ipv4_address: 10.5.0.10
 
   selenium-sessions:
-    image: selenium/sessions:4.4.0-20220831
+    image: selenium/sessions:latest
     container_name: selenium-sessions
     depends_on:
       - selenium-event-bus
@@ -104,20 +104,14 @@ services:
         ipv4_address: 10.5.0.11
 
   selenium-session-queue:
-    image: selenium/session-queue:4.4.0-20220831
+    image: selenium/session-queue:latest
     container_name: selenium-session-queue
-    depends_on:
-      - selenium-event-bus
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-event-bus
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     networks:
       vinashak:
         ipv4_address: 10.5.0.12
 
   selenium-distributor:
-    image: selenium/distributor:4.4.0-20220831
+    image: selenium/distributor:latest
     container_name: selenium-distributor
     depends_on:
       - selenium-event-bus
@@ -136,7 +130,7 @@ services:
         ipv4_address: 10.5.0.13
 
   selenium-router:
-    image: selenium/router:4.4.0-20220831
+    image: selenium/router:latest
     container_name: selenium-router
     ports:
       - 4444:4444
@@ -155,15 +149,20 @@ services:
       vinashak:
         ipv4_address: 10.5.0.14
 
-  chrome:
-    image: selenium/node-chrome:4.4.0-20220831
+  selenium-chrome:
+    image: selenium/node-chrome:latest
     shm_size: 2gb
+    container_name: selenium-chrome
+    volumes:
+      - ./data/assets:/opt/selenium/assets
     depends_on:
       - selenium-event-bus
     environment:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=10
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
     networks:
       vinashak:
         ipv4_address: 10.5.0.15
