@@ -39,8 +39,6 @@ services:
   vinashak-controller:
     image: yuvarajsomavamshi/vinashak-controller:latest
     container_name: vinashak-controller
-    build:
-      context: ./orchestrator
     links:
       - vinashak-database
       - vinashak-cache
@@ -69,7 +67,6 @@ services:
   vinashak-studio:
     image: yuvarajsomavamshi/vinashak-studio:latest
     container_name: vinashak-studio
-    build: .
     links:
       - vinashak-controller
     depends_on:
@@ -166,19 +163,6 @@ services:
     networks:
       vinashak:
         ipv4_address: 10.5.0.15
-
-  selenium-chrome-video:
-    image: selenium/video:ffmpeg-4.3.1-20230607
-    volumes:
-      - ./data/assets:/videos
-    depends_on:
-      - selenium-chrome
-    environment:
-      - DISPLAY_CONTAINER_NAME=selenium-chrome
-      - FILE_NAME=chrome_video.mp4
-    networks:
-      vinashak:
-        ipv4_address: 10.5.0.16
 
 networks:
   vinashak:
