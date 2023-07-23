@@ -58,6 +58,8 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     volumes:
       - ./data/vinashak/:/app/logs
     networks:
@@ -96,6 +98,8 @@ services:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     networks:
       vinashak:
         ipv4_address: 10.5.0.11
@@ -103,6 +107,9 @@ services:
   selenium-session-queue:
     image: selenium/session-queue:latest
     container_name: selenium-session-queue
+    environment:
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     networks:
       vinashak:
         ipv4_address: 10.5.0.12
@@ -122,6 +129,8 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     networks:
       vinashak:
         ipv4_address: 10.5.0.13
@@ -142,6 +151,8 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     networks:
       vinashak:
         ipv4_address: 10.5.0.14
@@ -160,6 +171,9 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_SESSIONS=10
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - VNC_NO_PASSWORD=1
+      - NO_PROXY="10.27.*"
+      - no_proxy="10.27.*"
     networks:
       vinashak:
         ipv4_address: 10.5.0.15

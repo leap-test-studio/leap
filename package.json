@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose -f docker-compose-dev.yml up -d",
-    "build": "docker-compose -f docker-compose-dev.yml up -d --build --remove-orphans",
-    "stop": "docker-compose -f docker-compose-dev.yml down",
+    "start": "docker-compose up -d",
+    "build": "docker-compose up -d --build --remove-orphans",
+    "stop": "docker-compose down",
     "clean:images": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
     "clean:node_modules": "rm -rf */node_modules",
     "clean": "npm run clean:node_modules && npm run clean:images",
