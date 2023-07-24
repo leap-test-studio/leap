@@ -11,7 +11,7 @@ services:
     volumes:
       - ./data/redis/:/data
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.5
 
   vinashak-database:
@@ -19,8 +19,9 @@ services:
     container_name: vinashak-database
     ports:
       - 3306:3306
+    #command: --init-file /data/application/init.sql
     volumes:
-      - ./init.sql:/data/application/init.sql
+     # - ./init.sql:/data/application/init.sql
       - ./data/mysql/:/var/lib/mysql/
     environment:
       MYSQL_ROOT_USER: root
@@ -33,7 +34,7 @@ services:
       timeout: 20s
       retries: 10
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.6
 
   vinashak-controller:
@@ -58,12 +59,10 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=80
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     volumes:
       - ./data/vinashak/:/app/logs
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.8
 
   vinashak-studio:
@@ -79,14 +78,14 @@ services:
     ports:
       - 80:80
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.9
 
   selenium-event-bus:
     image: selenium/event-bus:latest
     container_name: selenium-event-bus
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.10
 
   selenium-sessions:
@@ -98,20 +97,15 @@ services:
       - SE_EVENT_BUS_HOST=selenium-event-bus
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.11
 
   selenium-session-queue:
     image: selenium/session-queue:latest
     container_name: selenium-session-queue
-    environment:
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.12
 
   selenium-distributor:
@@ -129,10 +123,8 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.13
 
   selenium-router:
@@ -151,10 +143,8 @@ services:
       - SE_SESSIONS_MAP_PORT=5556
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.14
 
   selenium-chrome:
@@ -172,14 +162,12 @@ services:
       - SE_NODE_MAX_SESSIONS=10
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - VNC_NO_PASSWORD=1
-      - NO_PROXY="10.27.*"
-      - no_proxy="10.27.*"
     networks:
-      vinashak:
+      vinashak-network:
         ipv4_address: 10.5.0.15
 
 networks:
-  vinashak:
+  vinashak-network:
     driver: bridge
     ipam:
       config:
