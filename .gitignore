@@ -108,3 +108,4 @@ dist
 *.out
 *.swp
 build.sh
+audit.json

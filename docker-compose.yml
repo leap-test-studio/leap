@@ -37,11 +37,10 @@ services:
       vinashak-network:
         ipv4_address: 10.5.0.6
 
-  vinashak-controller:
-    image: yuvarajsomavamshi/vinashak-controller:latest
-    container_name: vinashak-controller
-    build:
-      context: ./orchestrator
+  vinashak-studio:
+    image: yuvarajsomavamshi/vinashak-studio:latest
+    container_name: vinashak-studio
+    build: .
     links:
       - vinashak-database
       - vinashak-cache
@@ -60,24 +59,10 @@ services:
       - JWT_TOKEN_EXPIRY=1d
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
-      - PORT=80
+      - PORT=8080
     volumes:
       - ./data/vinashak/:/app/logs
-    networks:
-      vinashak-network:
-        ipv4_address: 10.5.0.8
-
-  vinashak-studio:
-    image: yuvarajsomavamshi/vinashak-studio:latest
-    container_name: vinashak-studio
-    build: .
-    links:
-      - vinashak-controller
-    depends_on:
-      vinashak-database:
-        condition: service_healthy
-      vinashak-cache:
-        condition: service_started
+      - ./data/vinashak/nginx:/var/log/nginx
     ports:
       - 80:80
     networks:
