@@ -1,0 +1,115 @@
+{
+  "schema": {
+    "properties": {
+      "settings": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": ["get", "post", "put", "patch"]
+          },
+          "baseURL": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "timeout": {
+            "type": "integer"
+          }
+        }
+      },
+      "execSteps": {
+        "type": "object",
+        "properties": {
+          "reqbody": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "integer",
+            "enum": [200, 201]
+          },
+          "resBody": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "Method",
+            "scope": "#/properties/settings/properties/method"
+          },
+          {
+            "type": "Control",
+            "label": "Base URL",
+            "scope": "#/properties/settings/properties/baseURL"
+          },
+          {
+            "type": "Control",
+            "label": "URL",
+            "scope": "#/properties/settings/properties/url"
+          },
+          {
+            "type": "Control",
+            "label": "Timeout in ms",
+            "scope": "#/properties/settings/properties/timeout"
+          }
+        ]
+      },
+      {
+        "type": "Control",
+        "label": "Body",
+        "scope": "#/properties/execSteps/properties/reqbody",
+        "options": {
+          "multi": true,
+          "isLarge": true
+        },
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "type": "OR",
+            "conditions": [
+              {
+                "type": "LEAF",
+                "scope": "#/properties/settings/properties/method",
+                "expectedValue": "post"
+              },
+              {
+                "type": "LEAF",
+                "scope": "#/properties/settings/properties/method",
+                "expectedValue": "put"
+              },
+              {
+                "type": "LEAF",
+                "scope": "#/properties/settings/properties/method",
+                "expectedValue": "patch"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "Control",
+        "label": "Response Status Code",
+        "scope": "#/properties/execSteps/properties/statusCode"
+      },
+      {
+        "type": "Control",
+        "label": "Expected Body",
+        "scope": "#/properties/execSteps/properties/resBody",
+        "options": {
+          "multi": true,
+          "isLarge": true
+        }
+      }
+    ]
+  }
+}

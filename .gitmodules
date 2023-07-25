@@ -1,9 +1,0 @@
-[submodule "docs"]
-	path = docs
-	url = git@github.com:vinashak-studio/docs.git
-[submodule "orchestrator"]
-	path = orchestrator
-	url = git@github.com:vinashak-studio/orchestrator.git
-[submodule "studio"]
-	path = studio
-	url = git@github.com:vinashak-studio/studio.git

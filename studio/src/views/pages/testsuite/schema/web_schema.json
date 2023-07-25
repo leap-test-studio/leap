@@ -1,0 +1,604 @@
+{
+  "schema": {
+    "properties": {
+      "settings": {
+        "type": "object",
+        "properties": {
+          "sleep": {
+            "type": "object",
+            "properties": {
+              "interval": {
+                "type": "integer",
+                "description": "Interval to sleep"
+              },
+              "timeType": {
+                "type": "integer",
+                "oneOf": [
+                  {
+                    "const": 0,
+                    "title": "None"
+                  },
+                  {
+                    "const": 2,
+                    "title": "Before"
+                  },
+                  {
+                    "const": 3,
+                    "title": "After"
+                  },
+                  {
+                    "const": 4,
+                    "title": "Before and After"
+                  }
+                ]
+              }
+            }
+          },
+          "screenshot": {
+            "type": "integer",
+            "oneOf": [
+              {
+                "const": 0,
+                "title": "None"
+              },
+              {
+                "const": 2,
+                "title": "After Success"
+              },
+              {
+                "const": 3,
+                "title": "After Failure"
+              },
+              {
+                "const": 4,
+                "title": "Always"
+              }
+            ]
+          }
+        }
+      },
+      "execSteps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "actionType": {
+              "type": "string",
+              "enum": [
+                "Navigate to URL",
+                "Delay",
+                "Click",
+                "Double Click",
+                "Set Text",
+                "Drag and Drop",
+                "Verify Element Has Text Value",
+                "Verify Element Visible",
+                "Verify Element Not Visible",
+                "Verify Element Present",
+                "Verify Element Not Present",
+                "Verify Element Attribute Value",
+                "Verify Element Checked",
+                "Verify Element Not Checked",
+                "Verify Element Clickable",
+                "Verify Element Not Clickable",
+                "Verify Element Has Attribute",
+                "Verify Element Not Has Attribute",
+                "Wait For Element Attribute Value",
+                "Wait For Element Checked",
+                "Wait For Element Not Checked",
+                "Wait For Element Clickable",
+                "Wait For Element Not Clickable",
+                "Wait For Element Has Attribute",
+                "Wait For Element Not Has Attribute"
+              ],
+              "values": [
+                {
+                  "label": "Navigate to URL",
+                  "value": "navigateToURL"
+                },
+                {
+                  "label": "Delay",
+                  "value": "delay"
+                },
+                {
+                  "label": "Click",
+                  "value": "click"
+                },
+                {
+                  "label": "Double Click",
+                  "value": "doubleClick"
+                },
+                {
+                  "label": "Set Text",
+                  "value": "setText"
+                },
+                {
+                  "label": "Set Editor Text",
+                  "value": "setEditorText"
+                },
+                {
+                  "label": "Drag and Drop",
+                  "value": "dragAndDrop"
+                },
+                {
+                  "label": "Verify Element Has Text Value",
+                  "value": "verifyElementHasTextValue"
+                },
+                {
+                  "label": "Verify Element Visible",
+                  "value": "verifyElementVisible"
+                },
+                {
+                  "label": "Verify Element Not Visible",
+                  "value": "verifyElementNotVisible"
+                },
+                {
+                  "label": "Verify Element Present",
+                  "value": "verifyElementPresent"
+                },
+                {
+                  "label": "Verify Element Not Present",
+                  "value": "verifyElementNotPresent"
+                },
+                {
+                  "label": "Verify Element Attribute Value",
+                  "value": "verifyElementAttributeValue"
+                },
+                {
+                  "label": "Verify Element Checked",
+                  "value": "verifyElementChecked"
+                },
+                {
+                  "label": "Verify Element Not Checked",
+                  "value": "verifyElementNotChecked"
+                },
+                {
+                  "label": "Verify Element Clickable",
+                  "value": "verifyElementClickable"
+                },
+                {
+                  "label": "Verify Element Not Clickable",
+                  "value": "verifyElementNotClickable"
+                },
+                {
+                  "label": "Verify Element Has Attribute",
+                  "value": "verifyElementHasAttribute"
+                },
+                {
+                  "label": "Verify Element Not Has Attribute",
+                  "value": "verifyElementNotHasAttribute"
+                },
+                {
+                  "label": "Wait For Element Attribute Value",
+                  "value": "waitForElementValue"
+                },
+                {
+                  "label": "Wait For Element Checked",
+                  "value": "waitForElementChecked"
+                },
+                {
+                  "label": "Wait For Element Not Checked",
+                  "value": "waitForElementNotChecked"
+                },
+                {
+                  "label": "Wait For Element Clickable",
+                  "value": "waitForElementClickable"
+                },
+                {
+                  "label": "Wait For Element Not Clickable",
+                  "value": "waitForElementNotClickable"
+                },
+                {
+                  "label": "Wait For Element Has Attribute",
+                  "value": "waitForElementHasAttribute"
+                },
+                {
+                  "label": "Wait For Element Not Has Attribute",
+                  "value": "waitForElementNotHasAttribute"
+                }
+              ],
+              "options": {
+                "returnValue": true
+              }
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "by": {
+                  "type": "string",
+                  "enum": ["id", "xpath", "selector", "css"],
+                  "default": "xpath"
+                },
+                "element": {
+                  "type": "string"
+                },
+                "attribute": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "interval": {
+                  "type": "integer"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                }
+              }
+            },
+            "cmd": {
+              "type": "string"
+            },
+            "expectedText": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "label": "Step Execution Settings",
+        "type": "Group",
+        "scope": "#/properties/settings",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "label": "Capture Screenshot",
+                "scope": "#/properties/settings/properties/screenshot",
+                "options": {
+                  "format": "radio"
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Sleep Timing Type",
+                "scope": "#/properties/settings/properties/sleep/properties/timeType",
+                "options": {
+                  "format": "radio"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "label": "Sleep Interval",
+            "scope": "#/properties/settings/properties/sleep/properties/interval",
+            "rule": {
+              "effect": "HIDE",
+              "condition": {
+                "type": "OR",
+                "conditions": [
+                  {
+                    "type": "LEAF",
+                    "scope": "#/properties/settings/properties/sleep/properties/timeType",
+                    "expectedValue": 0
+                  },
+                  {
+                    "type": "LEAF",
+                    "scope": "#/properties/settings/properties/sleep/properties/timeType",
+                    "expectedValue": 1
+                  }
+                ]
+              }
+            },
+            "options": {
+              "format": "time"
+            }
+          }
+        ]
+      },
+      {
+        "label": "Actions",
+        "type": "Control",
+        "scope": "#/properties/execSteps",
+        "options": {
+          "disableExpand": true,
+          "showSortButtons": true,
+          "rowTitle": "Step",
+          "detail": {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/enabled",
+                "label": "Enable Step?",
+                "options": {
+                  "toggle": true
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Action Type",
+                "scope": "#/properties/actionType"
+              },
+              {
+                "type": "Control",
+                "label": "Element Type",
+                "scope": "#/properties/data/properties/by",
+                "rule": {
+                  "effect": "HIDE",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "delay"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "setEditorText"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Element",
+                "scope": "#/properties/data/properties/element",
+                "rule": {
+                  "effect": "HIDE",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "delay"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDrop"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "setEditorText"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Attribute",
+                "scope": "#/properties/data/properties/attribute",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "verifyElementAttributeValue"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "verifyElementHasAttribute"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "verifyElementNotHasAttribute"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementHasAttribute"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementNotHasAttribute"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Value",
+                "scope": "#/properties/data/properties/value",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "setEditorText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "setText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "setText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "verifyElementHasTextValue"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "verifyElementAttributeValue"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementValue"
+                      }
+                    ]
+                  }
+                },
+                "options": {
+                  "multi": true,
+                  "isLarge": true
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Interval",
+                "scope": "#/properties/data/properties/interval",
+                "options": {
+                  "format": "time"
+                },
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "delay"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementValue"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementChecked"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementNotChecked"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementClickable"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementNotClickable"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementHasAttribute"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "waitForElementNotHasAttribute"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Draggable Element",
+                "scope": "#/properties/data/properties/from",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/actionType",
+                    "expectedValue": "dragAndDrop"
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Droppable Element",
+                "scope": "#/properties/data/properties/to",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/actionType",
+                    "expectedValue": "dragAndDrop"
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Position x",
+                "scope": "#/properties/data/properties/x",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/actionType",
+                    "expectedValue": "dragAndDrop"
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "label": "Position y",
+                "scope": "#/properties/data/properties/y",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/actionType",
+                    "expectedValue": "dragAndDrop"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

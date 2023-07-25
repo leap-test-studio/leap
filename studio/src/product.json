@@ -1,0 +1,20 @@
+{
+  "name": "Vinashak",
+  "description": "Automation Tool Suite",
+  "version": "1.0.0",
+  "page": {
+    "base": "/vinashak",
+    "landingPage": "/dashboard"
+  },
+  "build": {
+    "id": "20220805050750",
+    "date": "2022-08-05 05:07:50",
+    "host": "127.0.0.1",
+    "user": "SIM"
+  },
+  "copyrightYear": 2022,
+  "organization": {
+    "name": "Automation",
+    "address": ""
+  }
+}

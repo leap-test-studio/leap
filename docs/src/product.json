@@ -1,0 +1,18 @@
+{
+  "name": "Vinashak",
+  "description": "Open Test Automation Tool",
+  "version": "3.0.0",
+  "build": {
+    "id": "0",
+    "date": "2022-12-12 08:15:14",
+    "host": "buildbng27-ykrishnaraju-129330-cn",
+    "user": "SIM"
+  },
+  "copyrightYear": 2022,
+  "organization": {
+    "name": "Vinashak",
+    "address": ""
+  },
+  "website": "https://vinashak.com/",
+  "baseURL": "/vinashak"
+}

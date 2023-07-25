@@ -1,0 +1,154 @@
+{
+  "data": {
+    "settings": {
+      "host": "127.0.0.1",
+      "port": 22
+    }
+  },
+  "schema": {
+    "properties": {
+      "settings": {
+        "title": "SSH Connection Settings",
+        "description": "Setting properties Of the Remote Server",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "host": {
+            "description": "Hostname or IP address of the server.",
+            "title": "Hostname",
+            "type": "string"
+          },
+          "port": {
+            "description": "Port number of the server.",
+            "title": "Port",
+            "default": 22,
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 65535
+          },
+          "username": {
+            "description": "Username for authentication. ",
+            "title": "Username",
+            "type": "string"
+          },
+          "password": {
+            "description": "Password for password-based user authentication.",
+            "title": "Password",
+            "format": "password",
+            "type": "string"
+          },
+          "readyTimeout": {
+            "description": "How long (in milliseconds) to wait for the SSH handshake to complete.",
+            "title": "SSH handshake TimeOut(ms)",
+            "default": 20000,
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 36000
+          }
+        },
+        "required": ["host", "port", "password", "username"]
+      },
+      "execSteps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "commandText": {
+              "type": "string"
+            },
+            "expectedText": {
+              "type": "string"
+            }
+          },
+          "required": ["enabled", "commandText"]
+        }
+      }
+    },
+    "required": ["settings", "execSteps"]
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "label": "SSH Connection Settings",
+        "type": "Group",
+        "scope": "#/properties/settings",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/settings/properties/host"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/settings/properties/port"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/settings/properties/username"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/settings/properties/password"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/settings/properties/readyTimeout"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Actions",
+        "type": "Control",
+        "scope": "#/properties/execSteps",
+        "options": {
+          "disableExpand": true,
+          "showSortButtons": true,
+          "rowTitle": "Step",
+          "detail": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/enabled",
+                "label": "Enable Step?",
+                "options": {
+                  "toggle": true
+                }
+              },
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/commandText",
+                    "label": "Command String",
+                    "options": {
+                      "multi": true
+                    }
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/expectedText",
+                    "label": "Expected Output String",
+                    "options": {
+                      "multi": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "Software Release",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Release notes."
+  }
+}
