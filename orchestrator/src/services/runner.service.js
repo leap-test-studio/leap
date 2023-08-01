@@ -2,7 +2,8 @@ const BPromise = require("bluebird");
 const BuildManager = require("./job/JobManager");
 const { Op } = require("sequelize");
 const TestStatus = require("../runner/enums/TestStatus");
-const { isEmpty } = require("lodash");
+const Role = require("../_helpers/role");
+const isEmpty = require("lodash/isEmpty");
 
 module.exports = {
   create,
@@ -11,6 +12,14 @@ module.exports = {
 };
 
 async function create(AccountId, ProjectMasterId, payload) {
+  if (!AccountId) {
+    const account = await global.DbStoreModel.Account.findOne({
+      where: {
+        role: Role.Admin
+      }
+    });
+    AccountId = account.id;
+  }
   const testSuites = await global.DbStoreModel.TestSuite.findAll({
     attributes: ["id"],
     where: {

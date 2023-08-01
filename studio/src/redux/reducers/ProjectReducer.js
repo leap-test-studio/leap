@@ -4,13 +4,11 @@ import * as actionTypes from "../actions";
 const initialState = {
   projects: [],
   loading: false,
-  isProjectCreated: false,
-  isProjectCreateFailed: false,
-  isProjectDeleted: false,
-  isProjectDeleteFailed: false,
-  isProjectUpdated: false,
-  isProjectUpdateFailed: false,
-  isFirstProject: false
+  isError: false,
+  showMessage: false,
+  message: null,
+  isFirstProject: false,
+  openedProject: null
 };
 
 const ProjectReducer = function (state = initialState, { payload, type }) {
@@ -26,6 +24,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
     case actionTypes.STOP_PROJECT_BUILDS:
     case actionTypes.UPDATE_PROJECT:
     case actionTypes.CREATE_PROJECT:
+    case actionTypes.GET_VIEW:
     case actionTypes.DELETE_PROJECT: {
       return {
         ...state,

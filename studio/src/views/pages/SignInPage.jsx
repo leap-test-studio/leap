@@ -4,14 +4,13 @@ import { useNavigate } from "react-router-dom";
 import LogoRenderer from "./layout/LogoRenderer";
 import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
 import * as actionTypes from "../../redux/actions";
-import Product from "../../product.json";
 import isEmpty from "lodash/isEmpty";
 
-export function SignInPage() {
+export function SignInPage({ product }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { success, error, loading } = useSelector((state) => state.login);
-  const { name, version, description, page } = Product;
+  const { name, version, description, page } = product;
 
   useEffect(() => {
     document.title = `${name} - ${description}`;
@@ -29,7 +28,7 @@ export function SignInPage() {
         5000
       );
     } else if (success) {
-      navigate(`${page?.base}${page?.landingPage}`, { replace: true });
+      navigate(`/${page?.base}/${page?.landingPage}`, { replace: true });
       console.log(`Login Succeeded: redirecting to ${page?.base}${page?.landingPage}`);
     }
   }, [success, error, navigate]);

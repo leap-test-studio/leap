@@ -62,6 +62,7 @@ export default function App(props) {
   useEffect(() => {
     setRoutes(InititialRoutes.filter((r) => r.projectSelectionRequired == null || isProjectSelected === r.projectSelectionRequired));
   }, [isProjectSelected]);
+
   return (
     <Router basename="/" history={history}>
       <AuthGuard product={product} routes={routes}>
@@ -74,7 +75,7 @@ export default function App(props) {
                 route.page !== undefined ? (
                   <Layout
                     disableLayout={route.disableLayout}
-                    base={"/" + product?.page.base}
+                    base={`/${product?.page.base}`}
                     sideBarItems={routes.filter((r) => r.sideBar === true || r.divider === true)}
                     {...props}
                     {...context}
@@ -89,7 +90,7 @@ export default function App(props) {
               }
             />
           ))}
-          <Route exact path="/" element={<Navigate to={`${product?.page.base}/login`} />} />
+          <Route exact path="/" element={<Navigate to={`/${product?.page.base}/login`} />} />
         </Routes>
       </AuthGuard>
     </Router>

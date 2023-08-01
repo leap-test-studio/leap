@@ -25,31 +25,35 @@ class TestRunner extends Job {
     const chromeCapabilities = Capabilities.chrome();
     chromeCapabilities.setBrowserVersion("114.0");
     chromeCapabilities.setAcceptInsecureCerts(true);
-    chromeCapabilities.set("chromeOptions", {
-      args: [
-        "--window-size=1920,1080",
-        "--test-type",
-        "--incognito",
-        "--disable-dev-shm-usage",
-        "--no-sandbox",
-        "--ignore-certificate-errors",
-        "--ignore-ssl-errors",
-        "--ignore-certificate-errors-spki-list",
-        "--proxy-bypass-list=127.0.0.1,localhost,10.*",
-        "--tls1.2"
-      ]
-    });
+    const args = [
+      "--window-size=1920,1080",
+      "--test-type",
+      "--incognito",
+      "--disable-dev-shm-usage",
+      "--no-sandbox",
+      "--ignore-certificate-errors",
+      "--ignore-ssl-errors",
+      "--ignore-certificate-errors-spki-list",
+      "--proxy-bypass-list=127.0.0.1,localhost,10.*",
+      "--tls1.2"
+    ];
+
+    if (global.config.bypass) {
+      args.push("--proxy-bypass-list=" + global.config.bypass);
+    }
+    chromeCapabilities.set("chromeOptions", { args });
     chromeCapabilities.set("se:recordVideo", "true");
     chromeCapabilities.set("se:timeZone", "Asia/Kolkata");
     chromeCapabilities.set("se:screenResolution", "1920x1080");
-    this.WebDriver = this.Builder.forBrowser(Browser.CHROME)
-      .withCapabilities(chromeCapabilities)
-      .setProxy(
+    this.Builder.forBrowser(Browser.CHROME).withCapabilities(chromeCapabilities);
+    if (global.config.bypass) {
+      this.Builder.setProxy(
         proxy.manual({
-          bypass: "10.*"
+          bypass: global.config.bypass
         })
-      )
-      .build();
+      );
+    }
+    this.WebDriver = this.Builder.build();
     this.stepExecutor = this.stepExecutor.bind(this);
   }
 

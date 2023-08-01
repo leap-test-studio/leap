@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const runner = require("../services/runner.service");
 const status = require("http-status");
-const { isEmpty } = require("lodash");
+const isEmpty = require("lodash/isEmpty");
 const authorize = require("../_middleware/authorize");
 const csrf = require("../_middleware/checkCSRF");
 
 router.post("/:projectId/start", csrf, authorize(), startProjectBuilds);
-router.post("/:projectId/stop", stopProjectBuilds);
+router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
+router.post("/:projectId/trigger", startProjectBuilds);
 
 module.exports = router;
 
@@ -20,7 +21,7 @@ function startProjectBuilds(req, res) {
     };
   }
   runner
-    .create(req.auth.id, req.params.projectId, {
+    .create(req.auth?.id, req.params.projectId, {
       options
     })
     .then((response) => res.status(status.ACCEPTED).json(response))

@@ -26,7 +26,7 @@ export default function Sidebar({ showSidebar, product, sideBarItems, menuClicke
         <IconRenderer icon={showSidebar ? "ArrowBackIos" : "ArrowForwardIos"} className="text-color-1000 pl-1" fontSize="10" onClick={menuClicked} />
       </div>
       <div className="h-[8%] border-b border-slate-300 mx-2 mb-2 flex items-center">
-        <Brand showTitle={showSidebar} />
+        <Brand showTitle={showSidebar} product={product} />
       </div>
       <div className="flex flex-col justify-between h-[90%]">
         <SidebarRender>
@@ -58,10 +58,10 @@ function SidebarDividerItem({ title }) {
 }
 
 function SidebarItem({ showTitle, product, path, title, icon, openNewTab = false }) {
-  const actualPath = product?.page.base + "/" + path;
+  const actualPath = `/${product?.page.base}/${path}`;
   const location = useLocation();
   const { pathname } = location;
-  const id = snakeCase(title).replaceAll("_", "-");
+  const id = snakeCase(title).replace(/_/g, "-");
   const { changeSuite } = useContext(WebContext);
 
   return (

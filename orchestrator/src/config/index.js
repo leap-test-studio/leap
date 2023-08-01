@@ -44,6 +44,10 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
+let noProxy = process.env.no_proxy || process.env.NO_PROXY;
+if (noProxy != null) {
+  noProxy = noProxy.replace(/;/g, ",");
+}
 const databaseConfig = {};
 if (envVars.DATABASE_DIALECT === "mysql") {
   databaseConfig.port = envVars.DATABASE_PORT;
@@ -127,5 +131,6 @@ module.exports = {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
     password: envVars.REDIS_PASSWORD
-  }
+  },
+  bypass: process.env.no_proxy || process.env.NO_PROXY
 };

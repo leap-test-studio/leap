@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import WebContext from "./WebContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomAlertDialog from "../utilities/CustomAlertDialog";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
 import isEmpty from "lodash/isEmpty";
+import { openProject } from "../../redux/actions/ProjectActions";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_HEADER_HEIGHT = 40;
 const DEFAULT_FOOTER_HEIGHT = 0;
@@ -16,6 +18,8 @@ const initialState = {
 };
 
 function ContextProvider({ children }) {
+  const dispatch = useDispatch();
+
   const { projects } = useSelector((state) => state.project);
   const [state, setState] = useState({
     ...initialState,
@@ -44,6 +48,7 @@ function ContextProvider({ children }) {
     LocalStorageService.removeItem("project");
     LocalStorageService.removeItem("suite");
     setState(initialState);
+    dispatch(openProject(null));
   };
 
   useEffect(() => {
@@ -51,22 +56,17 @@ function ContextProvider({ children }) {
     return () => window.removeEventListener("resize", detectSize);
   }, [windowDimension]);
 
-  const handleProjectChange = (name) => {
-    if (isEmpty(name)) {
-      setState(initialState);
-      return;
-    }
+  const changeProject = (name) => {
     const project = projects?.find((p) => p.name === name);
-    if (project) {
-      setState({
-        ...state,
-        project
-      });
-      LocalStorageService.setItem("project", project);
-    }
+    setState({
+      ...state,
+      project
+    });
+    LocalStorageService.setItem("project", project);
+    dispatch(openProject(null));
   };
 
-  const handleSuiteChange = (suite) => {
+  const changeSuite = (suite) => {
     setState({
       ...state,
       suite
@@ -81,8 +81,8 @@ function ContextProvider({ children }) {
         ...state,
         isProjectSelected: !isEmpty(state.project),
         loaded: Array.isArray(projects),
-        changeProject: (p) => handleProjectChange(p),
-        changeSuite: (s) => handleSuiteChange(s),
+        changeProject,
+        changeSuite,
         resetContext,
         windowDimension
       }}

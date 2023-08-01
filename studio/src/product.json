@@ -3,8 +3,9 @@
   "description": "Automation Tool Suite",
   "version": "1.0.0",
   "page": {
-    "base": "/vinashak",
-    "landingPage": "/dashboard"
+    "base": "vinashak",
+    "landingPage": "dashboard",
+    "projectsListPage": "projects"
   },
   "build": {
     "id": "20220805050750",

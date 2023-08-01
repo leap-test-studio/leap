@@ -1,5 +1,5 @@
 const events = require("events");
-const { isEmpty } = require("lodash");
+const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
 const Runner = require("../../runner/handler");

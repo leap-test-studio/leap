@@ -6,12 +6,18 @@ export const resetProjectFlags = () => (dispatch) => {
   dispatch({
     type: actionTypes.CREATE_PROJECT,
     payload: {
-      isProjectCreated: false,
-      isProjectCreateFailed: false,
-      isProjectDeleted: false,
-      isProjectDeleteFailed: false,
-      isProjectUpdated: false,
-      isProjectUpdateFailed: false
+      isError: false,
+      showMessage: false,
+      message: null
+    }
+  });
+};
+
+export const openProject = (openedProject) => (dispatch) => {
+  dispatch({
+    type: actionTypes.GET_VIEW,
+    payload: {
+      openedProject
     }
   });
 };
@@ -33,8 +39,8 @@ export const createProject =
       type: actionTypes.CREATE_PROJECT,
       payload: {
         loading: true,
-        isProjectCreated: false,
-        isProjectCreateFailed: false
+        showMessage: false,
+        message: null
       }
     });
     axios
@@ -45,7 +51,9 @@ export const createProject =
             type: actionTypes.CREATE_PROJECT,
             payload: {
               ...res.data,
-              isProjectCreated: true,
+              isError: false,
+              message: "Project Created Successfully",
+              showMessage: true,
               loading: false,
               isFirstProject: false
             }
@@ -56,7 +64,9 @@ export const createProject =
           type: actionTypes.CREATE_PROJECT,
           payload: {
             ...e.response.data,
-            isProjectCreateFailed: true,
+            isError: true,
+            message: "Failed to Create Project",
+            showMessage: true,
             loading: false
           }
         });
@@ -67,8 +77,8 @@ export const updateProject = (projectId, data) => (dispatch) => {
   dispatch({
     type: actionTypes.UPDATE_PROJECT,
     payload: {
-      isProjectUpdated: false,
-      isProjectUpdateFailed: false
+      showMessage: false,
+      message: null
     }
   });
   axios
@@ -79,7 +89,9 @@ export const updateProject = (projectId, data) => (dispatch) => {
           type: actionTypes.UPDATE_PROJECT,
           payload: {
             ...res.data,
-            isProjectUpdated: true
+            isError: false,
+            message: "Project Updated Successfully",
+            showMessage: true
           }
         });
     })
@@ -88,7 +100,9 @@ export const updateProject = (projectId, data) => (dispatch) => {
         type: actionTypes.UPDATE_PROJECT,
         payload: {
           ...e.response.data,
-          isProjectUpdateFailed: true
+          isError: true,
+          message: "Failed to Update Project",
+          showMessage: true
         }
       });
     });
@@ -98,8 +112,8 @@ export const deleteProject = (project) => (dispatch) => {
   dispatch({
     type: actionTypes.DELETE_PROJECT,
     payload: {
-      isProjectDeleted: false,
-      isProjectDeleteFailed: false
+      showMessage: false,
+      message: null
     }
   });
   axios
@@ -110,7 +124,9 @@ export const deleteProject = (project) => (dispatch) => {
           type: actionTypes.DELETE_PROJECT,
           payload: {
             ...res.data,
-            isProjectDeleted: true
+            isError: false,
+            message: "Project Deleted Successfully",
+            showMessage: true
           }
         });
     })
@@ -119,7 +135,9 @@ export const deleteProject = (project) => (dispatch) => {
         type: actionTypes.DELETE_PROJECT,
         payload: {
           ...e.response.data,
-          isProjectDeleteFailed: true
+          isError: true,
+          message: "Failed to Delete Project",
+          showMessage: true
         }
       });
     });

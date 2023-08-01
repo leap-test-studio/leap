@@ -32,7 +32,7 @@ dayjs.extend(relativeTime);
 
 const MAX_ALLOWED_TEST_SUITES = 25;
 
-function TestSuiteManagement({ maxHeight }) {
+function TestSuiteManagement({ windowDimension }) {
   const dispatch = useDispatch();
   const [search, setSearch] = useState(null);
   const [selectedTestSuite, setSelectedTestSuite] = useState(null);
@@ -133,7 +133,7 @@ function TestSuiteManagement({ maxHeight }) {
           isFirstTestSuite ? "h-[96%]" : "h-[93%]"
         }`}
         style={{
-          minHeight: maxHeight - 30
+          minHeight: windowDimension?.maxContentHeight - 30
         }}
       >
         {isFirstTestSuite ? (

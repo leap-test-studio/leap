@@ -79,7 +79,7 @@ const JsonTable = React.memo((props) => {
       return Object.keys(items[0]).map(function (key) {
         return {
           key: key,
-          label: capitalize(snakeCase(key).replaceAll("_", " ")),
+          label: capitalize(snakeCase(key).replace(/_/g, " ")),
           cell: props.cellRenderer !== undefined ? props.cellRenderer : getItemField
         };
       });
