@@ -22,36 +22,39 @@ function getRecentBuildSummary(req, res) {
   dashboardService
     .getRecentBuildSummary(req.auth.id)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getTotalStats(req, res) {
   dashboardService
     .getTotalStats(req.auth.id)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getBuildReports(req, res) {
   dashboardService
     .getBuildReports(req.auth.id, req.params.projectId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getBuildDetails(req, res) {

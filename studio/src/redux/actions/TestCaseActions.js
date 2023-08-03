@@ -20,11 +20,10 @@ export const resetTestCaseFlags = () => (dispatch) => {
 
 export const fetchTestCaseList = (projectId, testSuiteId) => (dispatch) => {
   axios.get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, {}).then((res) => {
-    if (res?.data)
-      dispatch({
-        type: actionTypes.GET_TESTCASE_LIST,
-        payload: res.data
-      });
+    dispatch({
+      type: actionTypes.GET_TESTCASE_LIST,
+      payload: res.data
+    });
   });
 };
 

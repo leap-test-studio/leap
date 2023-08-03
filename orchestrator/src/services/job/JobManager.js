@@ -82,7 +82,7 @@ class BuildManager extends events.EventEmitter {
       const connection = await RedisMan.getConnection();
       await connection.lrem(REDIS_KEY.JOB_WAITING_QUEUE, 1, jobId);
       if (this.TestCasehandlers[jobId] != null) {
-        await this.TestCasehandlers[jobId].stop();
+        //await this.TestCasehandlers[jobId].stop();
         delete this.TestCasehandlers[jobId];
       }
       await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
@@ -111,6 +111,7 @@ class BuildManager extends events.EventEmitter {
             this.jobsProcessing.add(jobId);
             await this.TestCasehandlers[jobId].run();
             if (this.TestCasehandlers[jobId]?.runner?.result > 1) {
+              logger.info("BUILD_MAN_: JOB_RESULT::", this.TestCasehandlers[jobId]?.runner?.result);
               await this.stopJob(jobId);
             }
           } catch (error) {

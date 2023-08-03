@@ -146,7 +146,6 @@ class TestRunner extends Job {
 
   async after() {
     await this.WebDriver.close();
-    await this.WebDriver.quit();
     return Promise.resolve(true);
   }
 

@@ -12,10 +12,14 @@ DbStore.init()
   .then(async (result) => {
     if (result) {
       logger.info("Database Initialized");
+      await DbStore.seedUsers();
+      await JobManager.load();
+      await BuildManager.load();
+      require("./index.js");
+    } else {
+      logger.error("Database Initialization Failed");
+      process.exit(1);
     }
-    await JobManager.load();
-    await BuildManager.load();
-    require("./index.js");
   })
   .catch((err) => {
     console.error(err);

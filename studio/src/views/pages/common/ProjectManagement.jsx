@@ -50,7 +50,6 @@ const ProjectManagement = (props) => {
 
   const { project, changeProject, windowDimension } = useContext(WebContext);
 
-  console.log(selectedProject, showDeleteDialog);
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
     fetchList();

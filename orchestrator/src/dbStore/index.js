@@ -56,5 +56,22 @@ module.exports = {
       }
     });
   },
+  seedUsers: () => {
+    return new Promise(async (resolve) => {
+      const accounts = await global.DbStoreModel.Account.count();
+      if (accounts == 0) {
+        const { register } = require("../services/account.service");
+        await register({
+          name: "Default Admin",
+          email: "admin@example.com",
+          password: "Admin@123",
+          confirmPassword: "Admin@123",
+          acceptTerms: true,
+          verified: true
+        });
+      }
+      resolve();
+    });
+  },
   Sequelize
 };

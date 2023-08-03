@@ -66,12 +66,13 @@ function getAllProjects(req, res) {
   projectService
     .list(req.auth.id)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function createProject(req, res) {
@@ -83,48 +84,52 @@ function createProject(req, res) {
         message: `Project '${req.body.name}' created successfully.`
       })
     )
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getProject(req, res) {
   projectService
     .get(req.auth.id, req.params.projectId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function updateProject(req, res) {
   projectService
     .update(req.auth.id, req.params.projectId, req.body)
     .then(() => res.json({ message: "Project updated successfully." }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function _deleteProject(req, res) {
   projectService
     .delete(req.auth.id, req.params.projectId)
     .then(() => res.json({ message: "Project deleted successfully." }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 // Test suite functions
@@ -151,12 +156,13 @@ function getAllTestSuites(req, res) {
   testSuiteService
     .list(req.auth.id, req.params.projectId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function createTestSuite(req, res) {
@@ -168,48 +174,52 @@ function createTestSuite(req, res) {
         message: `Test suite '${req.body.name}' created successfully.`
       })
     )
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getTestSuite(req, res) {
   testSuiteService
     .get(req.auth.id, req.params.projectId, req.params.suiteId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function updateTestSuite(req, res) {
   testSuiteService
     .update(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
     .then(() => res.json({ message: "Test suite updated successfully." }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function deleteTestSuite(req, res) {
   testSuiteService
     .delete(req.auth.id, req.params.projectId, req.params.suiteId)
     .then(() => res.json({ message: "Test suite deleted successfully." }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function cloneTestSuite(req, res) {
@@ -221,12 +231,13 @@ function cloneTestSuite(req, res) {
         message: `Test suite '${req.body.name}' cloned successfully.`
       })
     )
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 // Test case functions
@@ -248,12 +259,13 @@ function getAllTestCases(req, res) {
   testCaseService
     .list(req.auth.id, req.params.suiteId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function createTestCase(req, res) {
@@ -265,12 +277,13 @@ function createTestCase(req, res) {
         message: `Test case created successfully.`
       })
     )
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function cloneTestCase(req, res) {
@@ -282,48 +295,52 @@ function cloneTestCase(req, res) {
         message: `Test case cloned successfully.`
       })
     )
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getTestCase(req, res) {
   testCaseService
     .get(req.auth.id, req.params.suiteId, req.params.testcaseId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function updateTestCase(req, res) {
   testCaseService
     .update(req.auth.id, req.params.suiteId, req.params.testcaseId, req.body)
     .then(() => res.json({ message: "Test case updated successfully." }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function deleteTestCase(req, res) {
   testCaseService
     .delete(req.auth.id, req.params.suiteId, req.params.testcaseId)
     .then(() => res.json({ message: "Test case deleted successfully" }))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 // Job Scheduler functions
@@ -345,58 +362,63 @@ function getAllJobs(req, res) {
   schedulerService
     .getAllJobs(req.params.projectId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getJobById(req, res) {
   schedulerService
     .getJobById(req.params.jobId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function createJob(req, res) {
   schedulerService
     .createJob(req.auth.id, req.params.projectId, req.body)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function updateJob(req, res) {
   schedulerService
     .updateJob(req.auth.id, req.params.projectId, req.params.jobId, req.body)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function deleteJob(req, res) {
   schedulerService
     .deleteJob(req.auth.id, req.params.projectId, req.params.jobId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }

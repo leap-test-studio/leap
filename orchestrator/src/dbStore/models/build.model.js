@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
       },
-      buildNo: { type: DataTypes.INTEGER, unique: "comp" },
+      buildNo: { type: DataTypes.INTEGER, unique: "comp", defaultValue: 1 },
       type: { type: DataTypes.INTEGER, unique: "comp", defaultValue: 0 },
       status: { type: DataTypes.INTEGER, defaultValue: 0 },
       total: { type: DataTypes.INTEGER, defaultValue: 0 },

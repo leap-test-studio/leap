@@ -22,7 +22,8 @@ const TestCaseReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_TESTCASE_LIST: {
       return {
         ...state,
-        isFirstTestCase: Array.isArray(payload.items) && payload.items.length === 0,
+        loading: false,
+        isFirstTestCase: payload.totalPages === 0,
         testcases: payload.items
       };
     }

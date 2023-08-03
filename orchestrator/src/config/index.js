@@ -31,8 +31,8 @@ const envVarsSchema = Joi.object()
     REDIS_PORT: Joi.number().description("REDIS server port number").default(6379),
     REDIS_PASSWORD: Joi.string().description("REDIS server password").default("S3cret"),
     REFRESH_TOKEN_EXPIRY: Joi.string().description("JWT refresh token expiration").default("1d"),
-    JWT_TOKEN_EXPIRY: Joi.string().description("JWT token expiration").default("10m"),
-    OTP_EXPIRY_TIME: Joi.string().description("OTP expiration time").default("5m"),
+    JWT_TOKEN_EXPIRY: Joi.string().description("JWT token expiration").default("12h"),
+    OTP_EXPIRY_TIME: Joi.string().description("OTP expiration time").default("12h"),
     MAX_ALLOWED_OTP: Joi.number().description("Maximum number of allowed OTP").default(5),
     SELENIUM_GRID_URL: Joi.string().description("Selenium grid router URL")
   })

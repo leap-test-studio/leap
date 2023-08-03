@@ -1,4 +1,5 @@
 const { getPagination, getPagingData } = require("../utils/pagination");
+const { Op } = require("sequelize");
 
 module.exports = {
   list,
@@ -24,11 +25,33 @@ async function list(AccountId, TestSuiteId, page = 0, size = 10000) {
 }
 
 async function create(AccountId, TestSuiteId, payload) {
+  const ts = await global.DbStoreModel.TestSuite.findByPk(TestSuiteId);
+
+  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+    attributes: ["id"],
+    where: {
+      ProjectMasterId: ts.ProjectMasterId
+    }
+  });
+
+  let seqNo = await global.DbStoreModel.TestCase.max("seqNo", {
+    where: {
+      TestSuiteId: {
+        [Op.in]: testSuites.map((suite) => suite.id)
+      }
+    }
+  });
+  if (seqNo == null) {
+    seqNo = 0;
+  }
+  seqNo = Number(seqNo) + 1;
+
   const tc = new global.DbStoreModel.TestCase({
     ...payload,
     AccountId,
     TestSuiteId
   });
+  tc.seqNo = seqNo;
   tc.createdAt = Date.now();
   tc.updatedAt = Date.now();
   await tc.save();
@@ -60,7 +83,7 @@ async function update(accountId, suiteId, id, payload) {
 
 async function _delete(accountId, suiteId, id) {
   const tc = await get(accountId, suiteId, id);
-  return await tc.destroy();
+  return await tc.destroy({ force: true });
 }
 
 // helper functions

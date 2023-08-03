@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       seqNo: {
         type: DataTypes.INTEGER,
         unique: "comp",
-        autoIncrement: true,
+        defaultValue: 1,
         get: function () {
           return String(this.getDataValue("seqNo")).padStart(4, "0");
         },

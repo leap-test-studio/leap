@@ -20,21 +20,24 @@ function startProjectBuilds(req, res) {
       ...req.body
     };
   }
+  logger.info("Starting project build", req.params.projectId);
   runner
     .create(req.auth?.id, req.params.projectId, {
       options
     })
     .then((response) => res.status(status.ACCEPTED).json(response))
-    .catch((err) =>
-      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] })
-    );
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });
+    });
 }
 
 function stopProjectBuilds(req, res) {
   runner
     .stop(req.params.projectId)
     .then((response) => res.status(status.ACCEPTED).json(response))
-    .catch((err) =>
-      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] })
-    );
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });
+    });
 }

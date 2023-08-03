@@ -33,7 +33,7 @@ export function SignInPage({ product }) {
     }
   }, [success, error, navigate]);
 
-  const [formdata, setformdata] = useState({ email: "yuvaraj@vinashak.com", password: "Admin@123" });
+  const [formdata, setformdata] = useState({ email: "admin@example.com", password: "Admin@123" });
 
   const { email, password } = formdata;
   const [show, setshow] = useState(false);

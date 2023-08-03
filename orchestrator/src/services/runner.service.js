@@ -21,23 +21,28 @@ async function create(AccountId, ProjectMasterId, payload) {
     AccountId = account.id;
   }
   const testSuites = await global.DbStoreModel.TestSuite.findAll({
-    attributes: ["id"],
+    attributes: ["id", "status"],
     where: {
-      ProjectMasterId,
-      status: {
-        [Op.not]: TestStatus.DRAFT
-      }
+      ProjectMasterId
     },
     order: [["createdAt", "ASC"]]
   });
 
-  const testSuiteIds = testSuites.map((suite) => suite.id);
-
-  const lastBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
+  let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
     where: {
-      type: 0
+      type: 0,
+      TestSuiteId: {
+        [Op.in]: testSuites.map((suite) => suite.id)
+      }
     }
   });
+
+  if (nextBuildNumber == null) {
+    nextBuildNumber = 0;
+  }
+  nextBuildNumber = Number(nextBuildNumber) + 1;
+
+  const testSuiteIds = testSuites.filter((suite) => suite.id && suite.status).map((suite) => suite.id);
 
   BPromise.reduce(
     testSuiteIds,
@@ -57,7 +62,6 @@ async function create(AccountId, ProjectMasterId, payload) {
         if (totalTestCases > 0) {
           const build = new global.DbStoreModel.BuildMaster({
             ...payload,
-            buildNo: lastBuildNumber + 1,
             type: 0,
             total: totalTestCases,
             status: TestStatus.RUNNING,
@@ -66,6 +70,7 @@ async function create(AccountId, ProjectMasterId, payload) {
             createdAt: Date.now(),
             updatedAt: Date.now()
           });
+          build.buildNo = nextBuildNumber;
           await build.save();
           const jobs = await BPromise.reduce(
             testCases,
@@ -91,9 +96,9 @@ async function create(AccountId, ProjectMasterId, payload) {
       }
     },
     0
-  ).then(function (total) {
-    Promise.resolve(total);
-  });
+  )
+    .then((total) => Promise.resolve(total))
+    .catch((e) => Promise.reject(e));
 }
 
 async function stop(ProjectMasterId) {

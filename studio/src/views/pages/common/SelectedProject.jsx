@@ -9,11 +9,7 @@ function SelectedProject({ product }) {
 
   const resetProject = () => {
     resetContext();
-    if (project) {
-      setTimeout(() => {
-        navigate(`/${product?.page.base}/${product?.page.projectsListPage}`, { replace: true });
-      }, 3000);
-    }
+    navigate(`/${product?.page.base}/${product?.page.landingPage}`, { replace: true });
   };
 
   return (

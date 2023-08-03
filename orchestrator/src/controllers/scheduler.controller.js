@@ -33,58 +33,63 @@ function getAllJobs(req, res) {
   schedulerService
     .getAllJobs(req.params.projectId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function getJobById(req, res) {
   schedulerService
     .getJobById(req.params.projectId, req.params.jobId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function createJob(req, res) {
   schedulerService
     .createJob(req.params.projectId, req.body)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function updateJob(req, res) {
   schedulerService
     .updateJob(req.params.projectId, req.params.jobId, req.body)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
 
 function deleteJob(req, res) {
   schedulerService
     .deleteJob(req.params.projectId, req.params.jobId)
     .then((o) => res.json(o))
-    .catch((err) =>
+    .catch((err) => {
+      logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
-      })
-    );
+      });
+    });
 }
