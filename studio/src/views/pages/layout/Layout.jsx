@@ -26,7 +26,7 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
       }}
     >
       <div
-        className="flex flex-row grow"
+        className="flex flex-row"
         style={{
           minHeight: windowDimension.maxContentHeight,
           maxHeight: windowDimension.maxContentHeight

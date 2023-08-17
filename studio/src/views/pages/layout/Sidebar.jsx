@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import IconRenderer from "../../IconRenderer";
 import { NavLink, useLocation } from "react-router-dom";
 import snakeCase from "lodash/snakeCase";
@@ -8,45 +8,58 @@ import LogoutButton from "./LogoutButton";
 import UserInfo from "./UserInfo";
 import WebContext from "../../context/WebContext";
 
-export default function Sidebar({ showSidebar, product, sideBarItems, menuClicked }) {
+export default function Sidebar({ showSidebar, base, mode, maxContentHeight, sideBarItems, menuClicked, ...props }) {
   const minHeight = window.innerHeight;
+  const isSmallScreen = maxContentHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 z-[9999] ${showSidebar ? "w-[250px]" : "w-[50px]"} bg-color-1000 text-slate-100 relative`}
+      className={`transition-all duration-500 z-[9999] ${
+        showSidebar ? "w-[250px]" : "w-[50px]"
+      } relative bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer`}
       style={{
         minHeight: minHeight,
         maxHeight: minHeight
       }}
     >
       <div
-        className={`absolute cursor-pointer h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 border border-slate-400 top-9 ${
+        className={`absolute h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 border border-slate-400 top-9 ${
           showSidebar ? "left-[200px]" : "left-10"
         }`}
       >
         <IconRenderer icon={showSidebar ? "ArrowBackIos" : "ArrowForwardIos"} className="text-color-1000 pl-1" fontSize="10" onClick={menuClicked} />
       </div>
       <div className="h-[8%] border-b border-slate-300 mx-2 mb-2 flex items-center">
-        <Brand showTitle={showSidebar} product={product} />
+        <Brand showTitle={showSidebar} {...props} />
       </div>
       <div className="flex flex-col justify-between h-[90%]">
-        <SidebarRender>
+        <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen}>
           {sideBarItems.map((item, index) =>
             item.divider ? (
               <SidebarDividerItem key={index} title={item.title} />
             ) : (
-              <SidebarItem key={index} showTitle={showSidebar} product={product} {...item} />
+              <SidebarItem key={index} showTitle={showSidebar} {...props} {...item} />
             )
           )}
         </SidebarRender>
-        <UserInfo showTitle={showSidebar} />
-        <LogoutButton showSidebar={showSidebar} product={product} />
+        <UserInfo showTitle={showSidebar} {...props} />
+        <LogoutButton showSidebar={showSidebar} {...props} />
       </div>
     </aside>
   );
 }
 
-function SidebarRender({ children }) {
-  return <div className="flex flex-col py-3 select-none grow">{children}</div>;
+function SidebarRender({ children, isSmallScreen }) {
+  return (
+    <div
+      className={`sticky top-10 select-none h-full ${
+        isSmallScreen
+          ? "overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          : ""
+      }`}
+    >
+      <div className="flex flex-col px-2 py-3">{children}</div>
+    </div>
+  );
 }
 
 function SidebarDividerItem({ title }) {
@@ -57,8 +70,9 @@ function SidebarDividerItem({ title }) {
   );
 }
 
-function SidebarItem({ showTitle, product, path, title, icon, openNewTab = false }) {
-  const actualPath = `/${product?.page.base}/${path}`;
+function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, isSmallScreen }) {
+  const [hovered, setHovered] = useState(false);
+  const actualPath = `/${base}/${path}`;
   const location = useLocation();
   const { pathname } = location;
   const id = snakeCase(title).replace(/_/g, "-");
@@ -68,9 +82,15 @@ function SidebarItem({ showTitle, product, path, title, icon, openNewTab = false
     <NavLink
       id={`nav-page-${id}`}
       to={!openNewTab ? actualPath : pathname}
-      className={`inline-flex cursor-pointer items-center rounded mb-2 mx-1 p-1.5  text-slate-100  ${
-        pathname.includes(path) ? "bg-white text-slate-700" : "hover:text-slate-300"
-      } ${showTitle ? "pl-2" : "justify-center"}`}
+      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "py-1 mb-2"} ${
+        pathname.includes(path)
+          ? "z-0 bg-slate-200 text-slate-700 border border-l-4 border-l-cds-blue-0700"
+          : hovered
+          ? "bg-slate-200 text-slate-700"
+          : "hover:text-slate-700"
+      } ${!showTitle ? "justify-ceneter rounded" : "rounded-r-full"}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={() => {
         if (openNewTab) {
           openInNewTab(path);
@@ -80,11 +100,13 @@ function SidebarItem({ showTitle, product, path, title, icon, openNewTab = false
       }}
     >
       {icon && (
-        <Tooltip title={title}>
-          <IconRenderer icon={icon} className="h-5 w-5" viewBox="0 0 25 25" />
-        </Tooltip>
+        <div className="mx-2.5 z-10">
+          <Tooltip title={!showTitle ? title : undefined}>
+            <IconRenderer icon={icon} className="h-4 w-4" viewBox={`${isSmallScreen ? "0 0 30 30" : "0 0 25 25"}`} />
+          </Tooltip>
+        </div>
       )}
-      {showTitle && title && <label className="break-words cursor-pointer tracking-tight text-sm ml-2">{title}</label>}
+      {showTitle && title && <label className={`break-words ${isSmallScreen ? "text-[10px]" : "text-sm"} tracking-wide z-10`}>{title}</label>}
     </NavLink>
   );
 }

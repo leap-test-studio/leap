@@ -10,18 +10,22 @@ function UserInfo({ showTitle = false }) {
     email = user?.email;
   }
   return (
-    <div className="py-1 px-3 mx-2 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
+    <div className="py-1 px-2 mx-2 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
       <div className="flex items-center justify-between select-none">
         {username && <p>{username}</p>}
-        {role && (
-          <p className="text-xs flex items-center">
-            <IconRenderer icon="AccountCircle" className="mr-[2px]" style={{ width: "14px" }} />
-            {role}
-          </p>
-        )}
+        {role && <IconLabel label={role} icon="AccountCircle" />}
       </div>
-      {email && <p style={{ fontSize: 9 }}>e-mail: {email}</p>}
+      {email && <IconLabel label={email} icon="Email" />}
     </div>
+  );
+}
+
+function IconLabel({ icon, label }) {
+  return (
+    <p className="text-xs flex items-center">
+      <IconRenderer icon={icon} className="mr-1" style={{ width: "12px" }} />
+      {label}
+    </p>
   );
 }
 

@@ -1,26 +1,28 @@
-import { useContext } from "react";
 import { useDispatch } from "react-redux";
-import WebContext from "../../context/WebContext";
 import IconRenderer from "../../IconRenderer";
 import { logoutUser } from "../../../redux/actions/LoginActions";
+import Tooltip from "../../utilities/Tooltip";
 
-function LogoutButton({ showSidebar = false }) {
-  const { resetContext } = useContext(WebContext);
+function LogoutButton({ showTitle = false, resetContext }) {
   const dispatch = useDispatch();
 
   return (
     <div
-      id="nav-logout"
-      className={`flex flex-row items-center w-full mb-1 p-1.5 mt-2 text-white hover:text-slate-300 ${showSidebar === false && "justify-center"}`}
+      id="logout-button"
+      className={`relative inline-flex items-center py-1 m-2 hover:bg-slate-300 hover:text-slate-700 ${
+        showTitle === false ? "rounded-md" : "justify-center rounded"
+      }`}
       onClick={() => {
         dispatch(logoutUser());
         resetContext();
       }}
     >
-      <div className="flex flex-row items-center justify-center mx-2">
-        <IconRenderer icon="Logout" className="h-5 w-5" viewBox="0 0 25 25" />
+      <div className="mx-1">
+        <Tooltip title={!showTitle ? "Logout" : undefined}>
+          <IconRenderer icon="Logout" viewBox="0 0 30 30" />
+        </Tooltip>
       </div>
-      {showSidebar && <label className="break-words text-xs tracking-tight">Logout</label>}
+      {showTitle && <label className="break-words text-xs tracking-wide">Logout</label>}
     </div>
   );
 }
