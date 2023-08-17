@@ -34,15 +34,15 @@ export default function Sidebar({ showSidebar, base, mode, maxContentHeight, sid
       <div className="flex flex-col justify-between h-[90%]">
         <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen}>
           {sideBarItems.map((item, index) =>
-            item.divider ? (
-              <SidebarDividerItem key={index} title={item.title} />
-            ) : (
-              <SidebarItem key={index} showTitle={showSidebar} {...props} {...item} />
-            )
+            (item.divider && item.mode?.includes(mode)) || (item.mode === undefined && item.divder) ? (
+              <SidebarDividerItem key={index} title={item.title} isSmallScreen={isSmallScreen} />
+            ) : item.mode === undefined || item.mode?.includes(mode) ? (
+              <SidebarItem key={index} showTitle={showSidebar} base={base} isSmallScreen={isSmallScreen} {...item} />
+            ) : null
           )}
         </SidebarRender>
         <UserInfo showTitle={showSidebar} {...props} />
-        <LogoutButton showSidebar={showSidebar} {...props} />
+        <LogoutButton showTitle={showSidebar} {...props} />
       </div>
     </aside>
   );
@@ -53,7 +53,7 @@ function SidebarRender({ children, isSmallScreen }) {
     <div
       className={`sticky top-10 select-none h-full ${
         isSmallScreen
-          ? "overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          ? "overflow-y-auto scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
           : ""
       }`}
     >
@@ -72,7 +72,7 @@ function SidebarDividerItem({ title }) {
 
 function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, isSmallScreen }) {
   const [hovered, setHovered] = useState(false);
-  const actualPath = `/${base}/${path}`;
+  const actualPath = `${base}/${path}`;
   const location = useLocation();
   const { pathname } = location;
   const id = snakeCase(title).replace(/_/g, "-");
@@ -87,7 +87,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
           ? "z-0 bg-slate-200 text-slate-700 border border-l-4 border-l-cds-blue-0700"
           : hovered
           ? "bg-slate-200 text-slate-700"
-          : "hover:text-slate-700"
+          : "hover:text-slate-300"
       } ${!showTitle ? "justify-ceneter rounded" : "rounded-r-full"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -106,7 +106,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
           </Tooltip>
         </div>
       )}
-      {showTitle && title && <label className={`break-words ${isSmallScreen ? "text-[10px]" : "text-sm"} tracking-wide z-10`}>{title}</label>}
+      {showTitle && <label className={`break-words ${isSmallScreen ? "text-[10px]" : "text-sm"} tracking-wide z-10`}>{title}</label>}
     </NavLink>
   );
 }
