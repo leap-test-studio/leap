@@ -24,8 +24,10 @@ import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import isEmpty from "lodash/isEmpty";
+import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import FirstTimeCard from "../common/FirstTimeCard";
 
-const TC_TYPES = ["Scenario", "REST-API", "Web", "TCP", "gRPC", "SSH"];
+const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
 
 class TestCaseManagement extends React.Component {
   state = {
@@ -94,12 +96,26 @@ class TestCaseManagement extends React.Component {
     return (
       <>
         {isFirstTestCase ? (
-          <FirstTime
-            loading={loading}
-            showAddTestCaseDialog={() => this.setState({ showAddTestCaseDialog: true })}
-            onClose={() => this.props.onClose()}
-            suite={this.props.testsuite?.name}
-          />
+          <Page>
+            <PageHeader>
+              <PageTitle>Test Cases</PageTitle>
+            </PageHeader>
+            <PageBody>
+              <Centered>
+                <FirstTimeCard
+                  id="first-test-case"
+                  icon="AddTask"
+                  loading={loading}
+                  onClick={() => this.setState({ showAddTestCaseDialog: true })}
+                  onClose={() => this.props.onClose()}
+                  title="Create first TestCase"
+                  details={`TestSuite: ${this.props.testsuite?.name}`}
+                  buttonTitle="Create"
+                  buttonIcon="PostAdd"
+                />
+              </Centered>
+            </PageBody>
+          </Page>
         ) : (
           <RenderList
             testcases={testcases}
@@ -200,51 +216,7 @@ export default connect(mapStateToProps, {
   runTestCase
 })(TestCaseManagement);
 
-function FirstTime({ loading, showAddTestCaseDialog, suite, onClose }) {
-  return (
-    <div className="h-full w-full flex flex-col rounded items-center justify-center bg-slate-200">
-      {loading ? (
-        <Centered>
-          <Spinner>Loading</Spinner>
-        </Centered>
-      ) : (
-        <div className="bg-white shadow-sm w-96 rounded-md">
-          <div className="flex flex-col items-center p-5">
-            <IconRenderer icon="AddTask" className="text-color-0500 animate-bounce mt-5" style={{ fontSize: "50" }} />
-            <label className="my-4 text-center text-slate-800 uppercase text-xl select-none">Create first test case</label>
-            <label className="my-4 text-center text-slate-800 uppercase text-xl select-none">{suite}</label>
-            <div className="flex flex-row items-center justify-center select-none">
-              <button
-                className="text-sm items-center px-4 py-1 text-white rounded focus:outline-none shadow-sm hover:shadow-2xl bg-color-0800 hover:bg-color-0700 mx-1"
-                onClick={showAddTestCaseDialog}
-              >
-                Create
-              </button>
-              <button
-                className="text-sm items-center px-4 py-1 text-white rounded focus:outline-none shadow-sm hover:shadow-2xl bg-red-300 hover:bg-red-200 mx-1"
-                onClick={onClose}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function RenderList({
-  testcases = [],
-  showAddTestCaseDialog,
-  loading,
-  editTestCase,
-  deleteTestCase,
-  updateTestCase,
-  onClose,
-  cloneTestCase,
-  runTestCase
-}) {
+function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCase }) {
   const [search, setSearch] = useState("");
   const exportTestCases = (data) => {
     const exportData = data.map((d) => {
@@ -280,18 +252,18 @@ function RenderList({
   }
 
   return (
-    <div className="container flex flex-col h-full">
-      <div className="p-2 inline-flex items-center justify-between w-full">
-        <span className="text-slate-500 text-xl select-none">Test Cases</span>
-        <div className="inline-flex items-center justify-between">
+    <Page>
+      <PageHeader>
+        <PageTitle>Test Cases</PageTitle>
+        <PageActions>
           <SearchComponent search={search} placeholder="Search" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
           <IconButton title="Add New" icon="AddTask" onClick={() => showAddTestCaseDialog()} />
           <Tooltip title="Export Test Cases">
             <IconButton title="Export" icon="FileDownload" disabled={testcases.length === 0} onClick={() => exportTestCases(testcases)} />
           </Tooltip>
-        </div>
-      </div>
-      <div className="mt-2 mb-1 inline-block shadow rounded-md overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full">
+        </PageActions>
+      </PageHeader>
+      <PageBody>
         {loading ? (
           <Centered>
             <Spinner>Loading</Spinner>
@@ -322,8 +294,8 @@ function RenderList({
             )}
           </>
         )}
-      </div>
-    </div>
+      </PageBody>
+    </Page>
   );
 }
 

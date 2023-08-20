@@ -12,6 +12,7 @@ import Centered from "../utilities/Centered";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import WebContext from "../context/WebContext";
+import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./common/PageHeader";
 
 const TestStatus = Object.freeze({
   0: "Draft",
@@ -31,7 +32,7 @@ const TestTypeMapping = Object.freeze({
   7: 1
 });
 
-const Types = ["Scenario", "REST API", "Web", "gRPC", "TCP", "SSH"];
+const Types = ["Scenario", "REST API", "Web", "SSH"];
 
 let interval;
 export default function TestReports() {
@@ -124,12 +125,10 @@ export default function TestReports() {
   }, [buildReports, buildList, handleBuildChange]);
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="sticky top-0 mb-1 p-1 bg-slate-50 rounded items-center text-color-0700 w-full grid grid-cols-4">
-        <div className="col-span-1 items-center justify-center">
-          <span className="font-medium select-none pl-2">Test Automation Report</span>
-        </div>
-        <div className="col-span-3 flex flex-row items-center justify-end">
+    <Page>
+      <PageHeader>
+        <PageTitle>Test Automation Report</PageTitle>
+        <PageActions>
           {isEmpty(selectedPrject) && (
             <div className="inline-flex px-2">
               <LabelRenderer path="" label="Project" />
@@ -152,30 +151,32 @@ export default function TestReports() {
           <Tooltip title="Download PDF format">
             <IconButton title="PDF Export" icon="PictureAsPdf" onClick={exportReport2PDF} />
           </Tooltip>
-        </div>
-      </div>
-      {buildNo && buildInfo && buildDetails ? (
-        <div className="border rounded">
-          <div id="BuildReport" ref={reportRef} className="p-4 select-none">
-            <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildNo={buildNo} buildInfo={buildInfo} {...buildDetails} />
-              {!isEmpty(buildDetails?.options) && (
-                <div className="col-span-2">
-                  <BuildEnvironmentVariables options={buildDetails.options} />
-                </div>
-              )}
-              {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
+        </PageActions>
+      </PageHeader>
+      <PageBody>
+        {buildNo && buildInfo && buildDetails ? (
+          <div className="border rounded">
+            <div id="BuildReport" ref={reportRef} className="p-4 select-none">
+              <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
+                <BuildDetails project={project} buildNo={buildNo} buildInfo={buildInfo} {...buildDetails} />
+                {!isEmpty(buildDetails?.options) && (
+                  <div className="col-span-2">
+                    <BuildEnvironmentVariables options={buildDetails.options} />
+                  </div>
+                )}
+                {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
+              </div>
+              <BuildSummary data={data} buildInfo={buildInfo} onClick={handleFilter} testType={testType} />
+              <ReportTable {...buildDetails} testType={testType} />
             </div>
-            <BuildSummary data={data} buildInfo={buildInfo} onClick={handleFilter} testType={testType} />
-            <ReportTable {...buildDetails} testType={testType} />
           </div>
-        </div>
-      ) : (
-        <Centered>
-          <EmptyIconRenderer title="Report Not Found" fill="#1e5194" />
-        </Centered>
-      )}
-    </div>
+        ) : (
+          <Centered>
+            <EmptyIconRenderer title="Report Not Found" fill="#1e5194" />
+          </Centered>
+        )}
+      </PageBody>
+    </Page>
   );
 }
 

@@ -52,7 +52,7 @@ async function update(accoutId, id, payload) {
 
 async function _delete(accoutId, id) {
   const prj = await get(accoutId, id);
-  return await prj.destroy();
+  return await prj.destroy({ force: true });
 }
 
 // helper functions

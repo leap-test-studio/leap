@@ -27,6 +27,8 @@ import TestCaseManagement from "./TestCaseManagement";
 import NewlineText from "../../utilities/NewlineText";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import CloneTestSuiteDialog from "./CloneTestSuiteDialog";
+import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import FirstTimeCard from "../common/FirstTimeCard";
 
 dayjs.extend(relativeTime);
 
@@ -100,45 +102,44 @@ function TestSuiteManagement({ windowDimension }) {
   const filtered = search?.length > 0 ? testsuites?.filter((s) => s.name.includes(search)) : testsuites;
 
   return (
-    <>
-      {!isFirstTestSuite && (
-        <div className="sticky top-0 p-2 pb-0 inline-flex items-center justify-between w-full">
-          <span className="text-slate-500 text-xl select-none">Test Suites</span>
-          <div className="inline-flex items-center justify-between">
-            <SearchComponent search={search} placeholder="Search suite name" onChange={setSearch} onClear={() => setSearch("")} />
-            <Tooltip
-              title={
-                testsuites?.length > MAX_ALLOWED_TEST_SUITES ? (
-                  <p>
-                    Maximum number testsuites allowed is <strong>{MAX_ALLOWED_TEST_SUITES}</strong>
-                  </p>
-                ) : (
-                  "Create new test suite"
-                )
-              }
-              placement="bottom"
-            >
-              <IconButton
-                title="Create"
-                icon="DashboardCustomize"
-                disabled={testsuites?.length > MAX_ALLOWED_TEST_SUITES}
-                onClick={() => setShowCreateDialog(true)}
-              />
-            </Tooltip>
-          </div>
-        </div>
-      )}
-      <div
-        className={`w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full mt-2 mb-1 shadow rounded border-2 bg-slate-100 ${
-          isFirstTestSuite ? "h-[96%]" : "h-[93%]"
-        }`}
-        style={{
-          minHeight: windowDimension?.maxContentHeight - 30
-        }}
-      >
+    <Page>
+      <PageHeader show={!isFirstTestSuite}>
+        <PageTitle>Test Suites</PageTitle>
+        <PageActions>
+          <SearchComponent search={search} placeholder="Search suite name" onChange={setSearch} onClear={() => setSearch("")} />
+          <Tooltip
+            title={
+              testsuites?.length > MAX_ALLOWED_TEST_SUITES ? (
+                <p>
+                  Maximum number testsuites allowed is <strong>{MAX_ALLOWED_TEST_SUITES}</strong>
+                </p>
+              ) : (
+                "Create new test suite"
+              )
+            }
+            placement="bottom"
+          >
+            <IconButton
+              title="Create"
+              icon="DashboardCustomize"
+              disabled={testsuites?.length > MAX_ALLOWED_TEST_SUITES}
+              onClick={() => setShowCreateDialog(true)}
+            />
+          </Tooltip>
+        </PageActions>
+      </PageHeader>
+      <PageBody>
         {isFirstTestSuite ? (
           <Centered>
-            <FirstTime loading={loading} onClick={() => setShowCreateDialog(true)} />
+            <FirstTimeCard
+              id="first-test-suite"
+              icon="Extension"
+              loading={loading}
+              onClick={() => setShowCreateDialog(true)}
+              title="Create first TestSuite"
+              buttonTitle="Create"
+              buttonIcon="PostAdd"
+            />
           </Centered>
         ) : (
           <>
@@ -164,31 +165,36 @@ function TestSuiteManagement({ windowDimension }) {
             )}
           </>
         )}
-      </div>
-      {showDeleteDialog && (
-        <DeleteItemDialog
-          title="Delete Test Suite"
-          question="Are you sure you want to delete the selected testsuite?"
-          showDialog={showDeleteDialog}
-          onClose={resetState}
-          item={selectedTestSuite?.name}
-          onDelete={handleDeleteTestSuite}
+        {showDeleteDialog && (
+          <DeleteItemDialog
+            title="Delete Test Suite"
+            question="Are you sure you want to delete the selected testsuite?"
+            showDialog={showDeleteDialog}
+            onClose={resetState}
+            item={selectedTestSuite?.name}
+            onDelete={handleDeleteTestSuite}
+          />
+        )}
+        <CreateTestSuiteDialog showDialog={showCreateDialog} onClose={resetState} createTestSuite={handleCreateTestSuite} />
+        {showCloneDialog && (
+          <CloneTestSuiteDialog
+            showDialog={showCloneDialog}
+            onClose={resetState}
+            testsuite={selectedTestSuite}
+            cloneTestSuite={handleCloneTestSuite}
+          />
+        )}
+        <CustomAlertDialog
+          level={isError ? "warn" : "success"}
+          message={message}
+          showDialog={showMessage}
+          onClose={() => {
+            fetchTestSuites();
+            dispatch(resetTestSuiteFlags());
+          }}
         />
-      )}
-      <CreateTestSuiteDialog showDialog={showCreateDialog} onClose={resetState} createTestSuite={handleCreateTestSuite} />
-      {showCloneDialog && (
-        <CloneTestSuiteDialog showDialog={showCloneDialog} onClose={resetState} testsuite={selectedTestSuite} cloneTestSuite={handleCloneTestSuite} />
-      )}
-      <CustomAlertDialog
-        level={isError ? "warn" : "success"}
-        message={message}
-        showDialog={showMessage}
-        onClose={() => {
-          fetchTestSuites();
-          dispatch(resetTestSuiteFlags());
-        }}
-      />
-    </>
+      </PageBody>
+    </Page>
   );
 }
 
@@ -202,7 +208,7 @@ function FirstTime({ loading, onClick }) {
           <Spinner>Loading</Spinner>
         </Centered>
       ) : (
-        <div className="bg-white h-fit shadow-sm w-96 rounded-md">
+        <div className="bg-white h-fit shadow-lg w-96 rounded-md flex flex-col items-center p-5">
           <div className="flex flex-col items-center p-5">
             <IconRenderer icon="Extension" className="text-color-0500 animate-bounce mt-5" style={{ fontSize: "50" }} />
             <span className="my-4 text-center text-slate-800 uppercase text-xl select-none">Create first TestSuite</span>

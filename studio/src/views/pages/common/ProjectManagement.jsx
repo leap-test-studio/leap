@@ -26,8 +26,9 @@ import Tooltip from "../../utilities/Tooltip";
 import { useNavigate } from "react-router-dom";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import PageHeader, { PageActions, PageTitle } from "./PageHeader";
+import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./PageHeader";
 import RoundedIconButton from "../../utilities/RoundedIconButton";
+import FirstTimeCard from "./FirstTimeCard";
 
 dayjs.extend(relativeTime);
 
@@ -48,7 +49,7 @@ const ProjectManagement = (props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
 
-  const { project, changeProject, windowDimension } = useContext(WebContext);
+  const { project, changeProject } = useContext(WebContext);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -99,65 +100,65 @@ const ProjectManagement = (props) => {
   };
 
   const filtered = projects.filter((s) => s.name.includes(search));
-  const heightPercentage = isFirstProject ? 20 : 55;
-  const minMaxHeight = windowDimension.maxContentHeight - heightPercentage;
 
   return (
-    <>
-      {!isFirstProject && (
-        <PageHeader>
-          <PageTitle>My Projects</PageTitle>
-          <PageActions>
-            {loading && (
-              <div className="flex mr-4">
-                <svg aria-hidden="true" className="w-5 h-5 mt-1 mr-2 text-gray-200 animate-spin fill-green-600" viewBox="0 0 100 101" fill="none">
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
-                <h3 className="text-green-600 font-bold animate-pulse">Creating Project..</h3>
-              </div>
-            )}
-            <Tooltip title="Refresh Projects">
-              <RoundedIconButton id="refresh-projects" color="bg-color-0900" size="18" icon="Refresh" handleClick={fetchProjectList} />
-            </Tooltip>
-            <SearchComponent search={search} placeholder="Search project name" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
-            <Tooltip
-              title={
-                projects?.length > MAX_ALLOWED_PROJECTS ? (
-                  <p>
-                    Maximum number projects allowed is <strong>{MAX_ALLOWED_PROJECTS}</strong>
-                  </p>
-                ) : (
-                  "Create new project"
-                )
-              }
-            >
-              <IconButton
-                id="project-create-btn"
-                title="Create"
-                icon="DashboardCustomize"
-                disabled={projects?.length > MAX_ALLOWED_PROJECTS}
-                onClick={() => setShowCreateDialog(true)}
-              />
-            </Tooltip>
-          </PageActions>
-        </PageHeader>
-      )}
-      <div
-        className="w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full my-2 shadow rounded border-2 bg-slate-100"
-        style={{
-          minHeight: minMaxHeight,
-          maxHeight: minMaxHeight
-        }}
-      >
+    <Page>
+      <PageHeader show={!isFirstProject}>
+        <PageTitle>My Projects</PageTitle>
+        <PageActions>
+          {loading && (
+            <div className="flex mr-4">
+              <svg aria-hidden="true" className="w-5 h-5 mt-1 mr-2 text-gray-200 animate-spin fill-green-600" viewBox="0 0 100 101" fill="none">
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+              <h3 className="text-green-600 font-bold animate-pulse">Creating Project..</h3>
+            </div>
+          )}
+          <Tooltip title="Refresh Projects">
+            <RoundedIconButton id="refresh-projects" color="bg-color-0900" size="18" icon="Refresh" handleClick={fetchProjectList} />
+          </Tooltip>
+          <SearchComponent search={search} placeholder="Search project name" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <Tooltip
+            title={
+              projects?.length > MAX_ALLOWED_PROJECTS ? (
+                <p>
+                  Maximum number projects allowed is <strong>{MAX_ALLOWED_PROJECTS}</strong>
+                </p>
+              ) : (
+                "Create new project"
+              )
+            }
+          >
+            <IconButton
+              id="project-create-btn"
+              title="Create"
+              icon="DashboardCustomize"
+              disabled={projects?.length > MAX_ALLOWED_PROJECTS}
+              onClick={() => setShowCreateDialog(true)}
+            />
+          </Tooltip>
+        </PageActions>
+      </PageHeader>
+      <PageBody>
         {isFirstProject ? (
-          <FirstTime loading={loading} onClick={() => setShowCreateDialog(true)} minMaxHeight={minMaxHeight} />
+          <Centered>
+            <FirstTimeCard
+              id="first-time-project"
+              icon="SnippetFolder"
+              loading={loading}
+              onClick={() => setShowCreateDialog(true)}
+              title="Create First Project"
+              buttonTitle="Create"
+              buttonIcon="PostAdd"
+            />
+          </Centered>
         ) : (
           <>
             {projects && filtered.length > 0 ? (
@@ -173,64 +174,50 @@ const ProjectManagement = (props) => {
                 ))}
               </div>
             ) : (
-              <div
-                className="h-full w-full flex flex-col rounded items-center justify-center"
-                style={{
-                  minHeight: minMaxHeight - 50,
-                  maxHeight: minMaxHeight - 50
-                }}
-              >
-                <Centered>
-                  <EmptyIconRenderer title="No records found" fill="#1e5194" />
-                  <IconButton id="project-refresh-btn" title="Refresh" icon="Refresh" onClick={fetchList} />
-                </Centered>
-              </div>
+              <Centered>
+                <EmptyIconRenderer title="No records found" fill="#1e5194" />
+                <IconButton id="project-refresh-btn" title="Refresh" icon="Refresh" onClick={fetchList} />
+              </Centered>
             )}
           </>
         )}
-      </div>
-      {selectedProject && (
-        <DeleteItemDialog
-          title="Delete Project"
-          question="Are you sure you want to delete the selected project?"
-          showDialog={showDeleteDialog}
+        {selectedProject && (
+          <DeleteItemDialog
+            title="Delete Project"
+            question="Are you sure you want to delete the selected project?"
+            showDialog={showDeleteDialog}
+            onClose={() => {
+              setSelectedProject(null);
+              setShowDeleteDialog(false);
+            }}
+            item={selectedProject?.name}
+            onDelete={handleDeleteProject}
+          />
+        )}
+        <CreateProjectDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createProject={handleCreateProject} />
+        <CustomAlertDialog
+          level={isError ? "warn" : "success"}
+          message={message}
+          showDialog={showMessage}
           onClose={() => {
-            setSelectedProject(null);
-            setShowDeleteDialog(false);
+            dispatch(resetProjectFlags());
+            fetchList();
           }}
-          item={selectedProject?.name}
-          onDelete={handleDeleteProject}
         />
-      )}
-      <CreateProjectDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createProject={handleCreateProject} />
-      <CustomAlertDialog
-        level={isError ? "warn" : "success"}
-        message={message}
-        showDialog={showMessage}
-        onClose={() => {
-          dispatch(resetProjectFlags());
-          fetchList();
-        }}
-      />
-    </>
+      </PageBody>
+    </Page>
   );
 };
 
 export default ProjectManagement;
 
-function FirstTime({ loading, onClick, minMaxHeight }) {
+function FirstTime({ loading, onClick }) {
   return (
-    <div
-      className="h-full w-full flex flex-col rounded items-center justify-center"
-      style={{
-        minHeight: minMaxHeight - 100,
-        maxHeight: minMaxHeight - 100
-      }}
-    >
+    <>
       {loading ? (
-        <Spinner />
+        <Spinner>Loading</Spinner>
       ) : (
-        <div className="bg-white h-fit shadow-sm w-96 rounded-md flex flex-col items-center p-5">
+        <div className="bg-white h-fit shadow-lg w-96 rounded-md flex flex-col items-center p-5">
           <IconRenderer icon="SnippetFolder" className="text-color-0500 animate-bounce mt-5" style={{ fontSize: 70 }} />
           <span id="first-time-project-label" className="my-4 text-center text-slate-800 uppercase text-2xl select-none">
             Create first Project
@@ -238,7 +225,7 @@ function FirstTime({ loading, onClick, minMaxHeight }) {
           <IconButton id="first-time-project-btn" title="Create" icon="PostAdd" onClick={onClick} />
         </div>
       )}
-    </div>
+    </>
   );
 }
 

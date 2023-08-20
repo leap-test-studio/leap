@@ -23,9 +23,7 @@ const Model = {
           { const: 0, title: "Scenario" },
           { const: 1, title: "REST-API" },
           { const: 2, title: "Web" },
-          { const: 3, title: "gRPC" },
-          { const: 4, title: "TCP" },
-          { const: 5, title: "SSH" }
+          { const: 3, title: "SSH" }
         ]
       }
     },

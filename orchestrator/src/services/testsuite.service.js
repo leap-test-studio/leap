@@ -94,7 +94,7 @@ async function update(accountId, projectId, id, payload) {
 
 async function _delete(accountId, projectId, id) {
   const ts = await get(accountId, projectId, id);
-  return await ts.destroy();
+  return await ts.destroy({ force: true });
 }
 
 // helper functions

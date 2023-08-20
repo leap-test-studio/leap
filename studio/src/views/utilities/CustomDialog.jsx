@@ -6,7 +6,7 @@ import CloseButton from "./CloseButton";
 
 function CustomDialog({ open, largeScreen, title, onClose, onSave, saveTitle, saveIcon, buttonDiabled = false, children, customWidth = "" }) {
   const contentHeight = {
-    maxHeight: window.innerHeight - (largeScreen ? 40 : 300)
+    maxHeight: window.innerHeight - (largeScreen ? 40 : 100)
   };
   if (largeScreen) {
     contentHeight.minHeight = window.innerHeight - 350;

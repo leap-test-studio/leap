@@ -7,6 +7,7 @@ export default function IconButton({
   onClick,
   icon,
   title,
+  titleColor = "text-white",
   disabled = false,
   ariaLabel,
   className = "text-color-0400 hover:text-color-0300 my-1",
@@ -27,7 +28,7 @@ export default function IconButton({
     <button
       id={id}
       disabled={disabled}
-      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded text-white ${
+      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded ${titleColor} ${
         title !== undefined ? "px-1" : ""
       } mx-2 ${showShadow ? "shadow hover:shadow-xl" : ""}`}
       onClick={onClick}
@@ -46,7 +47,7 @@ export default function IconButton({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <span className="px-2 py-0.5 text-sm select-none">{title}</span>
+            <span className={`px-2 py-0.5 text-sm select-none ${titleColor}`}>{title}</span>
           </Transition.Child>
         </Transition>
       </div>

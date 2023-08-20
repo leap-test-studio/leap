@@ -1,7 +1,5 @@
 const WebTestRunner = require("./WebTestRunner");
 const APITestRunner = require("./APITestRunner");
-const GRPCTestRunner = require("./GRPCTestRunner");
-const TCPTestRunner = require("./TCPTestRunner");
 const SSHTestRunner = require("./SSHTestRunner");
 const DefaultTestRunner = require("./DefaultTestRunner");
 const TestType = require("../enums/TestType");
@@ -16,12 +14,6 @@ class TestCaseHandler {
           break;
         case TestType.WEB:
           this.runner = new WebTestRunner(jobInfo);
-          break;
-        case TestType.GRPC:
-          this.runner = new GRPCTestRunner(jobInfo);
-          break;
-        case TestType.TCP:
-          this.runner = new TCPTestRunner(jobInfo);
           break;
         case TestType.SSH:
           this.runner = new SSHTestRunner(jobInfo);

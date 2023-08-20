@@ -24,7 +24,7 @@ const InititialRoutes = [
     sideBar: true,
     title: "My Projects",
     icon: "FolderSpecial",
-    path: "projects",
+    path: "my-projects",
     page: "common/ProjectManagement.jsx",
     projectSelectionRequired: false
   },
@@ -32,22 +32,29 @@ const InititialRoutes = [
     sideBar: true,
     title: "Test Management",
     icon: "TaskAlt",
-    path: "test/management",
+    path: "test-management",
     page: "testsuite/TestSuiteManagement.jsx",
     projectSelectionRequired: true
   },
   {
     sideBar: true,
+    title: "Test Runner",
+    icon: "ElectricBoltTwoTone",
+    path: "test-runner",
+    page: "TestRunner.jsx"
+  },
+  {
+    sideBar: true,
     title: "Test Reports",
-    icon: "QueryStats",
-    path: "reports",
+    icon: "QueryStatsTwoTone",
+    path: "test-reports",
     page: "TestReports.jsx"
   },
   {
     sideBar: true,
     title: "Test Case Sequencer",
     icon: "AccountTreeTwoTone",
-    path: "sequencer",
+    path: "test-sequencer",
     page: "sequencer/index.jsx",
     projectSelectionRequired: true
   }
