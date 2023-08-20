@@ -26,6 +26,7 @@ import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import isEmpty from "lodash/isEmpty";
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
 import FirstTimeCard from "../common/FirstTimeCard";
+import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 
 const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
 
@@ -268,31 +269,30 @@ function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCa
           <Centered>
             <Spinner>Loading</Spinner>
           </Centered>
+        ) : filtered?.length === 0 ? (
+          <Centered>
+            <EmptyIconRenderer title="TestCase Not Found" />
+          </Centered>
         ) : (
-          <>
-            <table className="relative w-full border">
-              <TableHeader headers={["#TID", "Given", "When", "Then", "Type", "Actions"]} />
-              {filtered?.length > 0 && (
-                <tbody className="divide-y">
-                  {filtered.map((s, index) => (
-                    <Row
-                      key={index}
-                      rowIndex={index}
-                      editTestCase={editTestCase}
-                      record={s}
-                      updateTestCase={updateTestCase}
-                      deleteTestCase={deleteTestCase}
-                      cloneTestCase={cloneTestCase}
-                      runTestCase={runTestCase}
-                    />
-                  ))}
-                </tbody>
-              )}
-            </table>
-            {filtered?.length === 0 && (
-              <div className="border-slate-200 bg-white text-lg my-4 w-full flex flex-row items-center justify-center">No Records</div>
+          <table className="relative w-full border">
+            <TableHeader headers={["#TID", "Given", "When", "Then", "Type", "Actions"]} />
+            {filtered?.length > 0 && (
+              <tbody className="divide-y">
+                {filtered.map((s, index) => (
+                  <Row
+                    key={index}
+                    rowIndex={index}
+                    editTestCase={editTestCase}
+                    record={s}
+                    updateTestCase={updateTestCase}
+                    deleteTestCase={deleteTestCase}
+                    cloneTestCase={cloneTestCase}
+                    runTestCase={runTestCase}
+                  />
+                ))}
+              </tbody>
             )}
-          </>
+          </table>
         )}
       </PageBody>
     </Page>

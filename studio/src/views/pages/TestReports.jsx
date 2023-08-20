@@ -172,7 +172,7 @@ export default function TestReports() {
           </div>
         ) : (
           <Centered>
-            <EmptyIconRenderer title="Report Not Found" fill="#1e5194" />
+            <EmptyIconRenderer title="Report Not Found" />
           </Centered>
         )}
       </PageBody>

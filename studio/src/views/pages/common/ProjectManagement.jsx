@@ -175,7 +175,7 @@ const ProjectManagement = (props) => {
               </div>
             ) : (
               <Centered>
-                <EmptyIconRenderer title="No records found" fill="#1e5194" />
+                <EmptyIconRenderer title="Project Not Found" />
                 <IconButton id="project-refresh-btn" title="Refresh" icon="Refresh" onClick={fetchList} />
               </Centered>
             )}

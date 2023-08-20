@@ -159,7 +159,7 @@ function TestSuiteManagement({ windowDimension }) {
               </div>
             ) : (
               <Centered>
-                <EmptyIconRenderer title="No records found" fill="#1e5194" />
+                <EmptyIconRenderer title="TestSuite Not Found" />
                 <IconButton title="Refresh" icon="Refresh" onClick={fetchTestSuites} />
               </Centered>
             )}

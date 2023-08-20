@@ -1,4 +1,4 @@
-const EmptyIconRenderer = ({ title, fill, showIcon = true, icon }) => {
+const EmptyIconRenderer = ({ title, fill = "#1e5194", showIcon = true }) => {
   return (
     <div className="p-2">
       <div className="flex flex-col items-center justify-center bg-white">
