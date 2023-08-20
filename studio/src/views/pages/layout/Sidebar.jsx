@@ -8,18 +8,13 @@ import LogoutButton from "./LogoutButton";
 import UserInfo from "./UserInfo";
 import WebContext from "../../context/WebContext";
 
-export default function Sidebar({ showSidebar, base, mode, maxContentHeight, sideBarItems, menuClicked, ...props }) {
-  const minHeight = window.innerHeight;
-  const isSmallScreen = maxContentHeight < 800;
+export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuClicked, ...props }) {
+  const isSmallScreen = window.innerHeight < 800;
   return (
     <aside
       className={`transition-all duration-500 z-[9999] ${
         showSidebar ? "w-[250px]" : "w-[50px]"
-      } relative bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer`}
-      style={{
-        minHeight: minHeight,
-        maxHeight: minHeight
-      }}
+      } relative bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer h-screen`}
     >
       <div
         className={`absolute h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 border border-slate-400 top-9 ${
