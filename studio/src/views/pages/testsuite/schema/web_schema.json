@@ -255,7 +255,7 @@
     "elements": [
       {
         "label": "Step Execution Settings",
-        "type": "Group",
+        "type": "CustomGroup",
         "scope": "#/properties/settings",
         "elements": [
           {
@@ -478,8 +478,7 @@
                   }
                 },
                 "options": {
-                  "multi": true,
-                  "isLarge": true
+                  "multi": true
                 }
               },
               {

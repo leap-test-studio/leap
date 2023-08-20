@@ -54,7 +54,7 @@ const TailwindInputText = React.memo((props) => {
                     name={path}
                     id={id}
                     autoComplete="off"
-                    className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-28" : "h-10"} ${
+                    className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-36" : "h-16"} ${
                       trim ? "text-xs" : "text-sm px-1.5 py-0.5"
                     } rounded border placeholder-gray-300 shadow focus:shadow-md ${
                       isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-200"

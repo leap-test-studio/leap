@@ -26,8 +26,6 @@ const defaults = [
       }
     }
   },
-  {},
-  {},
   {
     settings: {
       host: "127.0.0.1",
@@ -38,7 +36,7 @@ const defaults = [
     }
   }
 ];
-const Schemas = Object.freeze([{}, APISchema, WebSchema, {}, {}, SSHSchema]);
+const Schemas = Object.freeze([{}, APISchema, WebSchema, SSHSchema]);
 
 function UpdateTestCaseDialog({ isOpen, onClose, testsuite, testcase, onUpdate }) {
   const { settings, execSteps, ...rest } = testcase;
@@ -175,9 +173,7 @@ const schema = {
         { const: 0, title: "Scenario" },
         { const: 1, title: "REST-API" },
         { const: 2, title: "Web" },
-        { const: 3, title: "gRPC" },
-        { const: 4, title: "TCP" },
-        { const: 5, title: "SSH" }
+        { const: 3, title: "SSH" }
       ]
     }
   },
