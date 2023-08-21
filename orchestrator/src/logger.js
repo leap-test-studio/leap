@@ -26,7 +26,7 @@ loggerConfig.log4js.appenders.orchestrator.filename = path.join(logdir, loggerCo
 
 // set up CDR"s logging
 const accessLogStream = fileStreamRotator.getStream({
-  date_format: "YMDH",
+  date_format: "YMD",
   filename: path.join(loggerConfig.logdir, loggerConfig.cdr + "_%DATE%.cdr"),
   frequency: "daily",
   verbose: false

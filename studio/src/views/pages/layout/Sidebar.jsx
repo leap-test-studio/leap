@@ -83,7 +83,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
           : hovered
           ? "bg-slate-200 text-slate-700"
           : "hover:text-slate-300"
-      } ${!showTitle ? "justify-ceneter rounded" : "rounded-r-full"}`}
+      } ${!showTitle ? "justify-center rounded" : "rounded-r-full"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => {

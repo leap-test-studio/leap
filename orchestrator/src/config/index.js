@@ -58,8 +58,7 @@ if (envVars.DATABASE_DIALECT === "mysql") {
   };
   databaseConfig.dialectOptions = {
     dateStrings: true,
-    typeCast: true,
-    useUTC: false
+    typeCast: true
   };
   databaseConfig.dialectOptions.timezone = "+05:30";
   databaseConfig.timezone = "+05:30";
