@@ -124,6 +124,7 @@ export default function TestReports() {
     }
   }, [buildReports, buildList, handleBuildChange]);
 
+  const buildSelected = buildNo && buildInfo && buildDetails;
   return (
     <Page>
       <PageHeader>
@@ -149,26 +150,24 @@ export default function TestReports() {
           </div>
 
           <Tooltip title="Download PDF format">
-            <IconButton title="PDF Export" icon="PictureAsPdf" onClick={exportReport2PDF} />
+            <IconButton title="PDF Export" icon="PictureAsPdf" onClick={exportReport2PDF} disabled={!buildSelected} />
           </Tooltip>
         </PageActions>
       </PageHeader>
       <PageBody>
-        {buildNo && buildInfo && buildDetails ? (
-          <div className="border rounded">
-            <div id="BuildReport" ref={reportRef} className="p-4 select-none">
-              <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-                <BuildDetails project={project} buildNo={buildNo} buildInfo={buildInfo} {...buildDetails} />
-                {!isEmpty(buildDetails?.options) && (
-                  <div className="col-span-2">
-                    <BuildEnvironmentVariables options={buildDetails.options} />
-                  </div>
-                )}
-                {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
-              </div>
-              <BuildSummary data={data} buildInfo={buildInfo} onClick={handleFilter} testType={testType} />
-              <ReportTable {...buildDetails} testType={testType} />
+        {buildSelected ? (
+          <div id="BuildReport" ref={reportRef} className="border rounded bg-white p-2">
+            <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
+              <BuildDetails project={project} buildNo={buildNo} buildInfo={buildInfo} {...buildDetails} />
+              {!isEmpty(buildDetails?.options) && (
+                <div className="col-span-2">
+                  <BuildEnvironmentVariables options={buildDetails.options} />
+                </div>
+              )}
+              {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
             </div>
+            <BuildSummary data={data} buildInfo={buildInfo} onClick={handleFilter} testType={testType} />
+            <ReportTable {...buildDetails} testType={testType} />
           </div>
         ) : (
           <Centered>
