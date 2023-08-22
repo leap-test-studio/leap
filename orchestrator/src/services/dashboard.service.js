@@ -213,6 +213,7 @@ async function getBuildTrend(ProjectMasterId, limit = 10) {
     ],
     group: ["buildNo"],
     where: {
+      type: 0,
       ProjectMasterId
     },
     order: [["buildNo", "DESC"]],

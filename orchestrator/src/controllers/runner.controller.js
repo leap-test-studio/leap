@@ -9,6 +9,7 @@ const csrf = require("../_middleware/checkCSRF");
 router.post("/:projectId/start", csrf, authorize(), startProjectBuilds);
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
 router.post("/:projectId/trigger", startProjectBuilds);
+router.post("/:projectId/runTests", startTestCases);
 
 module.exports = router;
 
@@ -35,6 +36,17 @@ function startProjectBuilds(req, res) {
 function stopProjectBuilds(req, res) {
   runner
     .stop(req.params.projectId)
+    .then((response) => res.status(status.ACCEPTED).json(response))
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });
+    });
+}
+
+function startTestCases(req, res) {
+  logger.info("Starting project build", req.params.projectId, req.body);
+  runner
+    .createTestCase(req.auth?.id, req.params.projectId, req.body)
     .then((response) => res.status(status.ACCEPTED).json(response))
     .catch((err) => {
       logger.error(err);

@@ -155,48 +155,67 @@ async function stop(ProjectMasterId) {
   return list;
 }
 
-async function createTestCase(AccountId, id) {
-  const tc = await global.DbStoreModel.TestCase.findOne({
-    include: global.DbStoreModel.TestSuite,
-    where: {
-      id,
-      AccountId
-    }
-  });
-
-  const testSuiteIds = [tc.TestSuite.id];
-  const lastBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
-    where: {
-      AccountId,
-      type: 1
-    }
-  });
-
-  return await BPromise.reduce(
-    testSuiteIds,
-    async function (accumulator, TestSuiteId) {
-      try {
-        const build = new global.DbStoreModel.BuildMaster({
-          buildNo: lastBuildNumber + 1,
-          type: 1,
-          total: 1,
-          status: TestStatus.RUNNING,
-          AccountId,
-          TestSuiteId,
-          options: {
-            testCases: [id]
-          },
-          ProjectMasterId: tc.TestSuite.ProjectMasterId,
-          createdAt: Date.now(),
-          updatedAt: Date.now()
-        });
-        const result = await build.save();
-        return [...accumulator, result.id];
-      } catch (error) {
-        logger.error(error);
-        return accumulator;
+async function createTestCase(AccountId, ProjectMasterId, payload) {
+  try {
+    let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
+      where: {
+        type: 0,
+        ProjectMasterId
       }
-    },
-    []
-  );
+    });
+
+    if (nextBuildNumber == null) {
+      nextBuildNumber = 0;
+    }
+    nextBuildNumber = Number(nextBuildNumber) + 1;
+
+    const testCases = await global.DbStoreModel.TestCase.findAll({
+      where: {
+        enabled: true,
+        id: {
+          [Op.in]: payload
+        }
+      },
+      order: [["seqNo", "ASC"]]
+    });
+
+    const totalTestCases = testCases.length;
+    if (totalTestCases > 0) {
+      const build = new global.DbStoreModel.BuildMaster({
+        type: 1,
+        buildNo: nextBuildNumber,
+        total: totalTestCases,
+        status: TestStatus.RUNNING,
+        AccountId,
+        ProjectMasterId,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      });
+      await build.save();
+
+      const jobs = await BPromise.reduce(
+        testCases,
+        async (acc, testCase) => {
+          const job = new global.DbStoreModel.Job({
+            TestCaseId: testCase.id,
+            BuildMasterId: build.id,
+            steps: testCase.execSteps,
+            createdAt: Date.now()
+          });
+          await job.save();
+          acc.push(job.id);
+          return acc;
+        },
+        []
+      );
+      BuildManager.emit("addJobs", jobs);
+    }
+    Promise.resolve({
+      buildNumber: nextBuildNumber,
+      totalTestCases
+    });
+  } catch (e) {
+    logger.error(e);
+    Promise.reject(e);
+  }
 }

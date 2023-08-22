@@ -97,16 +97,9 @@ export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
     });
 };
 
-export const runTestCase = (projectId, testSuiteId, id) => (dispatch) => {
+export const runTestCase = (projectId, payload) => (dispatch) => {
   axios
-    .post(
-      `/api/v1/runner/test/${id}`,
-      {
-        projectId,
-        testSuiteId
-      },
-      {}
-    )
+    .post(`/api/v1/runner/${projectId}/runTests`, payload)
     .then((res) => {
       if (res?.data)
         dispatch({

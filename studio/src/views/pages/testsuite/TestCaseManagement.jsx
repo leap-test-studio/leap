@@ -130,7 +130,7 @@ class TestCaseManagement extends React.Component {
             updateTestCase={(t) => this.props.updateTestCase(this.context.project?.id, this.props.testsuite?.id, t.id, t)}
             deleteTestCase={(selectedTestCase) => this.setState({ showDeleteDialog: true, selectedTestCase })}
             cloneTestCase={(selectedTestCase) => this.props.cloneTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase.id)}
-            runTestCase={(selectedTestCase) => this.props.runTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase.id)}
+            runTestCase={(selectedTestCase) => this.props.runTestCase(this.context.project?.id, [selectedTestCase.id])}
             onClose={() => this.props.onClose()}
           />
         )}
@@ -318,7 +318,7 @@ function Header({ title }) {
   );
 }
 
-function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase }) {
+function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCase }) {
   const tcType = TC_TYPES[record.type] || "Unknown";
   return (
     <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-sm">
@@ -374,6 +374,12 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-40">
         <div className="flex flex-row">
+          <IconRenderer
+            icon="PlayArrowRounded"
+            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
+            fontSize="medium"
+            onClick={() => runTestCase(record)}
+          />
           <IconRenderer
             icon="ContentCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
