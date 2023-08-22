@@ -75,7 +75,7 @@ async function get(AccountId, id) {
 async function getRunningBuilds() {
   const list = await global.DbStoreModel.BuildMaster.findAll({
     attributes: ["buildNo"],
-    include: global.DbStoreModel.TestSuite,
+    include: global.DbStoreModel.ProjectMaster,
     where: {
       status: {
         [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING]
@@ -85,7 +85,7 @@ async function getRunningBuilds() {
 
   const res = {};
   list.forEach((build) => {
-    const pid = build.TestSuite.ProjectMasterId;
+    const pid = build.ProjectMaster.id;
     if (res[pid] === undefined) res[pid] = 0;
     res[pid]++;
   });

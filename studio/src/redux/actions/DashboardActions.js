@@ -3,7 +3,7 @@ import axios from "axios";
 import * as actionTypes from "../actions";
 
 export const getBuildReports = (projectId) => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/reports/" + projectId, {}).then((res) => {
+  axios.get(`/api/v1/dashboard/build/reports/${projectId}`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_BUILD_REPORTS,
@@ -12,8 +12,8 @@ export const getBuildReports = (projectId) => (dispatch) => {
   });
 };
 
-export const getBuildDetails = (buildNo) => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/details/" + buildNo, {}).then((res) => {
+export const getBuildDetails = (projectId, buildNo) => (dispatch) => {
+  axios.get(`/api/v1/dashboard/build/details/${projectId}/bno/${buildNo}`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_BUILD_DETAILS,
@@ -23,7 +23,7 @@ export const getBuildDetails = (buildNo) => (dispatch) => {
 };
 
 export const getRecentBuildSummary = () => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/recent", {}).then((res) => {
+  axios.get("/api/v1/dashboard/build/recent").then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_RECENT_BUILD_SUMMARY,
@@ -33,7 +33,7 @@ export const getRecentBuildSummary = () => (dispatch) => {
 };
 
 export const getTotalStats = () => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/total", {}).then((res) => {
+  axios.get("/api/v1/dashboard/build/total").then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_TOTAL_STATS,
@@ -42,8 +42,8 @@ export const getTotalStats = () => (dispatch) => {
   });
 };
 
-export const getBuildTrend = () => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/trend", {}).then((res) => {
+export const getBuildTrend = (projectId) => (dispatch) => {
+  axios.get(`/api/v1/dashboard/build/trend/${projectId}`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_BUILD_TREND,

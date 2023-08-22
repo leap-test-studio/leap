@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       failed: { type: DataTypes.INTEGER, defaultValue: 0 },
       skipped: { type: DataTypes.INTEGER, defaultValue: 0 },
       running: { type: DataTypes.INTEGER, defaultValue: 0 },
-      TestSuiteId: { type: DataTypes.UUID, unique: "comp" },
+      ProjectMasterId: { type: DataTypes.UUID, unique: "comp" },
       options: { type: DataTypes.JSON },
       startTime: { type: DataTypes.DATE },
       endTime: { type: DataTypes.DATE }
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
   BuildMaster.associate = function (models) {
     BuildMaster.hasMany(models.Job);
     BuildMaster.belongsTo(models.Account, { onDelete: "cascade" });
-    BuildMaster.belongsTo(models.TestSuite, { onDelete: "cascade" });
+    BuildMaster.belongsTo(models.ProjectMaster, { onDelete: "cascade" });
   };
   return BuildMaster;
 };

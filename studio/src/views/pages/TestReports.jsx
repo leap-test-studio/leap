@@ -86,9 +86,9 @@ export default function TestReports() {
     clearInterval(interval);
     if (project?.id) {
       setBuildNo(ev);
-      dispatch(getBuildDetails(ev));
+      dispatch(getBuildDetails(project?.id, ev));
       interval = setInterval(() => {
-        dispatch(getBuildDetails(ev));
+        dispatch(getBuildDetails(project?.id, ev));
       }, 10000);
     }
   };
@@ -361,7 +361,7 @@ function ReportTable({ jobs, testType }) {
   );
 }
 
-function JobDetails({ TestCase, suiteName, suiteDesc, result, steps, startTime, endTime, screenshot, actual }) {
+function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, actual }) {
   const status = TestStatus[result];
   const title = TestCase?.type ? Types[TestCase?.type] : "";
   const actualResult = actual?.actualResult;
@@ -372,10 +372,14 @@ function JobDetails({ TestCase, suiteName, suiteDesc, result, steps, startTime, 
           TCID-{TestCase?.seqNo}
         </td>
         <td className="px-2 py-1 border-x border-x-slate-100 w-36">
-          <div className="flex flex-col">
-            <label className="break-all">{suiteName}</label>
-            {suiteDesc && <NewlineText text={suiteDesc} className="font-normal" style={{ fontSize: 10 }} />}
-          </div>
+          {TestCase?.TestSuite && (
+            <div className="flex flex-col">
+              <label className="break-all">{TestCase?.TestSuite?.name}</label>
+              {TestCase?.TestSuite?.description && (
+                <NewlineText text={TestCase?.TestSuite?.description} className="font-normal" style={{ fontSize: 10 }} />
+              )}
+            </div>
+          )}
         </td>
         <td className="px-2 py-1 border-x border-x-slate-100 w-12">
           <label>{title}</label>

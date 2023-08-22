@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
   );
   TestSuite.associate = function (models) {
     TestSuite.hasMany(models.TestCase);
-    TestSuite.hasMany(models.BuildMaster);
     TestSuite.belongsTo(models.Account, { onDelete: "cascade" });
     TestSuite.belongsTo(models.ProjectMaster, { onDelete: "cascade" });
   };

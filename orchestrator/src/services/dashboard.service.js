@@ -9,8 +9,13 @@ module.exports = {
 };
 
 async function getRecentBuildSummary(AccountId) {
-  const suites = await global.DbStoreModel.TestSuite.findAll({
-    include: global.DbStoreModel.BuildMaster,
+  const projects = await global.DbStoreModel.ProjectMaster.findAll({
+    include: {
+      model: global.DbStoreModel.BuildMaster,
+      where: {
+        type: 0
+      }
+    },
     attributes: ["id", "name"],
     where: {
       AccountId
@@ -19,15 +24,12 @@ async function getRecentBuildSummary(AccountId) {
   });
 
   const result = [];
-  suites.forEach((suite) =>
-    suite.BuildMasters.forEach((buildMaster) => {
-      if (buildMaster.type === 0)
-        result.push({
-          ...buildMaster.toJSON(),
-          suiteId: suite.id,
-          suiteName: suite.name,
-          suiteDesc: suite.description
-        });
+  projects.forEach((project) =>
+    project.BuildMasters.forEach((buildMaster) => {
+      result.push({
+        project,
+        ...buildMaster.toJSON()
+      });
     })
   );
   return result.sort((a, b) => b.buildNo - a.buildNo);
@@ -35,20 +37,27 @@ async function getRecentBuildSummary(AccountId) {
 
 async function getTotalStats(AccountId) {
   const suites = await global.DbStoreModel.TestSuite.findAll({
+    attributes: ["id"],
+    where: {
+      AccountId
+    }
+  });
+
+  const projects = await global.DbStoreModel.ProjectMaster.findAll({
     include: global.DbStoreModel.BuildMaster,
     attributes: ["id"],
     where: {
       AccountId
     }
   });
-  const projects = await global.DbStoreModel.ProjectMaster.count({
-    where: {
-      AccountId
-    }
-  });
+
   let builds = 0;
-  const suiteIds = suites.map((s) => {
+  projects.map((s) => {
     builds += s.BuildMasters.length;
+    return s;
+  });
+
+  const suiteIds = suites.map((s) => {
     return s.id;
   });
 
@@ -60,8 +69,9 @@ async function getTotalStats(AccountId) {
       }
     }
   });
+
   return {
-    projects,
+    projects: projects.length,
     suites: suites.length,
     cases,
     builds
@@ -69,13 +79,6 @@ async function getTotalStats(AccountId) {
 }
 
 async function getBuildReports(AccountId, ProjectMasterId) {
-  const suites = await global.DbStoreModel.TestSuite.findAll({
-    attributes: ["id"],
-    where: {
-      ProjectMasterId
-    }
-  });
-  const suiteIds = suites.map((s) => s.id);
   return await global.DbStoreModel.BuildMaster.findAll({
     attributes: [
       "buildNo",
@@ -90,19 +93,21 @@ async function getBuildReports(AccountId, ProjectMasterId) {
     ],
     group: ["buildNo", "type"],
     where: {
-      TestSuiteId: {
-        [Op.in]: suiteIds
-      }
+      ProjectMasterId
     }
   });
 }
 
-async function getBuildDetails(AccountId, buildNo) {
-  const builds = await global.DbStoreModel.BuildMaster.findAll({
-    include: [global.DbStoreModel.TestSuite],
+async function getBuildDetails(id, buildNo) {
+  const Project = await global.DbStoreModel.ProjectMaster.findOne({
+    include: {
+      model: global.DbStoreModel.BuildMaster,
+      where: {
+        buildNo
+      }
+    },
     where: {
-      AccountId,
-      buildNo
+      id
     }
   });
 
@@ -113,14 +118,15 @@ async function getBuildDetails(AccountId, buildNo) {
     steps = 0,
     running = 0,
     suites = {},
-    buildMap = {},
     jobs = [],
     options = null,
     status = 0,
     startTime,
     endTime;
 
-  builds.forEach((row) => {
+  const buildIds = [];
+  Project.BuildMasters.forEach((row) => {
+    buildIds.push(row.id);
     if (row.status > 0) {
       if (row.startTime) {
         row.startTime = new Date(row.startTime);
@@ -136,13 +142,11 @@ async function getBuildDetails(AccountId, buildNo) {
       }
     }
 
-    buildMap[row.id] = row.TestSuite.id;
     total += Number(row.total);
     passed += Number(row.passed);
     failed += Number(row.failed);
     skipped += Number(row.skipped);
     running += Number(row.running);
-    suites[row.TestSuiteId] = row.TestSuite;
     if (row.options) {
       options = row.options;
     }
@@ -152,10 +156,13 @@ async function getBuildDetails(AccountId, buildNo) {
   });
 
   const jobRecords = await global.DbStoreModel.Job.findAll({
-    include: [global.DbStoreModel.TestCase],
+    include: {
+      model: global.DbStoreModel.TestCase,
+      include: global.DbStoreModel.TestSuite
+    },
     where: {
       BuildMasterId: {
-        [Op.in]: Object.keys(buildMap)
+        [Op.in]: buildIds
       }
     },
     order: [["id", "ASC"]]
@@ -167,9 +174,7 @@ async function getBuildDetails(AccountId, buildNo) {
     if (job.result > 1) steps += stepsExecuted.length;
     jobs.push({
       ...job,
-      steps: stepsExecuted.length,
-      suiteName: suites[buildMap[job.BuildMasterId]]?.name,
-      suiteDesc: suites[buildMap[job.BuildMasterId]]?.description
+      steps: stepsExecuted.length
     });
   });
   const executed = passed + failed + skipped;
@@ -196,7 +201,7 @@ async function getBuildDetails(AccountId, buildNo) {
   };
 }
 
-async function getBuildTrend(AccountId, limit = 10) {
+async function getBuildTrend(ProjectMasterId, limit = 10) {
   return await global.DbStoreModel.BuildMaster.findAll({
     attributes: [
       "buildNo",
@@ -208,7 +213,7 @@ async function getBuildTrend(AccountId, limit = 10) {
     ],
     group: ["buildNo"],
     where: {
-      AccountId
+      ProjectMasterId
     },
     order: [["buildNo", "DESC"]],
     limit

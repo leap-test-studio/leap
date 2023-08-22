@@ -1,4 +1,3 @@
-const BPromise = require("bluebird");
 const sequelize = require("sequelize");
 const TestStatus = require("../../runner/enums/TestStatus");
 const { Op } = sequelize;
@@ -8,7 +7,6 @@ module.exports = {
   updateJob,
   updateBuild,
   updateBuildStatus,
-  createJob,
   consolidate,
   updateScreenshot
 };
@@ -168,109 +166,4 @@ async function updateBuild(id) {
   build.updatedAt = Date.now();
   build.endTime = Date.now();
   return await build.save();
-}
-
-async function createJob(AccountId, ProjectMasterId, payload = {}) {
-  const testSuites = await global.DbStoreModel.TestSuite.findAll({
-    attributes: ["id"],
-    where: {
-      AccountId,
-      ProjectMasterId,
-      status: {
-        [Op.not]: TestStatus.DRAFT
-      }
-    },
-    order: [["createdAt", "DESC"]]
-  });
-
-  const testSuiteIds = testSuites.map((suite) => suite.id);
-
-  const lastBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
-    where: {
-      AccountId,
-      type: 0
-    }
-  });
-
-  const currentBuildNumber = lastBuildNumber + 1;
-
-  return BPromise.reduce(
-    testSuiteIds,
-    async function (accum, TestSuiteId) {
-      try {
-        const totalTestCases = await global.DbStoreModel.TestCase.count({
-          where: {
-            TestSuiteId,
-            type: {
-              [Op.not]: 0
-            },
-            enabled: true
-          }
-        });
-
-        const skipped = await global.DbStoreModel.TestCase.count({
-          where: {
-            TestSuiteId,
-            enabled: false
-          }
-        });
-
-        const build = new global.DbStoreModel.BuildMaster({
-          ...payload,
-          buildNo: currentBuildNumber,
-          type: 0,
-          total: totalTestCases,
-          skipped,
-          status: TestStatus.RUNNING,
-          AccountId,
-          TestSuiteId,
-          createdAt: Date.now(),
-          updatedAt: Date.now()
-        });
-        await build.save();
-        const testcases = await global.DbStoreModel.TestCase.findAll({
-          where: {
-            TestSuiteId,
-            enabled: true
-          }
-        });
-
-        const result = await BPromise.reduce(testcases, createTestCase, {
-          build,
-          jobs: []
-        });
-
-        logger.info(`Jobs created: ${result.jobs.join(",")}`);
-        return [
-          ...accum,
-          {
-            buildId: build.id,
-            jobs: result.jobs
-          }
-        ];
-      } catch (error) {
-        logger.error(error);
-      }
-      return accum;
-    },
-    []
-  );
-}
-
-async function createTestCase(accum, testcase) {
-  try {
-    const job = new global.DbStoreModel.Job({
-      TestCaseId: testcase.id,
-      BuildMasterId: accum.build.id,
-      createdAt: Date.now(),
-      actual: {},
-      result: 0,
-      steps: []
-    });
-    await job.save();
-    accum.jobs.push(job.id);
-  } catch (error) {
-    logger.error(error);
-  }
-  return accum;
 }

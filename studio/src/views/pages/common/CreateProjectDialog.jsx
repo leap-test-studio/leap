@@ -15,7 +15,7 @@ const Model = {
         description: "Enter description"
       }
     },
-    required: ["name", "description"]
+    required: ["name"]
   },
   uischema: {
     type: "VerticalLayout",

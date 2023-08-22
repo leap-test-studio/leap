@@ -10,11 +10,11 @@ const Role = require("../_helpers/role");
 // Report routes
 router.get("/build/recent", csrf, authorize([Role.Admin, Role.Manager]), getRecentBuildSummary);
 router.get("/build/total", csrf, authorize([Role.Admin, Role.Manager]), getTotalStats);
-router.get("/build/trend", csrf, authorize([Role.Admin, Role.Manager]), getBuildTrend);
+router.get("/build/trend/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getBuildTrend);
 
 router.get("/build/reports/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getBuildReports);
 
-router.get("/build/details/:buildNo", csrf, authorize([Role.Admin, Role.Manager]), getBuildDetails);
+router.get("/build/details/:projectId/bno/:buildNo", csrf, authorize([Role.Admin, Role.Manager]), getBuildDetails);
 
 module.exports = router;
 
@@ -59,7 +59,7 @@ function getBuildReports(req, res) {
 
 function getBuildDetails(req, res) {
   dashboardService
-    .getBuildDetails(req.auth.id, req.params.buildNo)
+    .getBuildDetails(req.params.projectId, req.params.buildNo)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
@@ -72,7 +72,7 @@ function getBuildDetails(req, res) {
 
 function getBuildTrend(req, res) {
   dashboardService
-    .getBuildTrend(req.auth.id)
+    .getBuildTrend(req.params.projectId)
     .then((o) =>
       res.json({
         buildNo: o.map((o) => o.buildNo).reverse(),
