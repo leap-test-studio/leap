@@ -16,7 +16,7 @@ import {
   updateTestCase,
   fetchTestCase,
   cloneTestCase,
-  runTestCase
+  runTestCases
 } from "../../../redux/actions/TestCaseActions";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
@@ -130,7 +130,7 @@ class TestCaseManagement extends React.Component {
             updateTestCase={(t) => this.props.updateTestCase(this.context.project?.id, this.props.testsuite?.id, t.id, t)}
             deleteTestCase={(selectedTestCase) => this.setState({ showDeleteDialog: true, selectedTestCase })}
             cloneTestCase={(selectedTestCase) => this.props.cloneTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase.id)}
-            runTestCase={(selectedTestCase) => this.props.runTestCase(this.context.project?.id, [selectedTestCase.id])}
+            runTestCases={(selectedTestCase) => this.props.runTestCases(this.context.project?.id, [selectedTestCase.id])}
             onClose={() => this.props.onClose()}
           />
         )}
@@ -202,7 +202,7 @@ const mapStateToProps = (state) => ({
   updateTestCase: PropTypes.func.isRequired,
   fetchTestCase: PropTypes.func.isRequired,
   cloneTestCase: PropTypes.func.isRequired,
-  runTestCase: PropTypes.func.isRequired,
+  runTestCases: PropTypes.func.isRequired,
   testcase: state.testcase
 });
 
@@ -214,10 +214,10 @@ export default connect(mapStateToProps, {
   updateTestCase,
   fetchTestCase,
   cloneTestCase,
-  runTestCase
+  runTestCases
 })(TestCaseManagement);
 
-function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCase }) {
+function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCases }) {
   const [search, setSearch] = useState("");
   const exportTestCases = (data) => {
     const exportData = data.map((d) => {
@@ -287,7 +287,7 @@ function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCa
                     updateTestCase={updateTestCase}
                     deleteTestCase={deleteTestCase}
                     cloneTestCase={cloneTestCase}
-                    runTestCase={runTestCase}
+                    runTestCases={runTestCases}
                   />
                 ))}
               </tbody>
@@ -318,7 +318,7 @@ function Header({ title }) {
   );
 }
 
-function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCase }) {
+function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases }) {
   const tcType = TC_TYPES[record.type] || "Unknown";
   return (
     <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-sm">
@@ -357,29 +357,28 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
+          className={`text-xs font-normal select-none ${record.status === 0
               ? "bg-purple-300"
               : record.status === 1
-              ? "bg-indigo-300"
-              : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
-          }`}
+                ? "bg-indigo-300"
+                : record.status === 2
+                  ? "bg-blue-300"
+                  : record.status === 3
+                    ? "bg-violet-400"
+                    : ""
+            }`}
         >
           {tcType}
         </label>
       </td>
       <td className="px-2 py-0.5 w-40">
         <div className="flex flex-row">
-          <IconRenderer
+          {record.enabled && <IconRenderer
             icon="PlayArrowRounded"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
             fontSize="medium"
-            onClick={() => runTestCase(record)}
-          />
+            onClick={() => runTestCases(record)}
+          />}
           <IconRenderer
             icon="ContentCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"

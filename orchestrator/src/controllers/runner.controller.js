@@ -6,10 +6,12 @@ const isEmpty = require("lodash/isEmpty");
 const authorize = require("../_middleware/authorize");
 const csrf = require("../_middleware/checkCSRF");
 
-router.post("/:projectId/start", csrf, authorize(), startProjectBuilds);
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
+router.post("/:projectId/runProject", csrf, authorize(), startProjectBuilds);
+router.post("/:projectId/runTestSuite/:suiteId",csrf, authorize(), startTestSuite);
+router.post("/:projectId/runTestCases",csrf, authorize(), startTestCases);
+
 router.post("/:projectId/trigger", startProjectBuilds);
-router.post("/:projectId/runTests", startTestCases);
 
 module.exports = router;
 
@@ -44,10 +46,21 @@ function stopProjectBuilds(req, res) {
 }
 
 function startTestCases(req, res) {
-  logger.info("Starting project build", req.params.projectId, req.body);
+  logger.info("StartTestCases", req.params.projectId, req.body);
   runner
     .createTestCase(req.auth?.id, req.params.projectId, req.body)
-    .then((response) => res.status(status.ACCEPTED).json(response))
+    .then((response) => res.status(status.OK).json(response))
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });
+    });
+}
+
+function startTestSuite(req, res) {
+  logger.info("StartTestSuite", req.params.projectId, req.params.suiteId);
+  runner
+    .createTestSuite(req.auth?.id, req.params.projectId,req.params.suiteId)
+    .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });

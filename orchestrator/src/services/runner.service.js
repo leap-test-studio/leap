@@ -8,7 +8,8 @@ const isEmpty = require("lodash/isEmpty");
 module.exports = {
   create,
   stop,
-  createTestCase
+  createTestCase,
+  createTestSuite
 };
 
 async function create(AccountId, ProjectMasterId, payload) {
@@ -23,7 +24,6 @@ async function create(AccountId, ProjectMasterId, payload) {
 
   let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
     where: {
-      type: 0,
       ProjectMasterId
     }
   });
@@ -155,67 +155,81 @@ async function stop(ProjectMasterId) {
   return list;
 }
 
-async function createTestCase(AccountId, ProjectMasterId, payload) {
-  try {
-    let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
-      where: {
-        type: 0,
-        ProjectMasterId
-      }
-    });
+async function createTestSuite(AccountId, ProjectMasterId, TestSuiteId){
+  const testCases = await global.DbStoreModel.TestCase.findAll({
+    attributes: ["id"],
+    where: {
+      TestSuiteId,
+      enabled: true
+    },
+    order: [["seqNo", "ASC"]]
+  });
 
-    if (nextBuildNumber == null) {
-      nextBuildNumber = 0;
-    }
-    nextBuildNumber = Number(nextBuildNumber) + 1;
+  return createTestCase(AccountId, ProjectMasterId, testCases.map(t=>t.id) )
+}
 
-    const testCases = await global.DbStoreModel.TestCase.findAll({
-      where: {
-        enabled: true,
-        id: {
-          [Op.in]: payload
+function createTestCase(AccountId, ProjectMasterId, payload) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
+        where: {
+          ProjectMasterId
         }
-      },
-      order: [["seqNo", "ASC"]]
-    });
-
-    const totalTestCases = testCases.length;
-    if (totalTestCases > 0) {
-      const build = new global.DbStoreModel.BuildMaster({
-        type: 1,
-        buildNo: nextBuildNumber,
-        total: totalTestCases,
-        status: TestStatus.RUNNING,
-        AccountId,
-        ProjectMasterId,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
       });
-      await build.save();
-
-      const jobs = await BPromise.reduce(
-        testCases,
-        async (acc, testCase) => {
-          const job = new global.DbStoreModel.Job({
-            TestCaseId: testCase.id,
-            BuildMasterId: build.id,
-            steps: testCase.execSteps,
-            createdAt: Date.now()
-          });
-          await job.save();
-          acc.push(job.id);
-          return acc;
+  
+      if (nextBuildNumber == null) {
+        nextBuildNumber = 0;
+      }
+      nextBuildNumber = Number(nextBuildNumber) + 1;
+  
+      const testCases = await global.DbStoreModel.TestCase.findAll({
+        where: {
+          enabled: true,
+          id: {
+            [Op.in]: payload
+          }
         },
-        []
-      );
-      BuildManager.emit("addJobs", jobs);
+        order: [["seqNo", "ASC"]]
+      });
+  
+      const totalTestCases = testCases.length;
+      if (totalTestCases > 0) {
+        const build = new global.DbStoreModel.BuildMaster({
+          type: 1,
+          buildNo: nextBuildNumber,
+          total: totalTestCases,
+          status: TestStatus.RUNNING,
+          AccountId,
+          ProjectMasterId,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        });
+        await build.save();
+  
+        const jobs = await BPromise.reduce(
+          testCases,
+          async (acc, testCase) => {
+            const job = new global.DbStoreModel.Job({
+              TestCaseId: testCase.id,
+              BuildMasterId: build.id,
+              steps: testCase.execSteps,
+              createdAt: Date.now()
+            });
+            await job.save();
+            acc.push(job.id);
+            return acc;
+          },
+          []
+        );
+        BuildManager.emit("addJobs", jobs);
+      }
+      resolve({
+        buildNumber: nextBuildNumber,
+        totalTestCases
+      });
+    } catch (e) {
+      logger.error(e);
+      reject(e);
     }
-    Promise.resolve({
-      buildNumber: nextBuildNumber,
-      totalTestCases
-    });
-  } catch (e) {
-    logger.error(e);
-    Promise.reject(e);
-  }
+  });
 }

@@ -97,9 +97,31 @@ export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
     });
 };
 
-export const runTestCase = (projectId, payload) => (dispatch) => {
+export const runTestSuite = (projectId, suiteId) => (dispatch) => {
   axios
-    .post(`/api/v1/runner/${projectId}/runTests`, payload)
+    .post(`/api/v1/runner/${projectId}/runTestSuite/${suiteId}`)
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.RUN_TESTCASE,
+          payload: {
+            ...res.data
+          }
+        });
+    })
+    .catch((e) => {
+      dispatch({
+        type: actionTypes.RUN_TESTCASE,
+        payload: {
+          ...e.response.data
+        }
+      });
+    });
+};
+
+export const runTestCases = (projectId, payload) => (dispatch) => {
+  axios
+    .post(`/api/v1/runner/${projectId}/runTestCases`, payload)
     .then((res) => {
       if (res?.data)
         dispatch({

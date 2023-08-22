@@ -80,6 +80,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
       delete testcase.seqNo;
       request.push(global.DbStoreModel.TestCase.create(testcase, { transaction: t }));
     });
+    console.log(request);
     return Promise.all(request);
   });
   return testcases;

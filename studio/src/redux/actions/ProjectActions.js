@@ -151,7 +151,7 @@ export const startProjectBuilds = (project) => (dispatch) => {
     }
   });
   axios
-    .post(`/api/v1/runner/${project}/start`)
+    .post(`/api/v1/runner/${project}/runProject`)
     .then((res) => {
       if (res?.data)
         dispatch({

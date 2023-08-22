@@ -7,9 +7,9 @@ import {
   deleteTestSuite,
   resetTestSuiteFlags,
   updateTestSuite,
-  cloneTestSuite
+  cloneTestSuite  
 } from "../../../redux/actions/TestSuiteActions";
-import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
+import { fetchTestCaseList, runTestSuite } from "../../../redux/actions/TestCaseActions";
 import { useDispatch, useSelector } from "react-redux";
 import { ProjectColors } from "../common/ProjectColors";
 import CreateTestSuiteDialog from "./CreateTestSuiteDialog";
@@ -234,6 +234,8 @@ const TestSuiteCard = ({ projectId, testsuite, openTestSuite, setSelectedTestSui
 
   const editTestSuite = () => openTestSuite(testsuite);
 
+  const run = () => dispatch(runTestSuite(projectId, id));
+
   const cloneTestSuite = () => {
     setSelectedTestSuite(testsuite);
     setShowCloneDialog(true);
@@ -244,14 +246,7 @@ const TestSuiteCard = ({ projectId, testsuite, openTestSuite, setSelectedTestSui
     setShowDeleteDialog(true);
   };
 
-  const handleToggle = () => {
-    dispatch(
-      updateTestSuite(projectId, id, {
-        name,
-        status: !status
-      })
-    );
-  };
+  const handleToggle = () => dispatch(updateTestSuite(projectId, id, { name, status: !status }));
 
   const trimmedName = name?.trim() || "";
 
@@ -282,6 +277,20 @@ const TestSuiteCard = ({ projectId, testsuite, openTestSuite, setSelectedTestSui
             >
               <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
             </Tooltip>
+            {status && <Tooltip
+              title="Run TestSuite"
+              content={
+                <p>
+                  Execute test cases of <strong>TestSuite</strong>
+                </p>
+              }
+            >
+              <IconRenderer
+                icon="PlayArrowRounded"
+                className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer"
+                onClick={run}
+              />
+            </Tooltip>}
             <Tooltip
               title="Clone TestSuite"
               content={
