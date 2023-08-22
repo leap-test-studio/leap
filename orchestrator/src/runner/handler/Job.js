@@ -35,7 +35,7 @@ class Job {
 
   beforeHook() {
     return new Promise((resolve, reject) => {
-      if (isEmpty(this.testcase?.execSteps)) {
+      if (isEmpty(this.testcase?.execSteps) || this.testcase?.type == 0) {
         this.notifyJob(TestStatus.INVALID_TESTCASE);
         return reject({
           actual: this.testcase,

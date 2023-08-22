@@ -21,7 +21,8 @@ const TestSuiteReducer = function (state = initialState, { payload, type }) {
     case actionTypes.UPDATE_TESTSUITE:
     case actionTypes.CREATE_TESTSUITE:
     case actionTypes.CLONE_TESTSUITE:
-    case actionTypes.DELETE_TESTSUITE: {
+    case actionTypes.DELETE_TESTSUITE:
+    case actionTypes.RUN_TESTSUITE: {
       return {
         ...state,
         ...payload

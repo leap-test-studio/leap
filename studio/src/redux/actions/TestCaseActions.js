@@ -2,18 +2,15 @@ import axios from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 
-export const resetTestCaseFlags = () => (dispatch) => {
+export const resetTestCaseFlags = (options) => (dispatch) => {
   dispatch({
-    type: actionTypes.CREATE_TESTCASE,
+    type: actionTypes.RESET_TESTCASE,
     payload: {
-      isTestCaseCreated: false,
-      isTestCaseCreateFailed: false,
-      isTestCaseDeleted: false,
-      isTestCaseDeleteFailed: false,
-      isTestCaseUpdated: false,
-      isTestCaseUpdatedError: false,
-      isTestCaseCloned: false,
-      isTestCaseCloneFailed: false
+      loading: false,
+      isError: false,
+      showMessage: false,
+      message: null,
+      ...options
     }
   });
 };
@@ -28,14 +25,7 @@ export const fetchTestCaseList = (projectId, testSuiteId) => (dispatch) => {
 };
 
 export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
-  dispatch({
-    type: actionTypes.CREATE_TESTCASE,
-    payload: {
-      loading: true,
-      isTestCaseCreated: false,
-      isTestCaseCreateFailed: false
-    }
-  });
+  resetTestCaseFlags({ loading: true });
   axios
     .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, data)
     .then((res) => {
@@ -44,7 +34,7 @@ export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
           type: actionTypes.CREATE_TESTCASE,
           payload: {
             ...res.data,
-            isTestCaseCreated: true,
+            showMessage: true,
             loading: false,
             isFirstTestCase: false
           }
@@ -55,7 +45,8 @@ export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
         type: actionTypes.CREATE_TESTCASE,
         payload: {
           ...e.response.data,
-          isTestCaseCreateFailed: true,
+          showMessage: true,
+          isError: true,
           loading: false
         }
       });
@@ -63,14 +54,7 @@ export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
 };
 
 export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
-  dispatch({
-    type: actionTypes.CLONE_TESTCASE,
-    payload: {
-      loading: true,
-      isTestCaseCloned: false,
-      isTestCaseCloneFailed: false
-    }
-  });
+  resetTestCaseFlags({ loading: true });
   axios
     .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${id}/clone`)
     .then((res) => {
@@ -79,7 +63,7 @@ export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
           type: actionTypes.CLONE_TESTCASE,
           payload: {
             ...res.data,
-            isTestCaseCloned: true,
+            showMessage: true,
             loading: false,
             isFirstTestCase: false
           }
@@ -90,36 +74,16 @@ export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
         type: actionTypes.CLONE_TESTCASE,
         payload: {
           ...e.response.data,
-          isTestCaseCloneFailed: true,
+          showMessage: true,
+          isError: true,
           loading: false
         }
       });
     });
 };
 
-export const runTestSuite = (projectId, suiteId) => (dispatch) => {
-  axios
-    .post(`/api/v1/runner/${projectId}/runTestSuite/${suiteId}`)
-    .then((res) => {
-      if (res?.data)
-        dispatch({
-          type: actionTypes.RUN_TESTCASE,
-          payload: {
-            ...res.data
-          }
-        });
-    })
-    .catch((e) => {
-      dispatch({
-        type: actionTypes.RUN_TESTCASE,
-        payload: {
-          ...e.response.data
-        }
-      });
-    });
-};
-
 export const runTestCases = (projectId, payload) => (dispatch) => {
+  resetTestCaseFlags({ loading: true });
   axios
     .post(`/api/v1/runner/${projectId}/runTestCases`, payload)
     .then((res) => {
@@ -127,7 +91,9 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
         dispatch({
           type: actionTypes.RUN_TESTCASE,
           payload: {
-            ...res.data
+            ...res.data,
+            showMessage: true,
+            loading: false
           }
         });
     })
@@ -135,20 +101,17 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
       dispatch({
         type: actionTypes.RUN_TESTCASE,
         payload: {
-          ...e.response.data
+          ...e.response.data,
+          showMessage: true,
+          isError: true,
+          loading: false
         }
       });
     });
 };
 
 export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dispatch) => {
-  dispatch({
-    type: actionTypes.UPDATE_TESTCASE,
-    payload: {
-      isTestCaseUpdated: false,
-      isTestCaseUpdatedFailed: false
-    }
-  });
+  resetTestCaseFlags({ loading: true });
   axios
     .put(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, data)
     .then((res) => {
@@ -158,7 +121,7 @@ export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dis
           payload: {
             ...res.data,
             showMessage: true,
-            isTestCaseUpdated: true
+            loading: false
           }
         });
     })
@@ -167,20 +130,16 @@ export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dis
         type: actionTypes.UPDATE_TESTCASE,
         payload: {
           ...e.response.data,
-          isTestCaseUpdatedFailed: true
+          showMessage: true,
+          isError: true,
+          loading: false
         }
       });
     });
 };
 
 export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch) => {
-  dispatch({
-    type: actionTypes.DELETE_TESTCASE,
-    payload: {
-      isTestCaseDeleted: false,
-      isTestCaseDeleteFailed: false
-    }
-  });
+  resetTestCaseFlags({ loading: true });
   axios
     .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`)
     .then((res) => {
@@ -189,7 +148,8 @@ export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch)
           type: actionTypes.DELETE_TESTCASE,
           payload: {
             ...res.data,
-            isTestCaseDeleted: true
+            showMessage: true,
+            loading: false
           }
         });
     })
@@ -198,7 +158,9 @@ export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch)
         type: actionTypes.DELETE_TESTCASE,
         payload: {
           ...e.response.data,
-          isTestCaseDeleteFailed: true
+          showMessage: true,
+          isError: true,
+          loading: false
         }
       });
     });

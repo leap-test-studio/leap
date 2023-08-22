@@ -46,7 +46,7 @@ class TestCaseHandler {
       try {
         await this.runner?.afterHook();
       } catch (e) {
-        logger.error("After Hook failed", e);
+        logger.error("After Hook failed", this.runner, e);
       }
     }
   }

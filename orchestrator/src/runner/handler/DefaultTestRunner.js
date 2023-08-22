@@ -1,13 +1,22 @@
-module.exports = function (testcase) {
-  this.testcase = testcase;
-  this.before = function () {
+const TestStatus = require("../enums/TestStatus");
+const Job = require("./Job");
+
+class TestRunner extends Job {
+  constructor(job) {
+    super(job);
+  }
+  async before() {
     return Promise.resolve(true);
-  };
-  this.execute = function () {
+  }
+  async execute() {
+    this.actual = { actualResult: "Invalid Test Case" };
+    this.result = TestStatus.INVALID_TESTCASE;
     return Promise.resolve(true);
-  };
-  this.after = function () {
+  }
+  async after() {
     return Promise.resolve(true);
-  };
-  this.stop = function () {};
-};
+  }
+  async stop() {}
+}
+
+module.exports = TestRunner;

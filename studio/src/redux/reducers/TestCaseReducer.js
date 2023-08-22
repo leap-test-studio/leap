@@ -27,6 +27,7 @@ const TestCaseReducer = function (state = initialState, { payload, type }) {
         testcases: payload.items
       };
     }
+    case actionTypes.RESET_TESTCASE:
     case actionTypes.UPDATE_TESTCASE:
     case actionTypes.CREATE_TESTCASE:
     case actionTypes.CLONE_TESTCASE:

@@ -176,6 +176,7 @@ async function getBuildDetails(id, buildNo) {
       ...job,
       steps: stepsExecuted.length
     });
+    if (job?.TestCase?.TestSuite?.id) suites[job?.TestCase?.TestSuite?.id] = job?.TestCase?.TestSuite;
   });
   const executed = passed + failed + skipped;
 

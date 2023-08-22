@@ -1,4 +1,3 @@
-const { now } = require("lodash");
 const { getPagination, getPagingData } = require("../utils/pagination");
 
 module.exports = {
@@ -31,6 +30,7 @@ async function create(AccountId, ProjectMasterId, payload) {
   }
   const ts = new global.DbStoreModel.TestSuite({
     ...payload,
+    status: 1,
     AccountId,
     ProjectMasterId
   });
@@ -80,7 +80,6 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
       delete testcase.seqNo;
       request.push(global.DbStoreModel.TestCase.create(testcase, { transaction: t }));
     });
-    console.log(request);
     return Promise.all(request);
   });
   return testcases;

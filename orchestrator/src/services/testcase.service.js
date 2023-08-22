@@ -34,42 +34,65 @@ async function create(AccountId, TestSuiteId, payload) {
     }
   });
 
-  let seqNo = await global.DbStoreModel.TestCase.max("seqNo", {
+  let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
       TestSuiteId: {
         [Op.in]: testSuites.map((suite) => suite.id)
       }
     }
   });
-  if (seqNo == null) {
-    seqNo = 0;
+  if (nextSeqNo == null) {
+    nextSeqNo = 0;
   }
-  seqNo = Number(seqNo) + 1;
+  nextSeqNo = Number(nextSeqNo) + 1;
 
-  const tc = new global.DbStoreModel.TestCase({
+  const tc = global.DbStoreModel.TestCase.build({
     ...payload,
+    enabled: true,
     AccountId,
-    TestSuiteId
+    TestSuiteId,
+    seqNo: nextSeqNo,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
   });
-  tc.seqNo = seqNo;
-  tc.createdAt = Date.now();
-  tc.updatedAt = Date.now();
   await tc.save();
   return tc;
 }
 
 async function clone(AccountId, TestSuiteId, id) {
+  const ts = await global.DbStoreModel.TestSuite.findByPk(TestSuiteId);
+
+  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+    attributes: ["id"],
+    where: {
+      ProjectMasterId: ts.ProjectMasterId
+    }
+  });
+
   let tc = await get(AccountId, TestSuiteId, id);
   tc = tc.toJSON();
   delete tc.id;
   delete tc.seqNo;
-  const tcClone = new global.DbStoreModel.TestCase({
+  let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
+    where: {
+      TestSuiteId: {
+        [Op.in]: testSuites.map((suite) => suite.id)
+      }
+    }
+  });
+  if (nextSeqNo == null) {
+    nextSeqNo = 0;
+  }
+  nextSeqNo = Number(nextSeqNo) + 1;
+
+  const tcClone = global.DbStoreModel.TestCase.build({
     ...tc,
     AccountId,
-    TestSuiteId
+    TestSuiteId,
+    seqNo: nextSeqNo,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
   });
-  tcClone.createdAt = Date.now();
-  tcClone.updatedAt = Date.now();
   await tcClone.save();
   return tcClone;
 }

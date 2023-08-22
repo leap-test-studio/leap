@@ -138,3 +138,28 @@ export const cloneTestSuite = (projectId, suiteId, data) => (dispatch) => {
       });
     });
 };
+
+export const runTestSuite = (projectId, suiteId) => (dispatch) => {
+  axios
+    .post(`/api/v1/runner/${projectId}/runTestSuite/${suiteId}`)
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.RUN_TESTSUITE,
+          payload: {
+            ...res.data,
+            showMessage: true
+          }
+        });
+    })
+    .catch((e) => {
+      dispatch({
+        type: actionTypes.RUN_TESTSUITE,
+        payload: {
+          ...e.response.data,
+          showMessage: true,
+          isError: true
+        }
+      });
+    });
+};

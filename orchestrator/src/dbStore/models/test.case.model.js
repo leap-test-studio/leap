@@ -1,4 +1,5 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require("sequelize");
+module.exports = (sequelize) => {
   const TestCase = sequelize.define(
     "TestCase",
     {
@@ -14,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         get: function () {
           return String(this.getDataValue("seqNo")).padStart(4, "0");
         },
-        set: function () {
-          return parseInt(this.getDataValue("seqNo"));
+        set: function (value) {
+          return this.setDataValue("seqNo", parseInt(value));
         }
       },
       enabled: {

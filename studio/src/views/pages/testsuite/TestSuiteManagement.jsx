@@ -7,9 +7,10 @@ import {
   deleteTestSuite,
   resetTestSuiteFlags,
   updateTestSuite,
-  cloneTestSuite  
+  cloneTestSuite,
+  runTestSuite
 } from "../../../redux/actions/TestSuiteActions";
-import { fetchTestCaseList, runTestSuite } from "../../../redux/actions/TestCaseActions";
+import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
 import { useDispatch, useSelector } from "react-redux";
 import { ProjectColors } from "../common/ProjectColors";
 import CreateTestSuiteDialog from "./CreateTestSuiteDialog";
@@ -34,7 +35,7 @@ dayjs.extend(relativeTime);
 
 const MAX_ALLOWED_TEST_SUITES = 25;
 
-function TestSuiteManagement({ windowDimension }) {
+function TestSuiteManagement() {
   const dispatch = useDispatch();
   const [search, setSearch] = useState(null);
   const [selectedTestSuite, setSelectedTestSuite] = useState(null);
@@ -94,7 +95,7 @@ function TestSuiteManagement({ windowDimension }) {
   if (suite) {
     return (
       <Centered>
-        <TestCaseManagement testsuite={suite} onClose={() => changeSuite(null)} />
+        <TestCaseManagement suite={suite} onClose={() => changeSuite(null)} />
       </Centered>
     );
   }
@@ -277,20 +278,18 @@ const TestSuiteCard = ({ projectId, testsuite, openTestSuite, setSelectedTestSui
             >
               <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
             </Tooltip>
-            {status && <Tooltip
-              title="Run TestSuite"
-              content={
-                <p>
-                  Execute test cases of <strong>TestSuite</strong>
-                </p>
-              }
-            >
-              <IconRenderer
-                icon="PlayArrowRounded"
-                className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer"
-                onClick={run}
-              />
-            </Tooltip>}
+            {status && (
+              <Tooltip
+                title="Run TestSuite"
+                content={
+                  <p>
+                    Execute test cases of <strong>TestSuite</strong>
+                  </p>
+                }
+              >
+                <IconRenderer icon="PlayArrowRounded" className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer" onClick={run} />
+              </Tooltip>
+            )}
             <Tooltip
               title="Clone TestSuite"
               content={

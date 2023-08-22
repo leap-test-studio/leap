@@ -8,8 +8,8 @@ const csrf = require("../_middleware/checkCSRF");
 
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
 router.post("/:projectId/runProject", csrf, authorize(), startProjectBuilds);
-router.post("/:projectId/runTestSuite/:suiteId",csrf, authorize(), startTestSuite);
-router.post("/:projectId/runTestCases",csrf, authorize(), startTestCases);
+router.post("/:projectId/runTestSuite/:suiteId", csrf, authorize(), startTestSuite);
+router.post("/:projectId/runTestCases", csrf, authorize(), startTestCases);
 
 router.post("/:projectId/trigger", startProjectBuilds);
 
@@ -59,7 +59,7 @@ function startTestCases(req, res) {
 function startTestSuite(req, res) {
   logger.info("StartTestSuite", req.params.projectId, req.params.suiteId);
   runner
-    .createTestSuite(req.auth?.id, req.params.projectId,req.params.suiteId)
+    .createTestSuite(req.auth?.id, req.params.projectId, req.params.suiteId)
     .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);

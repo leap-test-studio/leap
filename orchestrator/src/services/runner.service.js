@@ -155,7 +155,7 @@ async function stop(ProjectMasterId) {
   return list;
 }
 
-async function createTestSuite(AccountId, ProjectMasterId, TestSuiteId){
+async function createTestSuite(AccountId, ProjectMasterId, TestSuiteId) {
   const testCases = await global.DbStoreModel.TestCase.findAll({
     attributes: ["id"],
     where: {
@@ -165,7 +165,11 @@ async function createTestSuite(AccountId, ProjectMasterId, TestSuiteId){
     order: [["seqNo", "ASC"]]
   });
 
-  return createTestCase(AccountId, ProjectMasterId, testCases.map(t=>t.id) )
+  return createTestCase(
+    AccountId,
+    ProjectMasterId,
+    testCases.map((t) => t.id)
+  );
 }
 
 function createTestCase(AccountId, ProjectMasterId, payload) {
@@ -176,14 +180,17 @@ function createTestCase(AccountId, ProjectMasterId, payload) {
           ProjectMasterId
         }
       });
-  
+
       if (nextBuildNumber == null) {
         nextBuildNumber = 0;
       }
       nextBuildNumber = Number(nextBuildNumber) + 1;
-  
+
       const testCases = await global.DbStoreModel.TestCase.findAll({
         where: {
+          type: {
+            [Op.not]: 0
+          },
           enabled: true,
           id: {
             [Op.in]: payload
@@ -191,7 +198,7 @@ function createTestCase(AccountId, ProjectMasterId, payload) {
         },
         order: [["seqNo", "ASC"]]
       });
-  
+
       const totalTestCases = testCases.length;
       if (totalTestCases > 0) {
         const build = new global.DbStoreModel.BuildMaster({
@@ -205,7 +212,7 @@ function createTestCase(AccountId, ProjectMasterId, payload) {
           updatedAt: Date.now()
         });
         await build.save();
-  
+
         const jobs = await BPromise.reduce(
           testCases,
           async (acc, testCase) => {
@@ -222,11 +229,16 @@ function createTestCase(AccountId, ProjectMasterId, payload) {
           []
         );
         BuildManager.emit("addJobs", jobs);
+        resolve({
+          buildNumber: nextBuildNumber,
+          totalTestCases,
+          message: `Test Runner Started. Build No: ${nextBuildNumber}, Total test Cases: ${totalTestCases}`
+        });
+      } else {
+        resolve({
+          message: "No test cases"
+        });
       }
-      resolve({
-        buildNumber: nextBuildNumber,
-        totalTestCases
-      });
     } catch (e) {
       logger.error(e);
       reject(e);

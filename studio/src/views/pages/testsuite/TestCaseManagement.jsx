@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import IconButton from "../../utilities/IconButton";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import { cropString } from "../utils";
@@ -18,8 +18,7 @@ import {
   cloneTestCase,
   runTestCases
 } from "../../../redux/actions/TestCaseActions";
-import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
@@ -30,192 +29,134 @@ import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 
 const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
 
-class TestCaseManagement extends React.Component {
-  state = {
-    selectedTestCase: null,
-    showDeleteDialog: false,
-    showAddTestCaseDialog: false,
-    showUpdateTestCaseDialog: false,
-    showMessage: false,
-    isError: false,
-    message: ""
+function TestCaseManagement({ suite, onClose }) {
+  const dispatch = useDispatch();
+  const [selectedTestCase, setSelectedTestCase] = useState(null);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const { project } = useContext(WebContext);
+  const { isFirstTestCase, loading, testcases, isError, message, showMessage } = useSelector((state) => state.testcase);
+
+  useEffect(() => {
+    fetchTestCases();
+  }, []);
+
+  const fetchTestCases = () => {
+    if (project?.id && suite?.id) {
+      dispatch(fetchTestCaseList(project?.id, suite?.id));
+    }
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { testcase } = nextProps;
-    if (testcase.isTestCaseCloned || testcase.isTestCaseDeleted || testcase.isTestCaseCreated || testcase.isTestCaseUpdated) {
-      return {
-        ...prevState,
-        message: testcase.message,
-        isError: false,
-        showMessage: true
-      };
-    }
+  const resetState = () => {
+    setSelectedTestCase(null);
+    setShowCreateDialog(false);
+    setShowUpdateDialog(false);
+    setShowDeleteDialog(false);
+  };
 
-    if (testcase.isTestCaseCreateFailed || testcase.isTestCaseCloneFailed || testcase.isTestCaseDeleteFailed) {
-      return {
-        ...prevState,
-        message: testcase.message,
-        isError: true,
-        showMessage: true,
-        loading: testcase.loading
-      };
-    }
-
-    if (testcase.case) {
-      return {
-        ...prevState,
-        selectedTestCase: testcase.case
-      };
-    }
-    return {
-      ...prevState,
-      loading: testcase.loading
-    };
-  }
-
-  componentDidMount() {
-    this.fetchTestCaseList();
-  }
-
-  fetchTestCaseList() {
-    if (this.context.project?.id && this.props.testsuite?.id) {
-      this.props.fetchTestCaseList(this.context.project?.id, this.props.testsuite?.id);
-    }
-  }
-
-  handleCreateTestCase(record) {
-    this.props.createTestCase(this.context.project?.id, this.props.testsuite?.id, record);
-    this.setState({
-      showAddTestCaseDialog: false
-    });
-  }
-
-  render() {
-    const { isFirstTestCase, loading, testcases } = this.props.testcase;
-    const { selectedTestCase, showDeleteDialog, showAddTestCaseDialog, showUpdateTestCaseDialog, showMessage, isError, message } = this.state;
-    return (
-      <>
-        {isFirstTestCase ? (
-          <Page>
-            <PageHeader>
-              <PageTitle>Test Cases</PageTitle>
-            </PageHeader>
-            <PageBody>
-              <Centered>
-                <FirstTimeCard
-                  id="first-test-case"
-                  icon="AddTask"
-                  loading={loading}
-                  onClick={() => this.setState({ showAddTestCaseDialog: true })}
-                  onClose={() => this.props.onClose()}
-                  title="Create first TestCase"
-                  details={`TestSuite: ${this.props.testsuite?.name}`}
-                  buttonTitle="Create"
-                  buttonIcon="PostAdd"
-                />
-              </Centered>
-            </PageBody>
-          </Page>
-        ) : (
-          <RenderList
-            testcases={testcases}
-            showDeleteDialog={(selectedTestCase) => this.setState({ showDeleteDialog: true, selectedTestCase })}
-            showAddTestCaseDialog={() => this.setState({ showAddTestCaseDialog: true })}
-            loading={loading}
-            editTestCase={(selectedTestCase) => {
-              this.props.fetchTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase.id);
-              this.setState({ showUpdateTestCaseDialog: true, selectedTestCase });
-            }}
-            updateTestCase={(t) => this.props.updateTestCase(this.context.project?.id, this.props.testsuite?.id, t.id, t)}
-            deleteTestCase={(selectedTestCase) => this.setState({ showDeleteDialog: true, selectedTestCase })}
-            cloneTestCase={(selectedTestCase) => this.props.cloneTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase.id)}
-            runTestCases={(selectedTestCase) => this.props.runTestCases(this.context.project?.id, [selectedTestCase.id])}
-            onClose={() => this.props.onClose()}
-          />
-        )}
-        {showDeleteDialog && (
-          <DeleteItemDialog
-            title="Delete Test Case"
-            question="Are you sure you want to delete the selected Test Case?"
-            showDialog={showDeleteDialog}
-            onClose={() =>
-              this.setState({
-                selectedTestCase: null,
-                showDeleteDialog: false
-              })
-            }
-            item={selectedTestCase.name}
-            onDelete={() => {
-              this.props.deleteTestCase(this.context.project?.id, this.props.testsuite?.id, selectedTestCase?.id);
-              this.setState({
-                selectedTestCase: null,
-                showDeleteDialog: false
-              });
-            }}
-          />
-        )}
-        {showAddTestCaseDialog && (
-          <CreateTestCaseDialog
-            showDialog={showAddTestCaseDialog}
-            onClose={() =>
-              this.setState({
-                showAddTestCaseDialog: false
-              })
-            }
-            createTestCase={(s) => this.handleCreateTestCase(s)}
-          />
-        )}
-        {showUpdateTestCaseDialog && (
-          <UpdateTestCaseDialog
-            testsuite={this.props.testsuite}
-            testcase={selectedTestCase}
-            isOpen={showUpdateTestCaseDialog}
-            onClose={() => this.setState({ showUpdateTestCaseDialog: false, selectedTestCase: null })}
-            onUpdate={(t) => {
-              this.setState({ showUpdateTestCaseDialog: false, selectedTestCase: null });
-              this.props.updateTestCase(this.context.project?.id, this.props.testsuite?.id, t.id, t);
-            }}
-          />
-        )}
-        <CustomAlertDialog
-          level={isError ? "warn" : "success"}
-          message={message}
-          showDialog={showMessage}
-          onClose={() => {
-            this.fetchTestCaseList();
-            this.setState({ showMessage: false, message: "", isError: false });
-            this.props.resetTestCaseFlags();
+  return (
+    <>
+      {isFirstTestCase ? (
+        <Page>
+          <PageHeader>
+            <PageTitle>Test Cases</PageTitle>
+          </PageHeader>
+          <PageBody>
+            <Centered>
+              <FirstTimeCard
+                id="first-test-case"
+                icon="AddTask"
+                loading={loading}
+                onClick={() => setShowCreateDialog(true)}
+                onClose={onClose}
+                title="Create first TestCase"
+                details={`TestSuite: ${suite?.name}`}
+                buttonTitle="Create"
+                buttonIcon="PostAdd"
+              />
+            </Centered>
+          </PageBody>
+        </Page>
+      ) : (
+        <RenderList
+          testcases={testcases}
+          showDeleteDialog={(selectedTestCase) => {
+            setSelectedTestCase(selectedTestCase);
+            setShowDeleteDialog(true);
+          }}
+          showAddTestCaseDialog={() => setShowCreateDialog(true)}
+          loading={loading}
+          editTestCase={(selectedTestCase) => {
+            setSelectedTestCase(selectedTestCase);
+            setShowUpdateDialog(true);
+            dispatch(fetchTestCase(project?.id, suite?.id, selectedTestCase.id));
+          }}
+          updateTestCase={(t) => dispatch(updateTestCase(project?.id, suite?.id, t.id, t))}
+          deleteTestCase={(selectedTestCase) => {
+            setSelectedTestCase(selectedTestCase);
+            setShowDeleteDialog(true);
+          }}
+          cloneTestCase={(selectedTestCase) => {
+            setSelectedTestCase(selectedTestCase);
+            dispatch(cloneTestCase(project?.id, suite?.id, selectedTestCase.id));
+          }}
+          runTestCases={(selectedTestCase) => {
+            dispatch(runTestCases(project?.id, [selectedTestCase.id]));
+          }}
+          onClose={onClose}
+        />
+      )}
+      {showDeleteDialog && (
+        <DeleteItemDialog
+          title="Delete Test Case"
+          question="Are you sure you want to delete the selected Test Case?"
+          showDialog={showDeleteDialog}
+          onClose={resetState}
+          item={selectedTestCase.name}
+          onDelete={() => {
+            dispatch(deleteTestCase(project?.id, suite?.id, selectedTestCase?.id));
+            setShowDeleteDialog(false);
           }}
         />
-      </>
-    );
-  }
+      )}
+      {showCreateDialog && (
+        <CreateTestCaseDialog
+          showDialog={showCreateDialog}
+          onClose={resetState}
+          createTestCase={(record) => {
+            dispatch(createTestCase(project?.id, suite?.id, record));
+            setShowCreateDialog(false);
+          }}
+        />
+      )}
+      {showUpdateDialog && (
+        <UpdateTestCaseDialog
+          testsuite={suite}
+          testcase={selectedTestCase}
+          isOpen={showUpdateDialog}
+          onClose={resetState}
+          onUpdate={(t) => {
+            dispatch(updateTestCase(project?.id, suite?.id, t.id, t));
+            resetState();
+          }}
+        />
+      )}
+      <CustomAlertDialog
+        level={isError ? "warn" : "success"}
+        message={message}
+        showDialog={showMessage}
+        onClose={() => {
+          dispatch(resetTestCaseFlags());
+          fetchTestCases();
+        }}
+      />
+    </>
+  );
 }
-TestCaseManagement.contextType = WebContext;
 
-const mapStateToProps = (state) => ({
-  fetchTestCaseList: PropTypes.func.isRequired,
-  createTestCase: PropTypes.func.isRequired,
-  resetTestCaseFlags: PropTypes.func.isRequired,
-  deleteTestCase: PropTypes.func.isRequired,
-  updateTestCase: PropTypes.func.isRequired,
-  fetchTestCase: PropTypes.func.isRequired,
-  cloneTestCase: PropTypes.func.isRequired,
-  runTestCases: PropTypes.func.isRequired,
-  testcase: state.testcase
-});
-
-export default connect(mapStateToProps, {
-  fetchTestCaseList,
-  createTestCase,
-  resetTestCaseFlags,
-  deleteTestCase,
-  updateTestCase,
-  fetchTestCase,
-  cloneTestCase,
-  runTestCases
-})(TestCaseManagement);
+export default TestCaseManagement;
 
 function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCases }) {
   const [search, setSearch] = useState("");
@@ -357,28 +298,31 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
+          className={`text-xs font-normal select-none ${
+            record.status === 0
               ? "bg-purple-300"
               : record.status === 1
-                ? "bg-indigo-300"
-                : record.status === 2
-                  ? "bg-blue-300"
-                  : record.status === 3
-                    ? "bg-violet-400"
-                    : ""
-            }`}
+              ? "bg-indigo-300"
+              : record.status === 2
+              ? "bg-blue-300"
+              : record.status === 3
+              ? "bg-violet-400"
+              : ""
+          }`}
         >
           {tcType}
         </label>
       </td>
       <td className="px-2 py-0.5 w-40">
         <div className="flex flex-row">
-          {record.enabled && <IconRenderer
-            icon="PlayArrowRounded"
-            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            fontSize="medium"
-            onClick={() => runTestCases(record)}
-          />}
+          {record.enabled && record.type > 0 && (
+            <IconRenderer
+              icon="PlayArrowRounded"
+              className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
+              fontSize="medium"
+              onClick={() => runTestCases(record)}
+            />
+          )}
           <IconRenderer
             icon="ContentCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
