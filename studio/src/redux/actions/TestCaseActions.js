@@ -19,7 +19,7 @@ export const resetTestCaseFlags = () => (dispatch) => {
 };
 
 export const fetchTestCaseList = (projectId, testSuiteId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, {}).then((res) => {
+  axios.get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`).then((res) => {
     dispatch({
       type: actionTypes.GET_TESTCASE_LIST,
       payload: res.data
@@ -37,7 +37,7 @@ export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
     }
   });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, data, {})
+    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -72,7 +72,7 @@ export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
     }
   });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${id}/clone`, {}, {})
+    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${id}/clone`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -135,7 +135,7 @@ export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dis
     }
   });
   axios
-    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, data, {})
+    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -167,7 +167,7 @@ export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch)
     }
   });
   axios
-    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, {}, {})
+    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -197,7 +197,7 @@ export const fetchTestCase = (projectId, testSuiteId, testCaseId) => (dispatch) 
     }
   });
   axios
-    .get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, {}, {})
+    .get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`)
     .then((res) => {
       if (res?.data)
         dispatch({

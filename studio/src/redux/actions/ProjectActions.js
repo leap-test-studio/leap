@@ -23,7 +23,7 @@ export const openProject = (openedProject) => (dispatch) => {
 };
 
 export const fetchProjectList = () => (dispatch) => {
-  axios.get("/api/v1/project", {}).then((res) => {
+  axios.get("/api/v1/project").then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_PROJECT_LIST,
@@ -33,7 +33,7 @@ export const fetchProjectList = () => (dispatch) => {
 };
 
 export const createProject =
-  ({ name, description = "" }) =>
+  ({ name, description }) =>
   (dispatch) => {
     dispatch({
       type: actionTypes.CREATE_PROJECT,
@@ -44,7 +44,7 @@ export const createProject =
       }
     });
     axios
-      .post("/api/v1/project", { name, description }, {})
+      .post("/api/v1/project", { name, description })
       .then((res) => {
         if (res?.data)
           dispatch({
@@ -82,7 +82,7 @@ export const updateProject = (projectId, data) => (dispatch) => {
     }
   });
   axios
-    .put(`/api/v1/project/${projectId}`, data, {})
+    .put(`/api/v1/project/${projectId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -117,7 +117,7 @@ export const deleteProject = (project) => (dispatch) => {
     }
   });
   axios
-    .delete("/api/v1/project/" + project, {}, {})
+    .delete(`/api/v1/project/${project}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -151,7 +151,7 @@ export const startProjectBuilds = (project) => (dispatch) => {
     }
   });
   axios
-    .post("/api/v1/runner/" + project + "/start", {})
+    .post(`/api/v1/runner/${project}/start`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -182,7 +182,7 @@ export const stopProjectBuilds = (project) => (dispatch) => {
     }
   });
   axios
-    .post("/api/v1/runner/" + project + "/stop", {})
+    .post(`/api/v1/runner/${project}/stop`)
     .then((res) => {
       if (res?.data)
         dispatch({

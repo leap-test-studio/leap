@@ -16,7 +16,7 @@ export const resetTestSuiteFlags = (options) => (dispatch) => {
 };
 
 export const fetchTestSuiteList = (projectId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/suite`, {}).then((res) => {
+  axios.get(`/api/v1/project/${projectId}/suite`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_TESTSUITE_LIST,
@@ -28,7 +28,7 @@ export const fetchTestSuiteList = (projectId) => (dispatch) => {
 export const createTestSuite = (projectId, data) => (dispatch) => {
   resetTestSuiteFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite`, data, {})
+    .post(`/api/v1/project/${projectId}/suite`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -57,7 +57,7 @@ export const createTestSuite = (projectId, data) => (dispatch) => {
 export const updateTestSuite = (projectId, testSuiteId, data) => (dispatch) => {
   resetTestSuiteFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}`, data, {})
+    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -85,7 +85,7 @@ export const updateTestSuite = (projectId, testSuiteId, data) => (dispatch) => {
 export const deleteTestSuite = (projectId, testSuiteId) => (dispatch) => {
   resetTestSuiteFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}`, {}, {})
+    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -113,7 +113,7 @@ export const deleteTestSuite = (projectId, testSuiteId) => (dispatch) => {
 export const cloneTestSuite = (projectId, suiteId, data) => (dispatch) => {
   resetTestSuiteFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${suiteId}/clone`, data, {})
+    .post(`/api/v1/project/${projectId}/suite/${suiteId}/clone`, data)
     .then((res) => {
       if (res?.data)
         dispatch({

@@ -31,7 +31,7 @@ const InititialRoutes = [
   {
     sideBar: true,
     title: "Test Management",
-    icon: "TaskAlt",
+    icon: "Apps",
     path: "test-management",
     page: "testsuite/TestSuiteManagement.jsx",
     projectSelectionRequired: true

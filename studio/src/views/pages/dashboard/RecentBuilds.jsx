@@ -13,10 +13,10 @@ function RecentBuilds({ recentBuildSummary }) {
             <thead className="text-xs uppercase text-slate-500 bg-slate-100 rounded-sm">
               <tr>
                 <th className="p-2 font-semibold text-left">
-                  <label>Build No.</label>
+                  <label>Project</label>
                 </th>
                 <th className="p-2 font-semibold text-left">
-                  <label>Suite</label>
+                  <label>Build No.</label>
                 </th>
                 <th className="p-2 font-semibold text-center">
                   <label>Status</label>
@@ -62,7 +62,7 @@ const STATUS_MAP = Object.freeze([
   { color: "bg-cds-red-0500", label: "Aborted" }
 ]);
 
-function Row({ suiteName, buildNo, status, total, passed, failed, skipped, running }) {
+function Row({ project, buildNo, status, total, passed, failed, skipped, running }) {
   let obj = STATUS_MAP[status];
   if (status === 1 && running === 0) {
     obj = STATUS_MAP[0];
@@ -71,10 +71,10 @@ function Row({ suiteName, buildNo, status, total, passed, failed, skipped, runni
   return (
     <tr>
       <td className="px-2 py-1 text-left text-slate-500">
-        <label>{String(buildNo).padStart(4, "0")}</label>
+        <label>{project?.name}</label>
       </td>
       <td className="px-2 py-1 text-left text-slate-500">
-        <label>{suiteName}</label>
+        <label>{String(buildNo).padStart(4, "0")}</label>
       </td>
       <td>
         <span className={`text-slate-700 rounded text-xs font-normal px-1.5 py-0.5 select-none ${obj?.color || "bg-slate-200"}`}>{obj?.label}</span>

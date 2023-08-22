@@ -1,7 +1,30 @@
 import ReactEcharts from "echarts-for-react";
 import IconRenderer from "../../IconRenderer";
+import { useDispatch, useSelector } from "react-redux";
+import { getBuildTrend } from "../../../redux/actions/DashboardActions";
+import WebContext from "../../context/WebContext";
+import { useEffect, useContext } from "react";
+const INTERVAL = 10 * 1000;
 
-const MonthlyBuildStatus = ({ buildStats }) => {
+let timer = null;
+const MonthlyBuildStatus = () => {
+  const dispatch = useDispatch();
+  const { project } = useContext(WebContext);
+  const { buildStats } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    const fetchBuildTrend = () => {
+      if (project) dispatch(getBuildTrend(project?.id));
+    };
+    fetchBuildTrend();
+    timer = setInterval(() => {
+      fetchBuildTrend();
+    }, INTERVAL);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [project]);
+
   const option = {
     color: ["#3b82f6", "#0ea472", "#d31212", "#fcd34d", "#008ae6"],
     smooth: true,
@@ -60,15 +83,17 @@ const MonthlyBuildStatus = ({ buildStats }) => {
   };
   return (
     <>
-      <div className="relative bg-white p-6 rounded-md w-full shadow-xl">
-        <div className="text-white flex items-center absolute rounded-md py-3 px-4 shadow-xl bg-violet-500 left-4 -top-6 select-none">
-          <IconRenderer icon="LineAxis" className="h-10 w-10" />
-          <p className="text-md font-semibold ml-3">Build Trend</p>
+      {project && (
+        <div className="relative bg-white p-6 rounded-md w-full shadow-xl">
+          <div className="text-white flex items-center absolute rounded-md py-3 px-4 shadow-xl bg-violet-500 left-4 -top-6 select-none">
+            <IconRenderer icon="LineAxis" className="h-10 w-10" />
+            <p className="text-md font-semibold ml-3">Project Build Trend</p>
+          </div>
+          <div className="mt-5">
+            <ReactEcharts option={option} />
+          </div>
         </div>
-        <div className="mt-5">
-          <ReactEcharts option={option} />
-        </div>
-      </div>
+      )}
     </>
   );
 };
