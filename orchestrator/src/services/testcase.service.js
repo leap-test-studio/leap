@@ -1,5 +1,7 @@
 const { getPagination, getPagingData } = require("../utils/pagination");
 const { Op } = require("sequelize");
+const fs = require("fs");
+const Types = ["Scenario", "REST API", "Web", "SSH"];
 
 module.exports = {
   list,
@@ -7,7 +9,21 @@ module.exports = {
   clone,
   get,
   update,
-  delete: _delete
+  delete: _delete,
+  import: _import
+};
+
+async function _import(accountId, suiteId, testcaseId, file) {
+  try {
+    const rawdata = fs.readFileSync(file);
+    const tc = JSON.parse(rawdata);
+    delete tc.seqNo;
+    tc.type = Types.findIndex(t => t == tc.type);
+    return await update(accountId, suiteId, testcaseId, tc)
+  } catch (e) {
+    logger.error(e);
+    return Promise.reject(e);
+  }
 };
 
 async function list(AccountId, TestSuiteId, page = 0, size = 10000) {

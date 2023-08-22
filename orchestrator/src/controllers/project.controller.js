@@ -12,6 +12,7 @@ const status = require("http-status");
 
 const csrf = require("../_middleware/checkCSRF");
 const Role = require("../_helpers/role");
+const testcaseImporter = require("../_middleware/testcase-importer");
 
 // Project routes
 router.get("/", csrf, authorize([Role.Admin, Role.Manager]), getAllProjects);
@@ -32,6 +33,7 @@ router.delete("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Ma
 router.get("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
 router.post("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testCaseSchema, createTestCase);
 router.post("/:projectId/suite/:suiteId/testcase/:testcaseId/clone", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), cloneTestCase);
+router.post("/:projectId/suite/:suiteId/testcase/:testcaseId/import", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testcaseImporter.single("upload-file"), importTestCase);
 router.get("/:projectId/suite/:suiteId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getTestCase);
 router.put(
   "/:projectId/suite/:suiteId/testcase/:testcaseId",
@@ -293,6 +295,28 @@ function cloneTestCase(req, res) {
       res.json({
         id: o?.id,
         message: `Test case cloned successfully.`
+      })
+    )
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({
+        error: err.message,
+        message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
+      });
+    });
+}
+
+function importTestCase(req, res) {
+  if (!req.file) {
+    return res.status(status.BAD_REQUEST).send({ message: "Please upload testcase file!" });
+  }
+
+  testCaseService
+    .import(req.auth.id, req.params.suiteId, req.params.testcaseId, req.file.path)
+    .then((o) =>
+      res.json({
+        id: o?.id,
+        message: `Test case imported successfully.`
       })
     )
     .catch((err) => {

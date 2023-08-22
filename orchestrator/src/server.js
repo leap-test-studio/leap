@@ -1,6 +1,7 @@
 global.config = require("./config");
 global.config.env = process.env.NODE_ENV === "production" ? "production" : "development";
 
+const fs = require("fs");
 const logger = require("./logger");
 const DbStore = require("./dbStore");
 const JobManager = require("./services/scheduler/job.manager");
@@ -11,6 +12,10 @@ whiteboard.init(global.config.redis);
 DbStore.init()
   .then(async (result) => {
     if (result) {
+      if (!fs.existsSync("tmp")) {
+        fs.mkdirSync("tmp");
+      }
+      
       logger.info("Database Initialized");
       await DbStore.seedUsers();
       await JobManager.load();

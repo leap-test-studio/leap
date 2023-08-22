@@ -18,7 +18,9 @@ export function upload(method: string, url: string, data: FormData, progress: (p
       progress(percent);
     };
 
-    request.open(method, url);
+    request.open(method, url, true);
+    request.setRequestHeader("Authorization", "Bearer " +localStorage.getItem("jwt_token"));
+    request.setRequestHeader("X-Csrf-Token", String(localStorage.getItem("csrfToken")));
     request.send(data);
   });
 }

@@ -26,6 +26,7 @@ import isEmpty from "lodash/isEmpty";
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
 import FirstTimeCard from "../common/FirstTimeCard";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
+import ImportTestCaseDialog from "./ImportTestCaseDialog";
 
 const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
 
@@ -35,6 +36,7 @@ function TestCaseManagement({ suite, onClose }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   const { project } = useContext(WebContext);
   const { isFirstTestCase, loading, testcases, isError, message, showMessage } = useSelector((state) => state.testcase);
@@ -54,7 +56,9 @@ function TestCaseManagement({ suite, onClose }) {
     setShowCreateDialog(false);
     setShowUpdateDialog(false);
     setShowDeleteDialog(false);
+      setShowImportDialog(false);
   };
+
 
   return (
     <>
@@ -105,7 +109,10 @@ function TestCaseManagement({ suite, onClose }) {
           runTestCases={(selectedTestCase) => {
             dispatch(runTestCases(project?.id, [selectedTestCase.id]));
           }}
-          onClose={onClose}
+          importTestCase={(selectedTestCase)=>{
+            setSelectedTestCase(selectedTestCase);
+            setShowImportDialog(true);
+          }}
         />
       )}
       {showDeleteDialog && (
@@ -143,6 +150,13 @@ function TestCaseManagement({ suite, onClose }) {
           }}
         />
       )}
+      {showImportDialog && <ImportTestCaseDialog
+        projectId={project?.id}
+        testSuiteId={suite?.id}
+        testcase={selectedTestCase}
+        showDialog={showImportDialog}
+        onClose={resetState}
+      />}
       <CustomAlertDialog
         level={isError ? "warn" : "success"}
         message={message}
@@ -158,24 +172,8 @@ function TestCaseManagement({ suite, onClose }) {
 
 export default TestCaseManagement;
 
-function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCases }) {
+function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCases, importTestCase }) {
   const [search, setSearch] = useState("");
-  const exportTestCases = (data) => {
-    const exportData = data.map((d) => {
-      return {
-        TCID: "TCID-" + d.seqNo,
-        Type: TC_TYPES[d.type],
-        ...d
-      };
-    });
-
-    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-
-    const linkElement = document.createElement("a");
-    linkElement.setAttribute("href", dataUri);
-    linkElement.setAttribute("download", "testcases.json");
-    linkElement.click();
-  };
 
   let filtered = [];
   if (isEmpty(search)) {
@@ -200,9 +198,6 @@ function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCa
         <PageActions>
           <SearchComponent search={search} placeholder="Search" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
           <IconButton title="Add New" icon="AddTask" onClick={() => showAddTestCaseDialog()} />
-          <Tooltip title="Export Test Cases">
-            <IconButton title="Export" icon="FileDownload" disabled={testcases.length === 0} onClick={() => exportTestCases(testcases)} />
-          </Tooltip>
         </PageActions>
       </PageHeader>
       <PageBody>
@@ -229,6 +224,7 @@ function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCa
                     deleteTestCase={deleteTestCase}
                     cloneTestCase={cloneTestCase}
                     runTestCases={runTestCases}
+                    importTestCase={importTestCase}
                   />
                 ))}
               </tbody>
@@ -251,6 +247,7 @@ function TableHeader(props) {
     </thead>
   );
 }
+
 function Header({ title }) {
   return (
     <th className="sticky top-0 pl-2 py-3 border-b-2 border-slate-200 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
@@ -259,8 +256,22 @@ function Header({ title }) {
   );
 }
 
-function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases }) {
+function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases, importTestCase }) {
   const tcType = TC_TYPES[record.type] || "Unknown";
+
+  const exportTestCase = () => {
+    const copy = {
+      type: tcType
+    };
+    ["seqNo", "enabled", "given", "when", "then", "execSteps", "settings", "tags"].forEach(function (key) {
+      copy[key] = record[key];
+    });
+    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(copy, null, 2));
+    const linkElement = document.createElement("a");
+    linkElement.setAttribute("href", dataUri);
+    linkElement.setAttribute("download", `testcase_TCID-${record.seqNo}.json`);
+    linkElement.click();
+  };
   return (
     <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-sm">
       <td className="pl-2 w-[5.2rem]">
@@ -298,23 +309,22 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
+          className={`text-xs font-normal select-none ${record.status === 0
               ? "bg-purple-300"
               : record.status === 1
-              ? "bg-indigo-300"
-              : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
-          }`}
+                ? "bg-indigo-300"
+                : record.status === 2
+                  ? "bg-blue-300"
+                  : record.status === 3
+                    ? "bg-violet-400"
+                    : ""
+            }`}
         >
           {tcType}
         </label>
       </td>
       <td className="px-2 py-0.5 w-40">
-        <div className="flex flex-row">
+        <div className="flex flex-row justify-end">
           {record.enabled && record.type > 0 && (
             <IconRenderer
               icon="PlayArrowRounded"
@@ -345,19 +355,13 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             icon="FileDownload"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
             fontSize="medium"
-            onClick={() => {
-              const copy = {
-                type: tcType
-              };
-              ["seqNo", "enabled", "given", "when", "then", "execSteps", "settings", "tags"].forEach(function (key) {
-                copy[key] = record[key];
-              });
-              const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(copy, null, 2));
-              const linkElement = document.createElement("a");
-              linkElement.setAttribute("href", dataUri);
-              linkElement.setAttribute("download", `testcase_TCID-${record.seqNo}.json`);
-              linkElement.click();
-            }}
+            onClick={exportTestCase}
+          />
+          <IconRenderer
+            icon="FileUpload"
+            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
+            fontSize="medium"
+            onClick={() => importTestCase(record)}
           />
         </div>
       </td>
