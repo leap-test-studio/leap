@@ -210,7 +210,7 @@
               "properties": {
                 "by": {
                   "type": "string",
-                  "enum": ["id", "xpath", "selector", "css"],
+                  "enum": ["id", "xpath", "css"],
                   "default": "xpath"
                 },
                 "element": {
