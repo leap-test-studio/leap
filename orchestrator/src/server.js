@@ -15,7 +15,7 @@ DbStore.init()
       if (!fs.existsSync("tmp")) {
         fs.mkdirSync("tmp");
       }
-      
+
       logger.info("Database Initialized");
       await DbStore.seedUsers();
       await JobManager.load();

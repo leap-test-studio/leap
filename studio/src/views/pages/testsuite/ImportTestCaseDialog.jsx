@@ -27,7 +27,12 @@ function ImportTestCaseDialog({ showDialog, projectId, testSuiteId, testcase, on
         isUploading(true);
         const formData = new FormData();
         formData.append("upload-file", selectedFile);
-        const response = await upload("POST", `/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testcase?.id}/import`, formData, (percent) => setProgress(Math.floor(percent)));
+        const response = await upload(
+          "POST",
+          `/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testcase?.id}/import`,
+          formData,
+          (percent) => setProgress(Math.floor(percent))
+        );
         if (response.status == 200) {
           reset();
           onClose();
@@ -44,20 +49,27 @@ function ImportTestCaseDialog({ showDialog, projectId, testSuiteId, testcase, on
       }}
     >
       <div className="flex flex-col my-2 items-center w-full">
-        <input type="file" accept="*.json" multiple={false} onChange={e => {
-          const file = e.target.files[0];
-          if (file?.type == "application/json" && file?.size > 0 && file?.name.endsWith(".json")) {
-            setSelectedFile(file);
-          } else {
-            setSelectedFile(null);
-          }
-        }} />
-        {uploading && <div className="flex flex-col my-2 items-center w-full">
-          <span className="mt-2 font-light text-color-0400">Progress: {progress}%</span>
-          <div className="rounded h-2 w-full bg-gray-300">
-            <div style={{ width: `${progress}%` }} className="h-full bg-green-500 rounded animate-pulse" />
+        <input
+          type="file"
+          accept="*.json"
+          multiple={false}
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file?.type == "application/json" && file?.size > 0 && file?.name.endsWith(".json")) {
+              setSelectedFile(file);
+            } else {
+              setSelectedFile(null);
+            }
+          }}
+        />
+        {uploading && (
+          <div className="flex flex-col my-2 items-center w-full">
+            <span className="mt-2 font-light text-color-0400">Progress: {progress}%</span>
+            <div className="rounded h-2 w-full bg-gray-300">
+              <div style={{ width: `${progress}%` }} className="h-full bg-green-500 rounded animate-pulse" />
+            </div>
           </div>
-        </div>}
+        )}
       </div>
     </CustomDialog>
   );

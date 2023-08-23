@@ -56,9 +56,8 @@ function TestCaseManagement({ suite, onClose }) {
     setShowCreateDialog(false);
     setShowUpdateDialog(false);
     setShowDeleteDialog(false);
-      setShowImportDialog(false);
+    setShowImportDialog(false);
   };
-
 
   return (
     <>
@@ -109,7 +108,7 @@ function TestCaseManagement({ suite, onClose }) {
           runTestCases={(selectedTestCase) => {
             dispatch(runTestCases(project?.id, [selectedTestCase.id]));
           }}
-          importTestCase={(selectedTestCase)=>{
+          importTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
             setShowImportDialog(true);
           }}
@@ -150,13 +149,15 @@ function TestCaseManagement({ suite, onClose }) {
           }}
         />
       )}
-      {showImportDialog && <ImportTestCaseDialog
-        projectId={project?.id}
-        testSuiteId={suite?.id}
-        testcase={selectedTestCase}
-        showDialog={showImportDialog}
-        onClose={resetState}
-      />}
+      {showImportDialog && (
+        <ImportTestCaseDialog
+          projectId={project?.id}
+          testSuiteId={suite?.id}
+          testcase={selectedTestCase}
+          showDialog={showImportDialog}
+          onClose={resetState}
+        />
+      )}
       <CustomAlertDialog
         level={isError ? "warn" : "success"}
         message={message}
@@ -172,7 +173,17 @@ function TestCaseManagement({ suite, onClose }) {
 
 export default TestCaseManagement;
 
-function RenderList({ testcases = [], showAddTestCaseDialog, loading, editTestCase, deleteTestCase, updateTestCase, cloneTestCase, runTestCases, importTestCase }) {
+function RenderList({
+  testcases = [],
+  showAddTestCaseDialog,
+  loading,
+  editTestCase,
+  deleteTestCase,
+  updateTestCase,
+  cloneTestCase,
+  runTestCases,
+  importTestCase
+}) {
   const [search, setSearch] = useState("");
 
   let filtered = [];
@@ -309,16 +320,17 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
+          className={`text-xs font-normal select-none ${
+            record.status === 0
               ? "bg-purple-300"
               : record.status === 1
-                ? "bg-indigo-300"
-                : record.status === 2
-                  ? "bg-blue-300"
-                  : record.status === 3
-                    ? "bg-violet-400"
-                    : ""
-            }`}
+              ? "bg-indigo-300"
+              : record.status === 2
+              ? "bg-blue-300"
+              : record.status === 3
+              ? "bg-violet-400"
+              : ""
+          }`}
         >
           {tcType}
         </label>

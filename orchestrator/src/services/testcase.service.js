@@ -18,13 +18,13 @@ async function _import(accountId, suiteId, testcaseId, file) {
     const rawdata = fs.readFileSync(file);
     const tc = JSON.parse(rawdata);
     delete tc.seqNo;
-    tc.type = Types.findIndex(t => t == tc.type);
-    return await update(accountId, suiteId, testcaseId, tc)
+    tc.type = Types.findIndex((t) => t == tc.type);
+    return await update(accountId, suiteId, testcaseId, tc);
   } catch (e) {
     logger.error(e);
     return Promise.reject(e);
   }
-};
+}
 
 async function list(AccountId, TestSuiteId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);

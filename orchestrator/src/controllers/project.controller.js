@@ -33,7 +33,13 @@ router.delete("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Ma
 router.get("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
 router.post("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testCaseSchema, createTestCase);
 router.post("/:projectId/suite/:suiteId/testcase/:testcaseId/clone", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), cloneTestCase);
-router.post("/:projectId/suite/:suiteId/testcase/:testcaseId/import", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testcaseImporter.single("upload-file"), importTestCase);
+router.post(
+  "/:projectId/suite/:suiteId/testcase/:testcaseId/import",
+  csrf,
+  authorize([Role.Admin, Role.Lead, Role.Engineer]),
+  testcaseImporter.single("upload-file"),
+  importTestCase
+);
 router.get("/:projectId/suite/:suiteId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getTestCase);
 router.put(
   "/:projectId/suite/:suiteId/testcase/:testcaseId",
