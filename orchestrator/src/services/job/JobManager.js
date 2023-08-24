@@ -82,7 +82,11 @@ class BuildManager extends events.EventEmitter {
       const connection = await RedisMan.getConnection();
       await connection.lrem(REDIS_KEY.JOB_WAITING_QUEUE, 1, jobId);
       if (this.TestCasehandlers[jobId] != null) {
-        //await this.TestCasehandlers[jobId].stop();
+        try {
+          await this.TestCasehandlers[jobId].stop();
+        } catch (error) {
+          loggger.error("Failed to stop", error);
+        }
         delete this.TestCasehandlers[jobId];
       }
       await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
