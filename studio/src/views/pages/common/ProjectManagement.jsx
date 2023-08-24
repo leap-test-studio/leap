@@ -17,7 +17,6 @@ import CreateProjectDialog from "./CreateProjectDialog";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import Centered from "../../utilities/Centered";
-import Spinner from "../../utilities/Spinner";
 import SearchComponent from "../../utilities/Search";
 import IconRenderer from "../../IconRenderer";
 import dayjs from "dayjs";
@@ -29,6 +28,7 @@ import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggl
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./PageHeader";
 import RoundedIconButton from "../../utilities/RoundedIconButton";
 import FirstTimeCard from "./FirstTimeCard";
+import axios from "axios";
 
 dayjs.extend(relativeTime);
 
@@ -211,24 +211,6 @@ const ProjectManagement = (props) => {
 
 export default ProjectManagement;
 
-function FirstTime({ loading, onClick }) {
-  return (
-    <>
-      {loading ? (
-        <Spinner>Loading</Spinner>
-      ) : (
-        <div className="bg-white h-fit shadow-lg w-96 rounded-md flex flex-col items-center p-5">
-          <IconRenderer icon="SnippetFolder" className="text-color-0500 animate-bounce mt-5" style={{ fontSize: 70 }} />
-          <span id="first-time-project-label" className="my-4 text-center text-slate-800 uppercase text-2xl select-none">
-            Create first Project
-          </span>
-          <IconButton id="first-time-project-btn" title="Create" icon="PostAdd" onClick={onClick} />
-        </div>
-      )}
-    </>
-  );
-}
-
 const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
   const dispatch = useDispatch();
   const { id, name, description, status, createdAt, updatedAt, builds } = project;
@@ -242,6 +224,18 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
         status: !status
       })
     );
+  };
+
+  const exportProject = () => {
+    axios.get(`/api/v1/project/${id}/export`).then((response) => {
+      if (response.status === 200) {
+        const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(response.data, null, 2));
+        const linkElement = document.createElement("a");
+        linkElement.setAttribute("href", dataUri);
+        linkElement.setAttribute("download", `ProjectExport-${id}.json`);
+        linkElement.click();
+      }
+    });
   };
 
   return (
@@ -320,6 +314,24 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                   })
                 }
                 fontSize="small"
+              />
+            </Tooltip>
+
+            <Tooltip
+              title="Export Project"
+              content={
+                <p>
+                  Export the <strong>Project</strong> in JSON format.
+                  <br />
+                  Filename: {`ProjectExport-${id}.json`}
+                </p>
+              }
+            >
+              <IconRenderer
+                icon="FileDownload"
+                className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+                fontSize="small"
+                onClick={exportProject}
               />
             </Tooltip>
           </div>

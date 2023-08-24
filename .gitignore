@@ -109,3 +109,4 @@ dist
 *.swp
 build.sh
 audit.json
+*.patch

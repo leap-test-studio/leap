@@ -6,6 +6,7 @@ import ReactComponentLoader from "./views/pages/ReactComponentLoader";
 import AuthGuard from "./auth/AuthGuard";
 import WebContext from "./views/context/WebContext";
 import { useContext, useEffect, useState } from "react";
+import { authRoles } from "./auth/authRoles";
 
 const InititialRoutes = [
   {
@@ -18,7 +19,8 @@ const InititialRoutes = [
     title: "Dashboard",
     icon: "Speed",
     path: "dashboard",
-    page: "DashboardPage.jsx"
+    page: "DashboardPage.jsx",
+    access: authRoles.All
   },
   {
     sideBar: true,
@@ -26,7 +28,8 @@ const InititialRoutes = [
     icon: "FolderSpecial",
     path: "my-projects",
     page: "common/ProjectManagement.jsx",
-    projectSelectionRequired: false
+    projectSelectionRequired: false,
+    access: authRoles.All
   },
   {
     sideBar: true,
@@ -49,6 +52,11 @@ const InititialRoutes = [
     icon: "QueryStatsTwoTone",
     path: "test-reports",
     page: "TestReports.jsx"
+  },
+  {
+    title: "Extentions",
+    divider: true,
+    projectSelectionRequired: true
   },
   {
     sideBar: true,

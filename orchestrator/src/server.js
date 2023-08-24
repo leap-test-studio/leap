@@ -15,7 +15,6 @@ if (!fs.existsSync("tmp")) {
 DbStore.init()
   .then(async (result) => {
     if (result) {
-
       logger.info("Database Initialized");
       await DbStore.seedUsers();
       await JobManager.load();

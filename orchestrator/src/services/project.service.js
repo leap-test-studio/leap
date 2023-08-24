@@ -7,8 +7,20 @@ module.exports = {
   create,
   get,
   update,
-  delete: _delete
+  delete: _delete,
+  export: _export
 };
+
+async function _export(id) {
+  const prj = await global.DbStoreModel.ProjectMaster.findOne({
+    include: {
+      model: global.DbStoreModel.TestSuite,
+      include: global.DbStoreModel.TestCase
+    },
+    where: { id }
+  });
+  return prj.toJSON();
+}
 
 async function list(AccountId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);

@@ -17,7 +17,6 @@ import CreateTestSuiteDialog from "./CreateTestSuiteDialog";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import Centered from "../../utilities/Centered";
-import Spinner from "../../utilities/Spinner";
 import SearchComponent from "../../utilities/Search";
 import IconRenderer from "../../IconRenderer";
 import dayjs from "dayjs";
@@ -200,33 +199,6 @@ function TestSuiteManagement() {
 }
 
 export default TestSuiteManagement;
-
-function FirstTime({ loading, onClick }) {
-  return (
-    <>
-      {loading ? (
-        <Centered>
-          <Spinner>Loading</Spinner>
-        </Centered>
-      ) : (
-        <div className="bg-white h-fit shadow-lg w-96 rounded-md flex flex-col items-center p-5">
-          <div className="flex flex-col items-center p-5">
-            <IconRenderer icon="Extension" className="text-color-0500 animate-bounce mt-5" style={{ fontSize: "50" }} />
-            <span className="my-4 text-center text-slate-800 uppercase text-xl select-none">Create first TestSuite</span>
-            <>
-              <button
-                className="text-sm items-center px-4 py-1 text-white rounded focus:outline-none shadow-sm hover:shadow-2xl bg-color-0800 hover:bg-color-0700"
-                onClick={onClick}
-              >
-                Create
-              </button>
-            </>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
 
 const TestSuiteCard = ({ projectId, testsuite, openTestSuite, setSelectedTestSuite, setShowCloneDialog, setShowDeleteDialog }) => {
   const dispatch = useDispatch();

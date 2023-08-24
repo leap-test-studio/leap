@@ -8,6 +8,7 @@ const WebActionTypes = require("../../config/web_action_types.json");
 const TestStatus = require("../enums/TestStatus");
 const merge = require("lodash/merge");
 const Job = require("./Job");
+const { httpRequest } = require("./common");
 
 const ActionsTypes = Object.keys(WebActionTypes);
 class TestRunner extends Job {
@@ -96,8 +97,8 @@ class TestRunner extends Job {
           }
         } else {
           logger.info("WebTestRunner:Skipping:", event.actionType);
+          stepOutcome.actual = "Test step is skipped, Invalid action type";
           stepOutcome.result = TestStatus.SKIP;
-          stepOutcome.actual = "Invalid test case";
         }
       } catch (e) {
         logger.error("WebTestRunner:stepExecutor", e);
@@ -150,7 +151,18 @@ class TestRunner extends Job {
   }
 
   async stop() {
-    await this.WebDriver.quit();
+    try {
+      await this.WebDriver.quit();
+    } catch (error) {
+      logger.error("WebTestRunner, Failed to cleanup", error);
+    }
+    if (global.config.SELENIUM_GRID_URL && this.extras.seleniumSession) {
+      await httpRequest({
+        method: "DELETE",
+        baseUrl: global.config.SELENIUM_GRID_URL,
+        uri: `/session/${this.extras.seleniumSession.getId()}`
+      });
+    }
   }
 }
 
