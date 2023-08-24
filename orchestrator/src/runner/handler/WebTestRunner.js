@@ -108,7 +108,7 @@ class TestRunner extends Job {
         await this.captureScreenshot(stepOutcome.stepNo);
       }
     } else {
-      stepOutcome.actual = "Test case is disabled";
+      stepOutcome.actual = "Test step is skipped";
       stepOutcome.result = TestStatus.SKIP;
     }
     stepOutcome.endTime = Date.now();
@@ -145,12 +145,12 @@ class TestRunner extends Job {
   }
 
   async after() {
-    await this.WebDriver.close();
+    await this.WebDriver.quit();
     return Promise.resolve(true);
   }
 
   async stop() {
-    await this.WebDriver.close();
+    await this.WebDriver.quit();
   }
 }
 

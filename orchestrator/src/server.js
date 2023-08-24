@@ -9,12 +9,12 @@ const BuildManager = require("./services/job/JobManager");
 const whiteboard = require("whiteboard-pubsub");
 whiteboard.init(global.config.redis);
 
+if (!fs.existsSync("tmp")) {
+  fs.mkdirSync("tmp");
+}
 DbStore.init()
   .then(async (result) => {
     if (result) {
-      if (!fs.existsSync("tmp")) {
-        fs.mkdirSync("tmp");
-      }
 
       logger.info("Database Initialized");
       await DbStore.seedUsers();

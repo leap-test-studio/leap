@@ -42,7 +42,7 @@ class TestRunner extends Job {
         stepOutcome.actual = e.message;
       }
     } else {
-      stepOutcome.actual = "Test case is disabled";
+      stepOutcome.actual = "Test step is skipped";
       stepOutcome.result = TestStatus.SKIP;
     }
     stepOutcome.endTime = Date.now();
