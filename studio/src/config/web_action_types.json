@@ -6,6 +6,7 @@
   "setText": "Set Text",
   "setEditorText": "Set Editor Text",
   "dragAndDrop": "Drag and Drop",
+  "dragAndDropBy": "Drag and Drop By Offset",
   "verifyElementHasTextValue": "Verify Element Has Text Value",
   "verifyElementVisible": "Verify Element Visible",
   "verifyElementNotVisible": "Verify Element Not Visible",

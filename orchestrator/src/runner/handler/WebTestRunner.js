@@ -1,7 +1,6 @@
-const { Builder, By, Browser, Capabilities, until } = require("selenium-webdriver");
+const { Builder, By, Browser, Capabilities, until, Key } = require("selenium-webdriver");
 const proxy = require("selenium-webdriver/proxy");
 const BPromise = require("bluebird");
-const DND = require("html-dnd").code;
 const SleepTimingType = require("../enums/SleepTimingType");
 //const ScreenshotConditionType = require("../enums/ScreenshotConditionType");
 const WebActionTypes = require("../../config/web_action_types.json");
@@ -146,7 +145,7 @@ class TestRunner extends Job {
   }
 
   async after() {
-    await this.WebDriver.quit();
+    await this.WebDriver.close();
     return Promise.resolve(true);
   }
 
@@ -164,167 +163,174 @@ class TestRunner extends Job {
       });
     }
   }
+
+  async getActionHandler(type, data) {
+    const getElement = (by, ele, type = "elementLocated") => this.WebDriver.wait(until[type](By[by](ele)), 5000);
+
+    const Handlers = {
+      navigateToURL: async ({ value, interval = 0 }) => {
+        await this.WebDriver.get(value);
+        if (interval > 0) {
+          await this.WebDriver.sleep(interval);
+        }
+        return {
+          result: TestStatus.PASS
+        };
+      },
+      delay: async ({ interval = 1000 }) => {
+        await this.WebDriver.sleep(interval);
+        return {
+          result: TestStatus.PASS
+        };
+      },
+      click: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        return {
+          actual: await webElement.click(),
+          result: TestStatus.PASS
+        };
+      },
+      doubleClick: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        return {
+          actual: await this.WebDriver.actions({ async: true }).doubleClick(webElement).perform(),
+          result: TestStatus.PASS
+        };
+      },
+      setText: async ({ by, element, value }) => {
+        const webElement = await getElement(by, element);
+        await webElement.clear();
+        return {
+          actual: await webElement.sendKeys(value, Key.RETURN),
+          result: TestStatus.PASS
+        };
+      },
+      setEditorText: async ({ value }) => {
+        const webElement = await getElement("css", "textarea.ace_text-input");
+        await this.WebDriver.executeScript("ace.edit('ace-editor').setValue('');");
+        await this.WebDriver.executeScript("ace.edit('ace-editor').navigateFileEnd();");
+        await webElement.clear();
+        return {
+          actual: await webElement.sendKeys(value, Key.RETURN),
+          result: TestStatus.PASS
+        };
+      },
+      dragAndDrop: async ({ by, from, to }) => {
+        const draggableElement = await getElement(by, from);
+        const droppableElement = await getElement(by, to);
+        return {
+          actual: await this.WebDriver.actions().dragAndDrop(draggableElement, droppableElement).perform(),
+          result: TestStatus.PASS
+        };
+      },
+      dragAndDropBy: async ({ by, from, to, x, y }) => {
+        const draggableElement = await getElement(by, from);
+        const droppableElement = await getElement(by, to);
+        droppableElement.x = x; droppableElement.y = y;
+
+        return {
+          actual: await this.WebDriver.actions().dragAndDrop(draggableElement, droppableElement).perform(),
+          result: TestStatus.PASS
+        };
+      },
+      verifyElementHasTextValue: async ({ by, element, value }) => {
+        const webElement = await getElement(by, element);
+        const text = await webElement.getText();
+        return {
+          actual: text,
+          result: text === value ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementVisible: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isDisplayed = await webElement.isDisplayed();
+        return {
+          actual: webElement,
+          result: isDisplayed ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementNotVisible: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isDisplayed = await webElement.isDisplayed();
+        return {
+          actual: webElement,
+          result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementPresent: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isDisplayed = await webElement.isDisplayed();
+        return {
+          actual: isDisplayed,
+          result: isDisplayed ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementNotPresent: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isDisplayed = await webElement.isDisplayed();
+        return {
+          actual: webElement,
+          result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementAttributeValue: async ({ by, element, value, attribute = "value" }) => {
+        const webElement = await getElement(by, element);
+        const attrValue = await webElement.getAttribute(attribute);
+        return {
+          actual: attrValue,
+          result: value === attrValue ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementChecked: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isSelected = await webElement.isSelected();
+        return {
+          actual: webElement,
+          result: isSelected ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementNotChecked: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        const isSelected = await webElement.isSelected();
+        return {
+          actual: webElement,
+          result: !isSelected ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementClickable: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        return {
+          actual: webElement,
+          result: typeof webElement.click === "funciton" ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementNotClickable: async ({ by, element }) => {
+        const webElement = await getElement(by, element);
+        return {
+          actual: webElement,
+          result: typeof webElement.click !== "funciton" ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementHasAttribute: async ({ by, element, attribute }) => {
+        const webElement = await getElement(by, element);
+        const attr = await webElement.getAttribute(attribute);
+        return {
+          actual: attr,
+          result: attr !== null ? TestStatus.PASS : TestStatus.FAIL
+        };
+      },
+      verifyElementNotHasAttribute: async ({ by, element, attribute }) => {
+        const webElement = await getElement(by, element);
+        const attr = await webElement.getAttribute(attribute);
+        return {
+          actual: attr,
+          result: attr === null ? TestStatus.PASS : TestStatus.FAIL
+        };
+      }
+    };
+
+    return await Handlers[type](data);
+  }
 }
 
 module.exports = TestRunner;
-
-async function getActionHandler(driver, type, data) {
-  const getElement = (by, ele, type = "elementLocated") => driver.wait(until[type](By[by](ele)), 5000);
-
-  const Handlers = {
-    navigateToURL: async ({ value, interval = 5000 }) => {
-      await driver.get(value);
-      await driver.sleep(interval);
-      return {
-        result: TestStatus.PASS
-      };
-    },
-    delay: async ({ interval = 1000 }) => {
-      await driver.sleep(interval);
-      return {
-        result: TestStatus.PASS
-      };
-    },
-    click: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const rs = await webElement?.click();
-      return {
-        actual: rs,
-        result: TestStatus.PASS
-      };
-    },
-    doubleClick: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const rs = await driver.actions({ async: true }).doubleClick(webElement).perform();
-
-      return {
-        actual: rs,
-        result: TestStatus.PASS
-      };
-    },
-    setText: async ({ by, element, value }) => {
-      const webElement = await getElement(by, element);
-      await webElement?.clear();
-      return {
-        actual: await webElement?.sendKeys(value),
-        result: TestStatus.PASS
-      };
-    },
-    setEditorText: async ({ value }) => {
-      const webElement = await getElement("css", "textarea.ace_text-input");
-      await driver.executeScript("ace.edit('ace-editor').setValue('');");
-      await driver.executeScript("ace.edit('ace-editor').navigateFileEnd();");
-      await webElement?.clear();
-      return {
-        actual: await webElement?.sendKeys(value),
-        result: TestStatus.PASS
-      };
-    },
-    dragAndDrop: async ({ by, from, to, x, y }) => {
-      const draggableElement = await getElement(by, from);
-      const droppableElement = await getElement(by, to);
-      return {
-        actual: await driver.executeScript(DND, draggableElement, droppableElement, {
-          dropOffset: [x, y]
-        }),
-        result: TestStatus.PASS
-      };
-    },
-    verifyElementHasTextValue: async ({ by, element, value }) => {
-      const webElement = await getElement(by, element);
-      const text = await webElement?.getText();
-      return {
-        actual: text,
-        result: text === value ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementVisible: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isDisplayed = await webElement?.isDisplayed();
-      return {
-        actual: webElement,
-        result: isDisplayed ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementNotVisible: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isDisplayed = await webElement?.isDisplayed();
-      return {
-        actual: webElement,
-        result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementPresent: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isDisplayed = await webElement?.isDisplayed();
-      return {
-        actual: webElement,
-        result: isDisplayed ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementNotPresent: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isDisplayed = await webElement?.isDisplayed();
-      return {
-        actual: webElement,
-        result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementAttributeValue: async ({ by, element, value, attribute = "value" }) => {
-      const webElement = await getElement(by, element);
-      const attrValue = await webElement?.getAttribute(attribute);
-      return {
-        actual: attrValue,
-        result: value === attrValue ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementChecked: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isSelected = await webElement?.isSelected();
-      return {
-        actual: webElement,
-        result: isSelected ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementNotChecked: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      const isSelected = await webElement?.isSelected();
-      return {
-        actual: webElement,
-        result: !isSelected ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementClickable: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      return {
-        actual: webElement,
-        result: typeof webElement?.click === "funciton" ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementNotClickable: async ({ by, element }) => {
-      const webElement = await getElement(by, element);
-      return {
-        actual: webElement,
-        result: typeof webElement?.click !== "funciton" ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementHasAttribute: async ({ by, element, attribute }) => {
-      const webElement = await getElement(by, element);
-      const attr = webElement?.getAttribute(attribute);
-      return {
-        actual: attr,
-        result: attr !== null ? TestStatus.PASS : TestStatus.FAIL
-      };
-    },
-    verifyElementNotHasAttribute: async ({ by, element, attribute }) => {
-      const webElement = await getElement(by, element);
-      const attr = webElement?.getAttribute(attribute);
-      return {
-        actual: attr,
-        result: attr === null ? TestStatus.PASS : TestStatus.FAIL
-      };
-    }
-  };
-
-  return await Handlers[type](data);
-}

@@ -125,6 +125,10 @@
                   "value": "dragAndDrop"
                 },
                 {
+                  "label": "Drag and Drop By Offset",
+                  "value": "dragAndDropBy"
+                },
+                {
                   "label": "Verify Element Has Text Value",
                   "value": "verifyElementHasTextValue"
                 },
@@ -210,7 +214,14 @@
               "properties": {
                 "by": {
                   "type": "string",
-                  "enum": ["id", "xpath", "css"],
+                  "enum": [
+                    "id",
+                    "xpath",
+                    "css",
+                    "className",
+                    "name",
+                    "linkText"
+                  ],
                   "default": "xpath"
                 },
                 "element": {
@@ -386,6 +397,11 @@
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDropBy"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
                         "expectedValue": "setEditorText"
                       }
                     ]
@@ -549,9 +565,19 @@
                 "rule": {
                   "effect": "SHOW",
                   "condition": {
-                    "type": "LEAF",
-                    "scope": "#/properties/actionType",
-                    "expectedValue": "dragAndDrop"
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDrop"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDropBy"
+                      }
+                    ]
                   }
                 }
               },
@@ -562,9 +588,19 @@
                 "rule": {
                   "effect": "SHOW",
                   "condition": {
-                    "type": "LEAF",
-                    "scope": "#/properties/actionType",
-                    "expectedValue": "dragAndDrop"
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDrop"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "dragAndDropBy"
+                      }
+                    ]
                   }
                 }
               },
@@ -577,7 +613,7 @@
                   "condition": {
                     "type": "LEAF",
                     "scope": "#/properties/actionType",
-                    "expectedValue": "dragAndDrop"
+                    "expectedValue": "dragAndDropBy"
                   }
                 }
               },
@@ -590,7 +626,7 @@
                   "condition": {
                     "type": "LEAF",
                     "scope": "#/properties/actionType",
-                    "expectedValue": "dragAndDrop"
+                    "expectedValue": "dragAndDropBy"
                   }
                 }
               }
