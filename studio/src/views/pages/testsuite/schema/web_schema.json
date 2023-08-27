@@ -214,14 +214,7 @@
               "properties": {
                 "by": {
                   "type": "string",
-                  "enum": [
-                    "id",
-                    "xpath",
-                    "css",
-                    "className",
-                    "name",
-                    "linkText"
-                  ],
+                  "enum": ["id", "xpath", "css", "className", "name", "linkText"],
                   "default": "xpath"
                 },
                 "element": {

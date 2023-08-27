@@ -1,4 +1,4 @@
-const { Builder, By, Browser, Capabilities, until, Key } = require("selenium-webdriver");
+const { Builder, By, Browser, Capabilities, until } = require("selenium-webdriver");
 const proxy = require("selenium-webdriver/proxy");
 const BPromise = require("bluebird");
 const SleepTimingType = require("../enums/SleepTimingType");
@@ -8,6 +8,7 @@ const TestStatus = require("../enums/TestStatus");
 const merge = require("lodash/merge");
 const Job = require("./Job");
 const { httpRequest } = require("./common");
+const { code: DragAndDrop } = require("html-dnd");
 
 const ActionsTypes = Object.keys(WebActionTypes);
 class TestRunner extends Job {
@@ -86,7 +87,7 @@ class TestRunner extends Job {
           }
 
           logger.info("WebTestRunner:Executing:", event.actionType, ", Payload:", event.data);
-          const hanndlerOutput = await getActionHandler(this.WebDriver, event.actionType, event.data);
+          const hanndlerOutput = await this.getActionHandler(event.actionType, event.data);
           logger.info("WebTestRunner:Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));
           stepOutcome = merge({}, stepOutcome, hanndlerOutput);
           logger.info("WebTestRunner:Merged Outcome", event.actionType, ", Outcome:", JSON.stringify(stepOutcome));
@@ -168,7 +169,7 @@ class TestRunner extends Job {
     const getElement = (by, ele, type = "elementLocated") => this.WebDriver.wait(until[type](By[by](ele)), 5000);
 
     const Handlers = {
-      navigateToURL: async ({ value, interval = 0 }) => {
+      navigateToURL: async ({ value, interval = 5000 }) => {
         await this.WebDriver.get(value);
         if (interval > 0) {
           await this.WebDriver.sleep(interval);
@@ -200,8 +201,10 @@ class TestRunner extends Job {
       setText: async ({ by, element, value }) => {
         const webElement = await getElement(by, element);
         await webElement.clear();
+        await webElement.sleep(300);
+        await webElement.clear();
         return {
-          actual: await webElement.sendKeys(value, Key.RETURN),
+          actual: await webElement.sendKeys(value),
           result: TestStatus.PASS
         };
       },
@@ -210,8 +213,10 @@ class TestRunner extends Job {
         await this.WebDriver.executeScript("ace.edit('ace-editor').setValue('');");
         await this.WebDriver.executeScript("ace.edit('ace-editor').navigateFileEnd();");
         await webElement.clear();
+        await webElement.sleep(300);
+        await webElement.clear();
         return {
-          actual: await webElement.sendKeys(value, Key.RETURN),
+          actual: await webElement.sendKeys(value),
           result: TestStatus.PASS
         };
       },
@@ -226,10 +231,14 @@ class TestRunner extends Job {
       dragAndDropBy: async ({ by, from, to, x, y }) => {
         const draggableElement = await getElement(by, from);
         const droppableElement = await getElement(by, to);
-        droppableElement.x = x; droppableElement.y = y;
+        droppableElement.x = x;
+        droppableElement.y = y;
 
         return {
-          actual: await this.WebDriver.actions().dragAndDrop(draggableElement, droppableElement).perform(),
+          actual: await this.WebDriver.executeAsyncScript(DragAndDrop, draggableElement, droppableElement, {
+            onlyHover: true,
+            hoverTime: 500
+          }),
           result: TestStatus.PASS
         };
       },
