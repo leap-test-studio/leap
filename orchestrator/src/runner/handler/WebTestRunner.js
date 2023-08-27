@@ -201,7 +201,7 @@ class TestRunner extends Job {
       setText: async ({ by, element, value }) => {
         const webElement = await getElement(by, element);
         await webElement.clear();
-        await webElement.sleep(300);
+        await this.WebDriver.sleep(300);
         await webElement.clear();
         return {
           actual: await webElement.sendKeys(value),
@@ -213,7 +213,7 @@ class TestRunner extends Job {
         await this.WebDriver.executeScript("ace.edit('ace-editor').setValue('');");
         await this.WebDriver.executeScript("ace.edit('ace-editor').navigateFileEnd();");
         await webElement.clear();
-        await webElement.sleep(300);
+        await this.WebDriver.sleep(300);
         await webElement.clear();
         return {
           actual: await webElement.sendKeys(value),
