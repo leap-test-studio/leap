@@ -22,8 +22,5 @@
     "dev:pull": "git pull --recurse-submodules",
     "dev:prune": "docker system prune --volumes -a",
     "first-time": "npm i -g npm-check-updates && npm run dev"
-  },
-  "dependencies": {
-    "html-dnd": "^1.2.1"
   }
 }
