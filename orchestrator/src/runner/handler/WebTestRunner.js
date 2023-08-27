@@ -8,7 +8,7 @@ const TestStatus = require("../enums/TestStatus");
 const merge = require("lodash/merge");
 const Job = require("./Job");
 const { httpRequest } = require("./common");
-const { code: DragAndDrop } = require("html-dnd");
+const DragAndDrop = require("./html_dnd");
 
 const ActionsTypes = Object.keys(WebActionTypes);
 class TestRunner extends Job {
@@ -231,14 +231,8 @@ class TestRunner extends Job {
       dragAndDropBy: async ({ by, from, to, x, y }) => {
         const draggableElement = await getElement(by, from);
         const droppableElement = await getElement(by, to);
-        droppableElement.x = x;
-        droppableElement.y = y;
-
         return {
-          actual: await this.WebDriver.executeAsyncScript(DragAndDrop, draggableElement, droppableElement, {
-            onlyHover: true,
-            hoverTime: 500
-          }),
+          actual: await this.WebDriver.executeScript(DragAndDrop, draggableElement, droppableElement, { dropOffset: [x, y] }),
           result: TestStatus.PASS
         };
       },
@@ -254,7 +248,7 @@ class TestRunner extends Job {
         const webElement = await getElement(by, element);
         const isDisplayed = await webElement.isDisplayed();
         return {
-          actual: webElement,
+          actual: isDisplayed,
           result: isDisplayed ? TestStatus.PASS : TestStatus.FAIL
         };
       },
@@ -262,7 +256,7 @@ class TestRunner extends Job {
         const webElement = await getElement(by, element);
         const isDisplayed = await webElement.isDisplayed();
         return {
-          actual: webElement,
+          actual: isDisplayed,
           result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
         };
       },
@@ -278,7 +272,7 @@ class TestRunner extends Job {
         const webElement = await getElement(by, element);
         const isDisplayed = await webElement.isDisplayed();
         return {
-          actual: webElement,
+          actual: isDisplayed,
           result: !isDisplayed ? TestStatus.PASS : TestStatus.FAIL
         };
       },
@@ -294,7 +288,7 @@ class TestRunner extends Job {
         const webElement = await getElement(by, element);
         const isSelected = await webElement.isSelected();
         return {
-          actual: webElement,
+          actual: isSelected,
           result: isSelected ? TestStatus.PASS : TestStatus.FAIL
         };
       },
@@ -302,21 +296,21 @@ class TestRunner extends Job {
         const webElement = await getElement(by, element);
         const isSelected = await webElement.isSelected();
         return {
-          actual: webElement,
+          actual: isSelected,
           result: !isSelected ? TestStatus.PASS : TestStatus.FAIL
         };
       },
       verifyElementClickable: async ({ by, element }) => {
         const webElement = await getElement(by, element);
         return {
-          actual: webElement,
+          actual: typeof webElement.click === "funciton",
           result: typeof webElement.click === "funciton" ? TestStatus.PASS : TestStatus.FAIL
         };
       },
       verifyElementNotClickable: async ({ by, element }) => {
         const webElement = await getElement(by, element);
         return {
-          actual: webElement,
+          actual: typeof webElement.click !== "funciton",
           result: typeof webElement.click !== "funciton" ? TestStatus.PASS : TestStatus.FAIL
         };
       },
