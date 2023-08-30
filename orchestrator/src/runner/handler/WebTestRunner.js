@@ -165,8 +165,8 @@ class TestRunner extends Job {
     }
   }
 
-  async getActionHandler(type, data) {
-    const getElement = (by, ele, type = "elementLocated") => this.WebDriver.wait(until[type](By[by](ele)), 5000);
+  async getActionHandler(actionType, data) {
+    const getElement = (by, ele, UntilType = "elementLocated") => this.WebDriver.wait(until[UntilType](By[by](ele)), 10000);
 
     const Handlers = {
       navigateToURL: async ({ value, interval = 5000 }) => {
@@ -217,6 +217,18 @@ class TestRunner extends Job {
         await webElement.clear();
         return {
           actual: await webElement.sendKeys(value),
+          result: TestStatus.PASS
+        };
+      },
+      reactSelectDropDown: async ({ element, value }) => {
+        const webElement = await getElement("xpath", `//*[@id="select-${element}"]/div/div[1]/div[2]`);
+        await webElement.click();
+        await this.WebDriver.sleep(3000);
+        const inputElement = await getElement("xpath", `/html/body`);
+        await this.WebDriver.sleep(1000);
+        const option = await inputElement.findElement(By.xpath(`//div[text()='${value}']`));
+        return {
+          actual: await option.click(),
           result: TestStatus.PASS
         };
       },
@@ -332,7 +344,7 @@ class TestRunner extends Job {
       }
     };
 
-    return await Handlers[type](data);
+    return await Handlers[actionType](data);
   }
 }
 

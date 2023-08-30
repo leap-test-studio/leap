@@ -5,6 +5,7 @@
   "doubleClick": "Double Click",
   "setText": "Set Text",
   "setEditorText": "Set Editor Text",
+  "reactSelectDropDown": "Select DropDown",
   "dragAndDrop": "Drag and Drop",
   "dragAndDropBy": "Drag and Drop By Offset",
   "verifyElementHasTextValue": "Verify Element Has Text Value",

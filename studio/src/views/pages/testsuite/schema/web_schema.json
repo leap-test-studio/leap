@@ -74,7 +74,9 @@
                 "Click",
                 "Double Click",
                 "Set Text",
+                "Select DropDown",
                 "Drag and Drop",
+                "Drag and Drop By Offset",
                 "Verify Element Has Text Value",
                 "Verify Element Visible",
                 "Verify Element Not Visible",
@@ -119,6 +121,10 @@
                 {
                   "label": "Set Editor Text",
                   "value": "setEditorText"
+                },
+                {
+                  "label": "Select DropDown",
+                  "value": "reactSelectDropDown"
                 },
                 {
                   "label": "Drag and Drop",
@@ -214,7 +220,14 @@
               "properties": {
                 "by": {
                   "type": "string",
-                  "enum": ["id", "xpath", "css", "className", "name", "linkText"],
+                  "enum": [
+                    "id",
+                    "xpath",
+                    "css",
+                    "className",
+                    "name",
+                    "linkText"
+                  ],
                   "default": "xpath"
                 },
                 "element": {
@@ -352,6 +365,11 @@
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
+                        "expectedValue": "reactSelectDropDown"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
                         "expectedValue": "delay"
                       },
                       {
@@ -467,6 +485,11 @@
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
                         "expectedValue": "setText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "reactSelectDropDown"
                       },
                       {
                         "type": "LEAF",
