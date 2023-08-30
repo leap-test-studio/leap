@@ -77,6 +77,7 @@
                 "Select DropDown",
                 "Drag and Drop",
                 "Drag and Drop By Offset",
+                "Capture Screenshot",
                 "Verify Element Has Text Value",
                 "Verify Element Visible",
                 "Verify Element Not Visible",
@@ -133,6 +134,10 @@
                 {
                   "label": "Drag and Drop By Offset",
                   "value": "dragAndDropBy"
+                },
+                {
+                  "label": "Capture Screenshot",
+                  "value": "captureScreenshot"
                 },
                 {
                   "label": "Verify Element Has Text Value",
@@ -220,14 +225,7 @@
               "properties": {
                 "by": {
                   "type": "string",
-                  "enum": [
-                    "id",
-                    "xpath",
-                    "css",
-                    "className",
-                    "name",
-                    "linkText"
-                  ],
+                  "enum": ["id", "xpath", "css", "className", "name", "linkText"],
                   "default": "xpath"
                 },
                 "element": {
@@ -345,7 +343,7 @@
               },
               {
                 "type": "Control",
-                "label": "Action Type",
+                "label": "Action",
                 "scope": "#/properties/actionType"
               },
               {
@@ -361,6 +359,11 @@
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
                         "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "captureScreenshot"
                       },
                       {
                         "type": "LEAF",
@@ -394,6 +397,11 @@
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
                         "expectedValue": "navigateToURL"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "captureScreenshot"
                       },
                       {
                         "type": "LEAF",

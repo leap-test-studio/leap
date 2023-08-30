@@ -8,6 +8,7 @@
   "reactSelectDropDown": "Select DropDown",
   "dragAndDrop": "Drag and Drop",
   "dragAndDropBy": "Drag and Drop By Offset",
+  "captureScreenshot": "Capture Screenshot",
   "verifyElementHasTextValue": "Verify Element Has Text Value",
   "verifyElementVisible": "Verify Element Visible",
   "verifyElementNotVisible": "Verify Element Not Visible",

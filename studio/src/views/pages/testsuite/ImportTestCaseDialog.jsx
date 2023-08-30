@@ -41,7 +41,7 @@ function ImportTestCaseDialog({ showDialog, projectId, testSuiteId, testcase, on
             type: actionTypes.UPDATE_TESTCASE,
             payload: {
               showMessage: true,
-              message: "Test Case imported successfully",
+              message: "Testcase imported successfully",
               loading: false
             }
           });

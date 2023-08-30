@@ -169,6 +169,9 @@ class TestRunner extends Job {
     const getElement = (by, ele, UntilType = "elementLocated") => this.WebDriver.wait(until[UntilType](By[by](ele)), 10000);
 
     const Handlers = {
+      captureScreenshot: async () => {
+        await this.captureScreenshot("Capture");
+      },
       navigateToURL: async ({ value, interval = 5000 }) => {
         await this.WebDriver.get(value);
         if (interval > 0) {
