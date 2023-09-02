@@ -3,8 +3,8 @@ import { Handle, Position } from "reactflow";
 
 const handleStyleTarget = {
   backgroundColor: "white",
-  width: 6,
-  height: 12,
+  width: 8,
+  height: 30,
   borderRadius: 90,
   border: "1.5px solid green",
   marginTop: 0
@@ -12,8 +12,8 @@ const handleStyleTarget = {
 
 const handleStyleSource = {
   backgroundColor: "white",
-  width: 8,
-  height: 8,
+  width: 12,
+  height: 12,
   borderRadius: 90,
   border: "1.5px solid #01579b",
   marginTop: 0
@@ -22,7 +22,7 @@ const handleStyleSource = {
 const TestSuiteNode = ({ id, type, data }) => {
   return (
     <div
-      id={"node-" + id}
+      id={`node-${id}`}
       className="group shadow-xl hover:shadow-2xl rounded cursor-pointer border border-slate-300 bg-red-300 opacity-50 w-full h-full"
     >
       <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />

@@ -9,7 +9,7 @@ import PageHeader, { Page, PageBody, PageTitle } from "./common/PageHeader";
 const INTERVAL = 10 * 1000;
 
 let timer = null;
-function DashboardPage() {
+function DashboardPage(props) {
   const dispatch = useDispatch();
   const { totalStats, recentBuildSummary } = useSelector((state) => state.dashboard);
 
@@ -33,10 +33,10 @@ function DashboardPage() {
         <PageTitle>Dashboard</PageTitle>
       </PageHeader>
       <PageBody>
-        <TotalCards totalStats={totalStats} />
+        <TotalCards totalStats={totalStats} {...props} />
         <div className="mt-5 grid grid-cols-1 gap-8 mx-4">
-          <RecentBuilds recentBuildSummary={recentBuildSummary} />
-          <MonthlyBuildStatus />
+          <RecentBuilds recentBuildSummary={recentBuildSummary} {...props} />
+          <MonthlyBuildStatus {...props} />
         </div>
       </PageBody>
     </Page>

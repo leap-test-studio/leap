@@ -1,15 +1,13 @@
+import { useEffect } from "react";
 import ReactEcharts from "echarts-for-react";
 import IconRenderer from "../../IconRenderer";
 import { useDispatch, useSelector } from "react-redux";
 import { getBuildTrend } from "../../../redux/actions/DashboardActions";
-import WebContext from "../../context/WebContext";
-import { useEffect, useContext } from "react";
 const INTERVAL = 10 * 1000;
 
 let timer = null;
-const MonthlyBuildStatus = () => {
+const MonthlyBuildStatus = ({ project }) => {
   const dispatch = useDispatch();
-  const { project } = useContext(WebContext);
   const { buildStats } = useSelector((state) => state.dashboard);
 
   useEffect(() => {

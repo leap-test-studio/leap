@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconButton from "../../utilities/IconButton";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import { cropString } from "../utils";
@@ -7,7 +7,6 @@ import Spinner from "../../utilities/Spinner";
 import Tooltip from "../../utilities/Tooltip";
 import IconRenderer from "../../IconRenderer";
 import SearchComponent from "../../utilities/Search";
-import WebContext from "../../context/WebContext";
 import {
   fetchTestCaseList,
   createTestCase,
@@ -30,7 +29,7 @@ import ImportTestCaseDialog from "./ImportTestCaseDialog";
 
 const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
 
-function TestCaseManagement({ suite, onClose }) {
+function TestCaseManagement({ project, suite, changeSuite }) {
   const dispatch = useDispatch();
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -38,7 +37,6 @@ function TestCaseManagement({ suite, onClose }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
 
-  const { project } = useContext(WebContext);
   const { isFirstTestCase, loading, testcases, isError, message, showMessage } = useSelector((state) => state.testcase);
 
   useEffect(() => {
@@ -73,7 +71,7 @@ function TestCaseManagement({ suite, onClose }) {
                 icon="AddTask"
                 loading={loading}
                 onClick={() => setShowCreateDialog(true)}
-                onClose={onClose}
+                onClose={() => changeSuite(null)}
                 title="Create first TestCase"
                 details={`TestSuite: ${suite?.name}`}
                 buttonTitle="Create"
@@ -337,7 +335,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-40">
         <div className="flex flex-row justify-end">
-          {record.enabled && record.type > 0 && (
+          {record.type > 0 && (
             <IconRenderer
               icon="PlayArrowRounded"
               className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"

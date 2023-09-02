@@ -24,10 +24,13 @@ export function Page({ children }) {
   );
 }
 
-export function PageBody({ children }) {
+export function PageBody({ className, children }) {
   const { windowDimension } = useContext(WebContext);
   return (
-    <div className="flex flex-col mt-2 mb-1 shadow rounded border-2 bg-slate-100" style={{ minHeight: windowDimension?.maxContentHeight - 55 }}>
+    <div
+      className={`flex flex-col mt-2 mb-1 shadow rounded border-2 bg-slate-100 ${className}`}
+      style={{ minHeight: windowDimension?.maxContentHeight - 55 }}
+    >
       {children}
     </div>
   );

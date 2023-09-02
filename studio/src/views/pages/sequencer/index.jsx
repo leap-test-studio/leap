@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import ReactFlow, { Controls, addEdge, useNodesState, useEdgesState, Background, MarkerType } from "reactflow";
 import ConnectionLine from "./ConnectionLine";
 import TestCaseNode from "./TestCaseNode";
@@ -11,15 +11,34 @@ import "reactflow/dist/style.css";
 import "reactflow/dist/base.css";
 import TestSuiteNode from "./TestSuiteNode";
 import TestCaseEndNode from "./TestCaseEndNode";
+import DragabbleElements from "../common/DragabbleElements";
+import PageHeader, { Page, PageBody, PageTitle } from "../common/PageHeader";
+import { fetchTestSuiteList } from "../../../redux/actions/TestSuiteActions";
 
-const TestCaseSequencer = () => {
+const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
-  const reportRef = useRef(null);
   const reactFlowWrapper = useRef();
   const { nodes: initialNodes, edges: initialEdges } = useSelector((state) => state.sequencer);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const { testsuites } = useSelector((state) => state.suite);
+
+  const draggableItems = testsuites?.map((t) => ({
+    id: t.id,
+    color: "#4D916E",
+    icon: "Info",
+    label: t.name,
+    type: "element",
+    value: t.id
+  }));
+
+  useEffect(() => {
+    fetchTestSuites();
+  }, [project]);
+
+  const fetchTestSuites = () => project?.id && dispatch(fetchTestSuiteList(project.id));
 
   const nodeTypes = useMemo(() => {
     return { root: StartNode, tc: TestCaseNode, ts: TestSuiteNode, tss: TestCaseStartNode, tse: TestCaseEndNode };
@@ -121,34 +140,44 @@ const TestCaseSequencer = () => {
     [edges, setEdges]
   );
 
+  const minHeight = windowDimension?.maxContentHeight - 55;
+
   return (
-    <div className="reactflow-wrapper h-[90vh] " ref={reactFlowWrapper}>
-      <ReactFlow
-        id="testsequencer-canvas"
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        maxZoom={1.5}
-        minZoom={0.5}
-        deleteKeyCode={46}
-        elementsSelectable={true}
-        connectionLineComponent={ConnectionLine}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeDragStop={onDragStop}
-        onConnect={onConnect}
-        onInit={setReactFlowInstance}
-        style={{ background: "white" }}
-        proOptions={{
-          account: "paid-custom",
-          hideAttribution: true
-        }}
-      >
-        <Controls />
-        <Background color="#aaa" gap={15} />
-      </ReactFlow>
-    </div>
+    <Page>
+      <PageHeader>
+        <PageTitle>Test Sequencer</PageTitle>
+      </PageHeader>
+      <div className="flex flex-row mt-2 mb-1 rounded border bg-white" style={{ minHeight }}>
+        <div className="w-full mr-2 reactflow-wrapper" ref={reactFlowWrapper} style={{ minHeight }}>
+          <ReactFlow
+            id="testsequencer-canvas"
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            maxZoom={1.5}
+            minZoom={0.5}
+            deleteKeyCode={46}
+            elementsSelectable={true}
+            connectionLineComponent={ConnectionLine}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodeDragStop={onDragStop}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            style={{ background: "white" }}
+            proOptions={{
+              account: "paid-custom",
+              hideAttribution: true
+            }}
+          >
+            <Controls />
+            <Background color="#aaa" gap={15} />
+          </ReactFlow>
+        </div>
+        <DragabbleElements title="Suites" elements={draggableItems} showIcon={true} showExpand={false} showFilter={true} />
+      </div>
+    </Page>
   );
 };
 

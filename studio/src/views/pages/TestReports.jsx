@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TailwindSelectRenderer from "../tailwindrender/renderers/TailwindSelectRenderer";
 import Tooltip from "../utilities/Tooltip";
 import IconButton from "../utilities/IconButton";
@@ -11,7 +11,6 @@ import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
 import Centered from "../utilities/Centered";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
-import WebContext from "../context/WebContext";
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./common/PageHeader";
 
 const TestStatus = Object.freeze({
@@ -35,10 +34,9 @@ const TestTypeMapping = Object.freeze({
 const Types = ["Scenario", "REST API", "Web", "SSH"];
 
 let interval;
-export default function TestReports() {
+export default function TestReports({ project: selectedPrject }) {
   const { buildReports, buildDetails } = useSelector((state) => state.dashboard);
   const { projects } = useSelector((state) => state.project);
-  const { project: selectedPrject } = useContext(WebContext);
 
   const dispatch = useDispatch();
   const reportRef = useRef(null);

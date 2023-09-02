@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconButton from "../../utilities/IconButton";
-import WebContext from "../../context/WebContext";
 import {
   createTestSuite,
   fetchTestSuiteList,
@@ -34,7 +33,7 @@ dayjs.extend(relativeTime);
 
 const MAX_ALLOWED_TEST_SUITES = 25;
 
-function TestSuiteManagement() {
+function TestSuiteManagement(props) {
   const dispatch = useDispatch();
   const [search, setSearch] = useState(null);
   const [selectedTestSuite, setSelectedTestSuite] = useState(null);
@@ -42,9 +41,8 @@ function TestSuiteManagement() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
 
-  const { project, suite, changeSuite } = useContext(WebContext);
   const { testsuites, isFirstTestSuite, showMessage, message, isError, loading } = useSelector((state) => state.suite);
-
+  const { project, suite, changeSuite } = props;
   useEffect(() => {
     if (project?.id) {
       fetchTestSuites();
@@ -94,7 +92,7 @@ function TestSuiteManagement() {
   if (suite) {
     return (
       <Centered>
-        <TestCaseManagement suite={suite} onClose={() => changeSuite(null)} />
+        <TestCaseManagement {...props} />
       </Centered>
     );
   }

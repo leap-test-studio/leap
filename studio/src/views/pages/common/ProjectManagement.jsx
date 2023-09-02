@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconButton from "../../utilities/IconButton";
-import WebContext from "../../context/WebContext";
 import {
   createProject,
   fetchProjectList,
@@ -39,7 +38,7 @@ const ProjectManagement = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { product } = props;
+  const { product, project, changeProject } = props;
 
   const { showMessage, isError, message, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
 
@@ -48,8 +47,6 @@ const ProjectManagement = (props) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
-
-  const { project, changeProject } = useContext(WebContext);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);

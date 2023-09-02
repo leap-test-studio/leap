@@ -5,7 +5,7 @@ import TailwindInputText from "../../tailwindrender/renderers/TailwindInputText"
 import Tooltip from "../../utilities/Tooltip";
 import IconRenderer from "../../IconRenderer";
 
-const DragabbleElements = React.memo(({ elements, showExpand = true, showFilter = true, showIcon = true }) => {
+const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, showFilter = true, showIcon = true }) => {
   const [expand, setExpand] = useState(false);
   const [filter, setFilter] = useState("");
   const [displayElements, setDisplayElements] = useState(elements);
@@ -20,40 +20,49 @@ const DragabbleElements = React.memo(({ elements, showExpand = true, showFilter 
       setDisplayElements(filterItems(value.toLowerCase(), elements));
     }
   };
-
   return (
     <div className="sticky top-0">
-      <div className="w-28 p-1 shadow h-full flex flex-col items-center justify-center text-color-0500 bg-slate-100 rounded">
-        <div className="container flex items-center justify-center px-1 py-1.5 border-b">
-          <Tooltip title="Drag and Drop" content="Drag the item from the list and drop onto the convas." placement="left">
-            <span className="text-xs select-none font-bold">Palettes</span>
+      <div
+        className={`"w-28 p-1 shadow h-full flex flex-col items-center justify-center text-color-0800 bg-slate-100 rounded", ${
+          showExpand && "w-[120px]"
+        }`}
+      >
+        <div className="w-full flex flex-row items-center justify-center p-[0.1rem] border-b">
+          <Tooltip title="Drag and Drop" content="Drag the item from the list and drop onto the canvas." placement="left">
+            <span className="text-xs select-none font-bold">{title}</span>
           </Tooltip>
-          {showExpand && <TailwindToggleRenderer path="expand" visible={true} data={expand} handleChange={(_, ev) => setExpand(ev)} />}
+          {showExpand && (
+            <Tooltip title="Expand/Collapse All" placement="left">
+              <TailwindToggleRenderer path="expand" visible={true} enabled={true} data={expand} handleChange={(_, ev) => setExpand(ev)} />
+            </Tooltip>
+          )}
         </div>
-        <TailwindInputText
-          id="search"
-          visible={showFilter}
-          enabled={true}
-          uischema={{}}
-          path="search"
-          errors=""
-          schema={{}}
-          trim={true}
-          description="Filter"
-          handleChange={(_, ev) => handleChange(ev)}
-          readonly={false}
-          data={filter}
-        />
+        <div className="mt-1">
+          <TailwindInputText
+            id="search"
+            visible={showFilter}
+            enabled={true}
+            uischema={{}}
+            path="search"
+            errors=""
+            schema={{}}
+            trim={true}
+            description="Filter"
+            handleChange={(_, ev) => handleChange(ev)}
+            readonly={false}
+            data={filter}
+          />
+        </div>
         <div
-          key={"items"}
-          className="container px-0.5 pt-1.5 flex flex-col items-center h-0.95 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          key="dragabble-items"
+          className="w-full p-0.5 flex flex-col items-center h-0.95 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
         >
           {RenderElements(displayElements, expand, showIcon)}
         </div>
       </div>
     </div>
   );
-});
+};
 
 export default DragabbleElements;
 
@@ -75,15 +84,19 @@ const RenderElements = (elements, expand, showIcon) => {
   return (
     Array.isArray(elements) &&
     elements.map((element, ei) => {
-      if (element.type === "group")
+      if (element.type === "group" && Array.isArray(element.elements))
         return (
-          <div id={"group-" + ei} key={"group-" + ei} className="container my-1">
-            <Accordion title={element.title} defaultOpen={expand && Array.isArray(element.elements) && element.elements.length > 0}>
-              {Array.isArray(element.elements) && RenderElements(element.elements)}
-            </Accordion>
+          <div key={ei} className="w-full my-1">
+            {element.elements.length > 0 && (
+              <div id={`group-${ei}`}>
+                <Accordion pid={ei} title={element.title} defaultOpen={expand && element.elements.length > 0} disableOnMouseHover={true}>
+                  {RenderElements(element.elements)}
+                </Accordion>
+              </div>
+            )}
           </div>
         );
-      else return <RenderElement key={element.id} showIcon={showIcon} {...element} />;
+      else return <RenderElement id={element.id} key={ei} showIcon={showIcon} {...element} />;
     })
   );
 };
@@ -93,15 +106,32 @@ const onDragStart = (ev, nodeType) => {
   ev.dataTransfer.effectAllowed = "move";
 };
 
-const RenderElement = React.memo(({ value, label, showIcon = true, icon }) => {
+const RenderElement = React.memo(({ id, value, label, description, showIcon = true, icon }) => {
+  if (description) {
+    return (
+      <Tooltip title={label} content={description}>
+        <div
+          id={`draggable-item-${id}`}
+          className="group shadow hover:shadow-xl mx-1 mb-2.5 py-2 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-24"
+          onDragStart={(ev) => onDragStart(ev, value)}
+          draggable
+        >
+          {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
+          <span className="text-xs text-center px-0.1 break-words font-medium">{label}</span>
+        </div>
+      </Tooltip>
+    );
+  }
+
   return (
     <div
-      className="container group shadow hover:shadow-xl mx-1 mb-2.5 py-2 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-cds-white w-20"
+      id={`draggable-item-${id}`}
+      className="group shadow hover:shadow-xl mx-1 mb-2.5 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-28"
       onDragStart={(ev) => onDragStart(ev, value)}
       draggable
     >
       {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
-      <span className="text-xs text-center px-0.5 break-words">{label}</span>
+      <span className={`text-xs text-center ${showIcon ? "" : "p-2"} break-all font-medium mx-0.5`}>{label}</span>
     </div>
   );
 });

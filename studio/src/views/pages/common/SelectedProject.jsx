@@ -1,11 +1,8 @@
-import { useContext } from "react";
-import WebContext from "../../context/WebContext";
 import IconRenderer from "../../IconRenderer";
 import { useNavigate } from "react-router-dom";
 
-function SelectedProject({ product }) {
+function SelectedProject({ product, project, suite, resetContext, changeSuite }) {
   const navigate = useNavigate();
-  const { project, suite, resetContext, changeSuite } = useContext(WebContext);
 
   const resetProject = () => {
     resetContext();
