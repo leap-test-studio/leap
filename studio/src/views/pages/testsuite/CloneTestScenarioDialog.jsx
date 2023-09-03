@@ -8,11 +8,11 @@ const Model = {
       name: {
         type: "string",
         maxLength: 25,
-        description: "Enter name"
+        description: "Enter Test Scenario Title"
       },
       description: {
         type: "string",
-        description: "Enter description"
+        description: "Test Scenario"
       }
     },
     required: ["name"]
@@ -23,21 +23,22 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/name",
-        label: "Name"
+        label: "Test Scenario Name"
       },
       {
         type: "Control",
         scope: "#/properties/description",
-        label: "Description",
+        label: "Test Scenario",
         options: {
-          multi: true
+          multi: true,
+          isLarge: true
         }
       }
     ]
   }
 };
 
-function CreateTestSuiteDialog({ showDialog, createTestSuite, onClose }) {
+function CloneTestScenarioDialog({ showDialog, cloneTestScenario, onClose, testscenario }) {
   const [data, setData] = React.useState({});
   return (
     <CustomDialog
@@ -46,10 +47,11 @@ function CreateTestSuiteDialog({ showDialog, createTestSuite, onClose }) {
         setData({});
         onClose();
       }}
-      title="Create Test Suite"
-      saveTitle="Create"
+      title={`Clone Test scenario from ${testscenario?.name}`}
+      saveTitle="Clone"
       onSave={() => {
-        createTestSuite(data);
+        console.log(data);
+        cloneTestScenario(data);
         setData({});
       }}
     >
@@ -58,4 +60,4 @@ function CreateTestSuiteDialog({ showDialog, createTestSuite, onClose }) {
   );
 }
 
-export default CreateTestSuiteDialog;
+export default CloneTestScenarioDialog;

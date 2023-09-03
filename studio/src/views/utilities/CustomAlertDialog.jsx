@@ -7,7 +7,7 @@ const Icons = {
   success: "CloudDone"
 };
 
-export default function CustomAlertDialog({ showDialog, level, message, buttonText, onClose }) {
+export default function CustomAlertDialog({ showDialog, level, message, errorMessage, buttonText, onClose }) {
   return (
     <>
       {showDialog && (
@@ -31,6 +31,7 @@ export default function CustomAlertDialog({ showDialog, level, message, buttonTe
             <span id="confirm-message" className="mb-5 text-base text-center">
               {message}
             </span>
+            {errorMessage && <p className="mb-5 text-xs text-center text-red-500">{errorMessage}</p>}
             <div className="flex text-cds-white">
               <button
                 id="confirm-ok"

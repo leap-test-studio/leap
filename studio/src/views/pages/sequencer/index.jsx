@@ -9,11 +9,11 @@ import DefaultEdge from "./DefaultEdge";
 import * as actionTypes from "../../../redux/actions";
 import "reactflow/dist/style.css";
 import "reactflow/dist/base.css";
-import TestSuiteNode from "./TestSuiteNode";
+import TestScenarioNode from "./TestScenarioNode";
 import TestCaseEndNode from "./TestCaseEndNode";
 import DragabbleElements from "../common/DragabbleElements";
-import PageHeader, { Page, PageBody, PageTitle } from "../common/PageHeader";
-import { fetchTestSuiteList } from "../../../redux/actions/TestSuiteActions";
+import PageHeader, { Page, PageTitle } from "../common/PageHeader";
+import { fetchTestScenarioList } from "../../../redux/actions/TestScenarioActions";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
@@ -23,9 +23,9 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const { testsuites } = useSelector((state) => state.suite);
+  const { testscenarios } = useSelector((state) => state.testscenario);
 
-  const draggableItems = testsuites?.map((t) => ({
+  const draggableItems = testscenarios?.map((t) => ({
     id: t.id,
     color: "#4D916E",
     icon: "Info",
@@ -35,13 +35,13 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
   }));
 
   useEffect(() => {
-    fetchTestSuites();
+    fetchTestScenarios();
   }, [project]);
 
-  const fetchTestSuites = () => project?.id && dispatch(fetchTestSuiteList(project.id));
+  const fetchTestScenarios = () => project?.id && dispatch(fetchTestScenarioList(project.id));
 
   const nodeTypes = useMemo(() => {
-    return { root: StartNode, tc: TestCaseNode, ts: TestSuiteNode, tss: TestCaseStartNode, tse: TestCaseEndNode };
+    return { root: StartNode, tc: TestCaseNode, ts: TestScenarioNode, tss: TestCaseStartNode, tse: TestCaseEndNode };
   }, []);
 
   const edgeTypes = useMemo(() => ({ default: DefaultEdge }), []);
@@ -175,7 +175,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             <Background color="#aaa" gap={15} />
           </ReactFlow>
         </div>
-        <DragabbleElements title="Suites" elements={draggableItems} showIcon={true} showExpand={false} showFilter={true} />
+        <DragabbleElements title="Scenarios" elements={draggableItems} showIcon={true} showExpand={false} showFilter={true} />
       </div>
     </Page>
   );

@@ -31,7 +31,7 @@ const TestTypeMapping = Object.freeze({
   7: 1
 });
 
-const Types = ["Scenario", "REST API", "Web", "SSH"];
+const Types = ["Definition", "REST API", "Web", "SSH"];
 
 let interval;
 export default function TestReports({ project: selectedPrject }) {

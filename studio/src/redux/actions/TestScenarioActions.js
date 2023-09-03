@@ -2,48 +2,49 @@ import axios from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 
-export const resetTestSuiteFlags = (options) => (dispatch) => {
+export const resetTestScenarioFlags = (options) => (dispatch) => {
   dispatch({
-    type: actionTypes.CREATE_TESTSUITE,
+    type: actionTypes.CREATE_TEST_SCENARIO,
     payload: {
       loading: false,
       isError: false,
       showMessage: false,
       message: null,
+      error: null,
       ...options
     }
   });
 };
 
-export const fetchTestSuiteList = (projectId) => (dispatch) => {
+export const fetchTestScenarioList = (projectId) => (dispatch) => {
   axios.get(`/api/v1/project/${projectId}/suite`).then((res) => {
     if (res?.data)
       dispatch({
-        type: actionTypes.GET_TESTSUITE_LIST,
+        type: actionTypes.GET_TEST_SCENARIO_LIST,
         payload: res.data
       });
   });
 };
 
-export const createTestSuite = (projectId, data) => (dispatch) => {
-  resetTestSuiteFlags({ loading: true });
+export const createTestScenario = (projectId, data) => (dispatch) => {
+  resetTestScenarioFlags({ loading: true });
   axios
     .post(`/api/v1/project/${projectId}/suite`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
-          type: actionTypes.CREATE_TESTSUITE,
+          type: actionTypes.CREATE_TEST_SCENARIO,
           payload: {
             ...res.data,
             showMessage: true,
             loading: false,
-            isFirstTestSuite: false
+            isFirstTestScenario: false
           }
         });
     })
     .catch((e) => {
       dispatch({
-        type: actionTypes.CREATE_TESTSUITE,
+        type: actionTypes.CREATE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
           showMessage: true,
@@ -54,14 +55,14 @@ export const createTestSuite = (projectId, data) => (dispatch) => {
     });
 };
 
-export const updateTestSuite = (projectId, testSuiteId, data) => (dispatch) => {
-  resetTestSuiteFlags({ loading: true });
+export const updateTestScenario = (projectId, testSuiteId, data) => (dispatch) => {
+  resetTestScenarioFlags({ loading: true });
   axios
     .put(`/api/v1/project/${projectId}/suite/${testSuiteId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
-          type: actionTypes.UPDATE_TESTSUITE,
+          type: actionTypes.UPDATE_TEST_SCENARIO,
           payload: {
             ...res.data,
             showMessage: true,
@@ -71,7 +72,7 @@ export const updateTestSuite = (projectId, testSuiteId, data) => (dispatch) => {
     })
     .catch((e) => {
       dispatch({
-        type: actionTypes.UPDATE_TESTSUITE,
+        type: actionTypes.UPDATE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
           showMessage: true,
@@ -82,14 +83,14 @@ export const updateTestSuite = (projectId, testSuiteId, data) => (dispatch) => {
     });
 };
 
-export const deleteTestSuite = (projectId, testSuiteId) => (dispatch) => {
-  resetTestSuiteFlags({ loading: true });
+export const deleteTestScenario = (projectId, testSuiteId) => (dispatch) => {
+  resetTestScenarioFlags({ loading: true });
   axios
     .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
-          type: actionTypes.DELETE_TESTSUITE,
+          type: actionTypes.DELETE_TEST_SCENARIO,
           payload: {
             ...res.data,
             showMessage: true,
@@ -99,7 +100,7 @@ export const deleteTestSuite = (projectId, testSuiteId) => (dispatch) => {
     })
     .catch((e) => {
       dispatch({
-        type: actionTypes.DELETE_TESTSUITE,
+        type: actionTypes.DELETE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
           showMessage: true,
@@ -110,25 +111,25 @@ export const deleteTestSuite = (projectId, testSuiteId) => (dispatch) => {
     });
 };
 
-export const cloneTestSuite = (projectId, suiteId, data) => (dispatch) => {
-  resetTestSuiteFlags({ loading: true });
+export const cloneTestScenario = (projectId, suiteId, data) => (dispatch) => {
+  resetTestScenarioFlags({ loading: true });
   axios
     .post(`/api/v1/project/${projectId}/suite/${suiteId}/clone`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
-          type: actionTypes.CLONE_TESTSUITE,
+          type: actionTypes.CLONE_TEST_SCENARIO,
           payload: {
             ...res.data,
             showMessage: true,
             loading: false,
-            isFirstTestSuite: false
+            isFirstTestScenario: false
           }
         });
     })
     .catch((e) => {
       dispatch({
-        type: actionTypes.CLONE_TESTSUITE,
+        type: actionTypes.CLONE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
           showMessage: true,
@@ -139,13 +140,13 @@ export const cloneTestSuite = (projectId, suiteId, data) => (dispatch) => {
     });
 };
 
-export const runTestSuite = (projectId, suiteId) => (dispatch) => {
+export const runTestScenario = (projectId, suiteId) => (dispatch) => {
   axios
-    .post(`/api/v1/runner/${projectId}/runTestSuite/${suiteId}`)
+    .post(`/api/v1/runner/${projectId}/runTestScenario/${suiteId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
-          type: actionTypes.RUN_TESTSUITE,
+          type: actionTypes.RUN_TEST_SCENARIO,
           payload: {
             ...res.data,
             showMessage: true
@@ -154,7 +155,7 @@ export const runTestSuite = (projectId, suiteId) => (dispatch) => {
     })
     .catch((e) => {
       dispatch({
-        type: actionTypes.RUN_TESTSUITE,
+        type: actionTypes.RUN_TEST_SCENARIO,
         payload: {
           ...e.response.data,
           showMessage: true,

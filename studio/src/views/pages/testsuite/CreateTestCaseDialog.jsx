@@ -20,7 +20,7 @@ const Model = {
       type: {
         type: "integer",
         oneOf: [
-          { const: 0, title: "Scenario" },
+          { const: 0, title: "Definition" },
           { const: 1, title: "REST-API" },
           { const: 2, title: "Web" },
           { const: 3, title: "SSH" }
@@ -91,6 +91,7 @@ function CreateTestCaseDialog({ showDialog, createTestCase, onClose }) {
         createTestCase(data);
         setData({});
       }}
+      largeScreen={true}
     >
       <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />
     </CustomDialog>

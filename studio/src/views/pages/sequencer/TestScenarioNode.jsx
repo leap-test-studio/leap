@@ -19,7 +19,7 @@ const handleStyleSource = {
   marginTop: 0
 };
 
-const TestSuiteNode = ({ id, type, data }) => {
+const TestScenarioNode = ({ id, type, data }) => {
   return (
     <div
       id={`node-${id}`}
@@ -32,4 +32,4 @@ const TestSuiteNode = ({ id, type, data }) => {
   );
 };
 
-export default TestSuiteNode;
+export default TestScenarioNode;

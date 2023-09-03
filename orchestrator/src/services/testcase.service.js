@@ -1,7 +1,7 @@
 const { getPagination, getPagingData } = require("../utils/pagination");
 const { Op } = require("sequelize");
 const fs = require("fs");
-const Types = ["Scenario", "REST API", "Web", "SSH"];
+const Types = ["Definition", "REST API", "Web", "SSH"];
 
 module.exports = {
   list,

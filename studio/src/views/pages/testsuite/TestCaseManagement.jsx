@@ -27,9 +27,9 @@ import FirstTimeCard from "../common/FirstTimeCard";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import ImportTestCaseDialog from "./ImportTestCaseDialog";
 
-const TC_TYPES = ["Scenario", "REST-API", "Web", "SSH"];
+const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
-function TestCaseManagement({ project, suite, changeSuite }) {
+function TestCaseManagement({ project, suite, changeTestScenario }) {
   const dispatch = useDispatch();
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -71,9 +71,9 @@ function TestCaseManagement({ project, suite, changeSuite }) {
                 icon="AddTask"
                 loading={loading}
                 onClick={() => setShowCreateDialog(true)}
-                onClose={() => changeSuite(null)}
+                onClose={() => changeTestScenario(null)}
                 title="Create first TestCase"
-                details={`TestSuite: ${suite?.name}`}
+                details={`Test Scenario: ${suite?.name}`}
                 buttonTitle="Create"
                 buttonIcon="PostAdd"
               />
@@ -137,7 +137,7 @@ function TestCaseManagement({ project, suite, changeSuite }) {
       )}
       {showUpdateDialog && (
         <UpdateTestCaseDialog
-          testsuite={suite}
+          testscenario={suite}
           testcase={selectedTestCase}
           isOpen={showUpdateDialog}
           onClose={resetState}

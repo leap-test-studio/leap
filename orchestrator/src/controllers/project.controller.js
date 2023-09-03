@@ -193,7 +193,7 @@ function createTestSuite(req, res) {
     .then((o) =>
       res.json({
         id: o?.id,
-        message: `Test suite '${req.body.name}' created successfully.`
+        message: `Test scenario '${req.body.name}' created successfully.`
       })
     )
     .catch((err) => {
@@ -221,7 +221,7 @@ function getTestSuite(req, res) {
 function updateTestSuite(req, res) {
   testSuiteService
     .update(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
-    .then(() => res.json({ message: "Test suite updated successfully." }))
+    .then(() => res.json({ message: "Test scenario updated successfully." }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -234,7 +234,7 @@ function updateTestSuite(req, res) {
 function deleteTestSuite(req, res) {
   testSuiteService
     .delete(req.auth.id, req.params.projectId, req.params.suiteId)
-    .then(() => res.json({ message: "Test suite deleted successfully." }))
+    .then(() => res.json({ message: "Test scenario deleted successfully." }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -245,16 +245,17 @@ function deleteTestSuite(req, res) {
 }
 
 function cloneTestSuite(req, res) {
+  console.log("Cloning test suite", req.auth.id, req.params, req.body);
   testSuiteService
     .clone(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
     .then((o) =>
       res.json({
         id: o?.id,
-        message: `Test suite '${req.body.name}' cloned successfully.`
+        message: `Test scenario '${req.body.name}' cloned successfully.`
       })
     )
     .catch((err) => {
-      logger.error(err);
+      console.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
         error: err.message,
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]

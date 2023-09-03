@@ -66,7 +66,7 @@ function ContextProvider({ children }) {
     dispatch(openProject(null));
   };
 
-  const changeSuite = (suite) => {
+  const changeTestScenario = (suite) => {
     setState({
       ...state,
       suite
@@ -82,7 +82,7 @@ function ContextProvider({ children }) {
         isProjectSelected: !isEmpty(state.project),
         loaded: Array.isArray(projects),
         changeProject,
-        changeSuite,
+        changeTestScenario,
         resetContext,
         windowDimension
       }}

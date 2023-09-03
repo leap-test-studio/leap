@@ -17,7 +17,7 @@ export const TailwindLayoutRenderer = React.memo(({ id, layout, visible, element
               : elements.length >= 4
               ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
               : elements.length >= 2
-              ? "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2"
+              ? "inline-flex justify-between items-center"
               : "flex flex-col"
           }`}
         >

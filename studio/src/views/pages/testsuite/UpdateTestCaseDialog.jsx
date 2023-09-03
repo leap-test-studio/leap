@@ -38,7 +38,7 @@ const defaults = [
 ];
 const Schemas = Object.freeze([{}, APISchema, WebSchema, SSHSchema]);
 
-function UpdateTestCaseDialog({ isOpen, onClose, testsuite, testcase, onUpdate }) {
+function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdate }) {
   const { settings, execSteps, ...rest } = testcase;
   const [nodeData, setNodeData] = useState(rest);
   const [payload, setPayoad] = useState({ settings, execSteps });
@@ -77,7 +77,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testsuite, testcase, onUpdate }
                     <Dialog.Title as="div" className="text-base font-bold text-color-0500 py-0">
                       Configure Test Case
                       <div className="flex flex-row text-xs text-slate-400 justify-start items-center">
-                        <p className="select-none">{`Suite: ${testsuite.name} - [`}</p>
+                        <p className="select-none">{`Suite: ${testscenario.name} - [`}</p>
                         <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
                         <p className="select-none">]</p>
                       </div>
@@ -170,7 +170,7 @@ const schema = {
     type: {
       type: "integer",
       oneOf: [
-        { const: 0, title: "Scenario" },
+        { const: 0, title: "Definition" },
         { const: 1, title: "REST-API" },
         { const: 2, title: "Web" },
         { const: 3, title: "SSH" }

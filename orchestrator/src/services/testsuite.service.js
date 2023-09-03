@@ -1,4 +1,5 @@
 const { getPagination, getPagingData } = require("../utils/pagination");
+const { Op } = require("sequelize");
 
 module.exports = {
   list,
@@ -52,6 +53,24 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     throw new Error("Cloning from Invalid TestSuite");
   }
 
+  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+    attributes: ["id"],
+    where: {
+      ProjectMasterId
+    }
+  });
+
+  let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
+    where: {
+      TestSuiteId: {
+        [Op.in]: testSuites.map((suite) => suite.id)
+      }
+    }
+  });
+  if (nextSeqNo == null) {
+    nextSeqNo = 0;
+  }
+
   const testSuite = testcases[0].TestSuite.toJSON();
   await global.DbStoreModel.sequelize.transaction(async (t) => {
     const tsData = {
@@ -69,6 +88,8 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
 
     const request = [];
     testcases.forEach((tc) => {
+      nextSeqNo = Number(nextSeqNo) + 1;
+
       const testcase = {
         ...tc.toJSON(),
         AccountId,
@@ -78,6 +99,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
       };
       delete testcase.id;
       delete testcase.seqNo;
+      testcase.seqNo = nextSeqNo;
       request.push(global.DbStoreModel.TestCase.create(testcase, { transaction: t }));
     });
     return Promise.all(request);
@@ -114,6 +136,6 @@ async function get(AccountId, ProjectMasterId, id) {
     ts = await global.DbStoreModel.TestSuite.findByPk(id);
   }
 
-  if (!ts) throw new Error("Test suite not found");
+  if (!ts) throw new Error("Test scenario not found");
   return ts;
 }

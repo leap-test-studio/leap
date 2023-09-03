@@ -71,7 +71,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
   const location = useLocation();
   const { pathname } = location;
   const id = snakeCase(title).replace(/_/g, "-");
-  const { changeSuite } = useContext(WebContext);
+  const { changeTestScenario } = useContext(WebContext);
 
   return (
     <NavLink
@@ -90,7 +90,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
         if (openNewTab) {
           openInNewTab(path);
         } else {
-          changeSuite(null);
+          changeTestScenario(null);
         }
       }}
     >

@@ -1,7 +1,7 @@
 import IconRenderer from "../../IconRenderer";
 import { useNavigate } from "react-router-dom";
 
-function SelectedProject({ product, project, suite, resetContext, changeSuite }) {
+function SelectedProject({ product, project, suite, resetContext, changeTestScenario }) {
   const navigate = useNavigate();
 
   const resetProject = () => {
@@ -62,7 +62,7 @@ function SelectedProject({ product, project, suite, resetContext, changeSuite })
               <i className="fad fa-xs fa-solid fa-folder-open text-indigo-700" />
             </div>
             <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{suite?.name}</span>
-            <button onClick={() => changeSuite(null)} className="focus:outline-none mx-2 font-extrabold text-red-600">
+            <button onClick={() => changeTestScenario(null)} className="focus:outline-none mx-2 font-extrabold text-red-600">
               <IconRenderer icon="Close" className="h-5 w-5" />
             </button>
           </div>

@@ -13,7 +13,7 @@ const WebContext = React.createContext({
     winWidth: window.innerWidth,
     winHeight: window.innerHeight
   },
-  changeSuite: null,
+  changeTestScenario: null,
   changeProject: null,
   resetContext: null
 });
