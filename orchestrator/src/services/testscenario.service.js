@@ -27,7 +27,7 @@ async function list(AccountId, ProjectMasterId, page = 0, size = 10000) {
 
 async function create(AccountId, ProjectMasterId, payload) {
   if (await global.DbStoreModel.TestScenario.findOne({ where: { name: payload.name } })) {
-    throw new Error(`TestSuite by name '${payload.name}' is already registered`);
+    throw new Error(`Test Scenario by name '${payload.name}' is already registered`);
   }
   const ts = new global.DbStoreModel.TestScenario({
     ...payload,
@@ -50,7 +50,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     }
   });
   if (!testcases || testcases.length === 0) {
-    throw new Error("Cloning from Invalid TestSuite");
+    throw new Error("Cloning from Invalid Test Scenario");
   }
 
   const testSuites = await global.DbStoreModel.TestScenario.findAll({

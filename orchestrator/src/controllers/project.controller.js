@@ -4,7 +4,7 @@ const Joi = require("joi");
 const validateRequest = require("../_middleware/validate-request");
 const authorize = require("../_middleware/authorize");
 const projectService = require("../services/project.service");
-const testSuiteService = require("../services/testsuite.service");
+const testScenarioService = require("../services/testscenario.service");
 const testCaseService = require("../services/testcase.service");
 const schedulerService = require("../services/scheduler");
 
@@ -23,12 +23,12 @@ router.put("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), projectSc
 router.delete("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), _deleteProject);
 
 // Test suite routes
-router.get("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getAllTestSuites);
-router.post("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testSuiteSchema, createTestSuite);
-router.post("/:projectId/suite/:suiteId/clone", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), cloneTestSuite);
-router.get("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getTestSuite);
-router.put("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testSuiteSchema, updateTestSuite);
-router.delete("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), deleteTestSuite);
+router.get("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getAllTestScenarios);
+router.post("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, createTestScenario);
+router.post("/:projectId/suite/:suiteId/clone", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), cloneTestScenario);
+router.get("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getTestScenario);
+router.put("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, updateTestScenario);
+router.delete("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), deleteTestScenario);
 
 // Test case routes
 router.get("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
@@ -164,7 +164,7 @@ function testCloneSuiteSchema(req, _, next) {
   });
 }
 
-function testSuiteSchema(req, _, next) {
+function testScenarioSchema(req, _, next) {
   validateRequest(req, next, {
     name: Joi.string().min(4).required(),
     description: Joi.string(),
@@ -174,8 +174,8 @@ function testSuiteSchema(req, _, next) {
   });
 }
 
-function getAllTestSuites(req, res) {
-  testSuiteService
+function getAllTestScenarios(req, res) {
+  testScenarioService
     .list(req.auth.id, req.params.projectId)
     .then((o) => res.json(o))
     .catch((err) => {
@@ -187,8 +187,8 @@ function getAllTestSuites(req, res) {
     });
 }
 
-function createTestSuite(req, res) {
-  testSuiteService
+function createTestScenario(req, res) {
+  testScenarioService
     .create(req.auth.id, req.params.projectId, req.body)
     .then((o) =>
       res.json({
@@ -205,8 +205,8 @@ function createTestSuite(req, res) {
     });
 }
 
-function getTestSuite(req, res) {
-  testSuiteService
+function getTestScenario(req, res) {
+  testScenarioService
     .get(req.auth.id, req.params.projectId, req.params.suiteId)
     .then((o) => res.json(o))
     .catch((err) => {
@@ -218,8 +218,8 @@ function getTestSuite(req, res) {
     });
 }
 
-function updateTestSuite(req, res) {
-  testSuiteService
+function updateTestScenario(req, res) {
+  testScenarioService
     .update(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
     .then(() => res.json({ message: "Test scenario updated successfully." }))
     .catch((err) => {
@@ -231,8 +231,8 @@ function updateTestSuite(req, res) {
     });
 }
 
-function deleteTestSuite(req, res) {
-  testSuiteService
+function deleteTestScenario(req, res) {
+  testScenarioService
     .delete(req.auth.id, req.params.projectId, req.params.suiteId)
     .then(() => res.json({ message: "Test scenario deleted successfully." }))
     .catch((err) => {
@@ -244,9 +244,9 @@ function deleteTestSuite(req, res) {
     });
 }
 
-function cloneTestSuite(req, res) {
+function cloneTestScenario(req, res) {
   console.log("Cloning test suite", req.auth.id, req.params, req.body);
-  testSuiteService
+  testScenarioService
     .clone(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
     .then((o) =>
       res.json({

@@ -9,7 +9,7 @@ module.exports = {
   create,
   stop,
   createTestCase,
-  createTestSuite
+  createTestScenario
 };
 
 async function create(AccountId, ProjectMasterId, payload) {
@@ -155,7 +155,7 @@ async function stop(ProjectMasterId) {
   return list;
 }
 
-async function createTestSuite(AccountId, ProjectMasterId, TestScenarioId) {
+async function createTestScenario(AccountId, ProjectMasterId, TestScenarioId) {
   const testCases = await global.DbStoreModel.TestCase.findAll({
     attributes: ["id"],
     where: {
