@@ -36,7 +36,7 @@ async function getRecentBuildSummary(AccountId) {
 }
 
 async function getTotalStats(AccountId) {
-  const suites = await global.DbStoreModel.TestScenario.findAll({
+  const scenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       AccountId
@@ -57,7 +57,7 @@ async function getTotalStats(AccountId) {
     return s;
   });
 
-  const suiteIds = suites.map((s) => {
+  const scenarioIds = scenarios.map((s) => {
     return s.id;
   });
 
@@ -65,14 +65,14 @@ async function getTotalStats(AccountId) {
     where: {
       AccountId,
       TestScenarioId: {
-        [Op.in]: suiteIds
+        [Op.in]: scenarioIds
       }
     }
   });
 
   return {
     projects: projects.length,
-    suites: suites.length,
+    scenarios: scenarios.length,
     cases,
     builds
   };
@@ -117,7 +117,7 @@ async function getBuildDetails(id, buildNo) {
     skipped = 0,
     steps = 0,
     running = 0,
-    suites = {},
+    scenarios = {},
     jobs = [],
     options = null,
     status = 0,
@@ -176,7 +176,7 @@ async function getBuildDetails(id, buildNo) {
       ...job,
       steps: stepsExecuted.length
     });
-    if (job?.TestCase?.TestScenario?.id) suites[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
+    if (job?.TestCase?.TestScenario?.id) scenarios[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
   });
   const executed = passed + failed + skipped;
 
@@ -191,7 +191,7 @@ async function getBuildDetails(id, buildNo) {
     passed,
     failed,
     skipped,
-    suites: Object.keys(suites),
+    scenarios: Object.keys(scenarios),
     steps,
     running,
     jobs,

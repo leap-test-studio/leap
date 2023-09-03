@@ -50,15 +50,15 @@ function TestScenarioManagement(props) {
     isError,
     loading
   } = useSelector((state) => state.testscenario);
-  const { project, suite, changeTestScenario } = props;
+  const { project, scenario, changeTestScenario } = props;
   useEffect(() => {
     if (project?.id) {
       fetchTestScenarios();
-      if (suite?.id) {
-        dispatch(fetchTestCaseList(project?.id, suite?.id));
+      if (scenario?.id) {
+        dispatch(fetchTestCaseList(project?.id, scenario?.id));
       }
     }
-  }, [project, suite]);
+  }, [project, scenario]);
 
   const handleCreateTestScenario = (testscenario) => {
     if (project?.id) {
@@ -97,7 +97,7 @@ function TestScenarioManagement(props) {
     setShowDeleteDialog(false);
   };
 
-  if (suite) {
+  if (scenario) {
     return (
       <Centered>
         <TestCaseManagement {...props} />
@@ -112,7 +112,7 @@ function TestScenarioManagement(props) {
       <PageHeader show={!isFirstTestScenario}>
         <PageTitle>Test Scenarios</PageTitle>
         <PageActions>
-          <SearchComponent search={search} placeholder="Search suite name" onChange={setSearch} onClear={() => setSearch("")} />
+          <SearchComponent search={search} placeholder="Search scenario name" onChange={setSearch} onClear={() => setSearch("")} />
           <Tooltip
             title={
               testscenarios?.length > MAX_ALLOWED_TEST_SCENARIOS ? (
@@ -138,7 +138,7 @@ function TestScenarioManagement(props) {
         {isFirstTestScenario ? (
           <Centered>
             <FirstTimeCard
-              id="first-test-suite"
+              id="first-test-scenario"
               icon="Extension"
               loading={loading}
               onClick={() => setShowCreateDialog(true)}

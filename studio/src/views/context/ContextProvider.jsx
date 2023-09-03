@@ -5,14 +5,13 @@ import CustomAlertDialog from "../utilities/CustomAlertDialog";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
 import isEmpty from "lodash/isEmpty";
 import { openProject } from "../../redux/actions/ProjectActions";
-import { useNavigate } from "react-router-dom";
 
 const DEFAULT_HEADER_HEIGHT = 40;
 const DEFAULT_FOOTER_HEIGHT = 0;
 
 const initialState = {
   project: null,
-  suite: null,
+  scenario: null,
   open: false,
   online: true
 };
@@ -24,7 +23,7 @@ function ContextProvider({ children }) {
   const [state, setState] = useState({
     ...initialState,
     project: LocalStorageService.getItem("project"),
-    suite: LocalStorageService.getItem("suite")
+    scenario: LocalStorageService.getItem("scenario")
   });
   const [windowDimension, detectHW] = useState({
     headerHeight: DEFAULT_HEADER_HEIGHT,
@@ -46,7 +45,7 @@ function ContextProvider({ children }) {
 
   const resetContext = () => {
     LocalStorageService.removeItem("project");
-    LocalStorageService.removeItem("suite");
+    LocalStorageService.removeItem("scenario");
     setState(initialState);
     dispatch(openProject(null));
   };
@@ -66,13 +65,13 @@ function ContextProvider({ children }) {
     dispatch(openProject(null));
   };
 
-  const changeTestScenario = (suite) => {
+  const changeTestScenario = (scenario) => {
     setState({
       ...state,
-      suite
+      scenario
     });
-    if (suite) LocalStorageService.setItem("suite", suite);
-    else LocalStorageService.removeItem("suite");
+    if (scenario) LocalStorageService.setItem("scenario", scenario);
+    else LocalStorageService.removeItem("scenario");
   };
 
   return (

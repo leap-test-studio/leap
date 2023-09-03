@@ -13,13 +13,13 @@ module.exports = {
   import: _import
 };
 
-async function _import(accountId, suiteId, testcaseId, file) {
+async function _import(accountId, scenarioId, testcaseId, file) {
   try {
     const rawdata = fs.readFileSync(file);
     const tc = JSON.parse(rawdata);
     delete tc.seqNo;
     tc.type = Types.findIndex((t) => t == tc.type);
-    return await update(accountId, suiteId, testcaseId, tc);
+    return await update(accountId, scenarioId, testcaseId, tc);
   } catch (e) {
     logger.error(e);
     return Promise.reject(e);
@@ -43,7 +43,7 @@ async function list(AccountId, TestScenarioId, page = 0, size = 10000) {
 async function create(AccountId, TestScenarioId, payload) {
   const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
-  const testSuites = await global.DbStoreModel.TestScenario.findAll({
+  const testScenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId: ts.ProjectMasterId
@@ -53,7 +53,7 @@ async function create(AccountId, TestScenarioId, payload) {
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
       TestScenarioId: {
-        [Op.in]: testSuites.map((suite) => suite.id)
+        [Op.in]: testScenarios.map((scenario) => scenario.id)
       }
     }
   });
@@ -78,7 +78,7 @@ async function create(AccountId, TestScenarioId, payload) {
 async function clone(AccountId, TestScenarioId, id) {
   const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
-  const testSuites = await global.DbStoreModel.TestScenario.findAll({
+  const testScenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId: ts.ProjectMasterId
@@ -92,7 +92,7 @@ async function clone(AccountId, TestScenarioId, id) {
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
       TestScenarioId: {
-        [Op.in]: testSuites.map((suite) => suite.id)
+        [Op.in]: testScenarios.map((scenario) => scenario.id)
       }
     }
   });
@@ -113,15 +113,15 @@ async function clone(AccountId, TestScenarioId, id) {
   return tcClone;
 }
 
-async function update(accountId, suiteId, id, payload) {
-  const tc = await get(accountId, suiteId, id);
+async function update(accountId, scenarioId, id, payload) {
+  const tc = await get(accountId, scenarioId, id);
   Object.assign(tc, payload);
   tc.updatedAt = Date.now();
   return await tc.save();
 }
 
-async function _delete(accountId, suiteId, id) {
-  const tc = await get(accountId, suiteId, id);
+async function _delete(accountId, scenarioId, id) {
+  const tc = await get(accountId, scenarioId, id);
   return await tc.destroy({ force: true });
 }
 

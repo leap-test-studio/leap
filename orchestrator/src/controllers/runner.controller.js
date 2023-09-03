@@ -8,7 +8,7 @@ const csrf = require("../_middleware/checkCSRF");
 
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
 router.post("/:projectId/runProject", csrf, authorize(), startProjectBuilds);
-router.post("/:projectId/runTestScenario/:suiteId", csrf, authorize(), startTestScenario);
+router.post("/:projectId/runTestScenario/:scenarioId", csrf, authorize(), startTestScenario);
 router.post("/:projectId/runTestCases", csrf, authorize(), startTestCases);
 
 router.post("/:projectId/trigger", startProjectBuilds);
@@ -57,9 +57,9 @@ function startTestCases(req, res) {
 }
 
 function startTestScenario(req, res) {
-  logger.info("Start Test Scenario", req.params.projectId, req.params.suiteId);
+  logger.info("Start Test Scenario", req.params.projectId, req.params.scenarioId);
   runner
-    .createTestScenario(req.auth?.id, req.params.projectId, req.params.suiteId)
+    .createTestScenario(req.auth?.id, req.params.projectId, req.params.scenarioId)
     .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);

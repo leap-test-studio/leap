@@ -29,7 +29,7 @@ import ImportTestCaseDialog from "./ImportTestCaseDialog";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
-function TestCaseManagement({ project, suite, changeTestScenario }) {
+function TestCaseManagement({ project, scenario, changeTestScenario }) {
   const dispatch = useDispatch();
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -44,8 +44,8 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
   }, []);
 
   const fetchTestCases = () => {
-    if (project?.id && suite?.id) {
-      dispatch(fetchTestCaseList(project?.id, suite?.id));
+    if (project?.id && scenario?.id) {
+      dispatch(fetchTestCaseList(project?.id, scenario?.id));
     }
   };
 
@@ -73,7 +73,7 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
                 onClick={() => setShowCreateDialog(true)}
                 onClose={() => changeTestScenario(null)}
                 title="Create first TestCase"
-                details={`Test Scenario: ${suite?.name}`}
+                details={`Test Scenario: ${scenario?.name}`}
                 buttonTitle="Create"
                 buttonIcon="PostAdd"
               />
@@ -92,16 +92,16 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
           editTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
             setShowUpdateDialog(true);
-            dispatch(fetchTestCase(project?.id, suite?.id, selectedTestCase.id));
+            dispatch(fetchTestCase(project?.id, scenario?.id, selectedTestCase.id));
           }}
-          updateTestCase={(t) => dispatch(updateTestCase(project?.id, suite?.id, t.id, t))}
+          updateTestCase={(t) => dispatch(updateTestCase(project?.id, scenario?.id, t.id, t))}
           deleteTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
             setShowDeleteDialog(true);
           }}
           cloneTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
-            dispatch(cloneTestCase(project?.id, suite?.id, selectedTestCase.id));
+            dispatch(cloneTestCase(project?.id, scenario?.id, selectedTestCase.id));
           }}
           runTestCases={(selectedTestCase) => {
             dispatch(runTestCases(project?.id, [selectedTestCase.id]));
@@ -120,7 +120,7 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
           onClose={resetState}
           item={selectedTestCase.name}
           onDelete={() => {
-            dispatch(deleteTestCase(project?.id, suite?.id, selectedTestCase?.id));
+            dispatch(deleteTestCase(project?.id, scenario?.id, selectedTestCase?.id));
             setShowDeleteDialog(false);
           }}
         />
@@ -130,19 +130,19 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
           showDialog={showCreateDialog}
           onClose={resetState}
           createTestCase={(record) => {
-            dispatch(createTestCase(project?.id, suite?.id, record));
+            dispatch(createTestCase(project?.id, scenario?.id, record));
             setShowCreateDialog(false);
           }}
         />
       )}
       {showUpdateDialog && (
         <UpdateTestCaseDialog
-          testscenario={suite}
+          testscenario={scenario}
           testcase={selectedTestCase}
           isOpen={showUpdateDialog}
           onClose={resetState}
           onUpdate={(t) => {
-            dispatch(updateTestCase(project?.id, suite?.id, t.id, t));
+            dispatch(updateTestCase(project?.id, scenario?.id, t.id, t));
             resetState();
           }}
         />
@@ -150,7 +150,7 @@ function TestCaseManagement({ project, suite, changeTestScenario }) {
       {showImportDialog && (
         <ImportTestCaseDialog
           projectId={project?.id}
-          testSuiteId={suite?.id}
+          scenarioId={scenario?.id}
           testcase={selectedTestCase}
           showDialog={showImportDialog}
           onClose={resetState}
@@ -318,17 +318,16 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
+          className={`text-xs font-normal select-none ${record.status === 0
+            ? "bg-purple-300"
+            : record.status === 1
               ? "bg-indigo-300"
               : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
-          }`}
+                ? "bg-blue-300"
+                : record.status === 3
+                  ? "bg-violet-400"
+                  : ""
+            }`}
         >
           {tcType}
         </label>

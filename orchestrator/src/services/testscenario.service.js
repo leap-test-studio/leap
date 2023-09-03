@@ -41,19 +41,19 @@ async function create(AccountId, ProjectMasterId, payload) {
   return ts;
 }
 
-async function clone(AccountId, ProjectMasterId, suiteId, payload) {
+async function clone(AccountId, ProjectMasterId, scenarioId, payload) {
   const now = Date.now();
   const testcases = await global.DbStoreModel.TestCase.findAll({
     include: {
       model: global.DbStoreModel.TestScenario,
-      where: { id: suiteId }
+      where: { id: scenarioId }
     }
   });
   if (!testcases || testcases.length === 0) {
     throw new Error("Cloning from Invalid Test Scenario");
   }
 
-  const testSuites = await global.DbStoreModel.TestScenario.findAll({
+  const testScenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId
@@ -63,7 +63,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
       TestScenarioId: {
-        [Op.in]: testSuites.map((suite) => suite.id)
+        [Op.in]: testScenarios.map((scenario) => scenario.id)
       }
     }
   });
@@ -71,10 +71,10 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     nextSeqNo = 0;
   }
 
-  const testSuite = testcases[0].TestScenario.toJSON();
+  const testScenario = testcases[0].TestScenario.toJSON();
   await global.DbStoreModel.sequelize.transaction(async (t) => {
     const tsData = {
-      ...testSuite,
+      ...testScenario,
       ...payload,
       AccountId,
       ProjectMasterId,

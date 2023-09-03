@@ -77,7 +77,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
                     <Dialog.Title as="div" className="text-base font-bold text-color-0500 py-0">
                       Configure Test Case
                       <div className="flex flex-row text-xs text-slate-400 justify-start items-center">
-                        <p className="select-none">{`Suite: ${testscenario.name} - [`}</p>
+                        <p className="select-none">{`Test Scenario: ${testscenario.name} - [`}</p>
                         <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
                         <p className="select-none">]</p>
                       </div>

@@ -22,34 +22,34 @@ router.get("/:projectId/export", csrf, authorize([Role.Admin, Role.Manager]), ex
 router.put("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), projectSchema, updateProject);
 router.delete("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), _deleteProject);
 
-// Test suite routes
-router.get("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getAllTestScenarios);
-router.post("/:projectId/suite", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, createTestScenario);
-router.post("/:projectId/suite/:suiteId/clone", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), cloneTestScenario);
-router.get("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getTestScenario);
-router.put("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, updateTestScenario);
-router.delete("/:projectId/suite/:suiteId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), deleteTestScenario);
+// Test scenario routes
+router.get("/:projectId/scenario", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getAllTestScenarios);
+router.post("/:projectId/scenario", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, createTestScenario);
+router.post("/:projectId/scenario/:scenarioId/clone", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), cloneTestScenario);
+router.get("/:projectId/scenario/:scenarioId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), getTestScenario);
+router.put("/:projectId/scenario/:scenarioId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), testScenarioSchema, updateTestScenario);
+router.delete("/:projectId/scenario/:scenarioId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), deleteTestScenario);
 
 // Test case routes
-router.get("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
-router.post("/:projectId/suite/:suiteId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testCaseSchema, createTestCase);
-router.post("/:projectId/suite/:suiteId/testcase/:testcaseId/clone", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), cloneTestCase);
+router.get("/:projectId/scenario/:scenarioId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
+router.post("/:projectId/scenario/:scenarioId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testCaseSchema, createTestCase);
+router.post("/:projectId/scenario/:scenarioId/testcase/:testcaseId/clone", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), cloneTestCase);
 router.post(
-  "/:projectId/suite/:suiteId/testcase/:testcaseId/import",
+  "/:projectId/scenario/:scenarioId/testcase/:testcaseId/import",
   csrf,
   authorize([Role.Admin, Role.Lead, Role.Engineer]),
   testcaseImporter.single("upload-file"),
   importTestCase
 );
-router.get("/:projectId/suite/:suiteId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getTestCase);
+router.get("/:projectId/scenario/:scenarioId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getTestCase);
 router.put(
-  "/:projectId/suite/:suiteId/testcase/:testcaseId",
+  "/:projectId/scenario/:scenarioId/testcase/:testcaseId",
   csrf,
   authorize([Role.Admin, Role.Lead, Role.Engineer]),
   testCaseSchema,
   updateTestCase
 );
-router.delete("/:projectId/suite/:suiteId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), deleteTestCase);
+router.delete("/:projectId/scenario/:scenarioId/testcase/:testcaseId", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), deleteTestCase);
 
 // Job Scheduler routes
 router.get("/:projectId/job", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllJobs);
@@ -154,11 +154,11 @@ function _deleteProject(req, res) {
     });
 }
 
-// Test suite functions
+// Test scenario functions
 
-function testCloneSuiteSchema(req, _, next) {
+function testCloneScenarioSchema(req, _, next) {
   validateRequest(req, next, {
-    testSuiteId: Joi.string().required(),
+    scenarioId: Joi.string().required(),
     name: Joi.string().min(4).required(),
     description: Joi.string()
   });
@@ -207,7 +207,7 @@ function createTestScenario(req, res) {
 
 function getTestScenario(req, res) {
   testScenarioService
-    .get(req.auth.id, req.params.projectId, req.params.suiteId)
+    .get(req.auth.id, req.params.projectId, req.params.scenarioId)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
@@ -220,7 +220,7 @@ function getTestScenario(req, res) {
 
 function updateTestScenario(req, res) {
   testScenarioService
-    .update(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
+    .update(req.auth.id, req.params.projectId, req.params.scenarioId, req.body)
     .then(() => res.json({ message: "Test scenario updated successfully." }))
     .catch((err) => {
       logger.error(err);
@@ -233,7 +233,7 @@ function updateTestScenario(req, res) {
 
 function deleteTestScenario(req, res) {
   testScenarioService
-    .delete(req.auth.id, req.params.projectId, req.params.suiteId)
+    .delete(req.auth.id, req.params.projectId, req.params.scenarioId)
     .then(() => res.json({ message: "Test scenario deleted successfully." }))
     .catch((err) => {
       logger.error(err);
@@ -245,9 +245,8 @@ function deleteTestScenario(req, res) {
 }
 
 function cloneTestScenario(req, res) {
-  console.log("Cloning test suite", req.auth.id, req.params, req.body);
   testScenarioService
-    .clone(req.auth.id, req.params.projectId, req.params.suiteId, req.body)
+    .clone(req.auth.id, req.params.projectId, req.params.scenarioId, req.body)
     .then((o) =>
       res.json({
         id: o?.id,
@@ -280,7 +279,7 @@ function testCaseSchema(req, _, next) {
 
 function getAllTestCases(req, res) {
   testCaseService
-    .list(req.auth.id, req.params.suiteId)
+    .list(req.auth.id, req.params.scenarioId)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
@@ -293,7 +292,7 @@ function getAllTestCases(req, res) {
 
 function createTestCase(req, res) {
   testCaseService
-    .create(req.auth.id, req.params.suiteId, req.body)
+    .create(req.auth.id, req.params.scenarioId, req.body)
     .then((o) =>
       res.json({
         id: o?.id,
@@ -311,7 +310,7 @@ function createTestCase(req, res) {
 
 function cloneTestCase(req, res) {
   testCaseService
-    .clone(req.auth.id, req.params.suiteId, req.params.testcaseId)
+    .clone(req.auth.id, req.params.scenarioId, req.params.testcaseId)
     .then((o) =>
       res.json({
         id: o?.id,
@@ -333,7 +332,7 @@ function importTestCase(req, res) {
   }
 
   testCaseService
-    .import(req.auth.id, req.params.suiteId, req.params.testcaseId, req.file.path)
+    .import(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.file.path)
     .then((o) =>
       res.json({
         id: o?.id,
@@ -351,7 +350,7 @@ function importTestCase(req, res) {
 
 function getTestCase(req, res) {
   testCaseService
-    .get(req.auth.id, req.params.suiteId, req.params.testcaseId)
+    .get(req.auth.id, req.params.scenarioId, req.params.testcaseId)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
@@ -364,7 +363,7 @@ function getTestCase(req, res) {
 
 function updateTestCase(req, res) {
   testCaseService
-    .update(req.auth.id, req.params.suiteId, req.params.testcaseId, req.body)
+    .update(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.body)
     .then(() => res.json({ message: "Test case updated successfully." }))
     .catch((err) => {
       logger.error(err);
@@ -377,7 +376,7 @@ function updateTestCase(req, res) {
 
 function deleteTestCase(req, res) {
   testCaseService
-    .delete(req.auth.id, req.params.suiteId, req.params.testcaseId)
+    .delete(req.auth.id, req.params.scenarioId, req.params.testcaseId)
     .then(() => res.json({ message: "Test case deleted successfully" }))
     .catch((err) => {
       logger.error(err);

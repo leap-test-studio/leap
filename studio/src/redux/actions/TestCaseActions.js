@@ -15,8 +15,8 @@ export const resetTestCaseFlags = (options) => (dispatch) => {
   });
 };
 
-export const fetchTestCaseList = (projectId, testSuiteId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`).then((res) => {
+export const fetchTestCaseList = (projectId, scenarioId) => (dispatch) => {
+  axios.get(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase`).then((res) => {
     dispatch({
       type: actionTypes.GET_TESTCASE_LIST,
       payload: res.data
@@ -24,10 +24,10 @@ export const fetchTestCaseList = (projectId, testSuiteId) => (dispatch) => {
   });
 };
 
-export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
+export const createTestCase = (projectId, scenarioId, data) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase`, data)
+    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -53,10 +53,10 @@ export const createTestCase = (projectId, testSuiteId, data) => (dispatch) => {
     });
 };
 
-export const cloneTestCase = (projectId, testSuiteId, id) => (dispatch) => {
+export const cloneTestCase = (projectId, scenarioId, id) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${id}/clone`)
+    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${id}/clone`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -110,10 +110,10 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
     });
 };
 
-export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dispatch) => {
+export const updateTestCase = (projectId, scenarioId, testCaseId, data) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`, data)
+    .put(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -138,10 +138,10 @@ export const updateTestCase = (projectId, testSuiteId, testCaseId, data) => (dis
     });
 };
 
-export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch) => {
+export const deleteTestCase = (projectId, scenarioId, testCaseId) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`)
+    .delete(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -166,7 +166,7 @@ export const deleteTestCase = (projectId, testSuiteId, testCaseId) => (dispatch)
     });
 };
 
-export const fetchTestCase = (projectId, testSuiteId, testCaseId) => (dispatch) => {
+export const fetchTestCase = (projectId, scenarioId, testCaseId) => (dispatch) => {
   dispatch({
     type: actionTypes.GET_TESTCASE,
     payload: {
@@ -174,7 +174,7 @@ export const fetchTestCase = (projectId, testSuiteId, testCaseId) => (dispatch) 
     }
   });
   axios
-    .get(`/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testCaseId}`)
+    .get(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`)
     .then((res) => {
       if (res?.data)
         dispatch({

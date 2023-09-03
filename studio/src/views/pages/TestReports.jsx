@@ -98,7 +98,7 @@ export default function TestReports({ project: selectedPrject }) {
   const buildInfo = buildReports.find((item) => item.buildNo === Number(buildNo));
   if (buildDetails) {
     data[0].value = completionRate + "%";
-    data[1].value = buildDetails.suites?.length;
+    data[1].value = buildDetails.scenarios?.length;
     data[2].value = buildDetails.total;
     data[3].value = buildDetails.steps;
     data[4].value = buildDetails.passed;
@@ -201,15 +201,14 @@ function BuildDetails({ project, buildNo, status, buildInfo }) {
             <td>Status</td>
             <td>
               <div
-                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${
-                  isRunning
-                    ? "bg-cds-blue-0600 animate-pulse"
-                    : report === "Pass"
+                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${isRunning
+                  ? "bg-cds-blue-0600 animate-pulse"
+                  : report === "Pass"
                     ? "bg-cds-green-0600"
                     : report === "Fail" || report === "Aborted"
-                    ? "bg-cds-red-0700"
-                    : "bg-material-yellow-600"
-                } text-white select-none`}
+                      ? "bg-cds-red-0700"
+                      : "bg-material-yellow-600"
+                  } text-white select-none`}
               >
                 {report}
               </div>
@@ -335,7 +334,7 @@ function TestExecutionResults({ rate }) {
   );
 }
 
-const ReportTableHeader = Object.freeze(["TC Key", "Suite", "Type", "Summary", "Steps", "Status", "Time"]);
+const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Type", "Summary", "Steps", "Status", "Time"]);
 
 function ReportTable({ jobs, testType }) {
   return (
@@ -400,15 +399,14 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
         <td className="border-x border-x-slate-100 w-20">
           <div
-            className={`rounded text-sm text-center font-medium mx-2 p-0.5 ${
-              status === "Running"
-                ? "bg-cds-blue-0600 animate-pulse"
-                : status === "Pass"
+            className={`rounded text-sm text-center font-medium mx-2 p-0.5 ${status === "Running"
+              ? "bg-cds-blue-0600 animate-pulse"
+              : status === "Pass"
                 ? "bg-cds-green-0600"
                 : status === "Fail" || status === "Aborted"
-                ? "bg-cds-red-0700"
-                : "bg-material-yellow-600"
-            } text-white select-none`}
+                  ? "bg-cds-red-0700"
+                  : "bg-material-yellow-600"
+              } text-white select-none`}
           >
             {status}
           </div>
@@ -467,15 +465,14 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                   </td>
                   <td className="border-r border-slate-200 w-24">
                     <p
-                      className={`rounded text-xs text-center font-medium w-24 mx-2 py-0.5 ${
-                        TestStatus[actualResult.result] === "Running"
-                          ? "bg-cds-blue-0600 animate-pulse"
-                          : TestStatus[actualResult.result] === "Pass"
+                      className={`rounded text-xs text-center font-medium w-24 mx-2 py-0.5 ${TestStatus[actualResult.result] === "Running"
+                        ? "bg-cds-blue-0600 animate-pulse"
+                        : TestStatus[actualResult.result] === "Pass"
                           ? "bg-cds-green-0600"
                           : TestStatus[actualResult.result] === "Fail"
-                          ? "bg-cds-red-0700"
-                          : "bg-material-yellow-600"
-                      } text-white select-none`}
+                            ? "bg-cds-red-0700"
+                            : "bg-material-yellow-600"
+                        } text-white select-none`}
                     >
                       {TestStatus[actualResult.result]}
                     </p>
@@ -518,7 +515,7 @@ const data = [
     className: "text-cds-green-0600"
   },
   {
-    title: "Total Suites",
+    title: "Total Scenarios",
     value: 1
   },
   {

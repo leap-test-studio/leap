@@ -1,7 +1,7 @@
 import IconRenderer from "../../IconRenderer";
 import { useNavigate } from "react-router-dom";
 
-function SelectedProject({ product, project, suite, resetContext, changeTestScenario }) {
+function SelectedProject({ product, project, scenario, resetContext, changeTestScenario }) {
   const navigate = useNavigate();
 
   const resetProject = () => {
@@ -48,7 +48,7 @@ function SelectedProject({ product, project, suite, resetContext, changeTestScen
           </div>
         </div>
       )}
-      {suite?.name && (
+      {scenario?.name && (
         <div className="inline-flex items-center mx-1">
           <svg aria-hidden="true" className="w-6 h-6 text-slate-100" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -61,7 +61,7 @@ function SelectedProject({ product, project, suite, resetContext, changeTestScen
             <div className="h-7 w-7 rounded-full text-center bg-blue-100 items-center justify-center">
               <i className="fad fa-xs fa-solid fa-folder-open text-indigo-700" />
             </div>
-            <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{suite?.name}</span>
+            <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{scenario?.name}</span>
             <button onClick={() => changeTestScenario(null)} className="focus:outline-none mx-2 font-extrabold text-red-600">
               <IconRenderer icon="Close" className="h-5 w-5" />
             </button>

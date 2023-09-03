@@ -5,7 +5,7 @@ import { upload } from "../../utilities/http";
 import * as actionTypes from "../../../redux/actions";
 import { useDispatch } from "react-redux";
 
-function ImportTestCaseDialog({ showDialog, projectId, testSuiteId, testcase, onClose }) {
+function ImportTestCaseDialog({ showDialog, projectId, scenarioId, testcase, onClose }) {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -29,7 +29,7 @@ function ImportTestCaseDialog({ showDialog, projectId, testSuiteId, testcase, on
         formData.append("upload-file", selectedFile);
         const response = await upload(
           "POST",
-          `/api/v1/project/${projectId}/suite/${testSuiteId}/testcase/${testcase?.id}/import`,
+          `/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testcase?.id}/import`,
           formData,
           (percent) => setProgress(Math.floor(percent))
         );

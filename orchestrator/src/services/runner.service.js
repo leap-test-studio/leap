@@ -55,10 +55,10 @@ async function create(AccountId, ProjectMasterId, payload) {
     order: [["createdAt", "ASC"]]
   });
 
-  const testSuiteIds = testSuites.filter((suite) => suite.id && suite.status).map((suite) => suite.id);
+  const scenarioIds = testSuites.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
 
   BPromise.reduce(
-    testSuiteIds,
+    scenarioIds,
     async function (total, TestScenarioId) {
       try {
         const testCases = await global.DbStoreModel.TestCase.findAll({

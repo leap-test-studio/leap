@@ -35,7 +35,7 @@ const InititialRoutes = [
     sideBar: true,
     title: "Test Scenario",
     icon: "Apps",
-    path: "test-management",
+    path: "test-scenario",
     page: "testsuite/TestScenarioManagement.jsx",
     projectSelectionRequired: true
   },

@@ -3,7 +3,7 @@ import React from "react";
 const WebContext = React.createContext({
   isProjectSelected: false,
   project: null,
-  suite: null,
+  scenario: null,
   online: false,
   routes: [],
   windowDimension: {

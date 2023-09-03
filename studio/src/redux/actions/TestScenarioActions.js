@@ -17,7 +17,7 @@ export const resetTestScenarioFlags = (options) => (dispatch) => {
 };
 
 export const fetchTestScenarioList = (projectId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/suite`).then((res) => {
+  axios.get(`/api/v1/project/${projectId}/scenario`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_TEST_SCENARIO_LIST,
@@ -29,7 +29,7 @@ export const fetchTestScenarioList = (projectId) => (dispatch) => {
 export const createTestScenario = (projectId, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite`, data)
+    .post(`/api/v1/project/${projectId}/scenario`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -55,10 +55,10 @@ export const createTestScenario = (projectId, data) => (dispatch) => {
     });
 };
 
-export const updateTestScenario = (projectId, testSuiteId, data) => (dispatch) => {
+export const updateTestScenario = (projectId, scenarioId, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${projectId}/suite/${testSuiteId}`, data)
+    .put(`/api/v1/project/${projectId}/scenario/${scenarioId}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -83,10 +83,10 @@ export const updateTestScenario = (projectId, testSuiteId, data) => (dispatch) =
     });
 };
 
-export const deleteTestScenario = (projectId, testSuiteId) => (dispatch) => {
+export const deleteTestScenario = (projectId, scenarioId) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${projectId}/suite/${testSuiteId}`)
+    .delete(`/api/v1/project/${projectId}/scenario/${scenarioId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -111,10 +111,10 @@ export const deleteTestScenario = (projectId, testSuiteId) => (dispatch) => {
     });
 };
 
-export const cloneTestScenario = (projectId, suiteId, data) => (dispatch) => {
+export const cloneTestScenario = (projectId, scenarioId, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/suite/${suiteId}/clone`, data)
+    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/clone`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -140,9 +140,9 @@ export const cloneTestScenario = (projectId, suiteId, data) => (dispatch) => {
     });
 };
 
-export const runTestScenario = (projectId, suiteId) => (dispatch) => {
+export const runTestScenario = (projectId, scenarioId) => (dispatch) => {
   axios
-    .post(`/api/v1/runner/${projectId}/runTestScenario/${suiteId}`)
+    .post(`/api/v1/runner/${projectId}/runTestScenario/${scenarioId}`)
     .then((res) => {
       if (res?.data)
         dispatch({
