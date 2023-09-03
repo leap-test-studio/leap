@@ -47,7 +47,7 @@ async function create(AccountId, ProjectMasterId, payload) {
 
   await build.save();
 
-  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+  const testSuites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id", "status"],
     where: {
       ProjectMasterId
@@ -59,11 +59,11 @@ async function create(AccountId, ProjectMasterId, payload) {
 
   BPromise.reduce(
     testSuiteIds,
-    async function (total, TestSuiteId) {
+    async function (total, TestScenarioId) {
       try {
         const testCases = await global.DbStoreModel.TestCase.findAll({
           where: {
-            TestSuiteId,
+            TestScenarioId,
             type: {
               [Op.not]: 0
             },
@@ -155,11 +155,11 @@ async function stop(ProjectMasterId) {
   return list;
 }
 
-async function createTestSuite(AccountId, ProjectMasterId, TestSuiteId) {
+async function createTestSuite(AccountId, ProjectMasterId, TestScenarioId) {
   const testCases = await global.DbStoreModel.TestCase.findAll({
     attributes: ["id"],
     where: {
-      TestSuiteId,
+      TestScenarioId,
       enabled: true
     },
     order: [["seqNo", "ASC"]]

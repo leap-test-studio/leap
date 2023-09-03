@@ -36,7 +36,7 @@ async function getRecentBuildSummary(AccountId) {
 }
 
 async function getTotalStats(AccountId) {
-  const suites = await global.DbStoreModel.TestSuite.findAll({
+  const suites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       AccountId
@@ -64,7 +64,7 @@ async function getTotalStats(AccountId) {
   const cases = await global.DbStoreModel.TestCase.count({
     where: {
       AccountId,
-      TestSuiteId: {
+      TestScenarioId: {
         [Op.in]: suiteIds
       }
     }
@@ -158,7 +158,7 @@ async function getBuildDetails(id, buildNo) {
   const jobRecords = await global.DbStoreModel.Job.findAll({
     include: {
       model: global.DbStoreModel.TestCase,
-      include: global.DbStoreModel.TestSuite
+      include: global.DbStoreModel.TestScenario
     },
     where: {
       BuildMasterId: {
@@ -176,7 +176,7 @@ async function getBuildDetails(id, buildNo) {
       ...job,
       steps: stepsExecuted.length
     });
-    if (job?.TestCase?.TestSuite?.id) suites[job?.TestCase?.TestSuite?.id] = job?.TestCase?.TestSuite;
+    if (job?.TestCase?.TestScenario?.id) suites[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
   });
   const executed = passed + failed + skipped;
 

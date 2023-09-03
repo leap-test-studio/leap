@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const TestSuite = sequelize.define(
-    "TestSuite",
+  const TestScenario = sequelize.define(
+    "TestScenario",
     {
       id: {
         type: DataTypes.UUID,
@@ -30,10 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "automation_suites"
     }
   );
-  TestSuite.associate = function (models) {
-    TestSuite.hasMany(models.TestCase);
-    TestSuite.belongsTo(models.Account, { onDelete: "cascade" });
-    TestSuite.belongsTo(models.ProjectMaster, { onDelete: "cascade" });
+  TestScenario.associate = function (models) {
+    TestScenario.hasMany(models.TestCase);
+    TestScenario.belongsTo(models.Account, { onDelete: "cascade" });
+    TestScenario.belongsTo(models.ProjectMaster, { onDelete: "cascade" });
   };
-  return TestSuite;
+  return TestScenario;
 };

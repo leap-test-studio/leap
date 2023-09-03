@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
       settings: { type: DataTypes.JSON },
       tags: { type: DataTypes.JSON },
       AccountId: { type: DataTypes.UUID, unique: "comp" },
-      TestSuiteId: { type: DataTypes.UUID, unique: "comp" }
+      TestScenarioId: { type: DataTypes.UUID, unique: "comp" }
     },
     {
       paranoid: true,
@@ -48,7 +48,7 @@ module.exports = (sequelize) => {
   TestCase.associate = function (models) {
     TestCase.hasMany(models.Job);
     TestCase.belongsTo(models.Account, { onDelete: "cascade" });
-    TestCase.belongsTo(models.TestSuite, { onDelete: "cascade" });
+    TestCase.belongsTo(models.TestScenario, { onDelete: "cascade" });
   };
   return TestCase;
 };

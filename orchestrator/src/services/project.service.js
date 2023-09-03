@@ -14,7 +14,7 @@ module.exports = {
 async function _export(id) {
   const prj = await global.DbStoreModel.ProjectMaster.findOne({
     include: {
-      model: global.DbStoreModel.TestSuite,
+      model: global.DbStoreModel.TestScenario,
       include: global.DbStoreModel.TestCase
     },
     where: { id }

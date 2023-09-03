@@ -26,12 +26,12 @@ async function _import(accountId, suiteId, testcaseId, file) {
   }
 }
 
-async function list(AccountId, TestSuiteId, page = 0, size = 10000) {
+async function list(AccountId, TestScenarioId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);
   const data = await global.DbStoreModel.TestCase.findAndCountAll({
     where: {
       AccountId,
-      TestSuiteId
+      TestScenarioId
     },
     order: [["seqNo", "ASC"]],
     limit,
@@ -40,10 +40,10 @@ async function list(AccountId, TestSuiteId, page = 0, size = 10000) {
   return getPagingData(data, page, limit);
 }
 
-async function create(AccountId, TestSuiteId, payload) {
-  const ts = await global.DbStoreModel.TestSuite.findByPk(TestSuiteId);
+async function create(AccountId, TestScenarioId, payload) {
+  const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
-  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+  const testSuites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId: ts.ProjectMasterId
@@ -52,7 +52,7 @@ async function create(AccountId, TestSuiteId, payload) {
 
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
-      TestSuiteId: {
+      TestScenarioId: {
         [Op.in]: testSuites.map((suite) => suite.id)
       }
     }
@@ -66,7 +66,7 @@ async function create(AccountId, TestSuiteId, payload) {
     ...payload,
     enabled: true,
     AccountId,
-    TestSuiteId,
+    TestScenarioId,
     seqNo: nextSeqNo,
     createdAt: Date.now(),
     updatedAt: Date.now()
@@ -75,23 +75,23 @@ async function create(AccountId, TestSuiteId, payload) {
   return tc;
 }
 
-async function clone(AccountId, TestSuiteId, id) {
-  const ts = await global.DbStoreModel.TestSuite.findByPk(TestSuiteId);
+async function clone(AccountId, TestScenarioId, id) {
+  const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
-  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+  const testSuites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId: ts.ProjectMasterId
     }
   });
 
-  let tc = await get(AccountId, TestSuiteId, id);
+  let tc = await get(AccountId, TestScenarioId, id);
   tc = tc.toJSON();
   delete tc.id;
   delete tc.seqNo;
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
-      TestSuiteId: {
+      TestScenarioId: {
         [Op.in]: testSuites.map((suite) => suite.id)
       }
     }
@@ -104,7 +104,7 @@ async function clone(AccountId, TestSuiteId, id) {
   const tcClone = global.DbStoreModel.TestCase.build({
     ...tc,
     AccountId,
-    TestSuiteId,
+    TestScenarioId,
     seqNo: nextSeqNo,
     createdAt: Date.now(),
     updatedAt: Date.now()
@@ -127,15 +127,15 @@ async function _delete(accountId, suiteId, id) {
 
 // helper functions
 
-async function get(AccountId, TestSuiteId, id) {
+async function get(AccountId, TestScenarioId, id) {
   let tc;
   if (AccountId) {
     tc = await global.DbStoreModel.TestCase.findOne({
-      include: global.DbStoreModel.TestSuite,
+      include: global.DbStoreModel.TestScenario,
       where: {
         id,
         AccountId,
-        TestSuiteId
+        TestScenarioId
       }
     });
   } else {

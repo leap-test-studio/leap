@@ -370,11 +370,11 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
           TCID-{TestCase?.seqNo}
         </td>
         <td className="px-2 py-1 border-x border-x-slate-100 w-36">
-          {TestCase?.TestSuite && (
+          {TestCase?.TestScenario && (
             <div className="flex flex-col">
-              <label className="break-all">{TestCase?.TestSuite?.name}</label>
-              {TestCase?.TestSuite?.description && (
-                <NewlineText text={TestCase?.TestSuite?.description} className="font-normal" style={{ fontSize: 10 }} />
+              <label className="break-all">{TestCase?.TestScenario?.name}</label>
+              {TestCase?.TestScenario?.description && (
+                <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
               )}
             </div>
           )}

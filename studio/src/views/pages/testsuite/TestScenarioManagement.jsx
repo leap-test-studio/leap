@@ -41,7 +41,15 @@ function TestScenarioManagement(props) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
 
-  const { testscenarios, isFirstTestScenario, showMessage, message, error: errorMessage, isError, loading } = useSelector((state) => state.testscenario);
+  const {
+    testscenarios,
+    isFirstTestScenario,
+    showMessage,
+    message,
+    error: errorMessage,
+    isError,
+    loading
+  } = useSelector((state) => state.testscenario);
   const { project, suite, changeTestScenario } = props;
   useEffect(() => {
     if (project?.id) {

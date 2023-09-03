@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   ProjectMaster.associate = function (models) {
-    ProjectMaster.hasMany(models.TestSuite);
+    ProjectMaster.hasMany(models.TestScenario);
     ProjectMaster.hasMany(models.BuildMaster);
     ProjectMaster.belongsTo(models.Account, { onDelete: "cascade" });
   };

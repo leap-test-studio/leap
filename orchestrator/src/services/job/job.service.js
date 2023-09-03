@@ -20,9 +20,9 @@ async function getJobInfo(id) {
   });
 
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
-  if (jobInfo?.BuildMaster?.TestSuiteId) {
-    const TestSuite = await global.DbStoreModel.TestSuite.findByPk(jobInfo.BuildMaster.TestSuiteId);
-    jobInfo.settings = TestSuite.settings;
+  if (jobInfo?.BuildMaster?.TestScenarioId) {
+    const TestScenario = await global.DbStoreModel.TestScenario.findByPk(jobInfo.BuildMaster.TestScenarioId);
+    jobInfo.settings = TestScenario.settings;
   }
   return jobInfo;
 }

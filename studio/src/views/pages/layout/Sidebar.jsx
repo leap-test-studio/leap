@@ -29,7 +29,7 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuCli
       <div className="flex flex-col justify-between h-[90%]">
         <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen}>
           {sideBarItems.map((item, index) =>
-            (item.divider && item.mode?.includes(mode)) || (item.mode === undefined && item.divder) ? (
+            item.divider && (item.mode === undefined || item.mode?.includes(mode)) ? (
               <SidebarDividerItem key={index} title={item.title} isSmallScreen={isSmallScreen} />
             ) : item.mode === undefined || item.mode?.includes(mode) ? (
               <SidebarItem key={index} showTitle={showSidebar} base={base} isSmallScreen={isSmallScreen} {...item} />
@@ -59,7 +59,12 @@ function SidebarRender({ children, isSmallScreen }) {
 
 function SidebarDividerItem({ title }) {
   return (
-    <div className="m-0.5 flex flex-col items-start border-t-[1px] border-slate-100">
+    <div
+      className="m-0.5 inline-flex items-start border-t-[1px] border-slate-100"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <p className="text-xs font-thin tracking-tighter">{title}</p>
     </div>
   );

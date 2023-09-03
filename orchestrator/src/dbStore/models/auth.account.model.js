@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     Account.hasMany(models.RefreshToken, { onDelete: "cascade" });
     Account.hasMany(models.ProjectMaster, { onDelete: "cascade" });
     Account.hasMany(models.BuildMaster, { onDelete: "cascade" });
-    Account.hasMany(models.TestSuite, { onDelete: "cascade" });
+    Account.hasMany(models.TestScenario, { onDelete: "cascade" });
     Account.hasMany(models.TestCase, { onDelete: "cascade" });
     Account.hasMany(models.ScheduleJob, { onDelete: "cascade" });
   };

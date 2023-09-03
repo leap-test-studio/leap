@@ -12,7 +12,7 @@ module.exports = {
 
 async function list(AccountId, ProjectMasterId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);
-  const data = await global.DbStoreModel.TestSuite.findAndCountAll({
+  const data = await global.DbStoreModel.TestScenario.findAndCountAll({
     attributes: ["id", "name", "description", "status", "createdAt", "updatedAt"],
     where: {
       AccountId,
@@ -26,10 +26,10 @@ async function list(AccountId, ProjectMasterId, page = 0, size = 10000) {
 }
 
 async function create(AccountId, ProjectMasterId, payload) {
-  if (await global.DbStoreModel.TestSuite.findOne({ where: { name: payload.name } })) {
+  if (await global.DbStoreModel.TestScenario.findOne({ where: { name: payload.name } })) {
     throw new Error(`TestSuite by name '${payload.name}' is already registered`);
   }
-  const ts = new global.DbStoreModel.TestSuite({
+  const ts = new global.DbStoreModel.TestScenario({
     ...payload,
     status: 1,
     AccountId,
@@ -45,7 +45,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
   const now = Date.now();
   const testcases = await global.DbStoreModel.TestCase.findAll({
     include: {
-      model: global.DbStoreModel.TestSuite,
+      model: global.DbStoreModel.TestScenario,
       where: { id: suiteId }
     }
   });
@@ -53,7 +53,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     throw new Error("Cloning from Invalid TestSuite");
   }
 
-  const testSuites = await global.DbStoreModel.TestSuite.findAll({
+  const testSuites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       ProjectMasterId
@@ -62,7 +62,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
 
   let nextSeqNo = await global.DbStoreModel.TestCase.max("seqNo", {
     where: {
-      TestSuiteId: {
+      TestScenarioId: {
         [Op.in]: testSuites.map((suite) => suite.id)
       }
     }
@@ -71,7 +71,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     nextSeqNo = 0;
   }
 
-  const testSuite = testcases[0].TestSuite.toJSON();
+  const testSuite = testcases[0].TestScenario.toJSON();
   await global.DbStoreModel.sequelize.transaction(async (t) => {
     const tsData = {
       ...testSuite,
@@ -83,8 +83,8 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
     };
     delete tsData.id;
 
-    const ts = await global.DbStoreModel.TestSuite.create(tsData, { transaction: t });
-    const suite = ts.toJSON();
+    const ts = await global.DbStoreModel.TestScenario.create(tsData, { transaction: t });
+    const scenario = ts.toJSON();
 
     const request = [];
     testcases.forEach((tc) => {
@@ -93,7 +93,7 @@ async function clone(AccountId, ProjectMasterId, suiteId, payload) {
       const testcase = {
         ...tc.toJSON(),
         AccountId,
-        TestSuiteId: suite.id,
+        TestScenarioId: scenario.id,
         createdAt: now,
         updatedAt: now
       };
@@ -124,7 +124,7 @@ async function _delete(accountId, projectId, id) {
 async function get(AccountId, ProjectMasterId, id) {
   let ts;
   if (AccountId) {
-    ts = await global.DbStoreModel.TestSuite.findOne({
+    ts = await global.DbStoreModel.TestScenario.findOne({
       include: [global.DbStoreModel.Account, global.DbStoreModel.ProjectMaster],
       where: {
         id,
@@ -133,7 +133,7 @@ async function get(AccountId, ProjectMasterId, id) {
       }
     });
   } else {
-    ts = await global.DbStoreModel.TestSuite.findByPk(id);
+    ts = await global.DbStoreModel.TestScenario.findByPk(id);
   }
 
   if (!ts) throw new Error("Test scenario not found");
