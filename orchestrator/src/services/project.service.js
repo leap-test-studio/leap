@@ -47,6 +47,7 @@ async function create(AccountId, payload) {
   }
   const prj = new global.DbStoreModel.ProjectMaster({
     ...payload,
+    status: 1,
     AccountId
   });
   prj.createdAt = Date.now();

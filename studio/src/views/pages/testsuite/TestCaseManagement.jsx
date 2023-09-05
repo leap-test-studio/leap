@@ -318,16 +318,17 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
-            ? "bg-purple-300"
-            : record.status === 1
+          className={`text-xs font-normal select-none ${
+            record.status === 0
+              ? "bg-purple-300"
+              : record.status === 1
               ? "bg-indigo-300"
               : record.status === 2
-                ? "bg-blue-300"
-                : record.status === 3
-                  ? "bg-violet-400"
-                  : ""
-            }`}
+              ? "bg-blue-300"
+              : record.status === 3
+              ? "bg-violet-400"
+              : ""
+          }`}
         >
           {tcType}
         </label>

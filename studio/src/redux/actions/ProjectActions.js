@@ -52,7 +52,7 @@ export const createProject =
             payload: {
               ...res.data,
               isError: false,
-              message: "Project Created Successfully",
+              message: "Project created successfully",
               showMessage: true,
               loading: false,
               isFirstProject: false
