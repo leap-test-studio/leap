@@ -9,7 +9,7 @@ import ErrorMessage from "./common/ErrorMessage";
  * Default renderer for a string.
  */
 const TailwindInputText = React.memo((props) => {
-  const { id, visible, enabled, uischema, path, errors, schema, label, description, handleChange, data, trim = false, config } = props;
+  const { id, visible, enabled, uischema, path, errors, schema, label, description = "", handleChange, data, trim = false, config } = props;
   const [passwordShow, setPasswordShow] = useState(schema?.format !== "password");
   const isError = !isEmpty(errors);
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -59,7 +59,7 @@ const TailwindInputText = React.memo((props) => {
                     } rounded border placeholder-gray-300 shadow focus:shadow-md ${
                       isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-200"
                     } focus:outline-none w-full text-slate-700`}
-                    placeholder={"Please enter " + label}
+                    placeholder={description}
                     value={value}
                     onChange={onChange}
                   />
@@ -76,7 +76,7 @@ const TailwindInputText = React.memo((props) => {
                         ? "focus:border-red-500 border-red-600 focus:ring-red-600"
                         : "focus:border-color-0600 border-slate-200 focus:ring-color-0500"
                     } focus:outline-none w-full`}
-                    placeholder={"Please enter " + label}
+                    placeholder={description}
                     value={value}
                     onChange={onChange}
                   />

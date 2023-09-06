@@ -9,6 +9,12 @@ module.exports = (sequelize) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
       },
+      label: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return "TCID" + String(this.getDataValue("seqNo")).padStart(4, "0");
+        }
+      },
       seqNo: {
         type: DataTypes.INTEGER,
         unique: "comp",

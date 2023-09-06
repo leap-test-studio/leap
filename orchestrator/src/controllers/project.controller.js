@@ -19,7 +19,7 @@ router.get("/", csrf, authorize([Role.Admin, Role.Manager]), getAllProjects);
 router.post("/", csrf, authorize([Role.Admin, Role.Manager]), projectSchema, createProject);
 router.get("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getProject);
 router.get("/:projectId/export", csrf, authorize([Role.Admin, Role.Manager]), exportProject);
-router.put("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), projectSchema, updateProject);
+router.put("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), projectUpdateSchema, updateProject);
 router.delete("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), _deleteProject);
 
 // Test scenario routes
@@ -71,6 +71,15 @@ function projectSchema(req, _, next) {
   });
 }
 
+function projectUpdateSchema(req, _, next) {
+  validateRequest(req, next, {
+    name: Joi.string().min(4),
+    description: Joi.string(),
+    status: Joi.boolean(),
+    settings: Joi.object()
+  });
+}
+
 function getAllProjects(req, res) {
   projectService
     .list(req.auth.id)
@@ -104,7 +113,7 @@ function createProject(req, res) {
 
 function getProject(req, res) {
   projectService
-    .get(req.auth.id, req.params.projectId)
+    .getDetails(req.params.projectId)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
@@ -131,7 +140,7 @@ function exportProject(req, res) {
 function updateProject(req, res) {
   projectService
     .update(req.auth.id, req.params.projectId, req.body)
-    .then(() => res.json({ message: "Project updated successfully." }))
+    .then((data) => res.json({ message: "Project updated successfully.", ...data }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({

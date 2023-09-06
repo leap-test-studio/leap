@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Accordion from "../../utilities/Accordion";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import TailwindInputText from "../../tailwindrender/renderers/TailwindInputText";
 import Tooltip from "../../utilities/Tooltip";
 import IconRenderer from "../../IconRenderer";
 
-const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, showFilter = true, showIcon = true }) => {
+const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, showFilter = true, showIcon = true, width = 120 }) => {
   const [expand, setExpand] = useState(false);
   const [filter, setFilter] = useState("");
-  const [displayElements, setDisplayElements] = useState(elements);
+  const [displayElements, setDisplayElements] = useState([]);
 
+  useEffect(() => {
+    setDisplayElements(elements);
+  }, [elements]);
   const handleChange = (value) => {
     setFilter(value);
     if (value.trim().length <= 0) {
@@ -20,11 +23,12 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
       setDisplayElements(filterItems(value.toLowerCase(), elements));
     }
   };
+
   return (
     <div className="sticky top-0">
       <div
-        className={`"w-28 p-1 shadow h-full flex flex-col items-center justify-center text-color-0800 bg-slate-100 rounded", ${
-          showExpand && "w-[120px]"
+        className={`p-1 shadow h-full flex flex-col items-center justify-center text-color-0800 bg-slate-100 rounded ${
+          showExpand ? `w-[${width}px]` : ""
         }`}
       >
         <div className="w-full flex flex-row items-center justify-center p-[0.1rem] border-b">
@@ -37,7 +41,7 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
             </Tooltip>
           )}
         </div>
-        <div className="mt-1">
+        <div className="mt-1 w-full">
           <TailwindInputText
             id="search"
             visible={showFilter}
@@ -55,7 +59,7 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
         </div>
         <div
           key="dragabble-items"
-          className="w-full p-0.5 flex flex-col items-center h-0.95 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          className="w-full p-0.5 ml-2 flex flex-col items-center h-0.95 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
         >
           {RenderElements(displayElements, expand, showIcon)}
         </div>
@@ -107,31 +111,22 @@ const onDragStart = (ev, nodeType) => {
 };
 
 const RenderElement = React.memo(({ id, value, label, description, showIcon = true, icon }) => {
-  if (description) {
-    return (
-      <Tooltip title={label} content={description}>
-        <div
-          id={`draggable-item-${id}`}
-          className="group shadow hover:shadow-xl mx-1 mb-2.5 py-2 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-24"
-          onDragStart={(ev) => onDragStart(ev, value)}
-          draggable
-        >
-          {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
-          <span className="text-xs text-center px-0.1 break-words font-medium">{label}</span>
-        </div>
-      </Tooltip>
-    );
-  }
-
   return (
     <div
       id={`draggable-item-${id}`}
-      className="group shadow hover:shadow-xl mx-1 mb-2.5 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-28"
+      className="group shadow hover:shadow-xl mx-1 mb-2.5 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-0.95"
       onDragStart={(ev) => onDragStart(ev, value)}
       draggable
     >
       {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
-      <span className={`text-xs text-center ${showIcon ? "" : "p-2"} break-all font-medium mx-0.5`}>{label}</span>
+      <div className="inline-flex items-center justify-center">
+        <span className={`text-xs text-center ${showIcon ? "" : "p-2"} break-all font-medium mx-0.5`}>{label}</span>
+        {description && (
+          <Tooltip placement="bottom" title={label} content={description}>
+            <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" />
+          </Tooltip>
+        )}
+      </div>
     </div>
   );
 });

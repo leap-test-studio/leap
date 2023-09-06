@@ -32,6 +32,16 @@ export const fetchProjectList = () => (dispatch) => {
   });
 };
 
+export const fetchProject = (projectId) => (dispatch) => {
+  axios.get(`/api/v1/project/${projectId}`).then((res) => {
+    if (res?.data)
+      dispatch({
+        type: actionTypes.GET_PROJECT,
+        payload: res.data
+      });
+  });
+};
+
 export const createProject =
   ({ name, description }) =>
   (dispatch) => {

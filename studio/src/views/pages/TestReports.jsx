@@ -367,7 +367,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
     <>
       <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700">
         <td className="px-2 py-1 border-x border-x-slate-100 w-18 font-bold" style={{ fontSize: 11 }}>
-          TCID-{TestCase?.seqNo}
+          {TestCase?.label}
         </td>
         <td className="px-2 py-1 border-x border-x-slate-100 w-36">
           {TestCase?.TestScenario && (

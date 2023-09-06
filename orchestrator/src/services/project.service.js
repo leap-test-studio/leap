@@ -6,6 +6,7 @@ module.exports = {
   list,
   create,
   get,
+  getDetails,
   update,
   delete: _delete,
   export: _export
@@ -57,10 +58,12 @@ async function create(AccountId, payload) {
 }
 
 async function update(accoutId, id, payload) {
-  const prj = await get(accoutId, id);
+  let prj = await get(accoutId, id);
   Object.assign(prj, payload);
   prj.updatedAt = Date.now();
-  return await prj.save();
+  await prj.save();
+  prj = await getDetails(id);
+  return prj.toJSON();
 }
 
 async function _delete(accoutId, id) {
@@ -80,6 +83,19 @@ async function get(AccountId, id) {
   } else {
     prj = await global.DbStoreModel.ProjectMaster.findByPk(id);
   }
+
+  if (!prj) throw new Error(`Project ID:${id} not found`);
+  return prj;
+}
+
+async function getDetails(id) {
+  const prj = await global.DbStoreModel.ProjectMaster.findOne({
+    include: {
+      model: global.DbStoreModel.TestScenario,
+      include: global.DbStoreModel.TestCase
+    },
+    where: { id }
+  });
 
   if (!prj) throw new Error(`Project ID:${id} not found`);
   return prj;

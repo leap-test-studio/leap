@@ -3,6 +3,7 @@ import * as actionTypes from "../actions";
 
 const initialState = {
   testscenarios: [],
+  testcases: {},
   loading: false,
   showMessage: false,
   isError: false,
@@ -13,6 +14,14 @@ const initialState = {
 const TestScenarioReducer = function (state = initialState, { payload, type }) {
   switch (type) {
     case actionTypes.GET_TEST_SCENARIO_LIST: {
+      state.testcases = {};
+
+      payload?.items?.forEach((t) => {
+        t.TestCases?.forEach((t) => {
+          state.testcases[t.id] = t;
+        });
+      });
+
       return {
         ...state,
         isFirstTestScenario: Array.isArray(payload.items) && payload.items.length === 0,

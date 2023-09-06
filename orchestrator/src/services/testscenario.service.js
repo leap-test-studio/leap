@@ -12,7 +12,7 @@ module.exports = {
 
 async function list(AccountId, ProjectMasterId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);
-  const data = await global.DbStoreModel.TestScenario.findAndCountAll({
+  const request = {
     attributes: ["id", "name", "description", "status", "createdAt", "updatedAt"],
     where: {
       AccountId,
@@ -21,7 +21,8 @@ async function list(AccountId, ProjectMasterId, page = 0, size = 10000) {
     order: [["createdAt", "ASC"]],
     limit,
     offset
-  });
+  };
+  const data = await global.DbStoreModel.TestScenario.findAndCountAll(request);
   return getPagingData(data, page, limit);
 }
 
