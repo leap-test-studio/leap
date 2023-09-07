@@ -1,10 +1,10 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
-import Tooltip from "../../utilities/Tooltip";
 import NodeHeader from "./NodeHeader";
 import NodeFooter from "./NodeFooter";
 import { useSelector } from "react-redux";
 import ProgressIcon from "./ProgressIcon";
+import IconTypes from "./IconTypes";
 
 const handleStyleTarget = {
   backgroundColor: "white",
@@ -35,7 +35,7 @@ const TestCaseNode = ({ id, type, selected }) => {
         <ProgressIcon icon="ElectricBolt" progress={data?.progress || 0} status={data?.status} size={50} />
         <Handle id={`source:${type}`} type="source" position={Position.Right} style={handleStyleSource} />
       </div>
-      <NodeFooter id={id} type={type} nodeData={data} selected={selected} />
+      <NodeFooter id={id} type={type} label={data?.label} status={data?.enabled ? "ACTIVE" : "INACTIVE"} />
     </div>
   );
 };

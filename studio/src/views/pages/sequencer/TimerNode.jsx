@@ -45,15 +45,7 @@ const TimerNode = ({ id, type, data, selected }) => {
         )}
         <Handle id={`source:${id}`} type="source" position={Position.Right} style={handleStyleSource} />
       </>
-      <NodeFooter
-        id={id}
-        type={type}
-        nodeData={{
-          label: "Timer",
-          enabled: true
-        }}
-        selected={selected}
-      />
+      <NodeFooter id={id} type={type} label="Timer Event" status="READY" />
     </div>
   );
 };

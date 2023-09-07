@@ -10,7 +10,7 @@ const initialState = {
   isFirstProject: false,
   openedProject: null,
   projectData: null,
-  testscenarios: [],
+  testscenarios: {},
   testcases: {},
   draggableItems: [],
   settings: {
@@ -31,7 +31,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_PROJECT:
     case actionTypes.UPDATE_PROJECT: {
       const testcases = {};
-      const testscenarios = [];
+      const testscenarios = {};
 
       const draggableItems = [
         {
@@ -40,8 +40,12 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           elements: [
             {
               id: 0,
-              type: "element",
-              value: "TIMER",
+              type: "TIMER",
+              value: {
+                timer: 0,
+                label: "Timer Event"
+              },
+              icon: "Timer",
               label: "Timer",
               description: "Delay Node"
             }
@@ -68,16 +72,26 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
       }
 
       payload.TestScenarios?.forEach((ts) => {
-        testscenarios.push(ts);
-        const elements = [];
+        testscenarios[ts.id] = ts;
+        const elements = [
+          {
+            id: ts.id,
+            type: "TS",
+            value: ts,
+            label: ts.name,
+            icon: "DynamicForm",
+            description: ts.description
+          }
+        ];
         ts.TestCases?.forEach((tc) => {
           testcases[tc.id] = tc;
           if (tc.enabled) {
             elements.push({
               ...tc,
-              type: "element",
-              value: tc.id,
+              type: "TC",
+              value: tc,
               label: tc.label,
+              icon: "ElectricBolt",
               description: (
                 <div className="grid grid-cols-1 gap-4">
                   <p>

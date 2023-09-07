@@ -1,8 +1,8 @@
 export default Object.freeze({
   READY: "HourglassTop",
-  INACTIVE: "Unpublished",
   ERRORED: "Error",
   COMPLETED: "CheckCircle",
-  ACTIVE: "PlayArrow",
+  INACTIVE: "FiberSmartRecord",
+  ACTIVE: "CheckCircle",
   ABORTED: "ReportProblem"
 });

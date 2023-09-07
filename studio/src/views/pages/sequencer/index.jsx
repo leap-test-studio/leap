@@ -9,18 +9,21 @@ import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
 import DragabbleElements from "../common/DragabbleElements";
-import PageHeader, { Page, PageTitle } from "../common/PageHeader";
+import PageHeader, { Page, PageActions, PageTitle } from "../common/PageHeader";
 import { updateSequence } from "../../../redux/actions/TestSequencerActions";
 import TimerNode from "./TimerNode";
-import { nanoid } from "nanoid";
 import { fetchProject } from "../../../redux/actions/ProjectActions";
+import NodeTypes from "./NodeTypes";
+import { nanoid } from "nanoid";
+import TestScenarioNode from "./TestScenarioNode";
+import IconButton from "../../utilities/IconButton";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
   const reactFlowWrapper = useRef();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const { testcases, draggableItems, settings } = useSelector((state) => state.project);
+  const { testcases, testscenarios, draggableItems, settings } = useSelector((state) => state.project);
   const [nodes, setNodes, onNodesChange] = useNodesState(settings.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(settings.edges);
 
@@ -41,7 +44,15 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const fetchTestScenarios = () => project?.id && dispatch(fetchProject(project.id));
 
-  const nodeTypes = useMemo(() => ({ SN: StartNode, TC: TestCaseNode, TIMER: TimerNode }), []);
+  const nodeTypes = useMemo(
+    () => ({
+      [NodeTypes.START_NODE]: StartNode,
+      [NodeTypes.TESTCASE_NODE]: TestCaseNode,
+      [NodeTypes.TESTSCENARIO_NODE]: TestScenarioNode,
+      [NodeTypes.TIMER_NODE]: TimerNode
+    }),
+    []
+  );
 
   const edgeTypes = useMemo(() => ({ default: DefaultEdge }), []);
 
@@ -66,36 +77,32 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     (ev) => {
       ev.preventDefault();
       if (reactFlowInstance) {
-        const id = ev.dataTransfer.getData("application/reactflow");
+        const id = ev.dataTransfer.getData("node-id");
+        const type = ev.dataTransfer.getData("node-type");
+        try {
+          var data = JSON.parse(ev.dataTransfer.getData("node-value"));
+        } catch (error) {
+          error;
+        }
+
         const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect();
         let clientX = isNaN(ev?.clientX) ? 300 : Number(ev?.clientX);
         let clientY = isNaN(ev?.clientX) ? 300 : Number(ev?.clientY);
         if (clientX < 0) clientX = 300;
         if (clientY < 0) clientY = 300;
-        const position = reactFlowInstance.project({
-          x: clientX - reactFlowBounds.left - 40,
-          y: clientY - reactFlowBounds.top - 40
-        });
-        let node;
-        if (id == "TIMER") {
-          node = {
-            id: nanoid(10),
-            type: "TIMER",
-            data: {
-              timer: 0,
-              label: "Timer Event"
-            }
-          };
-        } else {
-          const data = testcases[id];
-          node = {
-            id,
-            type: "TC",
-            data
-          };
-        }
 
-        node.position = position;
+        if (type == "TIMER") {
+          id = nanoid(10);
+        }
+        const node = {
+          id,
+          type,
+          data,
+          position: reactFlowInstance.project({
+            x: clientX - reactFlowBounds.left - 40,
+            y: clientY - reactFlowBounds.top - 40
+          })
+        };
 
         const changes = [
           ...nodes,
@@ -150,6 +157,9 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     <Page>
       <PageHeader>
         <PageTitle>Test Sequencer</PageTitle>
+        <PageActions>
+          <IconButton title="Reset" icon="ClearAll" onClick={saveTemplate} />
+        </PageActions>
       </PageHeader>
       <div className="flex flex-row my-1 rounded border" style={{ minHeight }}>
         <div className="w-full reactflow-wrapper" ref={reactFlowWrapper} style={{ minHeight }}>

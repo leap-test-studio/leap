@@ -77,7 +77,7 @@ const filterItems = (search, elements) => {
       const temp = { ...element };
       temp.elements = element.elements.filter((e) => e.label?.toLowerCase().includes(search));
       res.push(temp);
-    } else if (element.type === "element" && element.label?.toLowerCase().includes(search)) {
+    } else if (element.label?.toLowerCase().includes(search)) {
       res.push(element);
     }
   });
@@ -105,17 +105,20 @@ const RenderElements = (elements, expand, showIcon) => {
   );
 };
 
-const onDragStart = (ev, nodeType) => {
-  ev.dataTransfer.setData("application/reactflow", nodeType);
+const onDragStart = (ev, id, type, value) => {
+  console.log(id, type, value);
+  ev.dataTransfer.setData("node-id", id);
+  ev.dataTransfer.setData("node-type", type);
+  ev.dataTransfer.setData("node-value", JSON.stringify(value));
   ev.dataTransfer.effectAllowed = "move";
 };
 
-const RenderElement = React.memo(({ id, value, label, description, showIcon = true, icon }) => {
+const RenderElement = React.memo(({ id, type, value, label, description, showIcon = true, icon }) => {
   return (
     <div
       id={`draggable-item-${id}`}
       className="group shadow hover:shadow-xl mx-1 mb-2.5 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-0.95"
-      onDragStart={(ev) => onDragStart(ev, value)}
+      onDragStart={(ev) => onDragStart(ev, id, type, value)}
       draggable
     >
       {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}

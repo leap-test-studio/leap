@@ -35,7 +35,7 @@
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
     "mariadb": "^3.2.0",
-    "marked": "^8.0.0",
+    "marked": "^8.0.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multiline": "^2.0.0",
