@@ -9,7 +9,15 @@ export const deleteEdge = (payload) => (dispatch) => {
   });
 };
 
-export const sequenceEvents = () => (dispatch) => {};
+export const sequenceEvents = (type, opts) => (dispatch) => {
+  dispatch({
+    type: actionTypes.CONFIG_SIMULATION_BUTTON,
+    payload: {
+      type,
+      opts
+    }
+  });
+};
 
 export const updateSequence = (projectId, settings) => (dispatch) => {
   dispatch({

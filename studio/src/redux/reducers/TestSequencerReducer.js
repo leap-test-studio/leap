@@ -2,14 +2,11 @@
 import * as actionTypes from "../actions";
 
 const initialState = {
-  nodes: [
-    {
-      id: "start",
-      type: "SN",
-      data: { label: "Start" },
-      position: { x: 300, y: 300 }
-    }
-  ],
+  loading: false,
+  message: null,
+  showMessage: false,
+  simulationData: null,
+  nodes: [],
   edges: []
 };
 
@@ -34,6 +31,11 @@ const TestSequencerReducer = function (state = initialState, { payload, type }) 
         ...payload
       };
     }
+    case actionTypes.CONFIG_SIMULATION_BUTTON:
+      return {
+        ...state,
+        simulationData: payload
+      };
 
     default: {
       return state;

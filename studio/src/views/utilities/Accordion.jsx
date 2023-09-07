@@ -50,8 +50,9 @@ const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onCha
             leave="transition duration-105 ease-in-out"
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
+            className="w-full items-center p-1 rounded-b bg-slate-50 border mb-0.5"
           >
-            <div className="w-full items-center p-1 rounded-b bg-slate-50 border mb-0.5">{children}</div>
+            {children}
           </Transition>
         </div>
       )}

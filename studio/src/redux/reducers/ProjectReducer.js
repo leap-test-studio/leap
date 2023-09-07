@@ -1,4 +1,5 @@
 // action - state management
+import NodeTypes from "../../views/pages/sequencer/NodeTypes";
 import * as actionTypes from "../actions";
 
 const initialState = {
@@ -64,9 +65,9 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
         state.settings.nodes = [
           {
             id: "start",
-            type: "SN",
+            type: NodeTypes.START_NODE,
             data: { label: "Start" },
-            position: { x: 300, y: 300 }
+            position: { x: 50, y: 300 }
           }
         ];
       }
@@ -76,7 +77,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
         const elements = [
           {
             id: ts.id,
-            type: "TS",
+            type: NodeTypes.TESTSCENARIO_NODE,
             value: ts,
             label: ts.name,
             icon: "DynamicForm",
@@ -88,7 +89,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           if (tc.enabled) {
             elements.push({
               ...tc,
-              type: "TC",
+              type: NodeTypes.TESTCASE_NODE,
               value: tc,
               label: tc.label,
               icon: "ElectricBolt",

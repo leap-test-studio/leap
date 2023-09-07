@@ -61,7 +61,11 @@ app.use(helmet.ieNoOpen());
 app.use(helmet.hidePoweredBy());
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(
+  bodyParser.json({
+    limit: "10mb"
+  })
+);
 app.use(cookieParser());
 
 // allow cors requests from any origin and with credentials

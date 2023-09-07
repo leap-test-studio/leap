@@ -9,23 +9,35 @@ import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
 import DragabbleElements from "../common/DragabbleElements";
-import PageHeader, { Page, PageActions, PageTitle } from "../common/PageHeader";
-import { updateSequence } from "../../../redux/actions/TestSequencerActions";
+import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import TimerNode from "./TimerNode";
 import { fetchProject } from "../../../redux/actions/ProjectActions";
 import NodeTypes from "./NodeTypes";
 import { nanoid } from "nanoid";
 import TestScenarioNode from "./TestScenarioNode";
 import IconButton from "../../utilities/IconButton";
+import isEmpty from "lodash/isEmpty";
+import DeleteItemDialog from "../../utilities/DeleteItemDialog";
+import DeleteNodeDialog from "./DeleteNodeDialog";
+import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
   const reactFlowWrapper = useRef();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteEdgeDialog, setShowDeleteEdgeDialog] = useState(false);
+  const [showConfigDialog, setShowConfigDialog] = useState(false);
+  const [selectedNode, setSelectedNode] = useState(null);
 
-  const { testcases, testscenarios, draggableItems, settings } = useSelector((state) => state.project);
+  const { testcases, draggableItems, settings } = useSelector((state) => state.project);
+  const { simulationData } = useSelector((state) => state.sequencer);
   const [nodes, setNodes, onNodesChange] = useNodesState(settings.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(settings.edges);
+
+  const actionType = simulationData?.type;
+  const eid = simulationData?.opts;
 
   useEffect(() => {
     if (project?.id) {
@@ -44,6 +56,13 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const fetchTestScenarios = () => project?.id && dispatch(fetchProject(project.id));
 
+  const handleDialogClose = useCallback(() => {
+    setShowConfigDialog(false);
+    setShowDeleteDialog(false);
+    setShowDeleteEdgeDialog(false);
+    dispatch(sequenceEvents("nodeAction:reset"));
+  }, [dispatch]);
+
   const nodeTypes = useMemo(
     () => ({
       [NodeTypes.START_NODE]: StartNode,
@@ -58,14 +77,19 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const saveTemplate = useCallback(
     (ns = [], es = []) => {
-      dispatch(
-        updateSequence(project?.id, {
-          nodes: ns,
-          edges: es
-        })
-      );
+      const settings = isEmpty(ns) && isEmpty(es) ? null : { nodes: ns, edges: es };
+      dispatch(updateSequence(project?.id, settings));
     },
     [project]
+  );
+
+  const onNodeClick = useCallback((_, node) => setSelectedNode(node), [setSelectedNode]);
+  const onNodeDoubleClick = useCallback(
+    (_, node) => {
+      setSelectedNode(node);
+      setShowConfigDialog(node.type === NodeTypes.TIMER_NODE);
+    },
+    [setSelectedNode, setShowConfigDialog]
   );
 
   const onDragOver = useCallback((ev) => {
@@ -77,7 +101,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     (ev) => {
       ev.preventDefault();
       if (reactFlowInstance) {
-        const id = ev.dataTransfer.getData("node-id");
+        let id = ev.dataTransfer.getData("node-id");
         const type = ev.dataTransfer.getData("node-type");
         try {
           var data = JSON.parse(ev.dataTransfer.getData("node-value"));
@@ -151,18 +175,99 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     [edges, setEdges]
   );
 
+  useEffect(() => {
+    switch (actionType) {
+      case "nodeAction:editNode":
+        setShowConfigDialog(true);
+        break;
+      case "nodeAction:deleteNode":
+        setShowDeleteDialog(true);
+        break;
+      case "nodeAction:deleteEdge":
+        setShowDeleteEdgeDialog(true);
+        break;
+      case "nodeAction:reset":
+        setShowConfigDialog(false);
+        setShowDeleteDialog(false);
+        setShowDeleteEdgeDialog(false);
+        dispatch(sequenceEvents("nodeAction:clear"));
+        break;
+      default:
+    }
+  }, [actionType]);
+
   const minHeight = windowDimension?.maxContentHeight - 45;
+
+  const onUpdate = useCallback(
+    (node) => {
+      if (selectedNode) {
+        const index = nodes.findIndex((p) => p.id === selectedNode.id);
+        if (index > -1) {
+          nodes[index] = {
+            ...nodes[index],
+            ...node
+          };
+          setNodes(nodes);
+          saveTemplate(nodes, edges);
+        }
+      }
+      handleDialogClose();
+    },
+    [edges, handleDialogClose, nodes, saveTemplate, selectedNode, setNodes]
+  );
+
+  const deleteNode = useCallback(() => {
+    handleDialogClose();
+    const changes = [...nodes];
+    if (selectedNode) {
+      const index = nodes.findIndex((node) => node.id === selectedNode.id);
+      index > -1 && changes.splice(index, 1);
+      setNodes(changes);
+      saveTemplate(changes, edges);
+    }
+  }, [edges, handleDialogClose, nodes, saveTemplate, selectedNode, setNodes]);
+
+  const deleteEdge = useCallback(() => {
+    if (eid) {
+      const changes = [...edges];
+      const index = changes.findIndex((e) => e.id === eid);
+      changes.splice(index, 1);
+      setEdges(changes);
+      saveTemplate(nodes, changes);
+    }
+    handleDialogClose();
+  }, [edges, eid, handleDialogClose, nodes, saveTemplate, setEdges]);
+
+  const resetCanvas = () => {
+    const ns = [
+      {
+        id: "start",
+        type: NodeTypes.START_NODE,
+        data: { label: "Start" },
+        position: { x: 50, y: 300 }
+      }
+    ];
+    setEdges([]);
+    setNodes(ns);
+    saveTemplate(ns, []);
+  };
 
   return (
     <Page>
       <PageHeader>
         <PageTitle>Test Sequencer</PageTitle>
         <PageActions>
-          <IconButton title="Reset" icon="ClearAll" onClick={saveTemplate} />
+          <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
         </PageActions>
       </PageHeader>
-      <div className="flex flex-row my-1 rounded border" style={{ minHeight }}>
-        <div className="w-full reactflow-wrapper" ref={reactFlowWrapper} style={{ minHeight }}>
+      <div
+        className="flex flex-row my-1 rounded border"
+        style={{
+          minHeight,
+          maxHeight: minHeight
+        }}
+      >
+        <div className="w-full reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             id="testsequencer-canvas"
             nodes={nodes}
@@ -173,6 +278,8 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             minZoom={0.5}
             deleteKeyCode={46}
             elementsSelectable={true}
+            onNodeClick={onNodeClick}
+            onNodeDoubleClick={onNodeDoubleClick}
             onDrop={onDrop}
             onDragOver={onDragOver}
             connectionLineComponent={ConnectionLine}
@@ -188,6 +295,26 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             }}
           >
             <Controls />
+            {showConfigDialog && selectedNode !== null && (
+              <UpdateNodeConfigDialog
+                showDialog={showConfigDialog}
+                selectedNode={selectedNode}
+                onUpdate={onUpdate}
+                onClose={handleDialogClose}
+                isOpen={true}
+              />
+            )}
+            {showDeleteDialog && selectedNode !== null && (
+              <DeleteNodeDialog showDialog={showDeleteDialog} selectedNode={selectedNode} onClose={handleDialogClose} deleteNode={deleteNode} />
+            )}
+            <DeleteItemDialog
+              showDialog={showDeleteEdgeDialog}
+              title="Confirmation"
+              question="Are you sure you want to delete this edge?"
+              item={selectedNode?.id}
+              onDelete={deleteEdge}
+              onClose={handleDialogClose}
+            />
             <Background color="#aaa" gap={15} />
           </ReactFlow>
         </div>

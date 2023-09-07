@@ -1,6 +1,6 @@
 import { getBezierPath } from "reactflow";
 import IconRenderer from "../../MuiIcons";
-import { deleteEdge } from "../../../redux/actions/TestSequencerActions";
+import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
 import { useDispatch } from "react-redux";
 import { useCallback } from "react";
 
@@ -11,7 +11,7 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
   const onEdgeClick = useCallback(
     (evt) => {
       evt.stopPropagation();
-      dispatch(deleteEdge(id));
+      dispatch(sequenceEvents("nodeAction:deleteEdge", id));
     },
     [id, dispatch]
   );

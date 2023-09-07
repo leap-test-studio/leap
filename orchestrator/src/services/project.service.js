@@ -62,8 +62,7 @@ async function update(accoutId, id, payload) {
   Object.assign(prj, payload);
   prj.updatedAt = Date.now();
   await prj.save();
-  prj = await getDetails(id);
-  return prj.toJSON();
+  return await getDetails(id);
 }
 
 async function _delete(accoutId, id) {
@@ -89,7 +88,7 @@ async function get(AccountId, id) {
 }
 
 async function getDetails(id) {
-  const prj = await global.DbStoreModel.ProjectMaster.findOne({
+  let prj = await global.DbStoreModel.ProjectMaster.findOne({
     include: {
       model: global.DbStoreModel.TestScenario,
       include: global.DbStoreModel.TestCase
@@ -98,6 +97,19 @@ async function getDetails(id) {
   });
 
   if (!prj) throw new Error(`Project ID:${id} not found`);
+  prj = prj.toJSON();
+  prj.TestScenarios = prj.TestScenarios.sort((a, b) => {
+    if (a.createdAt < b.createdAt) return -1;
+    if (a.createdAt > b.createdAt) return 1;
+    return 0;
+  });
+  for (let index = 0; index < prj.TestScenarios.length; index++) {
+    prj.TestScenarios[index].TestCases = prj.TestScenarios[index].TestCases.sort((a, b) => {
+      if (a.seqNo < b.seqNo) return -1;
+      if (a.seqNo > b.seqNo) return 1;
+      return 0;
+    });
+  }
   return prj;
 }
 
