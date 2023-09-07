@@ -8,7 +8,7 @@ for i in $(git status | grep modified | awk '{print $3}'); do
         git checkout -- $i
     fi
 done
-
+git pull --tags origin main
 git add --all .
 git commit -m "sync"
-git push
+git push origin main:main
