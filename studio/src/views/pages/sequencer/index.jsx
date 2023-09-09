@@ -9,10 +9,10 @@ import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
 import DragabbleElements from "../common/DragabbleElements";
-import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import PageHeader, { Page, PageActions, PageTitle } from "../common/PageHeader";
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import TimerNode from "./TimerNode";
-import { fetchProject } from "../../../redux/actions/ProjectActions";
+import { fetchProject, startProjectBuilds } from "../../../redux/actions/ProjectActions";
 import NodeTypes from "./NodeTypes";
 import { nanoid } from "nanoid";
 import TestScenarioNode from "./TestScenarioNode";
@@ -21,6 +21,7 @@ import isEmpty from "lodash/isEmpty";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import DeleteNodeDialog from "./DeleteNodeDialog";
 import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
+import Tooltip from "../../utilities/Tooltip";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
@@ -222,8 +223,10 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     if (selectedNode) {
       const index = nodes.findIndex((node) => node.id === selectedNode.id);
       index > -1 && changes.splice(index, 1);
+      const e = edges.filter((edge) => edge.source != selectedNode.id && edge.target != selectedNode.id);
       setNodes(changes);
-      saveTemplate(changes, edges);
+      setEdges(e);
+      saveTemplate(changes, e);
     }
   }, [edges, handleDialogClose, nodes, saveTemplate, selectedNode, setNodes]);
 
@@ -257,7 +260,12 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
       <PageHeader>
         <PageTitle>Test Sequencer</PageTitle>
         <PageActions>
-          <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
+          <Tooltip title="Clear all nodes">
+            <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
+          </Tooltip>
+          <Tooltip title="Start Automation Builds">
+            <IconButton title="Trigger" icon="PlayArrowRounded" onClick={() => dispatch(startProjectBuilds(project?.id))} />
+          </Tooltip>
         </PageActions>
       </PageHeader>
       <div

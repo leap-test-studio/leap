@@ -1,36 +1,48 @@
+import TailwindSelectRenderer from "../../tailwindrender/renderers/TailwindSelectRenderer";
 import usePagination from "./usePagination";
 
 export default function Pagination(props) {
-  const { start, end } = getPagination(props.page, props.size, props.totalRecords);
+  const { page, size, totalRecords, count, handlePageItems, recordsCount, showRecordsDropdown = false, pageSizes = [] } = props;
+  const { start, end } = getPagination(page, size, totalRecords);
   const { items } = usePagination(props);
-
   return (
     <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
-          {props.count > 0 && (
+        <div className="select-none">
+          {count > 0 && (
             <p className="text-sm text-gray-700">
               Showing
               <span className="font-medium px-1">{start}</span>
               to
               <span className="font-medium px-1">{end}</span>
               of
-              <span className="font-medium px-1">{props.totalRecords}</span>
+              <span className="font-medium px-1">{totalRecords}</span>
               results
             </p>
           )}
         </div>
-        <div>
+        <div className="flex justify-between items-center">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             {items.map((item, index) => (
               <div key={index}>
                 {renderItem({
                   ...item,
-                  count: props.count
+                  count: count
                 })}
               </div>
             ))}
           </nav>
+          {showRecordsDropdown && (
+            <TailwindSelectRenderer
+              showLabel={false}
+              options={pageSizes}
+              label="100"
+              enableFilter={false}
+              data={recordsCount}
+              handleChange={(_, ev) => handlePageItems(ev)}
+              className="h-7 text-center ml-2"
+            />
+          )}
         </div>
       </div>
     </div>

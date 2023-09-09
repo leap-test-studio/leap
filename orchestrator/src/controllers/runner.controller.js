@@ -7,7 +7,16 @@ const authorize = require("../_middleware/authorize");
 const csrf = require("../_middleware/checkCSRF");
 
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
-router.post("/:projectId/runProject", csrf, authorize(), startProjectBuilds);
+router.post(
+  "/:projectId/runProject",
+  csrf,
+  authorize(),
+  (req, res, next) => {
+    req.params.flow = true;
+    next();
+  },
+  startProjectBuilds
+);
 router.post("/:projectId/runTestScenario/:scenarioId", csrf, authorize(), startTestScenario);
 router.post("/:projectId/runTestCases", csrf, authorize(), startTestCases);
 
@@ -25,7 +34,7 @@ function startProjectBuilds(req, res) {
   }
   logger.info("Starting project build", req.params.projectId);
   runner
-    .create(req.auth?.id, req.params.projectId, {
+    .create(req.auth?.id, req.params.projectId, req.params.flow, {
       options
     })
     .then((response) => res.status(status.ACCEPTED).json(response))

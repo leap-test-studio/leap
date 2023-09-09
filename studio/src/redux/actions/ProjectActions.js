@@ -42,6 +42,18 @@ export const fetchProject = (projectId) => (dispatch) => {
   });
 };
 
+export const fetchProjectBuilds = (projectId) => (dispatch) => {
+  axios.get(`/api/v1/project/${projectId}/builds`).then((res) => {
+    if (res?.data)
+      dispatch({
+        type: actionTypes.GET_PROJECT_BUILDS,
+        payload: {
+          builds: res.data
+        }
+      });
+  });
+};
+
 export const createProject =
   ({ name, description }) =>
   (dispatch) => {

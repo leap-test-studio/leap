@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       skipped: { type: DataTypes.INTEGER, defaultValue: 0 },
       running: { type: DataTypes.INTEGER, defaultValue: 0 },
       ProjectMasterId: { type: DataTypes.UUID, unique: "comp" },
+      flow: { type: DataTypes.JSON },
       options: { type: DataTypes.JSON },
       startTime: { type: DataTypes.DATE },
       endTime: { type: DataTypes.DATE }

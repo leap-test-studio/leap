@@ -12,7 +12,7 @@ module.exports = {
   createTestScenario
 };
 
-async function create(AccountId, ProjectMasterId, payload) {
+async function create(AccountId, ProjectMasterId, isFlow, payload) {
   if (!AccountId) {
     const account = await global.DbStoreModel.Account.findOne({
       where: {
@@ -20,6 +20,34 @@ async function create(AccountId, ProjectMasterId, payload) {
       }
     });
     AccountId = account.id;
+  }
+
+  let flow;
+  if (isFlow) {
+    const project = await global.DbStoreModel.ProjectMaster.findByPk(ProjectMasterId);
+    if (project.settings) {
+      function findNextElements(id) {
+        const startNode = project.settings.nodes.find((n) => n.id === id);
+        if (startNode) {
+          const node = {
+            id: startNode.id,
+            type: startNode.type,
+            children: []
+          };
+          const elements = {};
+          const targets = project.settings.edges.filter((e) => e.source == startNode.id);
+          targets.forEach((t) => {
+            elements[t.id] = findNextElements(t.target);
+          });
+          node.children = node.children.concat(Object.values(elements).filter((e) => e != null));
+          return node;
+        } else {
+          return null;
+        }
+      }
+      flow = findNextElements("start");
+      if (flow.children.length === 0) flow = null;
+    }
   }
 
   let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
@@ -39,6 +67,7 @@ async function create(AccountId, ProjectMasterId, payload) {
     buildNo: nextBuildNumber,
     total: 0,
     status: TestStatus.RUNNING,
+    flow,
     AccountId,
     ProjectMasterId,
     createdAt: Date.now(),

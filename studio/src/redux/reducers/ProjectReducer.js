@@ -17,7 +17,8 @@ const initialState = {
   settings: {
     nodes: [],
     edges: []
-  }
+  },
+  builds: null
 };
 
 const ProjectReducer = function (state = initialState, { payload, type }) {
@@ -135,7 +136,8 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
     case actionTypes.STOP_PROJECT_BUILDS:
     case actionTypes.CREATE_PROJECT:
     case actionTypes.GET_VIEW:
-    case actionTypes.DELETE_PROJECT: {
+    case actionTypes.DELETE_PROJECT:
+    case actionTypes.GET_PROJECT_BUILDS: {
       return {
         ...state,
         ...payload

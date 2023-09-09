@@ -125,7 +125,7 @@ async function getBuildDetails(id, buildNo) {
     endTime;
 
   const buildIds = [];
-  Project.BuildMasters.forEach((row) => {
+  Project?.BuildMasters.forEach((row) => {
     buildIds.push(row.id);
     if (row.status > 0) {
       if (row.startTime) {

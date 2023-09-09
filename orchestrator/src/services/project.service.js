@@ -9,7 +9,8 @@ module.exports = {
   getDetails,
   update,
   delete: _delete,
-  export: _export
+  export: _export,
+  getBuilds
 };
 
 async function _export(id) {
@@ -132,4 +133,14 @@ async function getRunningBuilds() {
   });
 
   return res;
+}
+
+async function getBuilds(ProjectMasterId) {
+  return await global.DbStoreModel.BuildMaster.findAll({
+    attributes: ["id", "buildNo", "status", "total", "passed", "failed", "skipped", "running", "flow", "startTime", "endTime"],
+    where: {
+      ProjectMasterId
+    },
+    order: [["buildNo", "DESC"]]
+  });
 }

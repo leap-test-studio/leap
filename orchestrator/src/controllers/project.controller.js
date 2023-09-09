@@ -18,6 +18,7 @@ const testcaseImporter = require("../_middleware/testcase-importer");
 router.get("/", csrf, authorize([Role.Admin, Role.Manager]), getAllProjects);
 router.post("/", csrf, authorize([Role.Admin, Role.Manager]), projectSchema, createProject);
 router.get("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getProject);
+router.get("/:projectId/builds", csrf, authorize([Role.Admin, Role.Manager]), getProjectBuilds);
 router.get("/:projectId/export", csrf, authorize([Role.Admin, Role.Manager]), exportProject);
 router.put("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), projectUpdateSchema, updateProject);
 router.delete("/:projectId", csrf, authorize([Role.Admin, Role.Manager]), _deleteProject);
@@ -83,6 +84,19 @@ function projectUpdateSchema(req, _, next) {
 function getAllProjects(req, res) {
   projectService
     .list(req.auth.id)
+    .then((o) => res.json(o))
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({
+        error: err.message,
+        message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
+      });
+    });
+}
+
+function getProjectBuilds(req, res) {
+  projectService
+    .getBuilds(req.params.projectId)
     .then((o) => res.json(o))
     .catch((err) => {
       logger.error(err);
