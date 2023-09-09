@@ -18,7 +18,7 @@ export function PageActions({ children }) {
 export function Page({ children }) {
   const { windowDimension } = useContext(WebContext);
   return (
-    <div className="flex flex-col w-full" style={{ minHeight: windowDimension?.maxContentHeight }}>
+    <div className="flex flex-col w-full" style={{ minHeight: windowDimension?.maxContentHeight, maxHeight: windowDimension?.maxContentHeight }}>
       {children}
     </div>
   );
