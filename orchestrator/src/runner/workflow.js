@@ -64,7 +64,6 @@ const root = {
 function AyncFunc(message) {
   return new Promise((resolve) => {
     let ran = getRandomizer(100, 3000);
-    console.log("S", message.id, message.name, Date.now());
     setTimeout(() => {
       resolve(message);
     }, ran);

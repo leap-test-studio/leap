@@ -3,8 +3,9 @@ SCRIPT_PATH=$(dirname "$0")
 cd $SCRIPT_PATH
 
 for i in $(git status | grep modified | awk '{print $3}'); do
-    diff=$(git diff --numstat --ignore-all-space $i | awk '{print $1}')
-    if [[ $diff -eq 0 ]]; then
+    diff=$(git diff --numstat --ignore-all-space $i | awk '{print $1"_"$2}')
+    echo "$i - $diff"
+    if [[ $diff == "0_0" ]]; then
         git checkout -- $i
     fi
 done
