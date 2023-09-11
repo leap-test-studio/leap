@@ -57,7 +57,7 @@ function stopProjectBuilds(req, res) {
 function startTestCases(req, res) {
   logger.info("StartTestCases", req.params.projectId, req.body);
   runner
-    .createTestCase(req.auth?.id, req.params.projectId, req.body)
+    .createTestCase(req.auth?.id, req.params.projectId, 1, req.body)
     .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);

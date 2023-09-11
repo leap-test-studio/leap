@@ -137,7 +137,7 @@ async function getRunningBuilds() {
 
 async function getBuilds(ProjectMasterId) {
   return await global.DbStoreModel.BuildMaster.findAll({
-    attributes: ["id", "buildNo", "status", "total", "passed", "failed", "skipped", "running", "flow", "startTime", "endTime"],
+    attributes: ["id", "buildNo", "type", "status", "total", "passed", "failed", "skipped", "running", "flow", "startTime", "endTime"],
     where: {
       ProjectMasterId
     },

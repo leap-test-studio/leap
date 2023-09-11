@@ -98,11 +98,16 @@ async function getBuildReports(AccountId, ProjectMasterId) {
   });
 }
 
-async function getBuildDetails(id, buildNo) {
+async function getBuildDetails(id, input) {
+  const arr = input.split("-");
+  const type = Number(arr[0]);
+  const buildNo = Number(arr[1]);
+
   const Project = await global.DbStoreModel.ProjectMaster.findOne({
     include: {
       model: global.DbStoreModel.BuildMaster,
       where: {
+        type,
         buildNo
       }
     },

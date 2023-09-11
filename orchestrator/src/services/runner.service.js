@@ -52,7 +52,8 @@ async function create(AccountId, ProjectMasterId, isFlow, payload) {
 
   let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
     where: {
-      ProjectMasterId
+      ProjectMasterId,
+      type: 0
     }
   });
 
@@ -197,16 +198,18 @@ async function createTestScenario(AccountId, ProjectMasterId, TestScenarioId) {
   return createTestCase(
     AccountId,
     ProjectMasterId,
+    2,
     testCases.map((t) => t.id)
   );
 }
 
-function createTestCase(AccountId, ProjectMasterId, payload) {
+function createTestCase(AccountId, ProjectMasterId, type = 1, payload) {
   return new Promise(async (resolve, reject) => {
     try {
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
         where: {
-          ProjectMasterId
+          ProjectMasterId,
+          type
         }
       });
 
@@ -231,7 +234,7 @@ function createTestCase(AccountId, ProjectMasterId, payload) {
       const totalTestCases = testCases.length;
       if (totalTestCases > 0) {
         const build = new global.DbStoreModel.BuildMaster({
-          type: 1,
+          type,
           buildNo: nextBuildNumber,
           total: totalTestCases,
           status: TestStatus.RUNNING,

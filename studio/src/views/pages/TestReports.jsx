@@ -13,6 +13,8 @@ import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./common/PageHeader";
 
+const BuildTypes = ["P", "TC", "TS"];
+
 const TestStatus = Object.freeze({
   0: "Draft",
   1: "Running",
@@ -45,6 +47,11 @@ export default function TestReports({ project: selectedPrject }) {
   const [testType, setTestType] = useState(-1);
   const [project, setProject] = useState(selectedPrject);
 
+  if (buildNo) {
+    const arr = buildNo.split("-");
+    var buildType = Number(arr[0]);
+    var buildNumber = arr[1];
+  }
   useEffect(() => {
     dispatch(fetchProjectList());
   }, []);
@@ -57,7 +64,7 @@ export default function TestReports({ project: selectedPrject }) {
 
   const exportReport2PDF = useReactToPrint({
     content: () => reportRef.current,
-    documentTitle: `Test Automation Report-B${buildNo}`
+    documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}${buildNumber}`
   });
 
   const [windowDimenion, detectHW] = useState({
@@ -95,7 +102,7 @@ export default function TestReports({ project: selectedPrject }) {
 
   const completionRate = toNumber(buildDetails.completion);
 
-  const buildInfo = buildReports.find((item) => item.buildNo === Number(buildNo));
+  const buildInfo = buildReports.find((item) => item.type === buildType && item.buildNo === Number(buildNumber));
   if (buildDetails) {
     data[0].value = completionRate + "%";
     data[1].value = buildDetails.scenarios?.length;
@@ -113,7 +120,7 @@ export default function TestReports({ project: selectedPrject }) {
 
   const buildList = buildReports.map((item) => {
     const buildNo = String(item.buildNo).padStart(4, "0");
-    return { value: buildNo, label: "B-" + buildNo };
+    return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + "-" + buildNo };
   });
 
   useEffect(() => {
@@ -123,6 +130,7 @@ export default function TestReports({ project: selectedPrject }) {
   }, [buildReports, buildList, handleBuildChange]);
 
   const buildSelected = buildNo && buildInfo && buildDetails;
+
   return (
     <Page>
       <PageHeader>
@@ -152,11 +160,11 @@ export default function TestReports({ project: selectedPrject }) {
           </Tooltip>
         </PageActions>
       </PageHeader>
-      <PageBody>
+      <PageBody className="bg-white">
         {buildSelected ? (
-          <div id="BuildReport" ref={reportRef} className="border rounded bg-white p-2">
+          <div id="BuildReport" ref={reportRef} className="border rounded p-2">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildNo={buildNo} buildInfo={buildInfo} {...buildDetails} />
+              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} />
               {!isEmpty(buildDetails?.options) && (
                 <div className="col-span-2">
                   <BuildEnvironmentVariables options={buildDetails.options} />
@@ -164,7 +172,7 @@ export default function TestReports({ project: selectedPrject }) {
               )}
               {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
             </div>
-            <BuildSummary data={data} buildInfo={buildInfo} onClick={handleFilter} testType={testType} />
+            <BuildSummary data={data} onClick={handleFilter} testType={testType} />
             <ReportTable {...buildDetails} testType={testType} />
           </div>
         ) : (
@@ -181,7 +189,7 @@ function toNumber(num) {
   return Number(Number(num).toFixed(0));
 }
 
-function BuildDetails({ project, buildNo, status, buildInfo }) {
+function BuildDetails({ project, status, buildInfo }) {
   const isRunning = TestStatus[status] === "Running";
   const report = TestStatus[status];
   return (
@@ -195,7 +203,7 @@ function BuildDetails({ project, buildNo, status, buildInfo }) {
           </tr>
           <tr>
             <td>Build No</td>
-            <td>{buildNo}</td>
+            <td>{String(buildInfo.buildNo).padStart(4, "0")}</td>
           </tr>
           <tr>
             <td>Status</td>

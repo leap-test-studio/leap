@@ -7,12 +7,22 @@ import { fetchProjectBuilds, startProjectBuilds } from "../../redux/actions/Proj
 import TableRenderer from "../tablerenderer";
 
 const columns = [
-  { title: "BuildNo", field: "buildNo", formatter: (field) => "B000" + field },
+  { title: "BuildNo", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true },
+  {
+    title: "Type",
+    field: "type",
+    enum: [
+      { const: 0, title: "Project Build" },
+      { const: 1, title: "Test Case Build" },
+      { const: 2, title: "Test Scenario Build" }
+    ],
+    sortable: true
+  },
   { title: "Start Time", field: "startTime" },
   { title: "End Time", field: "endTime" },
   { title: "Total", field: "total" },
   { title: "Passed", field: "passed" },
-  { title: "Failed", field: "failed" },
+  { title: "Failed", field: "failed", sortable: true },
   { title: "Skipped", field: "skipped" },
   { title: "Running", field: "running" },
   {
@@ -27,7 +37,8 @@ const columns = [
       { const: 5, title: "Skip", class: "bg-yellow-300 text-white" },
       { const: 6, title: "Aborted", class: "bg-cds-red-0600 text-white" },
       { const: 999, title: "Invalid", class: "bg-cds-red-0600 text-white" }
-    ]
+    ],
+    sortable: true
   },
   {
     title: "Flow Based",

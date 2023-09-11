@@ -44,7 +44,8 @@ const InititialRoutes = [
     title: "Test Runner",
     icon: "ElectricBoltTwoTone",
     path: "test-runner",
-    page: "TestRunner.jsx"
+    page: "TestRunner.jsx",
+    projectSelectionRequired: true
   },
   {
     sideBar: true,
