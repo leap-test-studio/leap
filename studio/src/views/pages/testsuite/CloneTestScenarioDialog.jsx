@@ -50,7 +50,6 @@ function CloneTestScenarioDialog({ showDialog, cloneTestScenario, onClose, tests
       title={`Clone Test scenario from ${testscenario?.name}`}
       saveTitle="Clone"
       onSave={() => {
-        console.log(data);
         cloneTestScenario(data);
         setData({});
       }}

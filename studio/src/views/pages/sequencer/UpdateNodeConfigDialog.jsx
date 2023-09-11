@@ -13,8 +13,6 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
   const schema = RequestSchemas[selectedNode?.type];
   const uischema = RequestUISchemas[selectedNode?.type];
 
-  console.log(selectedNode, nodeData);
-
   return (
     <CustomDialog
       open={isOpen}

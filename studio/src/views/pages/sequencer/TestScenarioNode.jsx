@@ -26,7 +26,6 @@ const handleStyleSource = {
 const TestScenarioNode = ({ id, type, selected }) => {
   const { testscenarios } = useSelector((state) => state.project);
   const data = testscenarios[id];
-  console.log(id, testscenarios);
   return (
     <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
       <NodeHeader selected={selected} />
