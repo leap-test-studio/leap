@@ -67,7 +67,7 @@ function Help(props) {
           <ul>
             {/*<li>
               <div
-                className="font-medium text-sm text-color-0500 hover:text-color-0700 flex items-center py-1 px-3 cursor-pointer"
+                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3 cursor-pointer"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
                   openInNewTab("/vinashak/docs");
@@ -82,7 +82,7 @@ function Help(props) {
             </li>
             <li>
               <Link
-                className="font-medium text-sm text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
+                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
                 to="#0"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -94,7 +94,7 @@ function Help(props) {
             </li> */}
             <li>
               <Link
-                className="font-medium text-sm text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
+                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
                 to="#0"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);

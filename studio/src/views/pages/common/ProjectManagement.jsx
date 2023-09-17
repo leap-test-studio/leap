@@ -332,7 +332,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               />
             </Tooltip>
           </div>
-          <div className="text-slate-600 text-sm font-medium break-words pb-1 -mt-4">{name}</div>
+          <div className="text-slate-600 text-xs font-medium break-words pb-1 -mt-4">{name}</div>
           {createdAt?.length > 0 && (
             <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
               <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />

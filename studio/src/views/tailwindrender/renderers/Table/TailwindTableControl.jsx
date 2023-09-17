@@ -83,7 +83,7 @@ const createControl = (scope, name, uischema, title) => {
 const NonEmptyCellComponent = ({ path, propName, schema, rootSchema, enabled, renderers, cells, ...props }) => {
   const uischema = createControl(schema.properties ? `#/properties/${propName}` : "#", propName, props?.uischema, schema.title);
   return (
-    <div className="px-1 pt-0.5 text-sm">
+    <div className="px-1 pt-0.5 text-xs">
       {schema.properties ? (
         <JsonFormsDispatch
           schema={Resolve.schema(schema, `#/properties/${propName}`, rootSchema) || schema}
@@ -129,7 +129,7 @@ const NonEmptyRow = React.memo(
     const moveUp = useMemo(() => moveUpCreator(path, rowIndex), [moveUpCreator, path, rowIndex]);
     const moveDown = useMemo(() => moveDownCreator(path, rowIndex), [moveDownCreator, path, rowIndex]);
     return (
-      <div key={childPath} className="w-full flex flex-row justify-between items-center text-sm bg-white my-1.5 shadow rounded">
+      <div key={childPath} className="w-full flex flex-row justify-between items-center text-xs bg-white my-1.5 shadow rounded">
         <div className="w-full flex flex-col">
           <div className="flex flex-row justify-between items-center bg-color-0100 px-1 py-0.5 rounded-t">
             <span>{`${rowTitle || "Record"} #${rowIndex + 1}`}</span>
@@ -147,7 +147,7 @@ const NonEmptyRow = React.memo(
           <div className="p-1">{generateCells(NonEmptyCell, schema, uischema, childPath, enabled, cells)}</div>
         </div>
         {enabled && showSortButtons && (
-          <div className="px-1 pt-0.5 text-sm flex flex-col items-center">
+          <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
             {rowIndex > 0 && (
               <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp} disabled={!enableUp} />
             )}

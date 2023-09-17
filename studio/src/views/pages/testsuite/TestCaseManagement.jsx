@@ -26,10 +26,11 @@ import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/Pa
 import FirstTimeCard from "../common/FirstTimeCard";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import ImportTestCaseDialog from "./ImportTestCaseDialog";
+import NewlineText from "../../utilities/NewlineText";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
-function TestCaseManagement({ project, scenario, changeTestScenario }) {
+function TestCaseManagement({ project, scenario, changeTestScenario, windowDimension }) {
   const dispatch = useDispatch();
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -145,6 +146,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario }) {
             dispatch(updateTestCase(project?.id, scenario?.id, t.id, t));
             resetState();
           }}
+          windowDimension={windowDimension}
         />
       )}
       {showImportDialog && (
@@ -259,7 +261,7 @@ function TableHeader(props) {
 
 function Header({ title }) {
   return (
-    <th className="sticky top-0 pl-2 py-3 border-b-2 border-slate-200 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
+    <th className="sticky top-0 pl-2 py-2 border-b-2 border-slate-200 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
       {title}
     </th>
   );
@@ -282,7 +284,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
     linkElement.click();
   };
   return (
-    <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-sm">
+    <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
       <td className="pl-2 w-[5.2rem]">
         <div className="flex flex-row items-center justify-start">
           <input
@@ -298,37 +300,36 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
               })
             }
           />
-          <label className="w-20">{`TCID-${record.seqNo}`}</label>
+          <label className="w-18">{`TCID-${record.seqNo}`}</label>
         </div>
       </td>
-      <td className="px-2 py-0.5 h-16 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={record.given} placement="bottom">
-          <label>{record.given && cropString(record.given, 35 * 3).toString()}</label>
+      <td className="p-1.5 break-words max-w-[10rem]">
+        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.given} />} placement="bottom">
+          <NewlineText text={record.given && cropString(record.given, 40 * 3).toString()} />
         </Tooltip>
       </td>
-      <td className="px-2 py-0.5 h-16 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={record.when} placement="bottom">
-          <label>{record.when && cropString(record.when, 35 * 3).toString()}</label>
+      <td className="p-1.5 break-words max-w-[10rem]">
+        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.when} />} placement="bottom">
+          <NewlineText text={record.when && cropString(record.when, 40 * 3).toString()} />
         </Tooltip>
       </td>
-      <td className="px-2 py-0.5 h-16 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={record.then} placement="bottom">
-          <label>{record.then && cropString(record.then, 35 * 3).toString()}</label>
+      <td className="p-1.5 break-words max-w-[10rem]">
+        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.then} />} placement="bottom">
+          <NewlineText text={record.then && cropString(record.then, 40 * 3).toString()} />
         </Tooltip>
       </td>
       <td className="px-2 py-0.5 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
+          className={`text-xs font-normal select-none ${record.status === 0
+            ? "bg-purple-300"
+            : record.status === 1
               ? "bg-indigo-300"
               : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
-          }`}
+                ? "bg-blue-300"
+                : record.status === 3
+                  ? "bg-violet-400"
+                  : ""
+            }`}
         >
           {tcType}
         </label>

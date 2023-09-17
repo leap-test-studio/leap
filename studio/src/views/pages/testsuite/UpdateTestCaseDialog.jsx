@@ -38,7 +38,7 @@ const defaults = [
 ];
 const Schemas = Object.freeze([{}, APISchema, WebSchema, SSHSchema]);
 
-function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdate }) {
+function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdate, windowDimension }) {
   const { settings, execSteps, ...rest } = testcase;
   const [nodeData, setNodeData] = useState(rest);
   const [payload, setPayoad] = useState({ settings, execSteps });
@@ -71,72 +71,73 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <div className="relative w-screen max-w-full">
-                <div className="h-full flex flex-col py-2 bg-white shadow-xl">
-                  <div className="px-4 sm:px-6 flex justify-between">
-                    <Dialog.Title as="div" className="text-base font-bold text-color-0500 py-0">
-                      Configure Test Case
-                      <div className="flex flex-row text-xs text-slate-400 justify-start items-center">
-                        <p className="select-none">{`Test Scenario: ${testscenario.name} - [`}</p>
-                        <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
-                        <p className="select-none">]</p>
-                      </div>
-                    </Dialog.Title>
-                    <button
-                      type="button"
-                      className="rounded-md text-slate-300 hover:text-white focus:outline-none focus:ring-1"
-                      onClick={() => onClose()}
-                    >
-                      <span className="sr-only">Close panel</span>
-                      <IconRenderer icon="Close" className="h-6 w-6 text-red-500" aria-hidden="true" />
-                    </button>
-                  </div>
-                  <div className="w-full min-h-[90%] mt-1 px-4 sm:px-6 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
-                    <div className="flex items-start justify-between pb-2 border-t border-solid border-slate-200" />
-                    <div className="w-full">
-                      <TailwindRenderer
-                        schema={schema}
-                        uischema={uischema}
-                        data={nodeData}
-                        onChange={({ data }) => {
-                          if (!isEqual(nodeData, data)) {
-                            setNodeData(data);
-                            if (nodeData.type !== data.type) {
-                              setPayoad(defaults[data.type]);
-                            }
-                          }
-                        }}
-                      />
-                      <TailwindRenderer
-                        {...payloadSchema}
-                        data={payload}
-                        onChange={({ data }) => {
-                          if (!isEqual(payload, data)) {
-                            setPayoad(data);
-                          }
-                        }}
-                      />
+              <div className="relative w-screen max-w-full h-screen flex flex-col bg-white">
+                <div className="px-4 py-1 sm:px-6 flex justify-between border-b border-slate-300">
+                  <Dialog.Title as="div" className="text-sm font-bold text-color-0500 py-0">
+                    Configure Test Case
+                    <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
+                      <p className="select-none">{`Test Scenario: ${testscenario.name} - [`}</p>
+                      <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
+                      <p className="select-none">]</p>
                     </div>
-                  </div>
-                  <div className="flex justify-end text-white mr-5 mt-2 w-full">
-                    <button
-                      type="button"
-                      className="px-5 py-1 rounded focus:outline-none shadow-sm bg-slate-200 hover:bg-slate-100 uppercase text-slate-700"
-                      onClick={onClose}
-                    >
-                      CLOSE
-                    </button>
-                    <IconButton
-                      title="Save"
-                      icon="Save"
-                      onClick={() =>
-                        onUpdate({
-                          ...nodeData,
-                          ...payload
-                        })
+                  </Dialog.Title>
+                  <button
+                    type="button"
+                    className="rounded-md text-slate-300 hover:text-white focus:outline-none focus:ring-1"
+                    onClick={() => onClose()}
+                  >
+                    <span className="sr-only">Close panel</span>
+                    <IconRenderer icon="Close" className="h-5 w-5 text-red-500" aria-hidden="true" />
+                  </button>
+                </div>
+                <div
+                  className="w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+                  style={{
+                    minHeight: windowDimension?.maxContentHeight - 30,
+                    maxHeight: windowDimension?.maxContentHeight - 30
+                  }}
+                >
+                  <TailwindRenderer
+                    schema={schema}
+                    uischema={uischema}
+                    data={nodeData}
+                    onChange={({ data }) => {
+                      if (!isEqual(nodeData, data)) {
+                        setNodeData(data);
+                        if (nodeData.type !== data.type) {
+                          setPayoad(defaults[data.type]);
+                        }
                       }
-                    />
-                  </div>
+                    }}
+                  />
+                  <TailwindRenderer
+                    {...payloadSchema}
+                    data={payload}
+                    onChange={({ data }) => {
+                      if (!isEqual(payload, data)) {
+                        setPayoad(data);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex justify-end text-white p-1 mr-5 w-full border-t border-slate-300">
+                  <button
+                    type="button"
+                    className="px-3 rounded focus:outline-none shadow-sm bg-slate-200 hover:bg-slate-100 text-slate-700"
+                    onClick={onClose}
+                  >
+                    Close
+                  </button>
+                  <IconButton
+                    title="Save"
+                    icon="Save"
+                    onClick={() =>
+                      onUpdate({
+                        ...nodeData,
+                        ...payload
+                      })
+                    }
+                  />
                 </div>
               </div>
             </Transition.Child>

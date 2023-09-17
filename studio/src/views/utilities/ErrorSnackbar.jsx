@@ -1,6 +1,6 @@
 export const ErrorSnackbar = ({ error }) => {
   return (
-    <div className="flex p-1 w-auto text-sm text-red-800 border border-red-300 rounded-lg absolute bottom-14 right-6  bg-red-50" role="alert">
+    <div className="flex p-1 w-auto text-xs text-red-800 border border-red-300 rounded-lg absolute bottom-14 right-6  bg-red-50" role="alert">
       <svg aria-hidden="true" className="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
         <path
           fillRule="evenodd"

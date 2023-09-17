@@ -39,7 +39,10 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
             mode={meta?.mode}
             sideBarItems={sideBarItems}
             maxContentHeight={windowDimension.maxContentHeight}
-            menuClicked={() => setExpandSB(!expandSB)}
+            menuClicked={() => {
+              console.log(expandSB);
+              setExpandSB(!expandSB);
+            }}
             {...props}
           />
         )}

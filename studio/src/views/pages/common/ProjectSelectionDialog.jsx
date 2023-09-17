@@ -136,7 +136,7 @@ class ProjectSelectionDialog extends React.PureComponent {
     return (
       <React.Fragment>
         <div className="rounded border-none py-2">
-          <label htmlFor="project-name" className="block text-sm font-medium text-slate-500">
+          <label htmlFor="project-name" className="block text-xs font-medium text-slate-500">
             Project Name
           </label>
           <div className="flex flex-row mt-1 items-center h-10">
@@ -172,7 +172,7 @@ class ProjectSelectionDialog extends React.PureComponent {
           </Centered>
         ) : (
           <div className="rounded border-none py-2">
-            <label htmlFor="project-name" className="block text-sm font-medium text-slate-500">
+            <label htmlFor="project-name" className="block text-xs font-medium text-slate-500">
               Project Name
             </label>
             <div className="flex flex-row mt-1 items-center h-10">
@@ -229,7 +229,7 @@ class ProjectSelectionDialog extends React.PureComponent {
           <Dialog.Overlay className="fixed inset-0 bg-slate-400 opacity-30" />
           <div className="flex flex-col pt-4 pb-4 px-4 bg-cds-white rounded shadow-lg z-50 min-w-0.25">
             <div className="group flex flex-row justify-between items-center">
-              <Dialog.Title className="text-color-0700 font-medium text-xl tracking-wide group-hover:text-cds-blue-0300">
+              <Dialog.Title className="text-color-0700 font-medium text-lg tracking-wide group-hover:text-cds-blue-0300">
                 Create a Project
               </Dialog.Title>
               <button onClick={this.handleCancelDialog} className="text-color-0700 group-hover:text-cds-blue-0300 focus:outline-none">
@@ -243,7 +243,7 @@ class ProjectSelectionDialog extends React.PureComponent {
                     <p className="text-cds-white font-medium">{errored}</p>
                     <button
                       onClick={this.handleClearErrorClick}
-                      className="ml-2 bg-transparent text-2xl font-semibold outline-none focus:outline-none"
+                      className="ml-2 bg-transparent text-xl font-semibold outline-none focus:outline-none"
                     >
                       <span>×</span>
                     </button>

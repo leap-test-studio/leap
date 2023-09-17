@@ -24,7 +24,7 @@ const TailwindNumeric = React.memo((props) => {
             onWheel={(ev) => ev.target.blur()}
             id={props.id}
             autoComplete="off"
-            className={`text-sm caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md ${
+            className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md ${
               !props.enabled && "bg-slate-200"
             } ${isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-200"} focus:outline-none w-full`}
             placeholder={props.description}

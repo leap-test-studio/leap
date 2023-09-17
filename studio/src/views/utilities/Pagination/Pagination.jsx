@@ -6,11 +6,11 @@ export default function Pagination(props) {
   const { start, end } = getPagination(page, size, totalRecords);
   const { items } = usePagination(props);
   return (
-    <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+    <div className="bg-white px-4 py-2 flex items-center justify-between border-t border-gray-200 sm:px-6">
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div className="select-none">
           {count > 0 && (
-            <p className="text-sm text-gray-700">
+            <p className="text-xs text-gray-700">
               Showing
               <span className="font-medium px-1">{start}</span>
               to
@@ -22,7 +22,7 @@ export default function Pagination(props) {
           )}
         </div>
         <div className="flex justify-between items-center">
-          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <nav className="relative z-0 inline-flex rounded-md -space-x-px mx-2" aria-label="Pagination">
             {items.map((item, index) => (
               <div key={index}>
                 {renderItem({
@@ -40,7 +40,7 @@ export default function Pagination(props) {
               enableFilter={false}
               data={recordsCount}
               handleChange={(_, ev) => handlePageItems(ev)}
-              className="h-7 text-center ml-2"
+              className="h-10 text-center ml-2"
             />
           )}
         </div>
@@ -54,7 +54,7 @@ function renderItem(item) {
     case "previous":
       return (
         <div
-          className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
+          className={`relative inline-flex items-center p-1 rounded-l-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
             item.disabled && "bg-gray-200 hover:bg-gray-200"
           }`}
           onClick={() => {
@@ -74,7 +74,7 @@ function renderItem(item) {
     case "next":
       return (
         <div
-          className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
+          className={`relative inline-flex items-center p-1 rounded-r-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
             item.disabled && "bg-gray-200 hover:bg-gray-200"
           }`}
           onClick={() => {
@@ -96,7 +96,7 @@ function renderItem(item) {
     case "page":
       return (
         <div
-          className={`z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium select-none cursor-pointer ${
+          className={`z-10 relative inline-flex items-center p-1 px-3 border text-xs font-medium select-none cursor-pointer ${
             item.selected ? "bg-cds-ice-0050 border-cds-ice-0500 text-cds-ice-0600" : "border-gray-300 text-gray-500 hover:bg-gray-50"
           }`}
           onClick={item.onClick}
@@ -106,7 +106,7 @@ function renderItem(item) {
       );
     case "end-ellipsis":
       return (
-        <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 select-none cursor-pointer">
+        <span className="relative inline-flex items-center p-1 border border-gray-300 bg-white text-xs font-medium text-gray-700 select-none cursor-pointer">
           ...
         </span>
       );

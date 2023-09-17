@@ -4,7 +4,7 @@ export default function DeleteItemDialog({ showDialog, title, question, item, on
   return (
     <CustomDialog open={showDialog} onClose={onClose} title={title}>
       <span className="mt-2 text-center">{question}</span>
-      <div className="flex flex-row text-xl text-cds-red-0700 font-bold justify-center mt-2 mb-4">{item}</div>
+      <div className="flex flex-row text-lg text-cds-red-0700 font-bold justify-center mt-2 mb-4">{item}</div>
       <div className="flex items-start justify-between pb-2 border-t border-solid border-slate-200" />
       <div className="flex justify-end text-cds-white w-full">
         <button

@@ -61,7 +61,7 @@ const InititialRoutes = [
   },
   {
     sideBar: true,
-    title: "Test Case Sequencer",
+    title: "Test Sequencer",
     icon: "AccountTreeTwoTone",
     path: "test-sequencer",
     page: "sequencer/index.jsx",

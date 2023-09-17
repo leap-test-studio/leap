@@ -72,7 +72,7 @@ const LoadAverage = ({ timeline, load }) => {
   };
   return (
     <>
-      <div className="font-semibold text-slate-700 text-lg text-center pt-2 select-none">Load Average</div>
+      <div className="font-semibold text-slate-700 text-base text-center pt-2 select-none">Load Average</div>
       <ReactEcharts option={option} />
     </>
   );

@@ -7,7 +7,7 @@ import { fetchProjectBuilds, startProjectBuilds } from "../../redux/actions/Proj
 import TableRenderer from "../tablerenderer";
 
 const columns = [
-  { title: "BuildNo", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true },
+  { title: "Build #", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true },
   {
     title: "Type",
     field: "type",
@@ -38,6 +38,7 @@ const columns = [
       { const: 6, title: "Aborted", class: "bg-cds-red-0600 text-white" },
       { const: 999, title: "Invalid", class: "bg-cds-red-0600 text-white" }
     ],
+    center: true,
     sortable: true
   },
   {
@@ -84,7 +85,8 @@ export default function TestRunner({ project }) {
           columns={columns}
           data={builds}
           pageSizes={[
-            { value: 20, label: "20", default: true },
+            { value: 15, label: "15", default: true },
+            { value: 20, label: "20" },
             { value: 50, label: "50" },
             { value: 100, label: "100" },
             { value: 150, label: "150" },

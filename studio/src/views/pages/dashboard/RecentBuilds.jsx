@@ -38,7 +38,7 @@ function RecentBuilds({ recentBuildSummary }) {
                 </th>
               </tr>
             </thead>
-            <tbody className="text-sm font-medium divide-y divide-gray-100">
+            <tbody className="text-xs font-medium divide-y divide-gray-100">
               {recentBuildSummary?.slice(0, 10)?.map((record, index) => (
                 <Row key={index} {...record} />
               ))}

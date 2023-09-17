@@ -43,7 +43,7 @@ const ExpandPanelRenderer = React.memo((props) => {
   }
 
   return (
-    <div key={index} className="w-full p-0.5 flex flex-row justify-between items-center text-sm border-b">
+    <div key={index} className="w-full p-0.5 flex flex-row justify-between items-center text-xs border-b">
       {!appliedUiSchemaOptions.disableExpand ? (
         <Accordion
           pid={childPath}
@@ -81,7 +81,7 @@ const ExpandPanelRenderer = React.memo((props) => {
           </div>
         )}
         {appliedUiSchemaOptions.showSortButtons && (
-          <div className="px-1 pt-0.5 text-sm flex flex-col items-center">
+          <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
             {enableMoveUp && <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp(path, index)} />}
             {enableMoveDown && (
               <IconButton id={`movedown-item-${childPath}`} icon="ArrowDownward" ariaLabel="Move down" onClick={moveDown(path, index)} />

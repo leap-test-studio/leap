@@ -13,9 +13,9 @@ export default function ReportCard({ title, icon, value, total, bgColor }) {
           <div>
             <p className="mb-2 text-md font-medium text-gray-600 dark:text-gray-400">{title}</p>
             <span className="flex flex-row">
-              <p className="font-medium text-lg">{value}</p>
+              <p className="font-medium text-base">{value}</p>
               {!isNaN(total) && <p>/</p>}
-              {!isNaN(total) && <p className="font-medium text-lg text-slate-400">{total}</p>}
+              {!isNaN(total) && <p className="font-medium text-base text-slate-400">{total}</p>}
               <div className="ml-5">
                 {!isNaN(rate) && (
                   <span className={`rounded-full text-white badge ${rate >= 75 ? "bg-teal-400" : "bg-red-400"} text-xs px-2`}>

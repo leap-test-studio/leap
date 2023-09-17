@@ -45,7 +45,7 @@ function UserMenu({ product }) {
         }}
         aria-expanded={dropdownOpen}
       >
-        <div className="inline-flex justify-center items-center group text-color-0200 text-sm font-medium group">
+        <div className="inline-flex justify-center items-center group text-color-0200 text-xs font-medium group">
           <span className="ml-2">{user?.name}</span>
           <IconRenderer icon={dropdownOpen ? "ArrowDropUp" : "ArrowDropDown"} />
         </div>
@@ -69,7 +69,7 @@ function UserMenu({ product }) {
           <ul>
             <li>
               <Link
-                className="font-medium text-sm text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
+                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
                 to={`/${product.page?.base}/settings`}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -78,7 +78,7 @@ function UserMenu({ product }) {
             </li>
             <li>
               <Link
-                className="font-medium text-sm text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
+                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
                 to={`/${product.page?.base}/login`}
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);

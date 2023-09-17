@@ -106,7 +106,7 @@ const TailwindOneOfRenderer = React.memo(
           <>
             <div className="w-full flex flex-col rounded border mt-0.5">
               {uischema.label?.length > 0 && (
-                <div className="bg-color-0100 text-left text-sm text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
+                <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
               )}
               <CombinatorProperties schema={schema} combinatorKeyword={"oneOf"} path={path} />
               <div className="flex flex-col min-w-0 break-words w-full p-2 rounded">

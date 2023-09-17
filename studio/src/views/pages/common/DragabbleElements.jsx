@@ -27,8 +27,11 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
   return (
     <div className="sticky top-0">
       <div
-        className={`p-1 shadow h-full flex flex-col items-center justify-center text-color-0800 bg-slate-100 rounded ${showExpand ? `w-[${width}px]` : ""
-          }`}
+        className="p-1 shadow h-full flex flex-col items-center justify-center text-color-0800 bg-slate-100 rounded"
+        style={{
+          minWidth: width,
+          maxWidth: width
+        }}
       >
         <div className="w-full flex flex-row items-center justify-center p-[0.1rem] border-b">
           <Tooltip title={`Drag and Drop ${title}`} content="Drag the item from the list and drop onto the canvas." placement="left">

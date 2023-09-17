@@ -26,7 +26,7 @@ const Tooltip = ({ placement = "auto", title, content, children, backgroundColor
       <div ref={setTriggerRef}>{children}</div>
       {visible && (
         <div ref={setTooltipRef} {...getTooltipProps(toolProps)}>
-          {title && <div className={`${content === undefined ? "text-xs leading-4" : "text-sm font-semibold"} break-words`}>{title}</div>}
+          {title && <div className={`text-xs ${content === undefined ? "leading-4" : "font-semibold"} break-words`}>{title}</div>}
           {content && <div className="text-xs leading-4 break-words mt-2">{content}</div>}
           <div {...getArrowProps({ className: "tooltip-arrow" })} />
         </div>

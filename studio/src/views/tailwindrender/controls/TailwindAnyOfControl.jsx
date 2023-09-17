@@ -17,7 +17,7 @@ const TailwindAnyOfRenderer = React.memo(
             <div className="group block rounded shadow group-hover:shadow-lg w-full mt-1 bg-slate-50">
               {uischema.label?.length > 0 && (
                 <div className="px-2 py-1 bg-color-0100 hover:bg-color-0200 focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 rounded-t">
-                  <label className="text-color-primary text-sm tracking-wide select-none">{uischema.label}</label>
+                  <label className="text-color-primary text-xs tracking-wide select-none">{uischema.label}</label>
                 </div>
               )}
               <TabRenderer

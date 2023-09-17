@@ -8,7 +8,7 @@ const TableToolbar = React.memo(({ /*errors,*/ label, path, addItem, schema, ena
   return (
     <div className="w-full flex flex-row justify-between items-center px-2 bg-color-0100 text-color-primary rounded-t">
       <div className="flex flex-row items-center">
-        <label className="text-sm tracking-wide select-none">{label}</label>
+        <label className="text-xs tracking-wide select-none">{label}</label>
         {/**{errors.length > 0 && <ValidationIcon id="tooltip-validation" errorMessages={errors} />}**/}
       </div>
       {enabled && !readonly && (

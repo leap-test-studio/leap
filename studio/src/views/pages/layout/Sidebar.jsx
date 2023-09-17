@@ -1,32 +1,24 @@
 import { useContext, useState } from "react";
-import IconRenderer from "../../IconRenderer";
 import { NavLink, useLocation } from "react-router-dom";
 import snakeCase from "lodash/snakeCase";
+import IconRenderer from "../../IconRenderer";
 import Tooltip from "../../utilities/Tooltip";
+import WebContext from "../../context/WebContext";
 import Brand from "./Brand";
 import LogoutButton from "./LogoutButton";
 import UserInfo from "./UserInfo";
-import WebContext from "../../context/WebContext";
 
 export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuClicked, ...props }) {
   const isSmallScreen = window.innerHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 z-[9999] ${
-        showSidebar ? "w-[250px]" : "w-[50px]"
-      } relative bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer h-screen`}
+      className={`transition-all duration-500 z-[9999] ${showSidebar ? "w-[15%]" : "w-[50px]"
+        } bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer h-screen`}
     >
-      <div
-        className={`absolute h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 border border-slate-400 top-9 ${
-          showSidebar ? "left-[200px]" : "left-10"
-        }`}
-      >
-        <IconRenderer icon={showSidebar ? "ArrowBackIos" : "ArrowForwardIos"} className="text-color-1000 pl-1" fontSize="10" onClick={menuClicked} />
-      </div>
-      <div className="h-[8%] border-b border-slate-300 mx-2 mb-2 flex items-center">
+      <div className="h-[8%] border-b border-slate-300 mx-2 flex items-center">
         <Brand showTitle={showSidebar} {...props} />
       </div>
-      <div className="flex flex-col justify-between h-[90%]">
+      <div className="flex flex-col justify-between h-[92%]">
         <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen}>
           {sideBarItems.map((item, index) =>
             item.divider && (item.mode === undefined || item.mode?.includes(mode)) ? (
@@ -37,7 +29,17 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuCli
           )}
         </SidebarRender>
         <UserInfo showTitle={showSidebar} {...props} />
-        <LogoutButton showTitle={showSidebar} {...props} />
+        <div className={`${showSidebar ? "inline-flex" : "flex flex-col mb-2"} w-full justify-between items-center`}>
+          <LogoutButton showTitle={showSidebar} {...props} />
+          <div className="h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 border border-slate-400 mr-2">
+            <IconRenderer
+              icon={showSidebar ? "ArrowBackIos" : "ArrowForwardIos"}
+              className="text-color-1000 pl-1"
+              fontSize="10"
+              onClick={menuClicked}
+            />
+          </div>
+        </div>
       </div>
     </aside>
   );
@@ -45,14 +47,8 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuCli
 
 function SidebarRender({ children, isSmallScreen }) {
   return (
-    <div
-      className={`sticky top-10 select-none h-full ${
-        isSmallScreen
-          ? "overflow-y-auto scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
-          : ""
-      }`}
-    >
-      <div className="flex flex-col px-2 py-3">{children}</div>
+    <div className="flex flex-col p-1 pt-2 select-none h-full">
+      {children}
     </div>
   );
 }
@@ -82,13 +78,12 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
     <NavLink
       id={`nav-page-${id}`}
       to={!openNewTab ? actualPath : pathname}
-      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "py-1 mb-2"} ${
-        pathname.includes(path)
+      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "py-1 mb-2"} ${pathname.includes(path)
           ? "z-0 bg-slate-200 text-slate-700 border border-l-4 border-l-cds-blue-0700"
           : hovered
-          ? "bg-slate-200 text-slate-700"
-          : "hover:text-slate-300"
-      } ${!showTitle ? "justify-center rounded" : "rounded-r-full"}`}
+            ? "bg-slate-200 text-slate-700"
+            : "hover:text-slate-300"
+        } ${!showTitle ? "justify-center rounded" : "rounded-r-full"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => {
@@ -106,7 +101,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
           </Tooltip>
         </div>
       )}
-      {showTitle && <label className={`break-words ${isSmallScreen ? "text-[10px]" : "text-sm"} tracking-wide z-10`}>{title}</label>}
+      {showTitle && <label className={`break-words ${isSmallScreen ? "text-[10px]" : "text-xs"} tracking-wide z-10`}>{title}</label>}
     </NavLink>
   );
 }

@@ -59,7 +59,7 @@ export function SignInPage({ product }) {
             <div className="flex flex-row space-x-5 items-center">
               <div className="flex flex-col space-y-2 items-center">
                 <div className="cursor-pointer text-4xl text-slate-100 tracking-normal">{name}</div>
-                <div className="cursor-pointer text-base text-slate-400 tracking-tighter font-semibold">
+                <div className="cursor-pointer text-sm text-slate-400 tracking-tighter font-semibold">
                   {description} v{version}
                 </div>
               </div>
@@ -79,7 +79,7 @@ export function SignInPage({ product }) {
             </label>
             <input
               id="#/properties/username"
-              className="block h-9 w-full rounded-md mt-2 text-sm font-light bg-color-1000/10 backdrop-blur-sm"
+              className="block h-9 w-full rounded-md mt-2 text-xs font-light bg-color-1000/10 backdrop-blur-sm"
               type="email"
               value={email}
               placeholder="Enter Email"
@@ -93,7 +93,7 @@ export function SignInPage({ product }) {
               <input
                 id="#/properties/password"
                 ref={pass}
-                className="block h-9 z-10 w-full rounded-md mt-2 text-sm font-light bg-color-1000/10 backdrop-blur-sm"
+                className="block h-9 z-10 w-full rounded-md mt-2 text-xs font-light bg-color-1000/10 backdrop-blur-sm"
                 type="password"
                 placeholder="Enter Password"
                 value={password}
@@ -111,7 +111,7 @@ export function SignInPage({ product }) {
                 onClick={onSubmit}
                 className={`${
                   loading ? "cursor-not-allowed" : "cursor-pointer"
-                } w-full text-center inline-flex items-center justify-center px-4 py-2 text-sm font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
+                } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
               >
                 {loading && (
                   <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

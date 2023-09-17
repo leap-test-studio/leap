@@ -5,11 +5,11 @@ import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import Centered from "../utilities/Centered";
 import IconRenderer from "../MuiIcons";
 
-function TableRenderer({ columns = [], data = [], pageSizes = [] }) {
+function TableRenderer({ columns = [], data = [], pageSizes }) {
   if (isEmpty(data))
     return (
       <Centered>
-        <EmptyIconRenderer title="Records Not Found" fill="#1e5194" />
+        <EmptyIconRenderer title="Events Not Found" fill="#1e5194" />
       </Centered>
     );
 
@@ -33,8 +33,8 @@ function TableRenderer({ columns = [], data = [], pageSizes = [] }) {
 
   const totalRecords = data.length;
   return (
-    <div className="overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left text-slate-500">
+    <div>
+      <table className="relative w-full text-xs text-left text-slate-600">
         <TableHeader
           columns={columns}
           sortDirection={sortDirection}
@@ -48,19 +48,21 @@ function TableRenderer({ columns = [], data = [], pageSizes = [] }) {
           ))}
         </tbody>
       </table>
-      <Pagination
-        totalRecords={totalRecords}
-        page={pageNumber}
-        size={pageSize}
-        count={Math.ceil(totalRecords / pageSize)}
-        recordsCount={pageSize}
-        handlePageItems={setPageSize}
-        showRecordsDropdown={true}
-        onChange={(_, va) => {
-          setPageNumber(va);
-        }}
-        pageSizes={pageSizes}
-      />
+      {pageSizes && (
+        <Pagination
+          totalRecords={totalRecords}
+          page={pageNumber}
+          size={pageSize}
+          count={Math.ceil(totalRecords / pageSize)}
+          recordsCount={pageSize}
+          handlePageItems={setPageSize}
+          showRecordsDropdown={true}
+          onChange={(_, va) => {
+            setPageNumber(va);
+          }}
+          pageSizes={pageSizes}
+        />
+      )}
     </div>
   );
 }
@@ -79,16 +81,14 @@ function TableHeader({ columns, sortDirection, sortProperty, setSortProperty, se
   };
 
   return (
-    <thead className="text-sm">
+    <thead>
       <tr>
         {columns.map(({ title, field, sortable, width, sorter }, index, arr) => (
           <th
             key={index}
-            className={`relative p-1.5 ${
+            className={`p-1.5 sticky top-0 ${
               sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 text-left uppercase tracking-wider ${
-              index < arr?.length && "border border-r-slate-300"
-            }`}
+            } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
             style={{ width: width + "px" }}
             onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
             onMouseOver={() => setIsHovering(true)}
@@ -114,10 +114,10 @@ function paginate(array, page_size, page_number) {
 function RenderRow({ record, rowIndex, columns }) {
   return (
     <tr key={`row-${rowIndex}`} className={`${rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50"} hover:bg-blue-100 border-b border-slate-200`}>
-      {columns.map((column, tdIndex) => {
+      {columns.map((column, index) => {
         let field = record[column.field];
         return (
-          <td key={tdIndex} className="px-2 py-1 border border-r-slate-100">
+          <td key={`row-${rowIndex}-${index}`} className="px-1 py-0.5 border border-r-slate-100">
             {CellRenderer(column, field, record)}
           </td>
         );
@@ -126,11 +126,10 @@ function RenderRow({ record, rowIndex, columns }) {
   );
 }
 function CellRenderer(col, field, record) {
-  const colProperties = col.enum?.find((c) => c.const === field);
-
   if (typeof col.formatter == "function") {
-    field = col.formatter(field);
+    field = col.formatter(field, record);
   }
+  const colProperties = col.enum?.find((c) => c.const === field);
   switch (col.format) {
     case "progress":
       return <ProgressBar value={field} record={record} colProperties={colProperties} />;
@@ -142,9 +141,13 @@ function CellRenderer(col, field, record) {
       return <JsonComponent value={field} />;
     default:
       return (
-        <label className={`select-all ${colProperties?.class ? colProperties.class + " px-2 py-0.5 rounded hover:shadow" : ""}`}>
+        <div
+          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${
+            col.center ? "text-center" : ""
+          }`}
+        >
           {colProperties != null ? colProperties.title : field}
-        </label>
+        </div>
       );
   }
 }
@@ -152,7 +155,7 @@ function CellRenderer(col, field, record) {
 const ProgressBar = ({ record, colProperties }) => {
   return (
     <div className="w-full bg-gray-200 rounded-full">
-      <div className={`select-all text-center ${colProperties?.class ? colProperties.class + " px-2 py-0.5 rounded-full hover:shadow" : ""}`}>
+      <div className={`select-all text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
         {colProperties?.title}
       </div>
     </div>
@@ -163,7 +166,7 @@ const ChipComponent = ({ value }) => {
   return (
     <a
       href="#"
-      className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full  border border-blue-400 inline-flex items-center justify-center"
+      className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full border border-blue-400 inline-flex items-center justify-center"
     >
       {value}%
     </a>

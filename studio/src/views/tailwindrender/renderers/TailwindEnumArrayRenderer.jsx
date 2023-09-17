@@ -17,7 +17,7 @@ const TailwindEnumArrayRenderer = React.memo(({ schema, visible, errors, path, o
           <div className="group block rounded shadow group-hover:shadow-lg w-full mt-1 bg-slate-50">
             {otherProps.label?.length > 0 && (
               <div className="px-1.5 py-0.5 border-b bg-color-0100 hover:bg-color-0200 focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 rounded-t">
-                <label className="text-color-primary text-sm tracking-wide select-none">{otherProps.label}</label>
+                <label className="text-color-primary text-xs tracking-wide select-none">{otherProps.label}</label>
               </div>
             )}
             <div className="grid gap-x-1 gap-y-0 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full p-2 pb-0">

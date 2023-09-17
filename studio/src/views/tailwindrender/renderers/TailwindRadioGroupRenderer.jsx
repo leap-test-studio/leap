@@ -30,11 +30,11 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
   return (
     <>
       {props.visible && (
-        <div className={`grow my-1.5 ${!props.enabled ? "rounded bg-slate-200" : "px-0.5 bg-white"}`}>
+        <div className={`grow my-1 ${!props.enabled ? "rounded bg-slate-200" : "px-0.5 bg-white"}`}>
           <div className="group block rounded shadow w-full">
             {props.label?.length > 0 && (
-              <div className="px-2 py-1 bg-color-0100 focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 rounded-t">
-                <label className="text-color-primary text-sm tracking-wide select-none">{props.label}</label>
+              <div className="px-2 bg-color-0100 focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 rounded-t">
+                <label className="text-color-primary text-xs tracking-wide select-none">{props.label}</label>
               </div>
             )}
             <div className={`grid p-1 ${props.options?.length < 4 ? "grid-cols-2" : "grid-cols-4"}`}>

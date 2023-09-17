@@ -18,11 +18,11 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
       open={isOpen}
       onClose={onClose}
       title={
-        <div className="text-base font-bold text-color-0500 py-0">
+        <div className="text-sm font-bold text-color-0500 py-0">
           Setting
-          <div className="flex flex-row text-xs text-slate-400 justify-start items-center">
+          <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
             <span className="select-none">{selectedNode?.type} #ID:</span>
-            <span className="flex flex-row">
+            <span className="inline-flex">
               <p className="select-none">[</p>
               <p className="select-all px-2">{selectedNode?.id}</p>
               <p className="select-none">]</p>

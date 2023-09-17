@@ -9,7 +9,7 @@ const TailwindLabelRenderer = ({ uischema, visible, path }) => {
   return (
     <>
       {visible && (
-        <div htmlFor={path} className="text-lg text-color-0700 w-full">
+        <div htmlFor={path} className="text-base text-color-0700 w-full">
           <label>{labelElement.text !== undefined && labelElement.text !== null && labelElement.text}</label>
         </div>
       )}

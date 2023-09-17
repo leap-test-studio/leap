@@ -25,7 +25,7 @@ const StartNode = ({ id }) => {
         </svg>
         <Handle id="start-node" type="source" position={Position.Right} style={handleStyleSource} />
       </div>
-      <div className="absolute text-sm text-slate-50 font-medium">Start</div>
+      <div className="absolute text-xs text-slate-50 font-medium">Start</div>
     </div>
   );
 };

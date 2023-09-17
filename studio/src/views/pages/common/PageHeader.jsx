@@ -15,21 +15,28 @@ export function PageTitle({ children }) {
 export function PageActions({ children }) {
   return <div className="inline-flex items-center justify-end grow">{children}</div>;
 }
-export function Page({ children }) {
+export function Page({ children, className = "" }) {
   const { windowDimension } = useContext(WebContext);
   return (
-    <div className="flex flex-col w-full" style={{ minHeight: windowDimension?.maxContentHeight, maxHeight: windowDimension?.maxContentHeight }}>
+    <div
+      className={`flex flex-col w-full ${className}`}
+      style={{ minHeight: windowDimension?.maxContentHeight, maxHeight: windowDimension?.maxContentHeight }}
+    >
       {children}
     </div>
   );
 }
 
-export function PageBody({ className, children }) {
+export function PageBody({ className, scrollable = true, children }) {
   const { windowDimension } = useContext(WebContext);
   return (
     <div
-      className={`flex flex-col mt-2 mb-1 shadow rounded border-2 bg-slate-100 ${className} overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full`}
-      style={{ minHeight: windowDimension?.maxContentHeight - 55, maxHeight: windowDimension?.maxContentHeight - 55 }}
+      className={`w-full my-1 bg-slate-100 ${
+        scrollable
+          ? "overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          : "overflow-hidden"
+      } ${className}`}
+      style={{ minHeight: windowDimension?.maxContentHeight - 45, maxHeight: windowDimension?.maxContentHeight - 45 }}
     >
       {children}
     </div>

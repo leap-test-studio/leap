@@ -194,8 +194,8 @@ function BuildDetails({ project, status, buildInfo }) {
   const report = TestStatus[status];
   return (
     <div className="border-r p-2">
-      <p className="select-all font-medium text-lg">Build Details</p>
-      <table className="table-auto w-full text-sm">
+      <p className="select-all font-medium text-base">Build Details</p>
+      <table className="table-auto w-full text-xs">
         <tbody>
           <tr>
             <td>Project Name</td>
@@ -260,7 +260,7 @@ function BuildDetails({ project, status, buildInfo }) {
 function BuildEnvironmentVariables({ options }) {
   return (
     <div className="border-r p-2">
-      <p className="select-all font-medium text-lg">Environment Variables</p>
+      <p className="select-all font-medium text-base">Environment Variables</p>
       <table className="table-auto w-full text-xs">
         <tbody>
           {Object.entries(options).map(([key, value], i) =>
@@ -311,7 +311,7 @@ function BuildSummary({ data, onClick, testType }) {
   let key = Object.keys(TestTypeMapping).find((k) => TestTypeMapping[k] === testType);
   return (
     <>
-      <p className="font-medium text-lg mt-2">Summary</p>
+      <p className="font-medium text-base mt-2">Summary</p>
       <div className="grid grid-cols-8 gap-3">
         {data.map((d, index) => (
           <SummaryCard key={index} {...d} onClick={() => onClick(index)} selected={key > 0 && key == index} />
@@ -327,8 +327,8 @@ function SummaryCard({ title, value, className, onClick, selected }) {
       className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 ${selected && "bg-slate-100"} ${className != null && className}`}
       onClick={onClick}
     >
-      <p className="font-normal text-3xl text-center">{value}</p>
-      <p className="text-base text-center">{title}</p>
+      <p className="font-normal text-2xl text-center">{value}</p>
+      <p className="text-sm text-center">{title}</p>
     </div>
   );
 }
@@ -352,12 +352,12 @@ function ReportTable({ jobs, testType }) {
         <tr>
           {ReportTableHeader.map((header, index) => (
             <th key={index} className="p-2 font-semibold text-left">
-              <label>{header}</label>
+              {header}
             </th>
           ))}
         </tr>
       </thead>
-      <tbody className="text-sm font-medium divide-y divide-gray-100 text-slate-500">
+      <tbody className="text-xs font-medium divide-y divide-gray-100 text-slate-500">
         {jobs?.map((job, index) => {
           if (testType == -1 || testType === job.result) return <JobDetails key={job.id + "-" + index} {...job} />;
           return null;
@@ -408,7 +408,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
         <td className="border-x border-x-slate-100 w-20">
           <div
-            className={`rounded text-sm text-center font-medium mx-2 p-0.5 ${
+            className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
               status === "Running"
                 ? "bg-cds-blue-0600 animate-pulse"
                 : status === "Pass"
@@ -454,12 +454,12 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
       </tr>
       {status !== "Pass" && !isEmpty(actualResult) && actualResult.actual && (
-        <tr className="bg-white hover:bg-slate-50 border border-slate-200 text-sm">
+        <tr className="bg-white hover:bg-slate-50 border border-slate-200 text-xs">
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border border-slate-100">
             <p>{`Captured Result for TC${TestCase?.seqNo}`}</p>
             <table className="table-auto w-full mb-4 border border-slate-200 rounded">
               <thead className="text-xs text-slate-500 bg-slate-100">
-                <tr className="text-sm text-center">
+                <tr className="text-xs text-center">
                   <th className="border-r border-slate-200">Step Number</th>
                   <th className="border-r border-slate-200">Step Details</th>
                   <th className="border-r border-slate-200">Result</th>
@@ -504,7 +504,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </tr>
       )}
       {!isEmpty(screenshot) && (
-        <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-sm">
+        <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-100">
             {screenshot.map((s, i) => (
               <div key={i}>

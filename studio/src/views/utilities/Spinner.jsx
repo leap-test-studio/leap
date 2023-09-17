@@ -48,7 +48,7 @@ export default function Spinner({ children = "Loading" }) {
           />
         </path>
       </svg>
-      <div className="text-xl font-semibold text-sky-800 opacity-50 mt-2">{children}</div>
+      <div className="text-lg font-semibold text-sky-800 opacity-50 mt-2">{children}</div>
     </div>
   );
 }

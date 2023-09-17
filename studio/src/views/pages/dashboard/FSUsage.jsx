@@ -98,7 +98,7 @@ const FSUsage = ({ filesystem }) => {
   };
   return (
     <>
-      <div className="font-semibold text-slate-700 text-lg text-center pt-4 select-none">FS Usage</div>
+      <div className="font-semibold text-slate-700 text-base text-center pt-4 select-none">FS Usage</div>
       {!isNaN(total) ? (
         <ReactEcharts style={{ height: "180px" }} option={option} />
       ) : (

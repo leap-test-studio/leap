@@ -314,7 +314,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
               />
             </Tooltip>
           </div>
-          <div className="text-slate-600 text-sm font-medium break-words pb-1">{name}</div>
+          <div className="text-slate-600 text-xs font-medium break-words pb-1">{name}</div>
           {createdAt?.length > 0 && (
             <Tooltip title={`Created on ${createdAt}`}>
               <div className="text-slate-500 text-xs break-words select-all">

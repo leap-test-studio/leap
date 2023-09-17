@@ -28,7 +28,7 @@ export default function CustomAlertDialog({ showDialog, level, message, errorMes
                 fontSize: "80"
               }}
             />
-            <span id="confirm-message" className="mb-5 text-base text-center">
+            <span id="confirm-message" className="mb-5 text-sm text-center">
               {message}
             </span>
             {errorMessage && <p className="mb-5 text-xs text-center text-red-500">{errorMessage}</p>}

@@ -11,7 +11,7 @@ function UserInfo({ showTitle = false }) {
   }
   return (
     <div className="py-1 px-2 mx-2 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
-      <div className="flex items-center justify-between select-none">
+      <div className="flex-1 items-center justify-between select-none">
         {username && <p>{username}</p>}
         {role && <IconLabel label={role} icon="AccountCircle" />}
       </div>

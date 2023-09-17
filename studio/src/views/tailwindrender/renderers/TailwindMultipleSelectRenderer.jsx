@@ -28,7 +28,7 @@ const TailwindMultipleSelectRenderer = React.memo(
         <button
           id="dropdownBgHoverButton"
           data-dropdown-toggle="dropdownBgHover"
-          className="bg-white drop-shadow-sm w-full border text-slate-700 rounded-sm text-sm px-2 py-1 text-center inline-flex items-center"
+          className="bg-white drop-shadow-sm w-full border text-slate-700 rounded-sm text-xs px-2 py-1 text-center inline-flex items-center"
           type="button"
           onClick={() => openDropDown()}
         >
@@ -53,7 +53,7 @@ const TailwindMultipleSelectRenderer = React.memo(
             data-popper-escaped=""
             data-popper-placement="bottom"
           >
-            <ul className="space-y-1 text-sm text-gray-700" aria-labelledby="dropdownBgHoverButton">
+            <ul className="space-y-1 text-xs text-gray-700" aria-labelledby="dropdownBgHoverButton">
               {options.map((item, index) => {
                 return (
                   <li key={index}>
@@ -66,7 +66,7 @@ const TailwindMultipleSelectRenderer = React.memo(
                         className="text-color-0500 ring-blue-500 rounded mx-2"
                         onChange={(ev) => handleChange(item, ev)}
                       />
-                      <label htmlFor="checkbox-item-4" className="ml-2 w-full text-sm font-medium text-gray-900 rounded">
+                      <label htmlFor="checkbox-item-4" className="ml-2 w-full text-xs font-medium text-gray-900 rounded">
                         {item.label}
                       </label>
                     </div>
