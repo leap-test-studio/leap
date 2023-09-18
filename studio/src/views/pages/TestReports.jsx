@@ -193,7 +193,7 @@ function BuildDetails({ project, status, buildInfo }) {
   const isRunning = TestStatus[status] === "Running";
   const report = TestStatus[status];
   return (
-    <div className="border-r p-2">
+    <div className="border-r p-1">
       <p className="select-all font-medium text-base">Build Details</p>
       <table className="table-auto w-full text-xs">
         <tbody>
@@ -310,21 +310,23 @@ function convertMsToHM(milliseconds = 0) {
 function BuildSummary({ data, onClick, testType }) {
   let key = Object.keys(TestTypeMapping).find((k) => TestTypeMapping[k] === testType);
   return (
-    <>
-      <p className="font-medium text-base mt-2">Summary</p>
+    <div className="border-t">
+      <p className="font-medium text-base mt-1">Summary</p>
       <div className="grid grid-cols-8 gap-3">
         {data.map((d, index) => (
           <SummaryCard key={index} {...d} onClick={() => onClick(index)} selected={key > 0 && key == index} />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
 function SummaryCard({ title, value, className, onClick, selected }) {
   return (
     <div
-      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 ${selected && "bg-slate-100"} ${className != null && className}`}
+      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${
+        className != null ? className : ""
+      }`}
       onClick={onClick}
     >
       <p className="font-normal text-2xl text-center">{value}</p>
@@ -561,7 +563,7 @@ const data = [
 
 function Certificate({ go = false }) {
   return (
-    <svg height="210" viewBox="0 0 512 512">
+    <svg height="150" viewBox="0 50 512 400">
       <path fill="#E6E6E6" d="M14.273 112.52v271.145H497.727V112.52z" />
       <path fill="#F7B239" d="M512 91.382v313.421l-29.907-29.907V121.289z" />
       <g fill="#E09B2D">

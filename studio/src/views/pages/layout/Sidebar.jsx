@@ -12,8 +12,9 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuCli
   const isSmallScreen = window.innerHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 z-[9999] ${showSidebar ? "w-[15%]" : "w-[50px]"
-        } bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer h-screen`}
+      className={`transition-all duration-500 z-[9999] ${
+        showSidebar ? "w-[15%]" : "w-[50px]"
+      } bg-color-1000 text-slate-100 border-r flex flex-col justify-between cursor-pointer h-screen`}
     >
       <div className="h-[8%] border-b border-slate-300 mx-2 flex items-center">
         <Brand showTitle={showSidebar} {...props} />
@@ -45,12 +46,8 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, menuCli
   );
 }
 
-function SidebarRender({ children, isSmallScreen }) {
-  return (
-    <div className="flex flex-col p-1 pt-2 select-none h-full">
-      {children}
-    </div>
-  );
+function SidebarRender({ children }) {
+  return <div className="flex flex-col p-1 pt-2 select-none h-full">{children}</div>;
 }
 
 function SidebarDividerItem({ title }) {
@@ -78,12 +75,13 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
     <NavLink
       id={`nav-page-${id}`}
       to={!openNewTab ? actualPath : pathname}
-      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "py-1 mb-2"} ${pathname.includes(path)
+      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "py-1 mb-2"} ${
+        pathname.includes(path)
           ? "z-0 bg-slate-200 text-slate-700 border border-l-4 border-l-cds-blue-0700"
           : hovered
-            ? "bg-slate-200 text-slate-700"
-            : "hover:text-slate-300"
-        } ${!showTitle ? "justify-center rounded" : "rounded-r-full"}`}
+          ? "bg-slate-200 text-slate-700"
+          : "hover:text-slate-300"
+      } ${!showTitle ? "justify-center rounded" : "rounded-r-full"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => {

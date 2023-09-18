@@ -326,7 +326,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             <Background color="#aaa" gap={15} />
           </ReactFlow>
         </div>
-        <DragabbleElements title="Drag and Drop" elements={draggableItems} width="10%" />
+        <DragabbleElements elements={draggableItems} />
       </div>
     </Page>
   );

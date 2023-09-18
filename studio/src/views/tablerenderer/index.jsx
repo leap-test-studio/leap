@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Pagination from "../utilities/Pagination/Pagination";
 import isEmpty from "lodash/isEmpty";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import Centered from "../utilities/Centered";
 import IconRenderer from "../MuiIcons";
+import WebContext from "../context/WebContext";
 
 function TableRenderer({ columns = [], data = [], pageSizes }) {
   if (isEmpty(data))
@@ -18,6 +19,7 @@ function TableRenderer({ columns = [], data = [], pageSizes }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [sortProperty, setSortProperty] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
+  const { windowDimension } = useContext(WebContext);
 
   const sortedItems = [...data].sort((a, b) => {
     if (sortProperty) {
@@ -33,21 +35,29 @@ function TableRenderer({ columns = [], data = [], pageSizes }) {
 
   const totalRecords = data.length;
   return (
-    <div>
-      <table className="relative w-full text-xs text-left text-slate-600">
-        <TableHeader
-          columns={columns}
-          sortDirection={sortDirection}
-          sortProperty={sortProperty}
-          setSortProperty={setSortProperty}
-          setSortDirection={setSortDirection}
-        />
-        <tbody className="divide-y">
-          {paginate(sortedItems, pageSize, pageNumber).map((record, index) => (
-            <RenderRow key={index} rowIndex={index} record={record} columns={columns} />
-          ))}
-        </tbody>
-      </table>
+    <>
+      <div
+        className="overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+        style={{
+          minHeight: windowDimension.maxContentHeight - 95,
+          maxHeight: windowDimension.maxContentHeight - 95
+        }}
+      >
+        <table className="relative w-full text-[10px] text-left text-slate-600">
+          <TableHeader
+            columns={columns}
+            sortDirection={sortDirection}
+            sortProperty={sortProperty}
+            setSortProperty={setSortProperty}
+            setSortDirection={setSortDirection}
+          />
+          <tbody className="divide-y">
+            {paginate(sortedItems, pageSize, pageNumber).map((record, index) => (
+              <RenderRow key={index} rowIndex={index} record={record} columns={columns} />
+            ))}
+          </tbody>
+        </table>
+      </div>
       {pageSizes && (
         <Pagination
           totalRecords={totalRecords}
@@ -55,7 +65,10 @@ function TableRenderer({ columns = [], data = [], pageSizes }) {
           size={pageSize}
           count={Math.ceil(totalRecords / pageSize)}
           recordsCount={pageSize}
-          handlePageItems={setPageSize}
+          handlePageItems={(ps) => {
+            setPageSize(ps);
+            setPageNumber(1);
+          }}
           showRecordsDropdown={true}
           onChange={(_, va) => {
             setPageNumber(va);
@@ -63,7 +76,7 @@ function TableRenderer({ columns = [], data = [], pageSizes }) {
           pageSizes={pageSizes}
         />
       )}
-    </div>
+    </>
   );
 }
 
@@ -152,7 +165,7 @@ function CellRenderer(col, field, record) {
   }
 }
 
-const ProgressBar = ({ record, colProperties }) => {
+const ProgressBar = ({ colProperties }) => {
   return (
     <div className="w-full bg-gray-200 rounded-full">
       <div className={`select-all text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
@@ -166,7 +179,7 @@ const ChipComponent = ({ value }) => {
   return (
     <a
       href="#"
-      className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full border border-blue-400 inline-flex items-center justify-center"
+      className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-[10px] font-medium mr-2 px-2.5 py-0.5 rounded-full border border-blue-400 inline-flex items-center justify-center"
     >
       {value}%
     </a>
@@ -187,7 +200,7 @@ const LinkComponent = ({ value }) => {
 const JsonComponent = ({ value }) => {
   return (
     <textarea
-      className="select-all m-1 rounded-md w-full text-xs text-slate-600 border border-gray-300 bg-slate-100"
+      className="select-all m-1 rounded-md w-full text-[10px] text-slate-600 border border-gray-300 bg-slate-100"
       disabled={true}
       value={JSON.stringify(value, null, 2)}
     />

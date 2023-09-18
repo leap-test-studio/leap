@@ -32,7 +32,7 @@ function DashboardPage(props) {
       <PageHeader>
         <PageTitle>Dashboard</PageTitle>
       </PageHeader>
-      <PageBody>
+      <PageBody className="pb-4">
         <TotalCards totalStats={totalStats} {...props} />
         <div className="mt-5 grid grid-cols-1 gap-8 mx-4">
           <RecentBuilds recentBuildSummary={recentBuildSummary} {...props} />

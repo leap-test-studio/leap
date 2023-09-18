@@ -23,9 +23,9 @@ const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onCha
               setDefaultOpened(!defaultOpened);
               setOpen(!open);
             }}
-            className={`w-full flex px-1.5 py-0.5 items-center justify-between bg-color-0200 hover:bg-color-0300 ${
+            className={`z-40 sticky top-0 w-full flex px-1.5 py-0.5 items-center justify-between bg-color-0200 hover:bg-color-0300 ${
               show ? "bg-color-0100 rounded-t" : "rounded"
-            } text-left text-xs font-medium text-color-primary focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 select-none`}
+            } text-left text-[10px] font-medium text-color-primary focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 select-none`}
           >
             <span>{title}</span>
             <div className="flex flex-row">
@@ -37,9 +37,14 @@ const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onCha
                   onClick={onDelete}
                   className="text-color-0500 hover:text-cds-red-0800"
                   showShadow={false}
+                  iconSize={14}
                 />
               )}
-              <IconRenderer icon="ChevronRight" className={`${show ? "-rotate-90 transform" : "rotate-90"} h-5 w-5 text-color-primary`} />
+              <IconRenderer
+                icon="ChevronRight"
+                className={`${show ? "-rotate-90 transform" : "rotate-90"} h-5 w-5 text-color-primary`}
+                iconSize={14}
+              />
             </div>
           </div>
           <Transition
@@ -50,9 +55,8 @@ const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onCha
             leave="transition duration-105 ease-in-out"
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
-            className="w-full items-center p-1 rounded-b bg-slate-50 border mb-0.5"
           >
-            {children}
+            <div className="w-full items-center p-1 rounded-b bg-slate-50 border mb-0.5">{children}</div>
           </Transition>
         </div>
       )}
