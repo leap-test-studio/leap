@@ -2,17 +2,11 @@ import { useContext, useState } from "react";
 import Pagination from "../utilities/Pagination/Pagination";
 import isEmpty from "lodash/isEmpty";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
-import Centered from "../utilities/Centered";
 import IconRenderer from "../MuiIcons";
 import WebContext from "../context/WebContext";
 
 function TableRenderer({ columns = [], data = [], pageSizes }) {
-  if (isEmpty(data))
-    return (
-      <Centered>
-        <EmptyIconRenderer title="Events Not Found" fill="#1e5194" />
-      </Centered>
-    );
+  if (isEmpty(data)) return <EmptyIconRenderer title="Events Not Found" fill="#1e5194" />;
 
   const defaultPage = pageSizes?.find((p) => p.default)?.value || 50;
   const [pageSize, setPageSize] = useState(defaultPage);

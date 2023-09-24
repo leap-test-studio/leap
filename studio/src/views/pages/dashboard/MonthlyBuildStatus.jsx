@@ -82,10 +82,10 @@ const MonthlyBuildStatus = ({ project }) => {
   return (
     <>
       {project && (
-        <div className="relative bg-white p-6 rounded-md w-full shadow-xl">
-          <div className="text-white flex items-center absolute rounded-md py-3 px-4 shadow-xl bg-violet-500 left-4 -top-6 select-none">
+        <div className="relative bg-white p-4 rounded-md w-full shadow-xl mt-1">
+          <div className="text-white flex items-center absolute rounded-md p-2 shadow-xl bg-violet-500 left-4 -top-4 select-none">
             <IconRenderer icon="LineAxis" className="h-10 w-10" />
-            <p className="text-md font-semibold ml-3">Project Build Trend</p>
+            <p className="text-sm font-semibold ml-3">Project Build Trend</p>
           </div>
           <div className="mt-5">
             <ReactEcharts option={option} />

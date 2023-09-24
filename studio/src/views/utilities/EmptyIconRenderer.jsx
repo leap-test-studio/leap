@@ -1,13 +1,13 @@
+import Centered from "./Centered";
+
 const EmptyIconRenderer = ({ title, fill = "#1e5194", showIcon = true }) => {
   return (
-    <div className="p-2">
-      <div className="flex flex-col items-center justify-center bg-white">
-        {showIcon && <SvgComponent className="h-48" fill={fill} />}
-        <h6 style={{ color: fill }} className="select-none">
-          {title}
-        </h6>
-      </div>
-    </div>
+    <Centered>
+      {showIcon && <SvgComponent className="h-48" fill={fill} />}
+      <h6 style={{ color: fill }} className="select-none">
+        {title}
+      </h6>
+    </Centered>
   );
 };
 

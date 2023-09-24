@@ -21,10 +21,28 @@ router.post("/:projectId/runTestScenario/:scenarioId", csrf, authorize(), startT
 router.post("/:projectId/runTestCases", csrf, authorize(), startTestCases);
 
 router.post("/:projectId/trigger", startProjectBuilds);
+router.post("/:projectId/trigger-sequence", triggerSequence);
 
 module.exports = router;
 
 // Build Runner functions
+function triggerSequence(req, res) {
+  let options = {};
+  if (!isEmpty(req.body)) {
+    options = {
+      ...req.body
+    };
+  }
+  logger.info("triggerSequence", req.params.projectId);
+  runner
+    .triggerSequence(req.params.projectId)
+    .then((response) => res.status(status.ACCEPTED).json(response))
+    .catch((err) => {
+      logger.error(err);
+      res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });
+    });
+}
+
 function startProjectBuilds(req, res) {
   let options = {};
   if (!isEmpty(req.body)) {

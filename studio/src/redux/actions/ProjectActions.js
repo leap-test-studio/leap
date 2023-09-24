@@ -165,6 +165,37 @@ export const deleteProject = (project) => (dispatch) => {
     });
 };
 
+export const triggerSequence = (project) => (dispatch) => {
+  dispatch({
+    type: actionTypes.START_PROJECT_BUILDS,
+    payload: {
+      installing: true
+    }
+  });
+  axios
+    .post(`/api/v1/runner/${project}/trigger-sequence`)
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.START_PROJECT_BUILDS,
+          payload: {
+            ...res.data,
+            installing: false,
+            isProjectUpdated: true
+          }
+        });
+    })
+    .catch((e) => {
+      dispatch({
+        type: actionTypes.START_PROJECT_BUILDS,
+        payload: {
+          ...e.response.data,
+          installing: false
+        }
+      });
+    });
+};
+
 export const startProjectBuilds = (project) => (dispatch) => {
   dispatch({
     type: actionTypes.START_PROJECT_BUILDS,

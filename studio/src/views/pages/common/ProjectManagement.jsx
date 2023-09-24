@@ -159,7 +159,7 @@ const ProjectManagement = (props) => {
         ) : (
           <>
             {projects && filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3 p-2 pr-0">
                 {filtered.map((project, index) => (
                   <ProjectCard
                     key={index}

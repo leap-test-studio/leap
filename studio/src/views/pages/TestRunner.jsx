@@ -60,6 +60,7 @@ export default function TestRunner({ project }) {
       dispatch(fetchProjectBuilds(project?.id));
     }
   };
+
   useEffect(() => {
     fetchBuilds();
     interval = setInterval(fetchBuilds, 10000);

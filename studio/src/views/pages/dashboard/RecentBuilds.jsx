@@ -3,10 +3,10 @@ import IconRenderer from "../../IconRenderer";
 function RecentBuilds({ recentBuildSummary }) {
   return (
     <>
-      <div className="relative bg-white p-6 rounded-md w-full shadow-xl">
-        <div className="text-white flex items-center absolute rounded-md py-3 px-4 shadow-xl bg-yellow-500 left-4 -top-6 select-none">
+      <div className="relative bg-white p-4 rounded-md w-full shadow-xl mt-1">
+        <div className="text-white flex items-center absolute rounded-md p-2 shadow-xl bg-yellow-500 left-4 -top-4 select-none">
           <IconRenderer icon="Summarize" className="h-10 w-10" />
-          <p className="text-md font-semibold ml-3">Recent Build Summary</p>
+          <p className="text-sm font-semibold ml-3">Recent Build Summary</p>
         </div>
         <div className="mt-5">
           <table className="table-auto w-full">

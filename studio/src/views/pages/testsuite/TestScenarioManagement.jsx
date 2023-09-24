@@ -150,7 +150,7 @@ function TestScenarioManagement(props) {
         ) : (
           <>
             {filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-3 p-5">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3 p-2 pr-0">
                 {filtered.map((testscenario, index) => (
                   <TestScenarioCard
                     key={index}
@@ -245,8 +245,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             {status ? "Active" : "In-Active"}
           </p>
         </div>
-        <div className="flex flex-col w-9/12 text-left py-3">
-          <div className="flex flex-row mb-2 items-center justify-end">
+        <div className="flex flex-col w-9/12 text-left mb-2">
+          <div className="flex flex-row mb-0.5 items-center justify-end">
             <Tooltip
               title="Enable/Disable Test Scenario"
               content={
@@ -266,7 +266,12 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
                   </p>
                 }
               >
-                <IconRenderer icon="PlayArrowRounded" className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer" onClick={run} />
+                <IconRenderer
+                  icon="PlayArrowRounded"
+                  style={{ fontSize: 20 }}
+                  className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+                  onClick={run}
+                />
               </Tooltip>
             )}
             <Tooltip
@@ -279,7 +284,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             >
               <IconRenderer
                 icon="FileCopyOutlined"
-                className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer"
+                style={{ fontSize: 20 }}
+                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
                 onClick={cloneTestScenario}
               />
             </Tooltip>
@@ -295,7 +301,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             >
               <IconRenderer
                 icon="ModeEditOutlineOutlined"
-                className="text-color-0500 hover:text-cds-blue-0500 mt-1 mx-1 cursor-pointer"
+                style={{ fontSize: 20 }}
+                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
                 onClick={editTestScenario}
               />
             </Tooltip>
@@ -309,12 +316,13 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             >
               <IconRenderer
                 icon="DeleteOutlineTwoTone"
-                className="text-color-0500 hover:text-cds-red-0600 mt-1 mx-1 cursor-pointer"
+                style={{ fontSize: 20 }}
+                className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
                 onClick={deleteTestScenario}
               />
             </Tooltip>
           </div>
-          <div className="text-slate-600 text-xs font-medium break-words pb-1">{name}</div>
+          <div className="text-slate-600 text-sm font-medium break-words mb-0.5">{name}</div>
           {createdAt?.length > 0 && (
             <Tooltip title={`Created on ${createdAt}`}>
               <div className="text-slate-500 text-xs break-words select-all">
@@ -332,7 +340,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             </Tooltip>
           )}
           {description?.length > 0 && (
-            <div className="mt-1 text-slate-500 text-xs break-words pr-2 select-all inline-flex items-center">
+            <div className="my-0.5 text-slate-500 text-xs break-words pr-2 select-all inline-flex items-center">
               <IconRenderer icon="InfoOutlined" fontSize="12" className="text-color-0600 pr-0.5" />
               <NewlineText text={description} />
             </div>

@@ -12,7 +12,7 @@ import DragabbleElements from "../common/DragabbleElements";
 import PageHeader, { Page, PageActions, PageTitle } from "../common/PageHeader";
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import TimerNode from "./TimerNode";
-import { fetchProject, startProjectBuilds } from "../../../redux/actions/ProjectActions";
+import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";
 import NodeTypes from "./NodeTypes";
 import { nanoid } from "nanoid";
 import TestScenarioNode from "./TestScenarioNode";
@@ -264,7 +264,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
           </Tooltip>
           <Tooltip title="Start Automation Builds">
-            <IconButton title="Trigger" icon="PlayArrowRounded" onClick={() => dispatch(startProjectBuilds(project?.id))} />
+            <IconButton title="Trigger" icon="PlayArrowRounded" onClick={() => dispatch(triggerSequence(project?.id))} />
           </Tooltip>
         </PageActions>
       </PageHeader>
