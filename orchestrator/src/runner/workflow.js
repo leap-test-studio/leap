@@ -50,9 +50,9 @@ function main() {
     });
     return node;
   }
-  const eles = findNextElements("start")
+  const eles = findNextElements("start");
   Runner(eles);
-  fs.writeFileSync("flow.json", JSON.stringify(eles, null, 2))
+  fs.writeFileSync("flow.json", JSON.stringify(eles, null, 2));
 }
 
 main();

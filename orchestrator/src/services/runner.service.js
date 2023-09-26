@@ -14,7 +14,6 @@ module.exports = {
 };
 
 function AyncFunc(message) {
-
   return new Promise(async (resolve) => {
     if (isEmpty(message)) return resolve();
     logger.info(message.id, message.type);
@@ -28,7 +27,9 @@ function AyncFunc(message) {
 
       //break;
       case "TIMER":
-        setTimeout(() => { resolve(message); }, message?.data?.timer || 0);
+        setTimeout(() => {
+          resolve(message);
+        }, message?.data?.timer || 0);
         break;
       default:
         resolve(message);
@@ -73,7 +74,7 @@ async function triggerSequence(ProjectMasterId) {
   await executeNode(node);
 }
 
-async function create(AccountId, ProjectMasterId, isFlow, payload) {
+async function create(AccountId, ProjectMasterId, payload) {
   if (!AccountId) {
     const account = await global.DbStoreModel.Account.findOne({
       where: {
@@ -101,7 +102,6 @@ async function create(AccountId, ProjectMasterId, isFlow, payload) {
     buildNo: nextBuildNumber,
     total: 0,
     status: TestStatus.RUNNING,
-    flow,
     AccountId,
     ProjectMasterId,
     createdAt: Date.now(),

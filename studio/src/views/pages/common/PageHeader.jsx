@@ -3,7 +3,11 @@ import WebContext from "../../context/WebContext";
 
 function PageHeader({ show = true, children }) {
   if (!show) return null;
-  return <div className="sticky top-0 p-1 bg-slate-100 border rounded-b-[2px] flex justify-between items-center text-color-0700">{children}</div>;
+  return (
+    <div className="sticky top-0 p-1 bg-white border border-slate-300 rounded-b-[3px] flex justify-between items-center text-color-0700">
+      {children}
+    </div>
+  );
 }
 
 export default PageHeader;
@@ -13,13 +17,13 @@ export function PageTitle({ children }) {
 }
 
 export function PageActions({ children }) {
-  return <div className="inline-flex items-center justify-end grow">{children}</div>;
+  return <div className="flex flex-row items-center justify-end grow pr-2">{children}</div>;
 }
 export function Page({ children, className = "" }) {
   const { windowDimension } = useContext(WebContext);
   return (
     <div
-      className={`flex flex-col w-full ${className}`}
+      className={`h-full w-full flex flex-col ${className}`}
       style={{ minHeight: windowDimension?.maxContentHeight, maxHeight: windowDimension?.maxContentHeight }}
     >
       {children}
@@ -27,16 +31,19 @@ export function Page({ children, className = "" }) {
   );
 }
 
-export function PageBody({ className, scrollable = true, children }) {
+const BODY_PADDING = 43;
+
+export function PageBody({ className = "", scrollable = true, children, fullScreen = false }) {
   const { windowDimension } = useContext(WebContext);
+  const padding = fullScreen ? 10 : BODY_PADDING;
   return (
     <div
-      className={`w-full mt-1 bg-slate-100 border rounded-[2px] p-1 ${
+      className={`w-full mt-1 bg-white border border-slate-300 rounded-[3px] p-0.5 ${
         scrollable
           ? "overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
           : "overflow-hidden"
       } ${className}`}
-      style={{ minHeight: windowDimension?.maxContentHeight - 45, maxHeight: windowDimension?.maxContentHeight - 45 }}
+      style={{ minHeight: windowDimension?.maxContentHeight - padding, maxHeight: windowDimension?.maxContentHeight - padding }}
     >
       {children}
     </div>

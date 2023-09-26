@@ -52,7 +52,7 @@ function startProjectBuilds(req, res) {
   }
   logger.info("Starting project build", req.params.projectId);
   runner
-    .create(req.auth?.id, req.params.projectId, req.params.flow, {
+    .create(req.auth?.id, req.params.projectId, {
       options
     })
     .then((response) => res.status(status.ACCEPTED).json(response))

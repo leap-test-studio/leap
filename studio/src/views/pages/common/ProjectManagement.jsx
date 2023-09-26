@@ -16,7 +16,7 @@ import CreateProjectDialog from "./CreateProjectDialog";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import Centered from "../../utilities/Centered";
-import SearchComponent from "../../utilities/Search";
+import SearchComponent from "../../utilities/SearchComponent";
 import IconRenderer from "../../IconRenderer";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -28,6 +28,7 @@ import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./PageHeader
 import RoundedIconButton from "../../utilities/RoundedIconButton";
 import FirstTimeCard from "./FirstTimeCard";
 import axios from "axios";
+import DisplayCard from "./DisplayCard";
 
 dayjs.extend(relativeTime);
 
@@ -235,128 +236,116 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
     });
   };
 
-  return (
-    <div key={name} className="bg-white shadow border hover:shadow-2xl rounded-md">
-      <div className="flex flex-row rounded-tr rounded-tl">
-        <div className="flex flex-col w-3/12 items-center justify-start p-2">
-          <div
-            className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
-            style={{ backgroundColor: ProjectColors[name.charAt(0).toLowerCase()] }}
-            onClick={selectProject}
-          >
-            {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
-          </div>
-          <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-slate-200"}`}>
-            {status ? "Active" : "In-Active"}
+  return (<DisplayCard name={name} cardIcon={<><div
+    className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
+    style={{ backgroundColor: ProjectColors[name.charAt(0).toLowerCase()] }}
+    onClick={selectProject}
+  >
+    {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
+  </div>
+    <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-blue-200"}`}>
+      {status ? "Active" : "In-Active"}
+    </p></>} actions={<div className="flex flex-row items-center justify-end pr-1">
+      {status && (
+        <>
+          {builds >= 1 ? (
+            <Tooltip title="Stop All Running Builds">
+              <IconRenderer
+                icon="Stop"
+                className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
+                onClick={() => dispatch(stopProjectBuilds(id))}
+                style={{ fontSize: 18 }}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Start Automation Builds">
+              <IconRenderer
+                icon="PlayArrowRounded"
+                className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+                onClick={() => dispatch(startProjectBuilds(id))}
+                style={{ fontSize: 18 }}
+              />
+            </Tooltip>
+          )}
+        </>
+      )}
+      <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+      <Tooltip
+        title="Edit Project"
+        content={
+          <p>
+            View and modify the <strong>Project</strong> details.
+            <br />
+            Create network elements, deploy, Simulate and more
           </p>
-        </div>
-        <div className="flex flex-col w-9/12 text-left py-3">
-          <div className="flex flex-row -mt-3 mb-2 p-2 items-center justify-end">
-            {status && (
-              <>
-                {builds >= 1 ? (
-                  <Tooltip title="Stop All Running Builds">
-                    <IconRenderer
-                      icon="Stop"
-                      className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
-                      onClick={() => dispatch(stopProjectBuilds(id))}
-                      fontSize="small"
-                    />
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Start Automation Builds">
-                    <IconRenderer
-                      icon="PlayArrowRounded"
-                      className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-                      onClick={() => dispatch(startProjectBuilds(id))}
-                      fontSize="small"
-                    />
-                  </Tooltip>
-                )}
-              </>
-            )}
-            <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
-            <Tooltip
-              title="Edit Project"
-              content={
-                <p>
-                  View and modify the <strong>Project</strong> details.
-                  <br />
-                  Create network elements, deploy, Simulate and more
-                </p>
-              }
-            >
-              <IconRenderer
-                icon="ModeEditOutlineOutlined"
-                className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-                onClick={selectProject}
-                fontSize="small"
-              />
-            </Tooltip>
-            <Tooltip
-              title="Delete Project"
-              content={
-                <p>
-                  Permanently purges the <strong>Project</strong> from system including all backups.
-                </p>
-              }
-            >
-              <IconRenderer
-                icon="DeleteOutlineTwoTone"
-                className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
-                onClick={() =>
-                  handleAction({
-                    project,
-                    showDeleteDialog: true
-                  })
-                }
-                fontSize="small"
-              />
-            </Tooltip>
+        }
+      >
+        <IconRenderer
+          icon="ModeEditOutlineOutlined"
+          className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+          onClick={selectProject}
+          style={{ fontSize: 18 }}
+        />
+      </Tooltip>
+      <Tooltip
+        title="Delete Project"
+        content={
+          <p>
+            Permanently purges the <strong>Project</strong> from system including all backups.
+          </p>
+        }
+      >
+        <IconRenderer
+          icon="DeleteOutlineTwoTone"
+          className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
+          onClick={() =>
+            handleAction({
+              project,
+              showDeleteDialog: true
+            })
+          }
+          style={{ fontSize: 18 }}
+        />
+      </Tooltip>
 
-            <Tooltip
-              title="Export Project"
-              content={
-                <p>
-                  Export the <strong>Project</strong> in JSON format.
-                  <br />
-                  Filename: {`ProjectExport-${id}.json`}
-                </p>
-              }
-            >
-              <IconRenderer
-                icon="FileDownload"
-                className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-                fontSize="small"
-                onClick={exportProject}
-              />
-            </Tooltip>
-          </div>
-          <div className="text-slate-600 text-xs font-medium break-words pb-1 -mt-4">{name}</div>
-          {createdAt?.length > 0 && (
-            <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
-              <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />
-              <Tooltip title={`Created on ${new Date(createdAt)?.toUTCString()}`} placement="bottom">
-                {`Created on  - ${dayjs(Number(new Date(createdAt).getTime())).fromNow()}`}
-              </Tooltip>
-            </div>
-          )}
-          {updatedAt?.length > 0 && (
-            <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
-              <IconRenderer icon="AccessTime" fontSize="10" className="text-color-0600 pr-0.5" />
-              <Tooltip title={`Last Modified on ${new Date(updatedAt).toUTCString()}`} placement="bottom">
-                {`Modified on - ${dayjs(new Date(updatedAt).getTime()).fromNow()}`}
-              </Tooltip>
-            </div>
-          )}
-          {description?.length > 0 && (
-            <div className="text-slate-500 text-xs break-words pr-2 select-all">
-              <IconRenderer icon="Description" fontSize="10" className="text-color-0600 pr-0.5" />
-              {`Description - ${description}`}
-            </div>
-          )}
-        </div>
+      <Tooltip
+        title="Export Project"
+        content={
+          <p>
+            Export the <strong>Project</strong> in JSON format.
+            <br />
+            Filename: {`ProjectExport-${id}.json`}
+          </p>
+        }
+      >
+        <IconRenderer
+          icon="FileDownload"
+          className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+          style={{ fontSize: 18 }}
+          onClick={exportProject}
+        />
+      </Tooltip>
+    </div>}> {createdAt?.length > 0 && (
+      <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
+        <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />
+        <Tooltip title={`Created on ${new Date(createdAt)?.toUTCString()}`} placement="bottom">
+          {`Created on  - ${dayjs(Number(new Date(createdAt).getTime())).fromNow()}`}
+        </Tooltip>
       </div>
-    </div>
+    )}
+    {updatedAt?.length > 0 && (
+      <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
+        <IconRenderer icon="AccessTime" fontSize="10" className="text-color-0600 pr-0.5" />
+        <Tooltip title={`Last Modified on ${new Date(updatedAt).toUTCString()}`} placement="bottom">
+          {`Modified on - ${dayjs(new Date(updatedAt).getTime()).fromNow()}`}
+        </Tooltip>
+      </div>
+    )}
+    {description?.length > 0 && (
+      <div className="text-slate-500 text-xs break-words pr-2 select-all">
+        <IconRenderer icon="Description" fontSize="10" className="text-color-0600 pr-0.5" />
+        {`Description - ${description}`}
+      </div>
+    )}</DisplayCard>
   );
 };

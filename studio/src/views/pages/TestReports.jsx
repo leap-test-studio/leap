@@ -376,10 +376,8 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
   return (
     <>
       <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700">
-        <td className="px-2 py-1 border-x border-x-slate-100 w-18 font-bold" style={{ fontSize: 11 }}>
-          {TestCase?.label}
-        </td>
-        <td className="px-2 py-1 border-x border-x-slate-100 w-36">
+        <td className="p-1 border-x border-x-slate-200 font-bold text-center">{TestCase?.label}</td>
+        <td className="p-1 border-x border-x-slate-200">
           {TestCase?.TestScenario && (
             <div className="flex flex-col">
               <label className="break-all">{TestCase?.TestScenario?.name}</label>
@@ -389,26 +387,22 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             </div>
           )}
         </td>
-        <td className="px-2 py-1 border-x border-x-slate-100 w-12">
-          <label>{title}</label>
-        </td>
-        <td className="px-2 py-1 border-x border-x-slate-100 break-words">
-          <p className="flex flex-col">
-            <label>
+        <td className="p-1 border-x border-x-slate-200 text-center">{title}</td>
+        <td className="p-1 border-x border-x-slate-200 w-96">
+          <div className="flex flex-col break-words w-95">
+            <div>
               <strong>Given:</strong> {TestCase?.given}
-            </label>
-            <label>
+            </div>
+            <div>
               <strong>When:</strong> {TestCase?.when}
-            </label>
-            <label>
+            </div>
+            <div>
               <strong>Then:</strong> {TestCase?.then}
-            </label>
-          </p>
+            </div>
+          </div>
         </td>
-        <td className="px-2 py-1 border-x border-x-slate-100 text-center">
-          <label>{result > 0 ? steps : 0}</label>
-        </td>
-        <td className="border-x border-x-slate-100 w-20">
+        <td className="p-1 border-x border-x-slate-200 text-center">{result > 0 ? steps : 0}</td>
+        <td className="border-x border-x-slate-200">
           <div
             className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
               status === "Running"
@@ -423,30 +417,30 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             {status}
           </div>
         </td>
-        <td className="px-2 py-1 border-x border-x-slate-100 w-40">
-          <div className="flex flex-col">
+        <td className="p-1 border-x border-x-slate-200">
+          <div className="flex-1 w-32">
             {endTime && startTime && (
-              <div>
+              <div className="flex flex-col">
                 <strong>Duration</strong>
-                <div className="inline-fex items-center" style={{ fontSize: 11 }}>
+                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
                   <i className="text-indigo-700 fad fa-solid fa-clock w-6 text-center" />
                   <label>{convertDatesToHM(startTime, endTime)}</label>
                 </div>
               </div>
             )}
             {startTime && (
-              <div>
+              <div className="flex flex-col">
                 <strong>Start</strong>
-                <div className="inline-fex items-center" style={{ fontSize: 11 }}>
+                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
                   <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
                   <label>{startTime}</label>
                 </div>
               </div>
             )}
             {endTime && (
-              <div>
+              <div className="flex flex-col">
                 <strong>End</strong>
-                <div className="inline-fex items-center" style={{ fontSize: 11 }}>
+                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
                   <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
                   <label>{endTime}</label>
                 </div>
@@ -507,7 +501,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
       )}
       {!isEmpty(screenshot) && (
         <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
-          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-100">
+          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200">
             {screenshot.map((s, i) => (
               <div key={i}>
                 <label>{s?.stepNo === "Evidence" ? s?.stepNo : "Screenshot for Step:" + s?.stepNo + " Capture Number:" + (i + 1)}</label>

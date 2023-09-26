@@ -40,7 +40,6 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
             sideBarItems={sideBarItems}
             maxContentHeight={windowDimension.maxContentHeight}
             menuClicked={() => {
-              console.log(expandSB);
               setExpandSB(!expandSB);
             }}
             {...props}
@@ -49,7 +48,7 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
         <div className="flex flex-col w-full">
           <Header isProjectSelected={isProjectSelected} project={project} {...props} />
           <div
-            className="w-full px-1.5 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+            className="w-full px-1.5 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full bg-blue-100"
             style={{
               minHeight: windowDimension.maxContentHeight,
               maxHeight: windowDimension.maxContentHeight
