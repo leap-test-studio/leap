@@ -82,7 +82,7 @@ const CPUUsage = React.memo(({ usage, bootTime }) => {
 
   return (
     <>
-      <div className="relative bg-white rounded-md w-full h-full shadow-xl select-none">
+      <div className="relative bg-white rounded-md h-full w-full shadow-xl select-none">
         <div id="toast-success" className="p-2 flex items-center text-gray-500">
           <div className="inline-flex flex-shrink-0 justify-center items-center h-6 w-6 text-green-300 bg-green-100 rounded-md">
             <span className="sr-only">Check icon</span>

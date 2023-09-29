@@ -231,112 +231,124 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
 
   const trimmedName = name?.trim() || "";
 
-  return (<DisplayCard name={name} cardIcon={<><div
-    className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
-    style={{ backgroundColor: ProjectColors[trimmedName.charAt(0).toLowerCase()] }}
-    onClick={editTestScenario}
-  >
-    {trimmedName.charAt(0).toUpperCase() + trimmedName.charAt(name.length - 1).toUpperCase()}
-  </div>
-    <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-slate-200"}`}>
-      {status ? "Active" : "In-Active"}
-    </p></>} actions={<div className="flex flex-row mb-0.5 items-center justify-end">
-      <Tooltip
-        title="Enable/Disable Test Scenario"
-        content={
-          <p>
-            Enable or Disable the <strong>Test Scenario</strong>
+  return (
+    <DisplayCard
+      name={name}
+      cardIcon={
+        <>
+          <div
+            className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
+            style={{ backgroundColor: ProjectColors[trimmedName.charAt(0).toLowerCase()] }}
+            onClick={editTestScenario}
+          >
+            {trimmedName.charAt(0).toUpperCase() + trimmedName.charAt(name.length - 1).toUpperCase()}
+          </div>
+          <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-slate-200"}`}>
+            {status ? "Active" : "In-Active"}
           </p>
-        }
-      >
-        <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
-      </Tooltip>
-      {status && (
-        <Tooltip
-          title="Run Test Scenario"
-          content={
-            <p>
-              Execute test cases of <strong>Test Scenario</strong>
-            </p>
-          }
-        >
-          <IconRenderer
-            icon="PlayArrowRounded"
-            style={{ fontSize: 20 }}
-            className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-            onClick={run}
-          />
+        </>
+      }
+      actions={
+        <div className="flex flex-row mb-0.5 items-center justify-end">
+          <Tooltip
+            title="Enable/Disable Test Scenario"
+            content={
+              <p>
+                Enable or Disable the <strong>Test Scenario</strong>
+              </p>
+            }
+          >
+            <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+          </Tooltip>
+          {status && (
+            <Tooltip
+              title="Run Test Scenario"
+              content={
+                <p>
+                  Execute test cases of <strong>Test Scenario</strong>
+                </p>
+              }
+            >
+              <IconRenderer
+                icon="PlayArrowRounded"
+                style={{ fontSize: 20 }}
+                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+                onClick={run}
+              />
+            </Tooltip>
+          )}
+          <Tooltip
+            title="Clone Test Scenario"
+            content={
+              <p>
+                Clone the <strong>Test Scenario</strong>
+              </p>
+            }
+          >
+            <IconRenderer
+              icon="FileCopyOutlined"
+              style={{ fontSize: 20 }}
+              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+              onClick={cloneTestScenario}
+            />
+          </Tooltip>
+          <Tooltip
+            title="Edit Test Scenario"
+            content={
+              <p>
+                View and modify the <strong>Test Scenario</strong> details.
+                <br />
+                Create network elements, deploy, Simulate and more
+              </p>
+            }
+          >
+            <IconRenderer
+              icon="ModeEditOutlineOutlined"
+              style={{ fontSize: 20 }}
+              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+              onClick={editTestScenario}
+            />
+          </Tooltip>
+          <Tooltip
+            title="Delete Test Scenario"
+            content={
+              <p>
+                Permanently purges the <strong>Test Scenario</strong> from system including all backups.
+              </p>
+            }
+          >
+            <IconRenderer
+              icon="DeleteOutlineTwoTone"
+              style={{ fontSize: 20 }}
+              className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
+              onClick={deleteTestScenario}
+            />
+          </Tooltip>
+        </div>
+      }
+    >
+      {createdAt?.length > 0 && (
+        <Tooltip title={`Created on ${createdAt}`}>
+          <div className="text-slate-500 text-xs break-words select-all">
+            <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
+            {dayjs(Number(new Date(createdAt).getTime())).fromNow()}
+          </div>
         </Tooltip>
       )}
-      <Tooltip
-        title="Clone Test Scenario"
-        content={
-          <p>
-            Clone the <strong>Test Scenario</strong>
-          </p>
-        }
-      >
-        <IconRenderer
-          icon="FileCopyOutlined"
-          style={{ fontSize: 20 }}
-          className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-          onClick={cloneTestScenario}
-        />
-      </Tooltip>
-      <Tooltip
-        title="Edit Test Scenario"
-        content={
-          <p>
-            View and modify the <strong>Test Scenario</strong> details.
-            <br />
-            Create network elements, deploy, Simulate and more
-          </p>
-        }
-      >
-        <IconRenderer
-          icon="ModeEditOutlineOutlined"
-          style={{ fontSize: 20 }}
-          className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-          onClick={editTestScenario}
-        />
-      </Tooltip>
-      <Tooltip
-        title="Delete Test Scenario"
-        content={
-          <p>
-            Permanently purges the <strong>Test Scenario</strong> from system including all backups.
-          </p>
-        }
-      >
-        <IconRenderer
-          icon="DeleteOutlineTwoTone"
-          style={{ fontSize: 20 }}
-          className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
-          onClick={deleteTestScenario}
-        />
-      </Tooltip>
-    </div>}>
-    {createdAt?.length > 0 && (
-      <Tooltip title={`Created on ${createdAt}`}>
-        <div className="text-slate-500 text-xs break-words select-all">
-          <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
-          {dayjs(Number(new Date(createdAt).getTime())).fromNow()}
+      {updatedAt?.length > 0 && (
+        <Tooltip title={`Last Modified on ${updatedAt}`}>
+          <div className="text-slate-500 text-xs break-words select-all">
+            <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
+            {dayjs(Number(new Date(updatedAt).getTime())).fromNow()}
+          </div>
+        </Tooltip>
+      )}
+      {description?.length > 0 && (
+        <div className="my-0.5 text-slate-500 text-xs break-words pr-2 select-all inline-flex items-center">
+          <IconRenderer icon="InfoOutlined" fontSize="12" className="text-color-0600 pr-0.5" />
+          <NewlineText text={description} />
         </div>
-      </Tooltip>
-    )}
-    {updatedAt?.length > 0 && (
-      <Tooltip title={`Last Modified on ${updatedAt}`}>
-        <div className="text-slate-500 text-xs break-words select-all">
-          <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
-          {dayjs(Number(new Date(updatedAt).getTime())).fromNow()}
-        </div>
-      </Tooltip>
-    )}
-    {description?.length > 0 && (
-      <div className="my-0.5 text-slate-500 text-xs break-words pr-2 select-all inline-flex items-center">
-        <IconRenderer icon="InfoOutlined" fontSize="12" className="text-color-0600 pr-0.5" />
-        <NewlineText text={description} />
-      </div>
-    )}
-  </DisplayCard>);
+      )}
+    </DisplayCard>
+  );
 };

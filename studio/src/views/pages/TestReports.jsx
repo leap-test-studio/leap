@@ -160,9 +160,9 @@ export default function TestReports({ project: selectedPrject }) {
           </Tooltip>
         </PageActions>
       </PageHeader>
-      <PageBody className="bg-white">
+      <PageBody>
         {buildSelected ? (
-          <div id="BuildReport" ref={reportRef} className="border rounded p-2">
+          <div id="BuildReport" ref={reportRef} className="p-4">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
               <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} />
               {!isEmpty(buildDetails?.options) && (
@@ -176,9 +176,7 @@ export default function TestReports({ project: selectedPrject }) {
             <ReportTable {...buildDetails} testType={testType} />
           </div>
         ) : (
-          <Centered>
-            <EmptyIconRenderer title="Report Not Found" />
-          </Centered>
+          <EmptyIconRenderer title="Report Not Found" />
         )}
       </PageBody>
     </Page>
@@ -312,7 +310,7 @@ function BuildSummary({ data, onClick, testType }) {
   return (
     <div className="border-t">
       <p className="font-medium text-base mt-1">Summary</p>
-      <div className="grid grid-cols-8 gap-3">
+      <div className="grid grid-cols-8">
         {data.map((d, index) => (
           <SummaryCard key={index} {...d} onClick={() => onClick(index)} selected={key > 0 && key == index} />
         ))}
@@ -376,10 +374,10 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
   return (
     <>
       <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700">
-        <td className="p-1 border-x border-x-slate-200 font-bold text-center">{TestCase?.label}</td>
+        <td className="p-1 border-x border-x-slate-200 font-bold text-center w-16">{TestCase?.label}</td>
         <td className="p-1 border-x border-x-slate-200">
           {TestCase?.TestScenario && (
-            <div className="flex flex-col">
+            <div className="flex flex-col w-36">
               <label className="break-all">{TestCase?.TestScenario?.name}</label>
               {TestCase?.TestScenario?.description && (
                 <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
@@ -465,13 +463,13 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
               </thead>
               <tbody>
                 <tr className="bg-white hover:bg-slate-50 text-xs">
-                  <td className="border-r border-slate-200">{actualResult.stepNo}</td>
+                  <td className="border-r border-slate-200 text-center">{actualResult.stepNo}</td>
                   <td className="border-r border-slate-200">
                     <NewlineText text={JSON.stringify(TestCase?.execSteps[actualResult.stepNo - 1], null, 2)} />
                   </td>
-                  <td className="border-r border-slate-200 w-24">
+                  <td className="border-r border-slate-200">
                     <p
-                      className={`rounded text-xs text-center font-medium w-24 mx-2 py-0.5 ${
+                      className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
                         TestStatus[actualResult.result] === "Running"
                           ? "bg-cds-blue-0600 animate-pulse"
                           : TestStatus[actualResult.result] === "Pass"

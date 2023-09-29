@@ -17,21 +17,8 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
 
   if (disableLayout) return children;
   return (
-    <main
-      role="main"
-      className="w-full max-w-full h-full"
-      style={{
-        minHeight: windowDimension.winHeight,
-        maxHeight: windowDimension.winHeight
-      }}
-    >
-      <div
-        className="flex flex-row"
-        style={{
-          minHeight: windowDimension.maxContentHeight,
-          maxHeight: windowDimension.maxContentHeight
-        }}
-      >
+    <main role="main" className="w-screen max-w-full h-screen bg-blue-100">
+      <div className="flex flex-row h-full w-full">
         {showSidebar && (
           <Sidebar
             showSidebar={expandSB}
@@ -45,15 +32,9 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
             {...props}
           />
         )}
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col h-full w-full">
           <Header isProjectSelected={isProjectSelected} project={project} {...props} />
-          <div
-            className="w-full px-1.5 overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full bg-blue-100"
-            style={{
-              minHeight: windowDimension.maxContentHeight,
-              maxHeight: windowDimension.maxContentHeight
-            }}
-          >
+          <div className="h-full w-full px-1">
             {!loaded ? (
               <Centered>
                 <Spinner>Loading</Spinner>

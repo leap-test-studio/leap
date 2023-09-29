@@ -23,7 +23,6 @@ export default function ReportCard({ title, icon, value, total, bgColor }) {
           </div>
         </span>
       </div>
-
     </div>
   );
 }

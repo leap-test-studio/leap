@@ -1,6 +1,7 @@
 ORION=$(pwd)
 cd $ORION
-
+dos2unix *.sh
+ssh ykrishnaraju@10.1.100.47 'cd /mnt/data0/ykrishnaraju/vinashak && rm -rf src *.sh *.yml *.json Dockerfile *.conf .*ignore'
 ssh ykrishnaraju@10.1.100.47 'cd /mnt/data0/ykrishnaraju/vinashak/orchestrator && rm -rf src *.json .prettier* generate.sh keys .*ignore'
 ssh ykrishnaraju@10.1.100.47 'cd /mnt/data0/ykrishnaraju/vinashak/studio && rm -rf config public src *.json .prettier* .*ignore .babelrc .env* tailwind*'
 
