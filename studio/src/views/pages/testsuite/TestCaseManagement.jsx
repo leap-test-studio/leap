@@ -27,6 +27,7 @@ import FirstTimeCard from "../common/FirstTimeCard";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import ImportTestCaseDialog from "./ImportTestCaseDialog";
 import NewlineText from "../../utilities/NewlineText";
+import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
@@ -285,52 +286,44 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
   };
   return (
     <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
-      <td className="pl-2 w-[5.2rem]">
-        <div className="flex flex-row items-center justify-start">
-          <input
-            type="checkbox"
-            name={rowIndex}
-            id={"check-" + rowIndex}
-            className="text-color-0800 rounded mx-1"
-            checked={record.enabled}
-            onChange={(_ev) =>
-              updateTestCase({
-                id: record.id,
-                enabled: _ev.target.checked
-              })
-            }
-          />
-          <label className="w-18">{`TCID-${record.seqNo}`}</label>
-        </div>
+      <td className="border border-r-slate-100 w-[5.5rem]">
+        <Tooltip title="Enable/Disable test case" placement="bottom">
+          <div className="flex flex-row items-center justify-between px-2">
+            <TailwindToggleRenderer path={rowIndex} visible={true} enabled={true} data={record.enabled} handleChange={(_, ev) => updateTestCase({
+              id: record.id,
+              enabled: ev
+            })} />
+            <label className="pl-4">{record.label}</label>
+          </div>
+        </Tooltip>
       </td>
-      <td className="p-1.5 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.given} />} placement="bottom">
+      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
+        <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
           <NewlineText text={record.given && cropString(record.given, 40 * 3).toString()} />
         </Tooltip>
       </td>
-      <td className="p-1.5 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.when} />} placement="bottom">
+      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
+        <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
           <NewlineText text={record.when && cropString(record.when, 40 * 3).toString()} />
         </Tooltip>
       </td>
-      <td className="p-1.5 break-words max-w-[10rem]">
-        <Tooltip title={`TCID-${record.seqNo}`} content={<NewlineText text={record.then} />} placement="bottom">
+      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
+        <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
           <NewlineText text={record.then && cropString(record.then, 40 * 3).toString()} />
         </Tooltip>
       </td>
-      <td className="px-2 py-0.5 w-20">
+      <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
+          className={`text-xs font-normal select-none ${record.status === 0
+            ? "bg-purple-300"
+            : record.status === 1
               ? "bg-indigo-300"
               : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
-          }`}
+                ? "bg-blue-300"
+                : record.status === 3
+                  ? "bg-violet-400"
+                  : ""
+            }`}
         >
           {tcType}
         </label>
@@ -341,38 +334,38 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             <IconRenderer
               icon="PlayArrowRounded"
               className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-              fontSize="medium"
+              style={{ fontSize: 20 }}
               onClick={() => runTestCases(record)}
             />
           )}
           <IconRenderer
             icon="ContentCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            fontSize="medium"
+            style={{ fontSize: 20 }}
             onClick={() => cloneTestCase(record)}
           />
           <IconRenderer
             icon="Edit"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            fontSize="medium"
+            style={{ fontSize: 20 }}
             onClick={() => editTestCase(record)}
           />
           <IconRenderer
             icon="DeleteForever"
             className="text-color-0500 hover:text-cds-red-0600 mr-2 cursor-pointer"
-            fontSize="medium"
+            style={{ fontSize: 20 }}
             onClick={() => deleteTestCase(record)}
           />
           <IconRenderer
             icon="FileDownload"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            fontSize="medium"
+            style={{ fontSize: 20 }}
             onClick={exportTestCase}
           />
           <IconRenderer
             icon="FileUpload"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            fontSize="medium"
+            style={{ fontSize: 20 }}
             onClick={() => importTestCase(record)}
           />
         </div>

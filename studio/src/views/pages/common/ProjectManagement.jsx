@@ -337,7 +337,6 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
         </div>
       }
     >
-      {" "}
       {createdAt?.length > 0 && (
         <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
           <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />

@@ -7,7 +7,7 @@ import { fetchProjectBuilds, startProjectBuilds } from "../../redux/actions/Proj
 import TableRenderer from "../tablerenderer";
 
 const columns = [
-  { title: "Build #", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true },
+  { title: "Build #", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true, center: true },
   {
     title: "Type",
     field: "type",
@@ -20,11 +20,11 @@ const columns = [
   },
   { title: "Start Time", field: "startTime" },
   { title: "End Time", field: "endTime" },
-  { title: "Total", field: "total" },
-  { title: "Passed", field: "passed" },
-  { title: "Failed", field: "failed", sortable: true },
-  { title: "Skipped", field: "skipped" },
-  { title: "Running", field: "running" },
+  { title: "Total", field: "total", width: 25 },
+  { title: "Passed", field: "passed", width: 25 },
+  { title: "Failed", field: "failed", sortable: true, width: 25 },
+  { title: "Skipped", field: "skipped", width: 25 },
+  { title: "Running", field: "running", width: 25 },
   {
     title: "Status",
     field: "status",
@@ -39,7 +39,8 @@ const columns = [
       { const: 999, title: "Invalid", class: "bg-cds-red-0600 text-white" }
     ],
     center: true,
-    sortable: true
+    sortable: true,
+    width: 25
   },
   {
     title: "Flow Based",
@@ -81,7 +82,7 @@ export default function TestRunner({ project }) {
           </Tooltip>
         </PageActions>
       </PageHeader>
-      <PageBody className="bg-white">
+      <PageBody scrollable={false}>
         <TableRenderer
           columns={columns}
           data={builds}

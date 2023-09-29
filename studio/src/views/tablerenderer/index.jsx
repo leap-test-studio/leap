@@ -20,21 +20,19 @@ function TableRenderer({
   if (isEmpty(data))
     return (
       <Centered>
-        <EmptyIconRenderer title="Events Not Found" fill="#1e5194" />
+        <EmptyIconRenderer title="Data Not Found" fill="#1e5194" />
       </Centered>
     );
 
   const defaultPage = pageSizes?.find((p) => p.default)?.value || 50;
   const [pageSize, setPageSize] = useState(defaultPage);
   const [pageNumber, setPageNumber] = useState(1);
-  const [sortProperty, setSortProperty] = useState();
-  const [sortDirection, setSortDirection] = useState();
-
+  const [sortProperty, setSortProperty] = useState(defaultSort);
+  const [sortDirection, setSortDirection] = useState(defaultSortDirection);
   const { windowDimension } = useContext(WebContext);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [list, setList] = useState([]);
   const [checkedRecords, setCheckedRecords] = useState([]);
-
   const sortedItems = [...data].sort((a, b) => {
     if (sortProperty) {
       if (a[sortProperty] < b[sortProperty]) {
@@ -46,18 +44,6 @@ function TableRenderer({
     }
     return 0;
   });
-
-  useEffect(() => {
-    if (defaultSort != null) {
-      setSortProperty(defaultSort);
-    }
-  }, [defaultSort]);
-
-  useEffect(() => {
-    if (defaultSortDirection != null) {
-      setSortDirection(defaultSortDirection);
-    }
-  }, [defaultSortDirection]);
 
   useEffect(() => {
     setList(data);
@@ -92,10 +78,10 @@ function TableRenderer({
   return (
     <>
       <div
-        className="overflow-y-scroll scrollbar-thin bg-white scrollbar-thumb-color-0800 scrollbar-track-slate-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+        className="h-full w-full overflow-y-scroll scrollbar-thin bg-white scrollbar-thumb-color-0800 scrollbar-track-slate-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
         style={{
-          minHeight: windowDimension.maxContentHeight - 95,
-          maxHeight: windowDimension.maxContentHeight - 95
+          minHeight: windowDimension.maxContentHeight - 90,
+          maxHeight: windowDimension.maxContentHeight - 90
         }}
       >
         <table className="relative w-full text-[10px] text-left text-slate-600">
@@ -155,13 +141,23 @@ function TableRenderer({
 
 export default TableRenderer;
 
-function TableHeader({ columns, sortProperty, setSortProperty, actionHandler, showSelect, handleSelectAll, isCheckAll }) {
-  const [sortDirection, setSortDirection] = useState({});
+function TableHeader({
+  columns,
+  sortDirection,
+  sortProperty,
+  setSortProperty,
+  setSortDirection,
+  actionHandler,
+  showSelect,
+  handleSelectAll,
+  isCheckAll
+}) {
   const handleSortClick = (property) => {
     if (sortProperty === property) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortProperty(property);
+      setSortDirection("asc");
     }
   };
 
@@ -179,19 +175,19 @@ function TableHeader({ columns, sortProperty, setSortProperty, actionHandler, sh
             />
           </th>
         )}
-        {columns.map(({ title, field, sortable, width, sorter }, index, arr) => (
+        {columns.map(({ title, field, sortable, width, sorter, center }, index, arr) => (
           <th
             key={index}
-            className={`p-1.5 sticky top-0 ${
-              sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
-            style={{ width: width + "px" }}
-            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
+            className={`px-1.5 py-0.5 sticky top-0 ${sortable ? "cursor-pointer" : ""
+              } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            style={{ width }}
+            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => { }}
           >
             <div className="flex flex-row justify-between items-center">
+              {center && <div className="opacity-0"></div>}
               <label>{title}</label>
               {sortable && (
-                <div className="opacity-0 group-hover:opacity-100">
+                <div className={`opacity-0 group-hover:opacity-100 ${sortProperty === field ? "opacity-100 bg-slate-300 rounded-full" : ""}`}>
                   <IconRenderer icon={sortDirection === "asc" ? "ArrowDropUp" : "ArrowDropDown"} />
                 </div>
               )}
@@ -255,9 +251,8 @@ function CellRenderer(col, field, record, columns) {
     default:
       return (
         <div
-          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${
-            col.center ? "text-center" : ""
-          }`}
+          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${col.center ? "text-center" : ""
+            }`}
         >
           {colProperties != null ? colProperties.title : field}
         </div>

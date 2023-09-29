@@ -5,7 +5,7 @@ function DisplayCard({ name, cardIcon, actions, children }) {
         <div className="flex flex-col w-3/12 items-center justify-center">{cardIcon}</div>
         <div className="flex flex-col w-9/12 text-left pb-2">
           <div className="flex flex-col w-full">{actions}</div>
-          <div className="text-color-0700 text-base font-medium break-all pb-0.5 -mt-1">{name}</div>
+          <div className="text-color-0700 text-base font-medium break-words pb-0.5 -mt-1">{name}</div>
           {children}
         </div>
       </div>
