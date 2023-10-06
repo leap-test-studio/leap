@@ -17,12 +17,7 @@ function TableRenderer({
   showSelect,
   getData
 }) {
-  if (isEmpty(data))
-    return (
-      <Centered>
-        <EmptyIconRenderer title="Data Not Found" fill="#1e5194" />
-      </Centered>
-    );
+  if (isEmpty(data)) return <EmptyIconRenderer title="Data Not Found" fill="#1e5194" />;
 
   const defaultPage = pageSizes?.find((p) => p.default)?.value || 50;
   const [pageSize, setPageSize] = useState(defaultPage);
@@ -178,10 +173,11 @@ function TableHeader({
         {columns.map(({ title, field, sortable, width, sorter, center }, index, arr) => (
           <th
             key={index}
-            className={`px-1.5 py-0.5 sticky top-0 ${sortable ? "cursor-pointer" : ""
-              } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            className={`px-1.5 py-0.5 sticky top-0 ${
+              sortable ? "cursor-pointer" : ""
+            } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
             style={{ width }}
-            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => { }}
+            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
           >
             <div className="flex flex-row justify-between items-center">
               {center && <div className="opacity-0"></div>}
@@ -251,8 +247,9 @@ function CellRenderer(col, field, record, columns) {
     default:
       return (
         <div
-          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${col.center ? "text-center" : ""
-            }`}
+          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${
+            col.center ? "text-center" : ""
+          }`}
         >
           {colProperties != null ? colProperties.title : field}
         </div>

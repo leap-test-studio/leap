@@ -289,10 +289,18 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       <td className="border border-r-slate-100 w-[5.5rem]">
         <Tooltip title="Enable/Disable test case" placement="bottom">
           <div className="flex flex-row items-center justify-between px-2">
-            <TailwindToggleRenderer path={rowIndex} visible={true} enabled={true} data={record.enabled} handleChange={(_, ev) => updateTestCase({
-              id: record.id,
-              enabled: ev
-            })} />
+            <TailwindToggleRenderer
+              path={rowIndex}
+              visible={true}
+              enabled={true}
+              data={record.enabled}
+              handleChange={(_, ev) =>
+                updateTestCase({
+                  id: record.id,
+                  enabled: ev
+                })
+              }
+            />
             <label className="pl-4">{record.label}</label>
           </div>
         </Tooltip>
@@ -314,16 +322,17 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
-            ? "bg-purple-300"
-            : record.status === 1
+          className={`text-xs font-normal select-none ${
+            record.status === 0
+              ? "bg-purple-300"
+              : record.status === 1
               ? "bg-indigo-300"
               : record.status === 2
-                ? "bg-blue-300"
-                : record.status === 3
-                  ? "bg-violet-400"
-                  : ""
-            }`}
+              ? "bg-blue-300"
+              : record.status === 3
+              ? "bg-violet-400"
+              : ""
+          }`}
         >
           {tcType}
         </label>

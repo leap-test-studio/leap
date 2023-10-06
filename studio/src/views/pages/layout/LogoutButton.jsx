@@ -9,9 +9,8 @@ function LogoutButton({ showTitle = false, resetContext }) {
   return (
     <div
       id="logout-button"
-      className={`relative inline-flex items-center p-1 m-2 hover:bg-slate-300 hover:text-slate-700 ${
-        showTitle ? "rounded-md" : "justify-center rounded"
-      }`}
+      className={`relative flex flex-row items-center p-1 m-1 w-32 hover:bg-slate-300 hover:text-slate-700 ${showTitle ? "rounded-md" : "justify-center rounded"
+        }`}
       onClick={() => {
         dispatch(logoutUser());
         resetContext();
@@ -22,7 +21,7 @@ function LogoutButton({ showTitle = false, resetContext }) {
           <IconRenderer icon="Logout" viewBox="0 0 30 30" />
         </Tooltip>
       </div>
-      {showTitle && <label className="break-words text-xs tracking-wide pr-2">Logout</label>}
+      {showTitle && <label className="break-words text-xs tracking-wide">Logout</label>}
     </div>
   );
 }

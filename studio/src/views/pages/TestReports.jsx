@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 import NewlineText from "../utilities/NewlineText";
 import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
-import Centered from "../utilities/Centered";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./common/PageHeader";
@@ -150,7 +149,7 @@ export default function TestReports({ project: selectedPrject }) {
           )}
           <div className="inline-flex px-2">
             <LabelRenderer path="" label="Build No." />
-            <div className="w-40">
+            <div className="w-32">
               <TailwindSelectRenderer options={buildList} data={buildNo} handleChange={handleBuildChange} enabled={project != null} />
             </div>
           </div>
@@ -375,9 +374,9 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
     <>
       <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700">
         <td className="p-1 border-x border-x-slate-200 font-bold text-center w-16">{TestCase?.label}</td>
-        <td className="p-1 border-x border-x-slate-200">
+        <td className="p-1 border-x border-x-slate-200 w-40">
           {TestCase?.TestScenario && (
-            <div className="flex flex-col w-36">
+            <div className="flex-1 w-40">
               <label className="break-all">{TestCase?.TestScenario?.name}</label>
               {TestCase?.TestScenario?.description && (
                 <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
@@ -387,16 +386,10 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
         <td className="p-1 border-x border-x-slate-200 text-center">{title}</td>
         <td className="p-1 border-x border-x-slate-200 w-96">
-          <div className="flex flex-col break-words w-95">
-            <div>
-              <strong>Given:</strong> {TestCase?.given}
-            </div>
-            <div>
-              <strong>When:</strong> {TestCase?.when}
-            </div>
-            <div>
-              <strong>Then:</strong> {TestCase?.then}
-            </div>
+          <div className="flex-1 break-words w-96">
+            <strong className="pb-2">Given</strong> <p>{TestCase?.given}</p>
+            <strong className="pb-2">When</strong> <p>{TestCase?.when}</p>
+            <strong className="pb-2">Then</strong> <p>{TestCase?.then}</p>
           </div>
         </td>
         <td className="p-1 border-x border-x-slate-200 text-center">{result > 0 ? steps : 0}</td>

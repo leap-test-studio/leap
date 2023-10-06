@@ -10,7 +10,7 @@ function UserInfo({ showTitle = false }) {
     email = user?.email;
   }
   return (
-    <div className="py-1 px-2 mx-2 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
+    <div className="py-1 px-2 mx-1 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
       <div className="flex-1 items-center justify-between select-none">
         {username && <p>{username}</p>}
         {role && <IconLabel label={role} icon="AccountCircle" />}
