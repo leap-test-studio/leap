@@ -218,9 +218,7 @@ function RenderList({
             <Spinner>Loading</Spinner>
           </Centered>
         ) : filtered?.length === 0 ? (
-          <Centered>
-            <EmptyIconRenderer title="TestCase Not Found" />
-          </Centered>
+          <EmptyIconRenderer title="Testcase not found" />
         ) : (
           <table className="relative w-full border">
             <TableHeader headers={["#TID", "Given", "When", "Then", "Type", "Actions"]} />

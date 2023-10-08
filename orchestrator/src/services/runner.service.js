@@ -1,9 +1,10 @@
 const BPromise = require("bluebird");
-const BuildManager = require("./job/JobManager");
+const isEmpty = require("lodash/isEmpty");
 const { Op } = require("sequelize");
+const BuildManager = require("./job/JobManager");
 const TestStatus = require("../runner/enums/TestStatus");
 const Role = require("../_helpers/role");
-const isEmpty = require("lodash/isEmpty");
+const { executeSequence } = require("../runner");
 
 module.exports = {
   create,
@@ -13,65 +14,12 @@ module.exports = {
   triggerSequence
 };
 
-function AyncFunc(message) {
-  return new Promise(async (resolve) => {
-    if (isEmpty(message)) return resolve();
-    logger.info(message.id, message.type);
-    switch (message.type) {
-      case "TC":
-        const testCase = await global.DbStoreModel.TestCase.findByPk(message.id);
-        logger.info(testCase.toJSON());
-        resolve(message);
-        break;
-      //case "TS":
-
-      //break;
-      case "TIMER":
-        setTimeout(() => {
-          resolve(message);
-        }, message?.data?.timer || 0);
-        break;
-      default:
-        resolve(message);
-    }
-  });
-}
-
-async function executeNode(root) {
-  if (root == null || root.children == null || root.children.length == 0) return Promise.resolve();
-  const result = await BPromise.map(root.children, AyncFunc, { concurrency: 10 });
-  const nextElements = {};
-  result?.forEach((o) => {
-    const element = root.children.find((c) => c.id === o.id);
-    element.children?.forEach((c) => {
-      nextElements[c.id] = c;
-    });
-  });
-  return executeNode({ children: Object.values(nextElements) });
-}
-
 async function triggerSequence(ProjectMasterId) {
   const project = await global.DbStoreModel.ProjectMaster.findByPk(ProjectMasterId);
   if (!project || isEmpty(project.settings)) {
     return;
   }
-  function findNextElements(id) {
-    const startNode = project.settings.nodes.find((n) => n.id === id);
-    if (!startNode) return null;
-    const elements = {};
-    const targets = project.settings.edges.filter((e) => e.source == startNode.id);
-    targets.forEach((t) => {
-      elements[t.id] = findNextElements(t.target);
-    });
-    return {
-      id: startNode?.id,
-      type: startNode?.type,
-      data: startNode?.data,
-      children: Object.values(elements).filter((e) => e != null)
-    };
-  }
-  const node = findNextElements("start");
-  await executeNode(node);
+  executeSequence(project.toJSON());
 }
 
 async function create(AccountId, ProjectMasterId, payload) {

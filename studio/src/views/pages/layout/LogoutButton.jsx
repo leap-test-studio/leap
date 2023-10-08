@@ -9,8 +9,9 @@ function LogoutButton({ showTitle = false, resetContext }) {
   return (
     <div
       id="logout-button"
-      className={`relative flex flex-row items-center p-1 m-1 w-32 hover:bg-slate-300 hover:text-slate-700 ${showTitle ? "rounded-md" : "justify-center rounded"
-        }`}
+      className={`relative flex flex-row items-center p-1 m-1 hover:bg-slate-300 hover:text-slate-700 ${
+        showTitle ? "rounded-md w-32" : "justify-center rounded"
+      }`}
       onClick={() => {
         dispatch(logoutUser());
         resetContext();

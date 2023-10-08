@@ -11,11 +11,10 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
   const isSmallScreen = maxContentHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"
-        } bg-sky-950 text-slate-100 flex flex-col cursor-pointer h-screen`}
+      className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"} bg-sky-950 text-slate-100 flex flex-col cursor-pointer h-screen`}
     >
       <div className={`border-b mx-2 flex flex-row items-center justify-center ${!showSidebar && "py-2"}`}>
-        <LogoRenderer className="h-6 w-6" name={props?.product.name} />
+        <LogoRenderer className="m-1 h-5 w-5" name={props?.product.name} />
         {showSidebar && (
           <div className="cursor-pointer text-md tracking-normal font-normal flex flex-col mx-2">
             <label className="lg:tracking-wider text-base">{props?.product.name}</label>
@@ -55,10 +54,11 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
 function SidebarRender({ children, isSmallScreen }) {
   return (
     <div
-      className={`flex flex-col p-2 select-none h-full ${isSmallScreen
-        ? "overflow-y-auto scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
-        : ""
-        }`}
+      className={`flex flex-col p-2 select-none h-full ${
+        isSmallScreen
+          ? "overflow-y-auto scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+          : ""
+      }`}
     >
       {children}
     </div>
@@ -88,12 +88,13 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
     <NavLink
       id={`nav-page-${id}`}
       to={!openNewTab ? actualPath : pathname}
-      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "p-1 mb-2"} ${pathname.includes(path)
-        ? "z-0 backdrop-blur-sm bg-slate-500/40 text-slate-300 border-l-4 border-slate-500"
-        : hovered
+      className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "p-1 mb-2"} ${
+        pathname.includes(path)
+          ? "z-0 backdrop-blur-sm bg-slate-500/40 text-slate-300 border-l-4 border-slate-500"
+          : hovered
           ? "backdrop-blur-sm text-slate-300"
           : "hover:text-slate-300"
-        } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
+      } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => {
@@ -103,8 +104,9 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
       }}
     >
       <div
-        className={`absolute h-full transition-all duration-300 ease-in-out ${hovered ? "right-0 w-full rounded-md bg-slate-900 text-slate-300" : "right-full w-0"
-          }`}
+        className={`absolute h-full transition-all duration-300 ease-in-out ${
+          hovered ? "right-0 w-full rounded-md bg-slate-900 text-slate-300" : "right-full w-0"
+        }`}
       />
       {icon && (
         <div className="mx-1 z-10">
