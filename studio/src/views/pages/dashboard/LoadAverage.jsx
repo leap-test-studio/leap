@@ -45,7 +45,7 @@ const LoadAverage = ({ timeline, load }) => {
           colors: "#ff6e54"
         },
         formatter: function (value) {
-          return Number(value / 1e9).toFixed(0);
+          return Math.trunc(+(value / 1e9));
         }
       }
     },

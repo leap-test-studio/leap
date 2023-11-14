@@ -64,7 +64,7 @@ const NetworkIOUsage = ({ timeline, networkInterfaces }) => {
         style: {
           colors: "#ff6e54"
         },
-        formatter: (value) => Number(value / 1e9).toFixed(0)
+        formatter: (value) => Math.trunc(value / 1e9)
       }
     },
     yAxis: {

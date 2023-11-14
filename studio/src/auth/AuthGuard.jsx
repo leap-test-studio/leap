@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import jwt from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as actionTypes from "../redux/actions";
@@ -107,7 +107,7 @@ function AuthGuard({ product, children }) {
                   if (!tokens[refreshToken]) {
                     tokens[refreshToken] = {
                       ...response.data,
-                      ...jwt(response.data)
+                      ...jwtDecode(response.data)
                     };
                   }
 

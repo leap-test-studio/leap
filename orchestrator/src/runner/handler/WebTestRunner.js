@@ -189,8 +189,10 @@ class TestRunner extends Job {
       },
       click: async ({ by, element }) => {
         const webElement = await getElement(by, element);
+        const actual = await webElement.click();
+        await this.WebDriver.sleep(3000);
         return {
-          actual: await webElement.click(),
+          actual,
           result: TestStatus.PASS
         };
       },

@@ -1,7 +1,7 @@
 import axios, { CanceledError } from "axios";
 // action - state management
 import * as actionTypes from "../actions";
-import jwt from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const Roles = ["Admin", "Manager", "Lead", "Engineer"];
 
@@ -40,61 +40,61 @@ export const logoutUser = () => async (dispatch) => {
 
 export const loginWithEmailAndPassword =
   ({ email, password }) =>
-  (dispatch) => {
-    dispatch({
-      type: actionTypes.LOGIN_LOADING
-    });
-    axios
-      .post(
-        "/api/v1/accounts/authenticate",
-        {
-          email,
-          password
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
+    (dispatch) => {
+      dispatch({
+        type: actionTypes.LOGIN_LOADING
+      });
+      axios
+        .post(
+          "/api/v1/accounts/authenticate",
+          {
+            email,
+            password
+          },
+          {
+            withCredentials: true,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
           }
-        }
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          const user = jwt(res.data.jwtToken);
-          if (user instanceof CanceledError) {
-            return dispatch({
-              type: actionTypes.LOGIN_ERROR,
-              payload: "Request Timeout"
-            });
-          } else if (Roles.includes(res.data.role)) {
-            return dispatch({
-              type: actionTypes.LOGIN_SUCCESS,
-              payload: {
-                user,
-                ...res.data
-              }
-            });
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            const user = jwtDecode(res.data.jwtToken);
+            if (user instanceof CanceledError) {
+              return dispatch({
+                type: actionTypes.LOGIN_ERROR,
+                payload: "Request Timeout"
+              });
+            } else if (Roles.includes(res.data.role)) {
+              return dispatch({
+                type: actionTypes.LOGIN_SUCCESS,
+                payload: {
+                  user,
+                  ...res.data
+                }
+              });
+            } else {
+              return dispatch({
+                type: actionTypes.LOGIN_ERROR,
+                payload: "Unauthorized Access"
+              });
+            }
           } else {
-            return dispatch({
+            dispatch({
               type: actionTypes.LOGIN_ERROR,
-              payload: "Unauthorized Access"
+              payload: res.data.error
             });
           }
-        } else {
+        })
+        .catch((e) =>
           dispatch({
             type: actionTypes.LOGIN_ERROR,
-            payload: res.data.error
-          });
-        }
-      })
-      .catch((e) =>
-        dispatch({
-          type: actionTypes.LOGIN_ERROR,
-          payload: e.message
-        })
-      );
-  };
+            payload: e.message
+          })
+        );
+    };
 
 export function forgotPassword(body) {
   return (dispatch) => {

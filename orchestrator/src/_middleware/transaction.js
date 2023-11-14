@@ -13,19 +13,19 @@ const getUniqueTxnId = () => {
   } else {
     currentID = nodeId + "1" + currentID;
   }
-  currentID = Number(currentID);
+  currentID = +(currentID);
   if (currentID == previousID) {
     // this case comes only if there is more than 1 request on a millisecond
-    currentID = Number(previousID) + 10000000000; //increment 11th digit
+    currentID = +(previousID) + 10000000000; //increment 11th digit
     //console.log(previousID+" duplicated, corrected as:"+currentID);
     lastDuplicate = previousID;
   } else if (currentID == lastDuplicate) {
     // this case comes only if there is more than 2 requests on a millisecond
-    currentID = Number(previousID) + 10000000000; //increment 11th digit
+    currentID = +(previousID) + 10000000000; //increment 11th digit
     //console.log(lastDuplicate + " duplicated more than once,corrected as:" + currentID);
   }
   previousID = currentID;
-  return Number(currentID);
+  return +(currentID);
 };
 
 const setStartTime = (req, res, next) => {
@@ -40,7 +40,7 @@ const setStartTime = (req, res, next) => {
 
 const setTxnId = (req, res, next) => {
   try {
-    if (req.query.transactionid != null && !isNaN(req.query.transactionid)) {
+    if (req.query.transactionid != null && !Number.isNaN(req.query.transactionid)) {
       req.txnId = req.query.transactionid;
     } else {
       req.txnId = getUniqueTxnId();

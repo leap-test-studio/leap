@@ -1,5 +1,5 @@
 export default function ReportCard({ title, icon, value, total, bgColor }) {
-  const rate = Number((value / total) * 100).toFixed(2);
+  const rate = +((value / total) * 100).toFixed(2);
 
   return (
     <div className="card p-3 shadow-md rounded-md bg-white select-none border flex items-center">
