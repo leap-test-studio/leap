@@ -183,7 +183,7 @@ export default function TestReports({ project: selectedPrject }) {
 }
 
 function toNumber(num) {
-  return Math.trunc(+(num))
+  return Math.trunc(+num);
 }
 
 function BuildDetails({ project, status, buildInfo }) {
@@ -206,14 +206,15 @@ function BuildDetails({ project, status, buildInfo }) {
             <td>Status</td>
             <td>
               <div
-                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${isRunning
-                  ? "bg-cds-blue-0600 animate-pulse"
-                  : report === "Pass"
-                    ? "bg-cds-green-0600"
-                    : report === "Fail" || report === "Aborted"
-                      ? "bg-cds-red-0700"
-                      : "bg-material-yellow-600"
-                  } text-white select-none`}
+                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${
+                  isRunning
+                    ? "bg-cds-blue-0600 animate-pulse"
+                    : report === "Pass"
+                      ? "bg-cds-green-0600"
+                      : report === "Fail" || report === "Aborted"
+                        ? "bg-cds-red-0700"
+                        : "bg-material-yellow-600"
+                } text-white select-none`}
               >
                 {report}
               </div>
@@ -320,8 +321,9 @@ function BuildSummary({ data, onClick, testType }) {
 function SummaryCard({ title, value, className, onClick, selected }) {
   return (
     <div
-      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${className != null ? className : ""
-        }`}
+      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${
+        className != null ? className : ""
+      }`}
       onClick={onClick}
     >
       <p className="font-normal text-2xl text-center">{value}</p>
@@ -393,14 +395,15 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         <td className="p-1 border-x border-x-slate-200 text-center">{result > 0 ? steps : 0}</td>
         <td className="border-x border-x-slate-200">
           <div
-            className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${status === "Running"
-              ? "bg-cds-blue-0600 animate-pulse"
-              : status === "Pass"
-                ? "bg-cds-green-0600"
-                : status === "Fail" || status === "Aborted"
-                  ? "bg-cds-red-0700"
-                  : "bg-material-yellow-600"
-              } text-white select-none`}
+            className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
+              status === "Running"
+                ? "bg-cds-blue-0600 animate-pulse"
+                : status === "Pass"
+                  ? "bg-cds-green-0600"
+                  : status === "Fail" || status === "Aborted"
+                    ? "bg-cds-red-0700"
+                    : "bg-material-yellow-600"
+            } text-white select-none`}
           >
             {status}
           </div>
@@ -459,14 +462,15 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                   </td>
                   <td className="border-r border-slate-200">
                     <p
-                      className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${TestStatus[actualResult.result] === "Running"
-                        ? "bg-cds-blue-0600 animate-pulse"
-                        : TestStatus[actualResult.result] === "Pass"
-                          ? "bg-cds-green-0600"
-                          : TestStatus[actualResult.result] === "Fail"
-                            ? "bg-cds-red-0700"
-                            : "bg-material-yellow-600"
-                        } text-white select-none`}
+                      className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
+                        TestStatus[actualResult.result] === "Running"
+                          ? "bg-cds-blue-0600 animate-pulse"
+                          : TestStatus[actualResult.result] === "Pass"
+                            ? "bg-cds-green-0600"
+                            : TestStatus[actualResult.result] === "Fail"
+                              ? "bg-cds-red-0700"
+                              : "bg-material-yellow-600"
+                      } text-white select-none`}
                     >
                       {TestStatus[actualResult.result]}
                     </p>

@@ -1,4 +1,4 @@
-const { Builder, By, Browser, Capabilities, until } = require("selenium-webdriver");
+const { Builder, By, Browser, Capabilities, until, Key } = require("selenium-webdriver");
 const proxy = require("selenium-webdriver/proxy");
 const BPromise = require("bluebird");
 const SleepTimingType = require("../enums/SleepTimingType");
@@ -190,7 +190,7 @@ class TestRunner extends Job {
       click: async ({ by, element }) => {
         const webElement = await getElement(by, element);
         const actual = await webElement.click();
-        await this.WebDriver.sleep(3000);
+        await this.WebDriver.sleep(1000);
         return {
           actual,
           result: TestStatus.PASS
@@ -206,10 +206,18 @@ class TestRunner extends Job {
       setText: async ({ by, element, value }) => {
         const webElement = await getElement(by, element);
         await webElement.clear();
-        await this.WebDriver.sleep(300);
-        await webElement.clear();
+
+        const array = String(value).split("\n");
+        let actual;
+        for (let index = 0; index < array.length; index++) {
+          const text = array[index];
+          actual = await webElement.sendKeys(text);
+          if (array.length > 1) {
+            await this.WebDriver.actions().keyDown(Key.ENTER).keyUp(Key.ENTER).perform();
+          }
+        }
         return {
-          actual: await webElement.sendKeys(value),
+          actual,
           result: TestStatus.PASS
         };
       },
@@ -218,8 +226,7 @@ class TestRunner extends Job {
         await this.WebDriver.executeScript("ace.edit('ace-editor').setValue('');");
         await this.WebDriver.executeScript("ace.edit('ace-editor').navigateFileEnd();");
         await webElement.clear();
-        await this.WebDriver.sleep(300);
-        await webElement.clear();
+        await this.WebDriver.sleep(1000);
         return {
           actual: await webElement.sendKeys(value),
           result: TestStatus.PASS

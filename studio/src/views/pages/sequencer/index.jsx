@@ -111,8 +111,8 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         }
 
         const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect();
-        let clientX = isNaN(ev?.clientX) ? 300 : +(ev?.clientX);
-        let clientY = isNaN(ev?.clientX) ? 300 : +(ev?.clientY);
+        let clientX = isNaN(ev?.clientX) ? 300 : +ev?.clientX;
+        let clientY = isNaN(ev?.clientX) ? 300 : +ev?.clientY;
         if (clientX < 0) clientX = 300;
         if (clientY < 0) clientY = 300;
 

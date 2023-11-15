@@ -13,19 +13,19 @@ const getUniqueTxnId = () => {
   } else {
     currentID = nodeId + "1" + currentID;
   }
-  currentID = +(currentID);
+  currentID = +currentID;
   if (currentID == previousID) {
     // this case comes only if there is more than 1 request on a millisecond
-    currentID = +(previousID) + 10000000000; //increment 11th digit
+    currentID = +previousID + 10000000000; //increment 11th digit
     //console.log(previousID+" duplicated, corrected as:"+currentID);
     lastDuplicate = previousID;
   } else if (currentID == lastDuplicate) {
     // this case comes only if there is more than 2 requests on a millisecond
-    currentID = +(previousID) + 10000000000; //increment 11th digit
+    currentID = +previousID + 10000000000; //increment 11th digit
     //console.log(lastDuplicate + " duplicated more than once,corrected as:" + currentID);
   }
   previousID = currentID;
-  return +(currentID);
+  return +currentID;
 };
 
 const setStartTime = (req, res, next) => {

@@ -13,5 +13,5 @@ scp -r src *.json .prettier* generate.sh keys .*ignore ykrishnaraju@10.1.100.47:
 cd $ORION/studio
 scp -r config public src *.json .prettier* .*ignore .babelrc .env* tailwind* ykrishnaraju@10.1.100.47:/mnt/data0/ykrishnaraju/vinashak/studio
 
-cd $ORION
-ssh ykrishnaraju@10.1.100.47 sh /mnt/data0/ykrishnaraju/vinashak/gitcommit.sh
+#cd $ORION
+#ssh ykrishnaraju@10.1.100.47 sh /mnt/data0/ykrishnaraju/vinashak/gitcommit.sh
