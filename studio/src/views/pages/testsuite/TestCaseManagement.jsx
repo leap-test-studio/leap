@@ -324,12 +324,12 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             record.status === 0
               ? "bg-purple-300"
               : record.status === 1
-              ? "bg-indigo-300"
-              : record.status === 2
-              ? "bg-blue-300"
-              : record.status === 3
-              ? "bg-violet-400"
-              : ""
+                ? "bg-indigo-300"
+                : record.status === 2
+                  ? "bg-blue-300"
+                  : record.status === 3
+                    ? "bg-violet-400"
+                    : ""
           }`}
         >
           {tcType}

@@ -19,10 +19,10 @@ export default function CustomAlertDialog({ showDialog, level, message, errorMes
                 level === "info"
                   ? "text-color-0500"
                   : level === "warn"
-                  ? "text-yellow-400"
-                  : level === "success"
-                  ? "text-cds-green-0600"
-                  : "text-cds-red-0500"
+                    ? "text-yellow-400"
+                    : level === "success"
+                      ? "text-cds-green-0600"
+                      : "text-cds-red-0500"
               }`}
               style={{
                 fontSize: "80"

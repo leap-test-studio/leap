@@ -15,10 +15,10 @@ export const TailwindLayoutRenderer = React.memo(({ id, layout, visible, element
             direction === "column"
               ? "flex flex-col"
               : elements.length >= 4
-              ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-              : elements.length >= 2
-              ? "inline-flex justify-between items-center"
-              : "flex flex-col"
+                ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                : elements.length >= 2
+                  ? "inline-flex justify-between items-center"
+                  : "flex flex-col"
           }`}
         >
           {renderLayoutElements(elements, schema, path, enabled, renderers, cells)}

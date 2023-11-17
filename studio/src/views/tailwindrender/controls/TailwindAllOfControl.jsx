@@ -24,8 +24,8 @@ const TailwindAllOfRenderer = React.memo(({ schema, rootSchema, visible, rendere
                 allOfRenderInfos.length >= 4
                   ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
                   : allOfRenderInfos.length >= 2
-                  ? "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2"
-                  : "flex flex-col"
+                    ? "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2"
+                    : "flex flex-col"
               }`}
             >
               {allOfRenderInfos.map((allOfRenderInfo, allOfIndex) => (

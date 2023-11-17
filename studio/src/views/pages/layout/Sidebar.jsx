@@ -92,8 +92,8 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
         pathname.includes(path)
           ? "z-0 backdrop-blur-sm bg-slate-500/40 text-slate-300 border-l-4 border-slate-500"
           : hovered
-          ? "backdrop-blur-sm text-slate-300"
-          : "hover:text-slate-300"
+            ? "backdrop-blur-sm text-slate-300"
+            : "hover:text-slate-300"
       } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

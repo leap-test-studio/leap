@@ -92,7 +92,7 @@ export function schemaToJson(prop, data) {
   return data;
 }
 
-export const useConstructor = (callBack = () => { }) => {
+export const useConstructor = (callBack = () => {}) => {
   const [hasBeenCalled, setHasBeenCalled] = useState(false);
   if (hasBeenCalled) return;
   callBack();
