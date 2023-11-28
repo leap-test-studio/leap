@@ -5,7 +5,7 @@ import TabRenderer from "../renderers/common/TabRenderer";
 import ErrorMessage from "../renderers/common/ErrorMessage";
 
 const TailwindAnyOfRenderer = React.memo(
-  ({ schema, rootSchema, indexOfFittingSchema, visible, path, renderers, cells, uischema, uischemas, errors }) => {
+  ({ id, schema, rootSchema, indexOfFittingSchema, visible, path, renderers, cells, uischema, uischemas, errors }) => {
     const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema || 0);
     const handleChange = useCallback((value) => setSelectedAnyOf(value), [setSelectedAnyOf]);
     const anyOf = "anyOf";
@@ -28,7 +28,7 @@ const TailwindAnyOfRenderer = React.memo(
                 renderers={renderers}
                 cells={cells}
               />
-              <ErrorMessage path={path} errors={errors} />
+              <ErrorMessage id={id} path={path} errors={errors} />
             </div>
           </div>
         )}

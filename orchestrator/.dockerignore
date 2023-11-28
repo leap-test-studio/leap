@@ -1,0 +1,13 @@
+node_modules/
+build/
+*.sqlite
+*.log
+.env*
+.git*
+*docker*
+Dockerfile
+.prettier*
+package-lock.json
+*.sh
+tmp
+.gitignore

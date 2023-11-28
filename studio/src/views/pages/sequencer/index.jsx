@@ -9,7 +9,7 @@ import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
 import DragabbleElements from "../common/DragabbleElements";
-import PageHeader, { Page, PageActions, PageTitle } from "../common/PageHeader";
+import { PageHeader, Page, PageActions, PageTitle } from "../common/PageLayoutComponents";
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import TimerNode from "./TimerNode";
 import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";

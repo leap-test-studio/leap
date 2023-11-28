@@ -26,7 +26,7 @@ import TestCaseManagement from "./TestCaseManagement";
 import NewlineText from "../../utilities/NewlineText";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import CloneTestScenarioDialog from "./CloneTestScenarioDialog";
-import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import DisplayCard from "../common/DisplayCard";
 

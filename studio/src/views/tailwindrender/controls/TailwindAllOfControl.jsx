@@ -1,7 +1,7 @@
 import React from "react";
 import { createCombinatorRenderInfos, findMatchingUISchema, isAllOfControl, rankWith } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsAllOfProps } from "@jsonforms/react";
-import ErrorMessage from "../renderers/common/ErrorMessage";
+//import ErrorMessage from "../renderers/common/ErrorMessage";
 import isEmpty from "lodash/isEmpty";
 
 const TailwindAllOfRenderer = React.memo(({ schema, rootSchema, visible, renderers, cells, path, uischemas, uischema, errors }) => {
@@ -20,7 +20,7 @@ const TailwindAllOfRenderer = React.memo(({ schema, rootSchema, visible, rendere
               <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
             )}
             <div
-              className={`w-full p-1 ${
+              className={`w-full p-0.5 ${
                 allOfRenderInfos.length >= 4
                   ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
                   : allOfRenderInfos.length >= 2

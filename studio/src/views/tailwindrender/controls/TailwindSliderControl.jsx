@@ -11,7 +11,7 @@ const TailwindSlider = React.memo((props) => {
       {visible && (
         <div className="grow mb-1.5 mx-1">
           {label?.length > 0 && <LabelRenderer {...props} />}
-          <div className="flex flex-row justify-between items-center text-xs">
+          <div className="flex flex-row justify-between items-center text-[10px]">
             <label className="grow text-left">{schema.minimum}</label>
             <label className="grow text-center">{"Selected: " + Number(data || schema.default)}</label>
             <label className="grow text-right">{schema.maximum}</label>
@@ -27,7 +27,7 @@ const TailwindSlider = React.memo((props) => {
             className="w-full h-2 bg-color-0200 rounded-lg appearance-none cursor-pointer"
             step={schema.multipleOf || 1}
           />
-          <ErrorMessage path={path} errors={errors} />
+          <ErrorMessage id={id} path={path} errors={errors} />
         </div>
       )}
     </>

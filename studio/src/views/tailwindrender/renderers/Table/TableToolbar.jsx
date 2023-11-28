@@ -20,7 +20,7 @@ const TableToolbar = React.memo(({ /*errors,*/ label, path, addItem, schema, ena
               ariaLabel={`Add to ${label}`}
               onClick={addItem(path, createDefault !== undefined ? createDefault() : createDefaultValue(schema))}
               iconSize="20"
-              className="text-color-0800 hover:text-color-0700"
+              className="text-color-0800 hover:text-color-0700 my-0.5"
             />
           </Tooltip>
         </div>

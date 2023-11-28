@@ -4,7 +4,7 @@ import IconRenderer from "../../../IconRenderer";
 
 const LabelRenderer = React.memo(({ path, label, fontSize, description, ...props }) => {
   return (
-    <div htmlFor={path} className="flex items-center text-xs font-medium text-color-0500 select-none mr-2">
+    <div htmlFor={path} className="flex items-center text-[10px] font-medium text-color-0500 select-none mr-2">
       <div className="flex">
         <label style={{ fontSize: fontSize !== undefined ? fontSize : "10px" }}>{label}</label>
         {showAsRequired(props) && <label className="text-red-500 items-center">*</label>}

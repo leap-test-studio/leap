@@ -24,7 +24,7 @@ import Tooltip from "../../utilities/Tooltip";
 import { useNavigate } from "react-router-dom";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./PageHeader";
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
 import RoundedIconButton from "../../utilities/RoundedIconButton";
 import FirstTimeCard from "./FirstTimeCard";
 import axios from "axios";

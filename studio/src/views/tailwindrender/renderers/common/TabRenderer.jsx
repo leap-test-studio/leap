@@ -4,7 +4,7 @@ const Tab = ({ id, label, selected, handleChange }) => {
   return (
     <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
       <a
-        className={`text-xs font-semibold uppercase py-1.5 shadow hover:shadow-lg rounded block leading-normal select-none ${
+        className={`text-[10px] font-semibold uppercase py-1.5 shadow hover:shadow-lg rounded block leading-normal select-none ${
           selected === id ? "text-white bg-color-0800" : "text-color-0800 bg-white"
         }`}
         onClick={(e) => {

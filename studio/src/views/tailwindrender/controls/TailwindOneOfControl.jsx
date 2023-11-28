@@ -72,7 +72,7 @@ const customStyles = {
 };
 
 const TailwindOneOfRenderer = React.memo(
-  ({ handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
+  ({ id, handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
     const [open, setOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
     const oneOfRenderInfos = createCombinatorRenderInfos(schema.oneOf, rootSchema, "oneOf", uischema, path, uischemas);
@@ -104,12 +104,12 @@ const TailwindOneOfRenderer = React.memo(
       <>
         {visible && (
           <>
-            <div className="w-full flex flex-col rounded border mt-0.5">
+            <div className="w-full flex flex-col">
               {uischema.label?.length > 0 && (
                 <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
               )}
               <CombinatorProperties schema={schema} combinatorKeyword={"oneOf"} path={path} />
-              <div className="flex flex-col min-w-0 break-words w-full p-2 rounded">
+              <div className="flex flex-col break-words w-full p-0.5 pr-0">
                 <DropDownMenu
                   selected={selectedIndex}
                   handleChange={handleChangeOneOf}
@@ -120,7 +120,7 @@ const TailwindOneOfRenderer = React.memo(
                   oneOfValue={oneOfValue}
                   schema={schema}
                 />
-                <ErrorMessage path={path} errors={errors} />
+                <ErrorMessage id={id} path={path} errors={errors} />
               </div>
             </div>
             <CustomDialog title="Clear Form" open={open} onClose={cancel} onSave={confirm} saveIcon="Delete" saveTitle="Clear">
@@ -135,7 +135,7 @@ const TailwindOneOfRenderer = React.memo(
   }
 );
 
-const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, schema }) => {
+const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, schema, ...props }) => {
   const selectedSchema = infos[selected]?.schema;
   const selectedUiSchema = infos[selected]?.uischema;
   const options = infos.map((info, index) => ({
@@ -144,21 +144,17 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
   }));
   return (
     <>
-      <div className="w-full rounded-sm border">
-        <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-1 pl-2">
-          Select OneOf {isEmpty(schema?.title) ? "" : " - " + schema.title}
-        </div>
-        <div className="p-1">
-          <Select
-            value={{ value: selected, label: infos[selected]?.label }}
-            onChange={(option) => handleChange(option.value)}
-            options={options}
-            isSearchable={true}
-            className="rounded text-slate-700 border placeholder-slate-500 shadow focus:shadow-md"
-            styles={customStyles}
-          />
-        </div>
+      <div className="bg-color-0100 text-left text-[10px] text-color-primary select-none px-0.5 rounded-t">
+        Select OneOf {isEmpty(schema?.title) ? "" : " - " + schema.title}
       </div>
+      <Select
+        value={{ value: selected, label: infos[selected]?.label }}
+        onChange={(option) => handleChange(option.value)}
+        options={options}
+        isSearchable={true}
+        className="rounded text-slate-700 border placeholder-slate-500 shadow focus:shadow-md"
+        styles={customStyles}
+      />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />
     </>
   );

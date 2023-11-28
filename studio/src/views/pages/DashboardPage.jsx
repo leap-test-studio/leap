@@ -4,7 +4,7 @@ import TotalCards from "./dashboard/TotalCards";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecentBuildSummary, getTotalStats } from "../../redux/actions/DashboardActions";
 import MonthlyBuildStatus from "./dashboard/MonthlyBuildStatus";
-import PageHeader, { Page, PageBody, PageTitle } from "./common/PageHeader";
+import { PageHeader, Page, PageBody, PageTitle } from "./common/PageLayoutComponents";
 
 const INTERVAL = 10 * 1000;
 

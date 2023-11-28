@@ -22,7 +22,7 @@ import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import isEmpty from "lodash/isEmpty";
-import PageHeader, { Page, PageActions, PageBody, PageTitle } from "../common/PageHeader";
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import ImportTestCaseDialog from "./ImportTestCaseDialog";

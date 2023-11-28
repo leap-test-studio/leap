@@ -10,7 +10,7 @@ import NewlineText from "../utilities/NewlineText";
 import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
-import PageHeader, { Page, PageActions, PageBody, PageTitle } from "./common/PageHeader";
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
 
 const BuildTypes = ["P", "TC", "TS"];
 
@@ -479,9 +479,9 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                     <strong>Elapsed</strong>
                     <p>{actualResult.stepTime}ms</p>
                     <strong>Start Time</strong>
-                    <p>{!Number.isNaN(actualResult.startTime) && new Date(Number(actualResult.startTime)).toISOString()}</p>
+                    <p>{!isNaN(actualResult.startTime) && new Date(Number(actualResult.startTime)).toISOString()}</p>
                     <strong>End Time</strong>
-                    <p>{!Number.isNaN(actualResult.endTime) && new Date(Number(actualResult.endTime)).toISOString()}</p>
+                    <p>{!isNaN(actualResult.endTime) && new Date(Number(actualResult.endTime)).toISOString()}</p>
                   </td>
                   <td className="select-all w-96">{JSON.stringify(actualResult.actual, null, 2)}</td>
                 </tr>

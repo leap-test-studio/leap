@@ -51,7 +51,7 @@ export function toSnakeCase(inputString, delim = "_") {
   const array = inputString.split("");
   for (let index = 0; index < array.length; index++) {
     const character = array[index];
-    if (Number.isNaN(character) && character === character.toUpperCase()) {
+    if (isNaN(character) && character === character.toUpperCase()) {
       if (!(index > 0 && array[index - 1] === array[index - 1].toUpperCase())) str.push(delim);
       str.push(character.toUpperCase());
     } else {

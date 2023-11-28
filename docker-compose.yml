@@ -15,7 +15,7 @@ services:
         ipv4_address: 10.5.0.5
 
   vinashak-database:
-    image: mysql:5.7
+    image: mysql
     container_name: vinashak-database
     ports:
       - 3306:3306

@@ -12,13 +12,13 @@ import EmptyIconRenderer from "../../../utilities/EmptyIconRenderer";
 import Tooltip from "../../../utilities/Tooltip";
 
 const generateCells = (Cell, schema, uischema, rowPath, enabled, cells) => {
-  if (schema.type === "object") {
+  if (schema?.type === "object") {
     return getValidColumnProps(schema).map((prop) => {
       const cellPath = Paths.compose(rowPath, prop);
       const props = {
         propName: prop,
-        schema: schema.properties[prop],
-        title: schema.properties?.[prop]?.title ?? startCase(prop),
+        schema: schema?.properties?.[prop],
+        title: schema?.properties?.[prop]?.title ?? startCase(prop),
         rowPath,
         cellPath,
         uischema: uischema?.options?.detail?.elements?.find((e) => e.scope.endsWith(prop)) || uischema,
@@ -48,14 +48,8 @@ const getValidColumnProps = (scopedSchema) => {
   return [""];
 };
 
-const EmptyTable = () => (
-  <div className="w-full items-center justify-center">
-    <EmptyIconRenderer title="No records found" fill="#90b6e8" showIcon={false} />
-  </div>
-);
-
 const ctxToNonEmptyCellProps = (ctx, { rowPath, schema, propName, enabled, cells, renderers, uischema }) => {
-  const path = rowPath + (schema.type === "object" ? "." + propName : "");
+  const path = rowPath + (schema?.type === "object" ? "." + propName : "");
   const errors = formatErrorMessage(union(errorsAt(path, schema, (p) => p === path)(ctx.core.errors).map((error) => "propName:" + error.message)));
   return {
     rowPath,
@@ -81,10 +75,10 @@ const createControl = (scope, name, uischema, title) => {
 };
 
 const NonEmptyCellComponent = ({ path, propName, schema, rootSchema, enabled, renderers, cells, ...props }) => {
-  const uischema = createControl(schema.properties ? `#/properties/${propName}` : "#", propName, props?.uischema, schema.title);
+  const uischema = createControl(schema?.properties ? `#/properties/${propName}` : "#", propName, props?.uischema, schema?.title);
   return (
     <div className="px-1 pt-0.5 text-xs">
-      {schema.properties ? (
+      {schema?.properties ? (
         <JsonFormsDispatch
           schema={Resolve.schema(schema, `#/properties/${propName}`, rootSchema) || schema}
           uischema={uischema}
@@ -172,7 +166,7 @@ const TableRows = ({ data, path, schema, openDeleteDialog, moveUp, moveDown, uis
   const isExpanded = (index) => expanded === composePaths(path, `${index}`);
 
   if (data === 0) {
-    return <EmptyTable />;
+    return <EmptyIconRenderer title="No records found" fill="#90b6e8" showIcon={false} />;
   }
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   return (
@@ -209,7 +203,7 @@ const TableRows = ({ data, path, schema, openDeleteDialog, moveUp, moveDown, uis
 
 export default function TailwindTableControl(props) {
   const { label, path, config, schema, uischema, errors, openDeleteDialog, visible, enabled, data, readonly } = props;
-  const appliedUiSchemaOptions = merge({}, config, schema.options, uischema.options);
+  const appliedUiSchemaOptions = merge({}, config, schema?.options, uischema.options);
 
   return (
     <div className="grow w-full mb-1.5">
@@ -236,7 +230,7 @@ export default function TailwindTableControl(props) {
                     ariaLabel={`Add to ${label}`}
                     onClick={props.addItem(path, createDefaultValue(schema))}
                     iconSize="24"
-                    className="text-color-0800 hover:text-color-0700"
+                    className="text-color-0800 hover:text-color-0700 my-0.5"
                   />
                 </Tooltip>
               </div>

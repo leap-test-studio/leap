@@ -40,7 +40,7 @@ const setStartTime = (req, res, next) => {
 
 const setTxnId = (req, res, next) => {
   try {
-    if (req.query.transactionid != null && !Number.isNaN(req.query.transactionid)) {
+    if (req.query.transactionid != null && !isNaN(req.query.transactionid)) {
       req.txnId = req.query.transactionid;
     } else {
       req.txnId = getUniqueTxnId();

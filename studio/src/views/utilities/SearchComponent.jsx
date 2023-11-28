@@ -9,7 +9,7 @@ export default function SearchComponent({ search, onChange, onClear, placeholder
         type="text"
         className={`caret-slate-300 h-6 px-5 rounded focus:shadow focus:outline-none placeholder:text-sm ${className} placeholder:pb-0.5`}
         placeholder={placeholder}
-        value={search}
+        value={search || ""}
         onChange={(e) => onChange(e.target.value)}
       />
       {search?.length > 0 && (

@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { JsonForms } from "@jsonforms/react";
 import { createAjv } from "@jsonforms/core";
 import isEmpty from "lodash/isEmpty";
@@ -48,6 +49,7 @@ import { tailwindAnyOfStringOrEnumControlTester, TailwindAnyOfStringOrEnumContro
 import { tailwindEnumArrayControlTester, TailwindEnumArrayControl } from "./renderers/TailwindEnumArrayRenderer";
 
 const ajv = createAjv();
+
 ajv.addFormat(
   "ip",
   /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))$/
@@ -61,6 +63,11 @@ ajv.addFormat("numeric-string", /^\d+$/);
 
 ajv.addFormat("hex-string", hexStringPattern);
 
+ajv.addFormat("alphanumeric-string", {
+  type: "string",
+  validate: (data) => data.length > 0 && /^[a-zA-Z_]+$/.test(data[0]) && /^[0-9a-zA-Z+_-]+$/.test(data)
+});
+
 ajv.addFormat("bit-string", /^[0-1]+$/);
 
 ajv.addFormat("octet-string", {
@@ -72,6 +79,18 @@ ajv.addFormat("octet-string", {
 });
 
 ajv.addFormat("printable-string", /^[\x20-\x7E]+$/);
+
+ajv.addFormat("vdusim.tar.gz", {
+  type: "string",
+  validate: (data) => {
+    let isUrlCorrect = false;
+    try {
+      new URL(data);
+      isUrlCorrect = true;
+    } catch (_) {}
+    return isUrlCorrect && /vdusim.tar.gz/.test(data);
+  }
+});
 
 const Cells = [
   { tester: tailwindBooleanCellTester, cell: TailwindBooleanCell },
@@ -125,9 +144,13 @@ const Renderers = [
   { tester: tailwindEnumArrayControlTester, renderer: TailwindEnumArrayControl }
 ];
 
-export default function TailwindRenderer(props) {
+export default function TailwindRenderer({ id, ...props }) {
+  if (props.isValid) {
+    props.isValid(ajv.validate(props.schema, props.data));
+  }
+  const viewRef = useRef();
   return (
-    <div className="w-full">
+    <div ref={viewRef} id={id} className="w-full">
       {!isEmpty(props.schema) && <JsonForms cells={Cells} renderers={Renderers} readonly={props?.readonly} {...props} ajv={ajv} />}
     </div>
   );

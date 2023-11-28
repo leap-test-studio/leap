@@ -1,8 +1,8 @@
-export default function ErrorMessage({ path, errors }) {
+export default function ErrorMessage({ id, path, errors }) {
   return (
     <>
       {errors?.length > 0 && (
-        <label htmlFor={path} className="block text-xs text-left font-medium text-red-600 w-full select-none">
+        <label id={id + "-error-msg"} htmlFor={path} className="block text-[10px] text-left font-medium text-red-600 w-full select-none">
           {errors}
         </label>
       )}

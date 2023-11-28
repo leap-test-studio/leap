@@ -11,7 +11,7 @@ const TailwindToggleRenderer = ({ data, uischema, path, handleChange, config, vi
   return (
     <>
       {visible && (
-        <div className="relative inline-block w-8 mx-1 align-middle select-none transition duration-[300ms] ease-in">
+        <div className="relative inline-block w-8 mx-2 align-middle select-none transition duration-[300ms] ease-in">
           <input
             disabled={!enabled}
             autoFocus={inputProps.autoFocus}

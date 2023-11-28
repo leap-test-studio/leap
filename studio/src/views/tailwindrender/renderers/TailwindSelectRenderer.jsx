@@ -83,6 +83,7 @@ const TailwindSelectRenderer = React.memo(
     description,
     placeholder,
     showLabel = true,
+    className,
     ...props
   }) => {
     const appliedUiSchemaOptions = merge({}, props.config, props.uischema?.options, props.schema?.options);
@@ -112,7 +113,7 @@ const TailwindSelectRenderer = React.memo(
             <Select
               id={`select-${id}`}
               classNamePrefix={`twr-select-${id}`}
-              className="caret-slate-300 block rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md"
+              className={`caret-slate-300 block rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md ${className}`}
               placeholder={!isEmpty(label) ? label : "Select..."}
               styles={customStyles}
               isSearchable={enableFilter}
@@ -123,7 +124,7 @@ const TailwindSelectRenderer = React.memo(
               menuPortalTarget={document.body}
               menuPosition="fixed"
             />
-            {appliedUiSchemaOptions.returnIndex != null && <ErrorMessage path={path} errors={errors} />}
+            {appliedUiSchemaOptions.returnIndex != null && <ErrorMessage id={id} path={path} errors={errors} />}
           </div>
         )}
       </>

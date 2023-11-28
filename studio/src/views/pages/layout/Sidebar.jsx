@@ -35,16 +35,13 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
           )}
         </SidebarRender>
         <UserInfo showTitle={showSidebar} {...props} />
-        <div className={`flex ${showSidebar ? "flex-row" : "flex-col mb-2"} w-full justify-between items-center`}>
+        <div className={`flex mt-2 ${showSidebar ? "flex-row" : "flex-col mb-2"} w-full justify-between items-center`}>
           <LogoutButton showTitle={showSidebar} {...props} />
-          <div className="h-6 w-6 flex shadow-lg hover:bg-slate-300 hover:shadow-2xl rounded-full justify-center items-center bg-slate-200 mr-2">
-            <IconRenderer
-              icon={showSidebar ? "ArrowBackIos" : "ArrowForwardIos"}
-              className="text-color-1000 pl-1"
-              fontSize="10"
-              onClick={menuClicked}
-            />
-          </div>
+          <Tooltip title={!showSidebar ? "Expand Sidebar" : "Collapse Sidebar"} placement="bottom">
+            <div className="h-6 w-7 flex cursor-pointer rounded justify-center items-center hover:bg-slate-500/40 mx-1" onClick={menuClicked}>
+              <IconRenderer icon="DoubleArrowTwoTone" className={`text-white ${showSidebar ? "rotate-180" : ""}`} fontSize="20px" />
+            </div>
+          </Tooltip>
         </div>
       </div>
     </aside>
