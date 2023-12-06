@@ -26,6 +26,7 @@ class TestRunner extends Job {
     const chromeCapabilities = Capabilities.chrome();
     chromeCapabilities.setBrowserVersion("114.0");
     chromeCapabilities.setAcceptInsecureCerts(true);
+
     const args = [
       "--window-size=1920,1080",
       "--test-type",
@@ -46,6 +47,8 @@ class TestRunner extends Job {
     chromeCapabilities.set("se:recordVideo", "true");
     chromeCapabilities.set("se:timeZone", "Asia/Kolkata");
     chromeCapabilities.set("se:screenResolution", "1920x1080");
+    chromeCapabilities.set("excludeSwitches", ["enable-logging"]);
+
     this.Builder.forBrowser(Browser.CHROME).withCapabilities(chromeCapabilities);
     if (global.config.bypass) {
       this.Builder.setProxy(
