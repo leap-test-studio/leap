@@ -16,11 +16,11 @@ OUTPUTPATH=$(pwd)"/data/images"
 
 mkdir -p ${OUTPUTPATH}
 
-scp docker-compose.yml root@10.27.21.41:/root/workspace/vinashak
+scp docker-compose.yml root@10.34.97.144:/root/workspace/vinashak
 
 cd ${OUTPUTPATH}
 rm -rf *.docker *.tgz
-ssh root@10.27.21.41 'cd /root/workspace/vinashak;npm stop'
+ssh root@10.34.97.144 'cd /root/workspace/vinashak;npm stop'
 for item in "${ARRAY[@]}"; do
     IMAGE=$(echo "${item}" | awk -F "|" '{print $1}')
     FILENAME=$(echo "${item}" | awk -F "|" '{print $2}')
@@ -30,14 +30,14 @@ for item in "${ARRAY[@]}"; do
     echo "Compress Docker Image: ${IMAGE}"
     tar -zcvf ${FILENAME}.tgz ${FILENAME}.docker
 
-    ssh root@10.27.21.41 'cd /root/workspace/vinashak; rm -rf '${FILENAME}'.docker '${FILENAME}'.tgz'
-    ssh root@10.27.21.41 'docker rmi yuvarajsomavamshi/vinashak-studio'
+    ssh root@10.34.97.144 'cd /root/workspace/vinashak; rm -rf '${FILENAME}'.docker '${FILENAME}'.tgz'
+    ssh root@10.34.97.144 'docker rmi yuvarajsomavamshi/vinashak-studio'
     echo "Ship Docker Image: ${IMAGE}"
 
-    scp ${FILENAME}.tgz root@10.27.21.41:/root/workspace/vinashak
-    ssh root@10.27.21.41 'cd /root/workspace/vinashak; tar -zxvf '${FILENAME}'.tgz'
+    scp ${FILENAME}.tgz root@10.34.97.144:/root/workspace/vinashak
+    ssh root@10.34.97.144 'cd /root/workspace/vinashak; tar -zxvf '${FILENAME}'.tgz'
     echo "Load Docker Image: ${IMAGE}"
-    ssh root@10.27.21.41 'cd /root/workspace/vinashak; docker load -i '${FILENAME}'.docker'
+    ssh root@10.34.97.144 'cd /root/workspace/vinashak; docker load -i '${FILENAME}'.docker'
 done
 
-ssh root@10.27.21.41 'cd /root/workspace/vinashak;npm start'
+ssh root@10.34.97.144 'cd /root/workspace/vinashak;npm start'

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import WebContext from "../../context/WebContext";
 
-const BODY_PADDING = 40;
+const BODY_PADDING = 45;
 
 export function PageHeader({ show = true, children }) {
   if (!show) return null;
@@ -12,7 +12,7 @@ export function PageHeader({ show = true, children }) {
   );
 }
 export function PageTitle({ children }) {
-  return <div className="text-color-0700 text-base font-semibold select-none ml-2 grow inline-flex items-center uppercase">{children}</div>;
+  return <div className="text-color-0700 text-sm font-medium select-none ml-2 grow inline-flex items-center">{children}</div>;
 }
 
 export function PageActions({ children }) {
@@ -36,9 +36,7 @@ export function PageBody({ className = "", scrollable = true, children, fullScre
   return (
     <div
       className={`w-full mt-1 bg-white border border-slate-300 rounded-[3px] p-0.5 ${
-        scrollable
-          ? "overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
-          : "overflow-hidden"
+        scrollable ? "overflow-y-scroll custom-scrollbar" : "overflow-hidden"
       } ${className}`}
       style={{ minHeight: windowDimension?.maxContentHeight - padding, maxHeight: windowDimension?.maxContentHeight - padding }}
     >

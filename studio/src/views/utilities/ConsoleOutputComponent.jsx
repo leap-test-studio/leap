@@ -98,7 +98,7 @@ export default function ConsoleOutputComponent({ title = "Console log", online, 
         <div className="mt-2 relative flex-1 px-4 sm:px-6">
           {/* Replace with your content */}
 
-          <div className="absolute inset-0 w-full wrap pl-6 pr-2 h-full overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scroll-smooth">
+          <div className="absolute inset-0 w-full wrap pl-6 pr-2 h-full overflow-y-scroll custom-scrollbar scroll-smooth">
             {eventlogs.map((e, i) => (
               <DisplayCard id={i + 1} key={i + 1} {...e} time={Number(e.time)} showFilename={showFilename} />
             ))}

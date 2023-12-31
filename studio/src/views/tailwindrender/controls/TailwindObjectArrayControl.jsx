@@ -27,7 +27,7 @@ export const TailwindObjectArrayControlRenderer = (props) => {
   return (
     <>
       {props.visible && (
-        <div className="overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+        <div className="overflow-y-scroll custom-scrollbar">
           <TailwindTableControl {...props} openDeleteDialog={openDeleteDialog} readonly={ctx?.readonly} />
           <DeleteItemDialog
             title="Delete Entry"

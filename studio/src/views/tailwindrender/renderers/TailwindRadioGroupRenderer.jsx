@@ -1,6 +1,8 @@
 import React from "react";
 import ErrorMessage from "./common/ErrorMessage";
 import isEmpty from "lodash/isEmpty";
+import Tooltip from "../../utilities/Tooltip";
+import IconRenderer from "../../IconRenderer";
 
 const TailwindRadioGroupRenderer = React.memo((props) => {
   const onChange = (value) => {
@@ -30,36 +32,39 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
   return (
     <>
       {props.visible && (
-        <div className={`grow my-1.5 ${!props.enabled ? "rounded bg-slate-200" : "px-0.5 bg-white"}`}>
-          <div className="group block rounded shadow w-full">
-            {props.label?.length > 0 && (
-              <div className="px-2 bg-color-0100 focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 rounded-t">
-                <label className="text-color-primary text-xs tracking-wide select-none">{props.label}</label>
-              </div>
+        <div className="w-full flex flex-col rounded border my-px">
+          <div className="flex flex-row items-center justify-between bg-color-0100 rounded-t select-none px-2 py-px">
+            {props.label?.length > 0 && <span className="text-xs font-normal text-color-primary">{props.label}</span>}
+            {props.description?.length > 0 && (
+              <Tooltip title={props.description}>
+                <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1 text-color-0500" />
+              </Tooltip>
             )}
-            <div className={`grid p-1 ${props.options?.length < 4 ? "grid-cols-2" : "grid-cols-4"}`}>
-              {props.options?.map((plan, index) => (
-                <div
-                  id={props.id + "/" + index}
-                  key={index}
-                  className={`${plan.value === data && "bg-slate-200"} inline-flex items-center p-1 rounded text-[10px] select-none`}
-                  onClick={() => onChange(plan.value)}
-                >
-                  <input
-                    disabled={!props.enabled}
-                    checked={plan.value === data}
-                    type="radio"
-                    className={`form-radio h-4 w-4
+          </div>
+          <div className={`grid px-2 py-1 gap-1 ${props.options?.length >= 3 ? "grid-cols-4" : "grid-cols-2"}`}>
+            {props.options?.map((plan, index) => (
+              <div
+                id={props.id + "/" + index}
+                key={index}
+                className={`inline-flex items-center border ${
+                  plan.value === data ? "bg-slate-50 shadow" : ""
+                } border-slate-300 p-1 rounded text-[10px] select-none`}
+                onClick={() => onChange(plan.value)}
+              >
+                <input
+                  disabled={!props.enabled}
+                  checked={plan.value === data}
+                  type="radio"
+                  className={`form-radio h-5 w-5
                     ${!props.enabled && "cursor-default opacity-50 text-slate-500"}
                     ${
                       plan.value === data ? "text-color-0800" : "text-slate-400"
-                    } focus:outline-none relative flex cursor-pointer rounded-full p-0.5 shadow hover:shadow-lg m-1 ring-transparent`}
-                    onChange={() => onChange(plan.value)}
-                  />
-                  <span className="mx-2 text-gray-700">{plan.label}</span>
-                </div>
-              ))}
-            </div>
+                    } focus:outline-none relative flex cursor-pointer rounded-full p-1 shadow hover:shadow-lg ml-1 ring-transparent`}
+                  onChange={() => onChange(plan.value)}
+                />
+                <span className="ml-2 text-gray-700">{plan.label}</span>
+              </div>
+            ))}
           </div>
           {!props.uischema?.options?.returnIndex && <ErrorMessage {...props} />}
         </div>

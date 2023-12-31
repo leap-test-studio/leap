@@ -6,70 +6,7 @@ import CombinatorProperties from "../util/CombinatorProperties";
 import ErrorMessage from "../renderers/common/ErrorMessage";
 import CustomDialog from "../../utilities/CustomDialog";
 import Select from "react-select";
-
-const customStyles = {
-  control: (styles) => ({
-    ...styles,
-    boxShadow: "none",
-    padding: 0,
-    minHeight: 24,
-    borderStyle: "none"
-  }),
-  menuPortal: (base) => ({ ...base, zIndex: 100000 }),
-  menu: (base) => ({ ...base, width: "auto", minWidth: "25%", zIndex: 100000 }),
-  menuList: (base) => ({
-    ...base,
-    "::-webkit-scrollbar": {
-      width: "8px",
-      height: "0px"
-    },
-    "::-webkit-scrollbar-track": {
-      background: "#f1f1f1"
-    },
-    "::-webkit-scrollbar-thumb": {
-      background: "#154374"
-    },
-    "::-webkit-scrollbar-thumb:hover": {
-      background: "#555"
-    }
-  }),
-  valueContainer: (styles) => ({
-    ...styles,
-    fontSize: 14,
-    paddingTop: 0,
-    paddingBottom: 0
-  }),
-  option: (base, { isSelected }) => ({
-    ...base,
-    backgroundColor: isSelected ? "#154374" : "",
-    color: isSelected ? "white" : "",
-    ":active": {
-      backgroundColor: "#154374"
-    },
-    ":hover": {
-      backgroundColor: "#316eaf",
-      color: "#fff"
-    }
-  }),
-  placeholder: (base) => ({
-    ...base,
-    color: "rgb(100 116 139)",
-    fontSize: 13
-  }),
-  input: (base) => ({
-    ...base,
-    fontSize: 13,
-    borderStyle: "none",
-    paddingTop: 0,
-    paddingBottom: 0
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    padding: 2,
-    paddingTop: 0,
-    paddingBottom: 0
-  })
-};
+import { customStyles } from "../common/Constants";
 
 const TailwindOneOfRenderer = React.memo(
   ({ id, handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
@@ -104,7 +41,7 @@ const TailwindOneOfRenderer = React.memo(
       <>
         {visible && (
           <>
-            <div className="w-full flex flex-col">
+            <div className="w-full flex flex-col mx-1">
               {uischema.label?.length > 0 && (
                 <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
               )}
@@ -143,7 +80,7 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
     label: info.label
   }));
   return (
-    <>
+    <div className="mx-1">
       <div className="bg-color-0100 text-left text-[10px] text-color-primary select-none px-0.5 rounded-t">
         Select OneOf {isEmpty(schema?.title) ? "" : " - " + schema.title}
       </div>
@@ -156,7 +93,7 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
         styles={customStyles}
       />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />
-    </>
+    </div>
   );
 };
 export const tailwindOneOfControlTester = rankWith(1003, isOneOfControl);

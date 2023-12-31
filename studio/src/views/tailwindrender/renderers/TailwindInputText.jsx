@@ -25,7 +25,7 @@ const TailwindInputText = React.memo((props) => {
   return (
     <>
       {visible && (
-        <div className="grow mb-1.5 mx-1 select-none">
+        <div className="grow mb-1 mx-1 select-none">
           {label?.length > 0 && <LabelRenderer {...props} />}
           <div>
             {schema?.format === "password" && (
@@ -55,7 +55,7 @@ const TailwindInputText = React.memo((props) => {
                     id={id}
                     autoComplete="off"
                     className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-36" : "h-16"} ${
-                      trim ? "text-[10px]" : "text-xs px-1.5 py-0.5"
+                      trim ? "text-[11px]" : "text-xs px-1.5 py-1"
                     } rounded border placeholder-gray-300 shadow focus:shadow-md ${
                       isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-200"
                     } focus:outline-none w-full text-slate-700`}
@@ -70,7 +70,7 @@ const TailwindInputText = React.memo((props) => {
                     name={path}
                     id={id}
                     className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${
-                      trim ? "text-[10px] py-[1px] px-1" : "text-xs px-1.5 py-0.5"
+                      trim ? "text-[11px] py-px px-1" : "text-xs px-1.5 py-1"
                     } rounded border text-slate-700 placeholder-gray-300 shadow focus:shadow-md ${
                       isError
                         ? "focus:border-red-500 border-red-600 focus:ring-red-600"

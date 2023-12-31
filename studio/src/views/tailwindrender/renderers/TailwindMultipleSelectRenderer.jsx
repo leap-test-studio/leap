@@ -22,7 +22,7 @@ const TailwindMultipleSelectRenderer = React.memo(
     const options = !isEmpty(props.schema?.values) ? props.schema?.values : props.options;
 
     return (
-      <div className={`grow mb-1.5 mx-1 relative ${disabled ? "opacity-50 select-none cursor-not-allowed" : ""}`}>
+      <div className={`grow mb-1 mx-1 relative ${disabled ? "opacity-50 select-none cursor-not-allowed" : ""}`}>
         <LabelRenderer path="" label={label} />
 
         <button

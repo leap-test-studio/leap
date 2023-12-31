@@ -27,9 +27,15 @@ export const TailwindArrayLayout = React.memo((props) => {
     showAddItem = data < Number(appliedUiSchemaOptions.maximum);
   }
   return (
-    <div className="mt-1">
+    <div className="my-px">
       <TableToolbar
         label={computeLabel(label, required, appliedUiSchemaOptions.hideRequiredAsterisk)}
+        labelEnd={
+          <label className="text-[10px] select-none">
+            <strong>{data} </strong>
+            Records
+          </label>
+        }
         errors={errors}
         path={path}
         addItem={addItem}
@@ -38,13 +44,13 @@ export const TailwindArrayLayout = React.memo((props) => {
         schema={schema}
         readonly={readonly}
       />
-      <div className="bg-slate-50 rounded-b p-0.5 border mb-1.5">
+      <div className="bg-slate-50 rounded-b border mb-px">
         {data > 0 ? (
           map(range(data), (index) => {
             return (
               <ExpandPanelRenderer
                 index={index}
-                expanded={isExpanded(index)}
+                expanded={appliedUiSchemaOptions.expand || isExpanded(index)}
                 schema={schema}
                 path={path}
                 handleExpansion={handleChange}
@@ -78,6 +84,7 @@ export const TailwindArrayLayout = React.memo((props) => {
                     onClick={addItem(path, innerCreateDefaultValue())}
                     iconSize="20"
                     className="text-color-0800 hover:text-color-0700"
+                    bg="bg-white"
                   />
                 </Tooltip>
               </>

@@ -15,7 +15,7 @@ const TailwindAllOfRenderer = React.memo(({ schema, rootSchema, visible, rendere
     <>
       {visible && (
         <div className="grow w-full mb-1.5">
-          <div className="w-full flex flex-col rounded border mt-0.5">
+          <div className="w-full flex flex-col rounded border my-px">
             {uischema.label?.length > 0 && (
               <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
             )}

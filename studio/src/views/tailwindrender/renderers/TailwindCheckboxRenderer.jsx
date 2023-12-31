@@ -9,7 +9,7 @@ const TailwindCheckboxRenderer = React.memo((props) => {
     <>
       {props.visible && (
         <div
-          className={`flex flex-row ${Boolean(props.removeMt) ? "mb-2" : "mt-4"} min-h-[26px] items-center border border-slate-200 rounded mb-1.5 ${
+          className={`my-0.5 flex flex-row ${Boolean(props.removeMt) ? "mb-2" : "mt-1"} min-h-[35px] items-center border border-slate-200 rounded ${
             props.enabled ? "bg-white" : "opacity-70 bg-slate-200"
           } shadow grow mx-1`}
         >

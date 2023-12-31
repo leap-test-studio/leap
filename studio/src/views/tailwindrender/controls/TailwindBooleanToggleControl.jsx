@@ -7,7 +7,7 @@ const TailwindBooleanToggle = (props) => {
   return (
     <>
       {props.visible && (
-        <div className="flex flex-row mt-4 h-[30px] items-center border border-slate-200 rounded mb-2 bg-white shadow focus:shadow-md grow mx-1">
+        <div className="flex flex-row min-h-[35px] items-center border border-slate-200 rounded bg-white shadow focus:shadow-md grow m-1">
           <TailwindToggleRenderer {...props} />
           {props.label?.length > 0 && <LabelRenderer {...props} fontSize="12px" />}
         </div>

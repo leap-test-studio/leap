@@ -2,7 +2,6 @@ import { useContext, useState, useEffect } from "react";
 import Pagination from "../utilities/Pagination/Pagination";
 import isEmpty from "lodash/isEmpty";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
-import Centered from "../utilities/Centered";
 import IconRenderer from "../MuiIcons";
 import WebContext from "../context/WebContext";
 
@@ -17,7 +16,7 @@ function TableRenderer({
   showSelect,
   getData
 }) {
-  if (isEmpty(data)) return <EmptyIconRenderer title="Data Not Found" fill="#1e5194" />;
+  if (isEmpty(data)) return <EmptyIconRenderer title="No data found" fill="#1e5194" />;
 
   const defaultPage = pageSizes?.find((p) => p.default)?.value || 50;
   const [pageSize, setPageSize] = useState(defaultPage);
@@ -28,22 +27,24 @@ function TableRenderer({
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [list, setList] = useState([]);
   const [checkedRecords, setCheckedRecords] = useState([]);
-  const sortedItems = [...data].sort((a, b) => {
-    if (sortProperty) {
-      if (a[sortProperty] < b[sortProperty]) {
-        return sortDirection === "asc" ? -1 : 1;
-      }
-      if (a[sortProperty] > b[sortProperty]) {
-        return sortDirection === "asc" ? 1 : -1;
-      }
-    }
-    return 0;
-  });
+  const sortedItems = Array.isArray(data)
+    ? [...data].sort((a, b) => {
+        if (sortProperty) {
+          if (a[sortProperty] < b[sortProperty]) {
+            return sortDirection === "asc" ? -1 : 1;
+          }
+          if (a[sortProperty] > b[sortProperty]) {
+            return sortDirection === "asc" ? 1 : -1;
+          }
+        }
+        return 0;
+      })
+    : [];
 
   useEffect(() => {
     setList(data);
     if (getData) {
-      getData(checkedRecords);
+      getData(checkedRecords, isCheckAll);
     }
   }, [list, checkedRecords]);
 
@@ -73,13 +74,13 @@ function TableRenderer({
   return (
     <>
       <div
-        className="h-full w-full overflow-y-scroll scrollbar-thin bg-white scrollbar-thumb-color-0800 scrollbar-track-slate-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+        className="overflow-y-scroll bg-white custom-scrollbar"
         style={{
-          minHeight: windowDimension.maxContentHeight - 90,
-          maxHeight: windowDimension.maxContentHeight - 90
+          minHeight: windowDimension.maxContentHeight - 95,
+          maxHeight: windowDimension.maxContentHeight - 95
         }}
       >
-        <table className="relative w-full text-[10px] text-left text-slate-600">
+        <table className="relative w-full text-[10px] text-slate-600">
           <TableHeader
             columns={columns}
             sortDirection={sortDirection}
@@ -147,6 +148,7 @@ function TableHeader({
   handleSelectAll,
   isCheckAll
 }) {
+  const [isHovering, setIsHovering] = useState(false);
   const handleSortClick = (property) => {
     if (sortProperty === property) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -158,7 +160,7 @@ function TableHeader({
 
   return (
     <thead>
-      <tr className="group">
+      <tr>
         {showSelect && (
           <th className="bg-slate-200 border border-r-slate-100 w-10">
             <input
@@ -170,20 +172,21 @@ function TableHeader({
             />
           </th>
         )}
-        {columns.map(({ title, field, sortable, width, sorter, center }, index, arr) => (
+        {columns.map(({ title, field, sortable, width, style = "text-left", sorter }, index, arr) => (
           <th
             key={index}
-            className={`px-1.5 py-0.5 sticky top-0 ${
+            className={`p-1.5 sticky top-0 ${style} ${
               sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 text-left tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
-            style={{ width }}
+            } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            style={{ width: width + "px" }}
             onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
+            onMouseOver={() => setIsHovering(true)}
+            onMouseOut={() => setIsHovering(false)}
           >
             <div className="flex flex-row justify-between items-center">
-              {center && <div className="opacity-0"></div>}
               <label>{title}</label>
               {sortable && (
-                <div className={`opacity-0 group-hover:opacity-100 ${sortProperty === field ? "opacity-100 bg-slate-300 rounded-full" : ""}`}>
+                <div style={{ opacity: field == sortProperty || isHovering ? 1 : 0 }}>
                   <IconRenderer icon={sortDirection === "asc" ? "ArrowDropUp" : "ArrowDropDown"} />
                 </div>
               )}
@@ -247,9 +250,9 @@ function CellRenderer(col, field, record, columns) {
     default:
       return (
         <div
-          className={`select-all ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""} ${
-            col.center ? "text-center" : ""
-          }`}
+          className={`select-none ${col.style ? col.style : ""} ${
+            colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""
+          } ${col.center ? "text-center" : ""}`}
         >
           {colProperties != null ? colProperties.title : field}
         </div>
@@ -260,7 +263,7 @@ function CellRenderer(col, field, record, columns) {
 const ProgressBar = ({ colProperties }) => {
   return (
     <div className="w-full bg-gray-200 rounded-full">
-      <div className={`select-all text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
+      <div className={`select-none text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
         {colProperties?.title}
       </div>
     </div>

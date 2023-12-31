@@ -248,9 +248,13 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           >
             {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
           </div>
-          <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-blue-200"}`}>
+          <div
+            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${
+              status ? "bg-green-200" : "bg-blue-200"
+            }`}
+          >
             {status ? "Active" : "In-Active"}
-          </p>
+          </div>
         </>
       }
       actions={
@@ -278,7 +282,21 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               )}
             </>
           )}
-          <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+          <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+          <Tooltip
+            title="Project Variables"
+            content={
+              <p>
+                View and modify the <strong>Project</strong> variables.
+              </p>
+            }
+          >
+            <IconRenderer
+              icon="DataArrayOutlined"
+              className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+              style={{ fontSize: 18 }}
+            />
+          </Tooltip>
           <Tooltip
             title="Edit Project"
             content={

@@ -5,7 +5,7 @@ export default function TailwindTagsRenderer(props) {
   return (
     <>
       {props.visible && (
-        <div className="grow mb-1.5 mx-1">
+        <div className="grow mb-1 mx-1">
           {props.label?.length > 0 && <LabelRenderer {...props} />}
           <TagsInput
             path={props.path}

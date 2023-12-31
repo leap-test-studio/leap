@@ -11,9 +11,9 @@ const TailwindGroupLayout = (properties) => {
   return (
     <>
       {visible && groupLayout && (
-        <div className="w-full flex flex-col rounded border my-0.5">
+        <div className="w-full flex flex-col rounded border my-px">
           {groupLayout.label?.length > 0 && (
-            <span className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{groupLayout.label}</span>
+            <span className="bg-color-0100 text-left text-xs text-color-primary select-none pl-2 py-1 rounded-t">{groupLayout.label}</span>
           )}
           <TailwindLayoutRenderer
             layout="group"

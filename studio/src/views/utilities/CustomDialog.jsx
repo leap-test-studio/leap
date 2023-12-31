@@ -1,16 +1,53 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import IconRenderer from "../IconRenderer";
 import IconButton from "./IconButton";
 import CloseButton from "./CloseButton";
+import isEmpty from "lodash/isEmpty";
 
-function CustomDialog({ open, largeScreen, title, onClose, onSave, saveTitle, saveIcon, buttonDiabled = false, children, customWidth = "" }) {
+function CustomDialog({
+  open,
+  largeScreen,
+  title,
+  onClose,
+  onSave,
+  saveTitle,
+  saveIcon,
+  buttonDisabled = false,
+  children,
+  additionalInfo = null,
+  customWidth = "",
+  customHeight = ""
+}) {
   const contentHeight = {
-    maxHeight: window.innerHeight - 100
+    maxHeight: window.innerHeight - (largeScreen ? 40 : 300)
   };
   if (largeScreen) {
-    contentHeight.minHeight = window.innerHeight - 400;
+    contentHeight.minHeight = window.innerHeight - 350;
   }
+  if (!isEmpty(customHeight)) {
+    delete contentHeight.minHeight;
+    contentHeight.maxHeight = window.innerHeight - 100;
+  }
+
+  useEffect(() => {
+    const keyDownHandler = (event) => {
+      if (open) {
+        switch (event.key) {
+          case "Escape":
+            event.preventDefault();
+            onClose && onClose();
+            break;
+        }
+      }
+    };
+    document.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [open, onSave, onClose]);
+
   return (
     <>
       {open && (
@@ -42,32 +79,37 @@ function CustomDialog({ open, largeScreen, title, onClose, onSave, saveTitle, sa
                 leaveTo="translate-y-full"
               >
                 <div
-                  className={`inline-block p-2 text-left align-middle transition-all transform bg-white shadow-xl rounded z-[1000] h-fit ${
+                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${
                     largeScreen ? "w-[60vw]" : "w-[28vw]"
-                  } ${customWidth}`}
+                  } ${customWidth} ${customHeight}`}
                 >
                   <div className="flex flex-col h-fit" style={contentHeight}>
                     {title != null && (
-                      <div className="text-base font-medium leading-6 text-slate-800 group flex items-start justify-between p-0.5 border-b border-solid border-slate-200 rounded-t">
+                      <div className="text-base font-medium leading-6 text-slate-800 group flex items-start justify-between px-0.5 border-b border-solid border-slate-200 rounded-t">
                         <label className="text-color-0700 font-medium text-lg tracking-wide select-none">{title}</label>
                         <button type="button" onClick={onClose} className="text-cds-red-0700 hover:text-cds-red-0300 focus:outline-none">
                           <IconRenderer icon="Close" className="h-5 w-5" />
                         </button>
                       </div>
                     )}
-                    <div className="flex flex-col grow items-center h-full overflow-x-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full w-full">
-                      {children}
-                    </div>
+                    <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar">{children}</div>
                     {onSave && (
-                      <div className="flex border-t border-solid border-slate-200 justify-end w-full mt-1.5 pt-2">
-                        <CloseButton onClose={onClose} />
-                        <IconButton
-                          id="form-submit-btn"
-                          title={saveTitle || "Save"}
-                          icon={saveIcon || "Save"}
-                          onClick={onSave}
-                          disabled={buttonDiabled}
-                        />
+                      <div
+                        className={`flex border-t border-solid border-slate-200 ${
+                          additionalInfo ? "justify-between" : "justify-end"
+                        } w-full mt-1.5 pt-1`}
+                      >
+                        {additionalInfo}
+                        <div className="flex">
+                          <CloseButton onClose={onClose} />
+                          <IconButton
+                            id="form-submit-btn"
+                            title={saveTitle || "Save"}
+                            icon={saveIcon || "Save"}
+                            onClick={onSave}
+                            disabled={buttonDisabled}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

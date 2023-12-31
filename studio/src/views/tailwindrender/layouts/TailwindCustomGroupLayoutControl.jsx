@@ -6,9 +6,9 @@ const TailwindCustomGroupLayout = ({ uischema, schema, path, visible, enabled, r
   return (
     <>
       {visible && uischema && (
-        <div className="w-full flex flex-col rounded border my-0.5">
+        <div className="w-full flex flex-col rounded border my-px">
           {uischema.label?.length > 0 && (
-            <span className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</span>
+            <span className="bg-color-0100 text-left text-xs font-normal text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</span>
           )}
           <TailwindLayoutRenderer
             layout="group"

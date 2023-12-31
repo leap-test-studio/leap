@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
-import Spinner from "../../utilities/Spinner";
-import Centered from "../../utilities/Centered";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import Spinner from "../../utilities/Spinner";
+import Centered from "../../utilities/Centered";
 import { ShowSnack } from "../../utilities/Snackbar";
 
 function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { project, loaded, windowDimension, isProjectSelected, meta } = props;
   const [expandSB, setExpandSB] = useState(true);
 
@@ -17,24 +23,39 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
 
   if (disableLayout) return children;
   return (
-    <main role="main" className="w-screen max-w-full h-screen bg-blue-100">
-      <div className="flex flex-row h-full w-full">
+    <main role="main" className="w-full max-w-full h-screen bg-blue-50/50">
+      <div
+        className="flex flex-row"
+        style={{
+          maxHeight: windowDimension.maxContentHeight
+        }}
+      >
         {showSidebar && (
           <Sidebar
             showSidebar={expandSB}
             base={base}
             mode={meta?.mode}
             sideBarItems={sideBarItems}
-            maxContentHeight={windowDimension.maxContentHeight}
-            menuClicked={() => {
-              setExpandSB(!expandSB);
-            }}
+            menuClicked={() => setExpandSB(!expandSB)}
+            {...windowDimension}
             {...props}
           />
         )}
-        <div className="flex flex-col h-full w-full">
-          <Header isProjectSelected={isProjectSelected} project={project} {...props} />
-          <div className="h-full w-full px-1">
+        <div className="flex flex-col w-full">
+          <Header
+            isProjectSelected={isProjectSelected}
+            project={project}
+            {...props}
+            showSidebar={expandSB}
+            menuClicked={() => setExpandSB(!expandSB)}
+          />
+          <div
+            className="w-full pl-2 overflow-y-scroll custom-scrollbar"
+            style={{
+              minHeight: windowDimension.maxContentHeight,
+              maxHeight: windowDimension.maxContentHeight
+            }}
+          >
             {!loaded ? (
               <Centered>
                 <Spinner>Loading</Spinner>

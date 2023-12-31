@@ -13,11 +13,11 @@ export const TailwindLayoutRenderer = React.memo(({ id, layout, visible, element
           my-name={layout}
           className={`w-full p-0.5 ${
             direction === "column"
-              ? "flex flex-col"
+              ? "grid grid-cols-1 gap-y-[2px]"
               : elements.length >= 4
-                ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                ? "grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-stretch gap-x-[2px] gap-y-[2px]"
                 : elements.length >= 2
-                  ? "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2"
+                  ? "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 place-items-stretch gap-x-[2px] gap-y-[2px]"
                   : "flex flex-col"
           }`}
         >

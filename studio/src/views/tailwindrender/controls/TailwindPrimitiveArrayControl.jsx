@@ -8,7 +8,7 @@ export const TailwindPrimitiveArrayControlRenderer = (props) => {
   return (
     <>
       {visible && (
-        <div className="grow mb-1.5 mx-1">
+        <div className="grow mb-1 mx-1">
           {label?.length > 0 && <LabelRenderer {...props} />}
           <TagsInput
             path={path}

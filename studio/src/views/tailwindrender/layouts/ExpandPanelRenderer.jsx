@@ -3,7 +3,7 @@ import get from "lodash/get";
 import merge from "lodash/merge";
 import React, { useMemo, useCallback } from "react";
 import { JsonFormsDispatch, withJsonFormsContext } from "@jsonforms/react";
-import { composePaths, findUISchema, moveDown, moveUp, Resolve, update, getFirstPrimitiveProp } from "@jsonforms/core";
+import { composePaths, findUISchema, moveDown, moveUp, Resolve, update, getFirstPrimitiveProp, getData } from "@jsonforms/core";
 import Accordion from "../../utilities/Accordion";
 import IconButton from "../../utilities/IconButton";
 import Tooltip from "../../utilities/Tooltip";
@@ -12,6 +12,7 @@ const ExpandPanelRenderer = React.memo((props) => {
   const {
     childLabel,
     childPath,
+    totalItems,
     index,
     expanded,
     moveDown,
@@ -39,11 +40,11 @@ const ExpandPanelRenderer = React.memo((props) => {
 
   let showAddItem = true;
   if (!isNaN(appliedUiSchemaOptions.maximum)) {
-    showAddItem = index < Number(appliedUiSchemaOptions.maximum) - 1;
+    showAddItem = totalItems < Number(appliedUiSchemaOptions.maximum);
   }
 
   return (
-    <div key={index} className="w-full p-0.5 flex flex-row justify-between items-center text-xs border-b">
+    <div key={index} className="w-full flex flex-row justify-between items-center text-xs border-b p-0.5 px-2 bg-white">
       {!appliedUiSchemaOptions.disableExpand ? (
         <Accordion
           pid={childPath}
@@ -62,7 +63,7 @@ const ExpandPanelRenderer = React.memo((props) => {
       )}
       <div className="flex flex-row">
         {!readonly && (
-          <div>
+          <div className="flex flex-col items-center justify-center">
             <Tooltip title={`Delete this ${appliedUiSchemaOptions.rowTitle || "Record"} ?`}>
               <IconButton
                 id={`${path}-delete-row-${index}`}
@@ -82,9 +83,11 @@ const ExpandPanelRenderer = React.memo((props) => {
         )}
         {appliedUiSchemaOptions.showSortButtons && (
           <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
-            {enableMoveUp && <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp(path, index)} />}
+            {enableMoveUp && (
+              <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp(path, index)} bg="" />
+            )}
             {enableMoveDown && (
-              <IconButton id={`movedown-item-${childPath}`} icon="ArrowDownward" ariaLabel="Move down" onClick={moveDown(path, index)} />
+              <IconButton id={`movedown-item-${childPath}`} icon="ArrowDownward" ariaLabel="Move down" onClick={moveDown(path, index)} bg="" />
             )}
           </div>
         )}
@@ -178,9 +181,19 @@ export const withContextToExpandPanelProps =
     const dispatchProps = useDispatchToExpandPanelProps(ctx.dispatch);
     const { childLabelProp, schema, path, index, uischemas } = props;
     const childPath = composePaths(path, `${index}`);
+    const children = Resolve.data(ctx.core.data, path);
     const childData = Resolve.data(ctx.core.data, childPath);
     const childLabel = childLabelProp ? get(childData, childLabelProp, "") : get(childData, getFirstPrimitiveProp(schema), "");
-    return <Component {...props} {...dispatchProps} childLabel={childLabel} childPath={childPath} uischemas={uischemas} />;
+    return (
+      <Component
+        {...props}
+        {...dispatchProps}
+        childLabel={childLabel}
+        childPath={childPath}
+        uischemas={uischemas}
+        totalItems={Array.isArray(children) ? children.length : 0}
+      />
+    );
   };
 
 export const withJsonFormsExpandPanelProps = (Component) => withJsonFormsContext(withContextToExpandPanelProps(Component));

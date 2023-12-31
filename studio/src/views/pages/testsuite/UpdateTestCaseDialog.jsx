@@ -91,7 +91,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
                   </button>
                 </div>
                 <div
-                  className="w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-color-0800 scrollbar-track-slate-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+                  className="w-full overflow-y-scroll custom-scrollbar"
                   style={{
                     minHeight: windowDimension?.maxContentHeight - 30,
                     maxHeight: windowDimension?.maxContentHeight - 30

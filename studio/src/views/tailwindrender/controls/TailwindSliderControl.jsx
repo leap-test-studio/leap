@@ -9,7 +9,7 @@ const TailwindSlider = React.memo((props) => {
   return (
     <>
       {visible && (
-        <div className="grow mb-1.5 mx-1">
+        <div className="grow mb-1 mx-1">
           {label?.length > 0 && <LabelRenderer {...props} />}
           <div className="flex flex-row justify-between items-center text-[10px]">
             <label className="grow text-left">{schema.minimum}</label>

@@ -345,7 +345,7 @@ export default function TagsInput(props) {
         {!readonly && (
           <input
             {...other}
-            className="block caret-slate-300 py-[1px] px-1 my-1 mx-2 rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:ring-color-0500 focus:outline-none"
+            className="block caret-slate-300 py-px px-1 my-1 mx-2 rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:ring-color-0500 focus:outline-none"
           />
         )}
       </div>

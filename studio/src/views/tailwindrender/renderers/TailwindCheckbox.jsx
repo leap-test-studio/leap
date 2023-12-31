@@ -4,9 +4,7 @@ const TailwindCheckbox = React.memo((props) => {
   return (
     <>
       {props.visible && (
-        <div
-          className={`flex flex-row mt-4 h-8 items-center border border-slate-100 rounded mb-2 w-full ${props.enabled ? "bg-white" : "bg-slate-100"}`}
-        >
+        <div className={`flex flex-row my-2 h-8 items-center border border-slate-100 rounded w-full ${props.enabled ? "bg-white" : "bg-slate-100"}`}>
           <input
             disabled={!props.enabled}
             type="checkbox"
