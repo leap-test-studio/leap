@@ -1,8 +1,9 @@
 import React from "react";
-import LabelRenderer from "./common/LabelRenderer";
+import ReactSelect from "react-select";
 import isEmpty from "lodash/isEmpty";
 import merge from "lodash/merge";
-import Select from "react-select";
+
+import LabelRenderer from "./common/LabelRenderer";
 import ErrorMessage from "./common/ErrorMessage";
 import { customStyles } from "../common/Constants";
 
@@ -47,7 +48,7 @@ const TailwindSelectRenderer = React.memo(
         {visible && (
           <div id={id} className="mx-1">
             {showLabel && label?.length > 0 && <LabelRenderer path={path} label={label} {...props} />}
-            <Select
+            <ReactSelect
               id={`select-${id}`}
               classNamePrefix={`twr-select-${id}`}
               className={`caret-slate-300 block rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md ${className}`}

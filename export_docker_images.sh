@@ -41,3 +41,4 @@ for item in "${ARRAY[@]}"; do
 done
 
 ssh root@10.34.97.144 'cd /root/workspace/vinashak;npm start'
+ssh root@10.34.97.144 'rm -rf /root/workspace/vinashak/vinashak_studio.*'

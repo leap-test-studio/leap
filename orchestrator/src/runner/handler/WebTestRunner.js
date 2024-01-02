@@ -89,6 +89,14 @@ class TestRunner extends Job {
             await this.WebDriver.sleep(this.sleepInterval);
           }
 
+          if (event.data.value?.includes("${")) {
+            this.settings.env &&
+              Object.keys(this.settings.env).forEach((key) => {
+                let value = this.settings.env[key];
+                event.data.value = event.data.value.replace(`\${${key}}`, value);
+              });
+          }
+
           logger.info("WebTestRunner:Executing:", event.actionType, ", Payload:", event.data);
           const hanndlerOutput = await this.getActionHandler(event.actionType, event.data);
           logger.info("WebTestRunner:Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));

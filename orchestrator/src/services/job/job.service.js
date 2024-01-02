@@ -13,17 +13,25 @@ module.exports = {
 
 async function getJobInfo(id) {
   const jobInfo = await global.DbStoreModel.Job.findOne({
-    include: [global.DbStoreModel.BuildMaster, global.DbStoreModel.TestCase],
+    include: [
+      global.DbStoreModel.BuildMaster,
+      {
+        model: global.DbStoreModel.TestCase,
+        include: {
+          model: global.DbStoreModel.TestScenario,
+          include: global.DbStoreModel.ProjectMaster
+        }
+      }
+    ],
     where: {
       id
     }
   });
-
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
-  if (jobInfo?.BuildMaster?.TestScenarioId) {
-    const TestScenario = await global.DbStoreModel.TestScenario.findByPk(jobInfo.BuildMaster.TestScenarioId);
-    jobInfo.settings = TestScenario.settings;
-  }
+  jobInfo.settings = {
+    ...jobInfo.TestCase?.TestScenario?.settings,
+    env: jobInfo.TestCase?.TestScenario?.ProjectMaster?.settings?.env
+  };
   return jobInfo;
 }
 
@@ -121,10 +129,9 @@ async function consolidate(buildId) {
     } else {
       status = TestStatus.RUNNING;
     }
-
     await updateBuildStatus(buildId, { total, passed, failed, skipped, running, startTime, endTime, status });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 }
 
