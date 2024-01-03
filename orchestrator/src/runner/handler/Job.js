@@ -8,11 +8,13 @@ class Job {
     this.jobId = o.id;
     this.buildId = o.BuildMasterId;
     this.testCaseId = o.TestCaseId;
-    this.settings = o.settings || o.TestCase?.settings || {};
+    this.settings = o.settings;
     this.actual = o.actual || {};
     this.result = o.result;
     this.steps = [];
-    this.testcase = o.TestCase;
+    this.execSteps = o.execSteps;
+    this.type = o.type;
+    this.seqNo = o.seqNo;
     this.build = o.BuildMaster;
     this.startTime = getLocalTime();
     this.endTime = null;
@@ -35,10 +37,10 @@ class Job {
 
   beforeHook() {
     return new Promise((resolve, reject) => {
-      if (isEmpty(this.testcase?.execSteps) || this.testcase?.type == 0) {
+      if (isEmpty(this.execSteps) || this.type == 0) {
         this.notifyJob(TestStatus.INVALID_TESTCASE);
         return reject({
-          actual: this.testcase,
+          actual: this.execSteps,
           steps: [],
           result: TestStatus.INVALID_TESTCASE
         });
@@ -85,7 +87,7 @@ class Job {
   }
 
   toString(s) {
-    return `BID:${this.buildId}, JID:${this.jobId}, TCID:${this.testcase.seqNo}, Message:${s}`;
+    return `BID:${this.buildId}, JID:${this.jobId}, TCID:${this.seqNo}, Message:${s}`;
   }
 }
 

@@ -89,12 +89,6 @@ class TestRunner extends Job {
             await this.WebDriver.sleep(this.sleepInterval);
           }
 
-          if (event.data.value?.includes("${")) {
-            this.settings.env?.forEach(({ key, value }) => {
-              event.data.value = event.data.value.replace(`\${${key}}`, value);
-            });
-          }
-
           logger.info("WebTestRunner:Executing:", event.actionType, ", Payload:", event.data);
           const hanndlerOutput = await this.getActionHandler(event.actionType, event.data);
           logger.info("WebTestRunner:Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));
@@ -128,7 +122,7 @@ class TestRunner extends Job {
   }
 
   async execute() {
-    this.steps = await BPromise.reduce(this.testcase?.execSteps, this.stepExecutor, []);
+    this.steps = await BPromise.reduce(this.execSteps, this.stepExecutor, []);
     const outcome = this.steps.find((s) => s.result === TestStatus.FAIL) || { result: TestStatus.PASS };
     this.actual = { actualResult: outcome };
     this.result = outcome?.result;

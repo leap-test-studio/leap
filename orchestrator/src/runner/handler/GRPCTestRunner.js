@@ -1,13 +1,19 @@
-module.exports = function (testcase) {
-  this.testcase = testcase;
-  this.before = function () {
-    return Promise.resolve(true);
-  };
-  this.execute = function () {
-    return Promise.resolve(true);
-  };
-  this.after = function () {
-    return Promise.resolve(true);
-  };
-  this.stop = function () {};
-};
+class TestRunner extends Job {
+  constructor(job) {
+    super(job);
+  }
+
+  async before() {
+    return Promise.resolve();
+  }
+  async execute() {
+    return Promise.resolve();
+  }
+  async after() {
+    return Promise.resolve();
+  }
+
+  async stop() {}
+}
+
+module.exports = TestRunner;

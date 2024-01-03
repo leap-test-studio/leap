@@ -11,27 +11,61 @@ module.exports = {
   updateScreenshot
 };
 
-async function getJobInfo(id) {
-  const jobInfo = await global.DbStoreModel.Job.findOne({
-    include: [
-      global.DbStoreModel.BuildMaster,
-      {
-        model: global.DbStoreModel.TestCase,
+async function getSettingsByTestId(id) {
+  try {
+    const obj = await global.DbStoreModel.TestCase.findOne({
+      attributes: ["execSteps", "settings", "type", "seqNo"],
+      include: {
+        attributes: ["settings"],
+        model: global.DbStoreModel.TestScenario,
         include: {
-          model: global.DbStoreModel.TestScenario,
-          include: global.DbStoreModel.ProjectMaster
+          attributes: ["settings"],
+          model: global.DbStoreModel.ProjectMaster
         }
-      }
-    ],
-    where: {
-      id
+      },
+      where: { id },
+      raw: true,
+      nest: true
+    });
+    let settings = {
+      ...obj.settings,
+      ...obj.TestScenario.settings,
+      ...obj.TestScenario.ProjectMaster.settings
+    };
+
+    const env = settings.env;
+
+    if (obj.execSteps === null) obj.execSteps = [];
+    if (env) {
+      obj.execSteps = JSON.stringify(obj.execSteps);
+      settings = JSON.stringify(settings);
+      env.forEach(({ key, value }) => {
+        obj.execSteps = obj.execSteps.replace(`\${${key}}`, value);
+        settings = settings.replace(`\${${key}}`, value);
+      });
+      obj.execSteps = JSON.parse(obj.execSteps);
+      settings = JSON.parse(settings);
     }
+
+    return {
+      ...obj,
+      settings,
+      env
+    };
+  } catch (error) {
+    logger.error(error);
+  }
+  return {};
+}
+
+async function getJobInfo(id) {
+  let jobInfo = await global.DbStoreModel.Job.findOne({
+    include: global.DbStoreModel.BuildMaster,
+    where: { id }
   });
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
-  jobInfo.settings = {
-    ...jobInfo.TestCase?.TestScenario?.settings,
-    env: jobInfo.TestCase?.TestScenario?.ProjectMaster?.settings?.env
-  };
+  Object.assign(jobInfo, await getSettingsByTestId(jobInfo.TestCaseId));
+
   return jobInfo;
 }
 

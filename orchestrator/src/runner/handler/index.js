@@ -8,7 +8,7 @@ const TestStatus = require("../enums/TestStatus");
 class TestCaseHandler {
   constructor(jobInfo) {
     if (jobInfo != null) {
-      switch (jobInfo.TestCase?.type) {
+      switch (jobInfo.type) {
         case TestType.API:
           this.runner = new APITestRunner(jobInfo);
           break;

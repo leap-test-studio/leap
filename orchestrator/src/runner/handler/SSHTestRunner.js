@@ -52,8 +52,8 @@ class TestRunner extends Job {
   }
 
   async execute() {
-    logger.info("SSH steps", JSON.stringify(this.testcase?.execSteps));
-    this.steps = await BPromise.reduce(this.testcase?.execSteps, this.stepExecutor, []);
+    logger.info("SSH steps", JSON.stringify(this.execSteps));
+    this.steps = await BPromise.reduce(this.execSteps, this.stepExecutor, []);
     logger.info("SSH steps", JSON.stringify(this.steps));
     const outcome = this.steps.find((s) => s.result === TestStatus.FAIL) || { result: TestStatus.PASS };
     this.actual = { actualResult: outcome };

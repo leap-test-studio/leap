@@ -29,13 +29,13 @@ class TestRunner extends Job {
         uri: this.settings.url,
         timeout: this.settings.timeout,
         headers: this.settings.headers,
-        json: !isEmpty(this.testcase?.execSteps?.reqbody) ? JSON.parse(this.testcase?.execSteps?.reqbody) : null
+        json: !isEmpty(this.execSteps?.reqbody) ? JSON.parse(this.execSteps?.reqbody) : null
       });
       logger.info("API Response:", stepOutcome.actual);
-      logger.info("Expected:", this.testcase?.execSteps?.resBody);
-      let result = this.testcase?.execSteps?.statusCode === stepOutcome.actual.statusCode;
-      if (result && !isEmpty(this.testcase?.execSteps?.resBody)) {
-        result = isEqual(JSON.parse(this.testcase?.execSteps?.resBody), stepOutcome.actual.body);
+      logger.info("Expected:", this.execSteps?.resBody);
+      let result = this.execSteps?.statusCode === stepOutcome.actual.statusCode;
+      if (result && !isEmpty(this.execSteps?.resBody)) {
+        result = isEqual(JSON.parse(this.execSteps?.resBody), stepOutcome.actual.body);
       }
       logger.info("Actual:", stepOutcome.actual);
       stepOutcome.result = result ? TestStatus.PASS : TestStatus.FAIL;

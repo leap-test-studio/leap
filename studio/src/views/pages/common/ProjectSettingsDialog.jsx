@@ -123,6 +123,8 @@ function ProjectSettingsDialog({ showDialog, project, onClose }) {
       }
       saveTitle="Save"
       onSave={saveProject}
+      customWidth="w-[50vw]"
+      customHeight="w-[50vh]"
     >
       <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />
     </CustomDialog>
