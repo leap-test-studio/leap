@@ -84,9 +84,10 @@ const Model = {
 };
 
 function ProjectSettingsDialog({ showDialog, project, onClose }) {
-  if (!showDialog) return;
   const dispatch = useDispatch(project);
   const [data, setData] = React.useState(project);
+
+  if (!showDialog) return;
 
   useEffect(() => {
     setData(project);
