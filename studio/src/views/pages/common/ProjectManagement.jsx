@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
 import IconButton from "../../utilities/IconButton";
 import {
   createProject,
@@ -10,24 +16,20 @@ import {
   updateProject,
   openProject
 } from "../../../redux/actions/ProjectActions";
-import { useDispatch, useSelector } from "react-redux";
 import { ProjectColors } from "./ProjectColors";
 import CreateProjectDialog from "./CreateProjectDialog";
+import ProjectSettingsDialog from "./ProjectSettingsDialog";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import Centered from "../../utilities/Centered";
 import SearchComponent from "../../utilities/SearchComponent";
 import IconRenderer from "../../IconRenderer";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import Tooltip from "../../utilities/Tooltip";
-import { useNavigate } from "react-router-dom";
 import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
 import RoundedIconButton from "../../utilities/RoundedIconButton";
 import FirstTimeCard from "./FirstTimeCard";
-import axios from "axios";
 import DisplayCard from "./DisplayCard";
 
 dayjs.extend(relativeTime);
@@ -48,6 +50,7 @@ const ProjectManagement = (props) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
+  const [showSettingsDialog, setSettingsDialog] = useState(false);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -93,6 +96,8 @@ const ProjectManagement = (props) => {
         setShowDeleteDialog(!showDeleteDialog);
       } else if (action.showCloneDialog) {
         setShowCloneDialog(!showCloneDialog);
+      } else if (action.showSettingsDialog) {
+        setSettingsDialog(!showSettingsDialog);
       }
     }
   };
@@ -160,7 +165,7 @@ const ProjectManagement = (props) => {
         ) : (
           <>
             {projects && filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3 p-2 pr-0">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-5 p-2 pr-0">
                 {filtered.map((project, index) => (
                   <ProjectCard
                     key={index}
@@ -193,6 +198,7 @@ const ProjectManagement = (props) => {
           />
         )}
         <CreateProjectDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createProject={handleCreateProject} />
+        <ProjectSettingsDialog showDialog={showSettingsDialog} onClose={() => setSettingsDialog(false)} project={selectedProject} />
         <CustomAlertDialog
           level={isError ? "warn" : "success"}
           message={message}
@@ -271,9 +277,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                   />
                 </Tooltip>
               ) : (
-                <Tooltip title="Start Automation Builds">
+                <Tooltip title="Start Automation Build">
                   <IconRenderer
-                    icon="PlayArrowRounded"
+                    icon="PlayArrow"
                     className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
                     onClick={() => dispatch(startProjectBuilds(id))}
                     style={{ fontSize: 18 }}
@@ -284,31 +290,41 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           )}
           <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
           <Tooltip
-            title="Project Variables"
+            title="Project Settings"
             content={
               <p>
-                View and modify the <strong>Project</strong> variables.
+                View and modify the <strong>Project Settings</strong>.
               </p>
             }
           >
             <IconRenderer
-              icon="DataArrayOutlined"
+              icon="Settings"
               className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
               style={{ fontSize: 18 }}
+              onClick={() =>
+                handleAction({
+                  project,
+                  showSettingsDialog: true
+                })
+              }
             />
           </Tooltip>
           <Tooltip
             title="Edit Project"
             content={
-              <p>
-                View and modify the <strong>Project</strong> details.
+              <>
+                View and modify the <strong>Project Test Scenarios</strong>.
                 <br />
-                Create network elements, deploy, Simulate and more
-              </p>
+                <ul>
+                  <li>Create/Delete/Enable/Diable Test scenario</li>
+                  <li>Create/Delete/Enable/Diable Test cases</li>
+                  <li>Define execution flow</li>
+                </ul>
+              </>
             }
           >
             <IconRenderer
-              icon="ModeEditOutlineOutlined"
+              icon="ModeEditOutline"
               className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
               onClick={selectProject}
               style={{ fontSize: 18 }}
@@ -323,7 +339,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
             }
           >
             <IconRenderer
-              icon="DeleteOutlineTwoTone"
+              icon="Delete"
               className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
               onClick={() =>
                 handleAction({

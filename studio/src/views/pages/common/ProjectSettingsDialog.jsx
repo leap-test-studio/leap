@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import CustomDialog from "../../utilities/CustomDialog";
 import TailwindRenderer from "../../tailwindrender";
+import { updateProject } from "../../../redux/actions/ProjectActions";
 
 const Model = {
   schema: {
@@ -13,6 +16,10 @@ const Model = {
       description: {
         type: "string",
         description: "Enter description"
+      },
+      status: {
+        type: "boolean",
+        default: true
       }
     },
     required: ["name"]
@@ -20,6 +27,14 @@ const Model = {
   uischema: {
     type: "VerticalLayout",
     elements: [
+      {
+        type: "Control",
+        scope: "#/properties/status",
+        label: "Enable Project?",
+        options: {
+          toggle: true
+        }
+      },
       {
         type: "Control",
         scope: "#/properties/name",
@@ -37,10 +52,25 @@ const Model = {
   }
 };
 
-function CreateProjectDialog({ showDialog, createProject, onClose }) {
+function ProjectSettingsDialog({ showDialog, project, onClose }) {
   if (!showDialog) return;
+  const dispatch = useDispatch(project);
+  const [data, setData] = React.useState(project);
+  useEffect(() => {
+    setData(project);
+    return () => setData();
+  }, [project]);
 
-  const [data, setData] = React.useState({ name: "" });
+  const saveProject = useCallback(() => {
+    dispatch(
+      updateProject(project.id, {
+        name: data.name,
+        description: data.description,
+        status: data.status
+      })
+    );
+    onClose();
+  });
 
   return (
     <CustomDialog
@@ -49,16 +79,13 @@ function CreateProjectDialog({ showDialog, createProject, onClose }) {
         setData({});
         onClose();
       }}
-      title="Create Project"
-      saveTitle="Create"
-      onSave={() => {
-        createProject(data);
-        setData({});
-      }}
+      title="Project Settings"
+      saveTitle="Save"
+      onSave={saveProject}
     >
       <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />
     </CustomDialog>
   );
 }
 
-export default CreateProjectDialog;
+export default ProjectSettingsDialog;
