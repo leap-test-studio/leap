@@ -55,7 +55,7 @@ function startProjectBuilds(req, res) {
     .create(req.auth?.id, req.params.projectId, {
       options
     })
-    .then((response) => res.status(status.ACCEPTED).json(response))
+    .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({ error: err.message, message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`] });

@@ -36,7 +36,7 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
         )}
       </SidebarRender>
       <UserInfo showTitle={showSidebar} {...props} />
-      <div className={`w-full flex h-9 pt-1 border-t-[1px] border-slate-400 mx-px ${showSidebar ? "justify-end" : "justify-center"}`}>
+      <div className={`w-full flex h-9 py-1 border-t-[1px] border-slate-400 mx-px ${showSidebar ? "justify-end" : "justify-center"}`}>
         <Tooltip title={!showSidebar ? "Expand Sidebar" : "Collapse Sidebar"} placement="right">
           <div className="h-6 w-7 flex cursor-pointer rounded justify-center items-center hover:bg-slate-500/40 mx-1" onClick={menuClicked}>
             <IconRenderer icon="DoubleArrowTwoTone" className={`text-white ${showSidebar ? "rotate-180" : ""}`} fontSize="24px" />

@@ -212,7 +212,8 @@ export const startProjectBuilds = (project) => (dispatch) => {
           payload: {
             ...res.data,
             installing: false,
-            isProjectUpdated: true
+            isProjectUpdated: true,
+            showMessage: true
           }
         });
     })
