@@ -78,8 +78,13 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const saveTemplate = useCallback(
     (ns = [], es = []) => {
-      const settings = isEmpty(ns) && isEmpty(es) ? null : { nodes: ns, edges: es };
-      dispatch(updateSequence(project?.id, settings));
+      dispatch(
+        updateSequence(project?.id, {
+          ...project.settings,
+          nodes: isEmpty(ns) ? [] : ns,
+          edges: isEmpty(es) ? [] : es
+        })
+      );
     },
     [project]
   );

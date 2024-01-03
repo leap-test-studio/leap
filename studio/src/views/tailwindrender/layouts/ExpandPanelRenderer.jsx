@@ -56,8 +56,8 @@ const ExpandPanelRenderer = React.memo((props) => {
           <JsonFormsDispatch schema={schema} uischema={foundUISchema} path={childPath} key={childPath} renderers={renderers} cells={cells} />
         </Accordion>
       ) : (
-        <div className="flex flex-row w-full">
-          <p>{`${appliedUiSchemaOptions.rowTitle || "Record"} #${index + 1}`}</p>
+        <div className="flex flex-row w-full items-center">
+          <p>{`${appliedUiSchemaOptions.rowTitle ?? "Record"} #${index + 1}`}</p>
           <JsonFormsDispatch schema={schema} uischema={foundUISchema} path={childPath} key={childPath} renderers={renderers} cells={cells} />
         </div>
       )}

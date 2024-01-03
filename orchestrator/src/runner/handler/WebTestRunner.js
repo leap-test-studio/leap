@@ -90,11 +90,9 @@ class TestRunner extends Job {
           }
 
           if (event.data.value?.includes("${")) {
-            this.settings.env &&
-              Object.keys(this.settings.env).forEach((key) => {
-                let value = this.settings.env[key];
-                event.data.value = event.data.value.replace(`\${${key}}`, value);
-              });
+            this.settings.env?.forEach(({ key, value }) => {
+              event.data.value = event.data.value.replace(`\${${key}}`, value);
+            });
           }
 
           logger.info("WebTestRunner:Executing:", event.actionType, ", Payload:", event.data);
