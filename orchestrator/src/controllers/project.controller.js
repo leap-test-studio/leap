@@ -154,7 +154,7 @@ function exportProject(req, res) {
 function updateProject(req, res) {
   projectService
     .update(req.auth.id, req.params.projectId, req.body)
-    .then((data) => res.json({ message: "Project updated successfully.", ...data }))
+    .then((data) => res.json({ message: `Project[${data.name}] changes saved successfully.`, ...data }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -244,7 +244,7 @@ function getTestScenario(req, res) {
 function updateTestScenario(req, res) {
   testScenarioService
     .update(req.auth.id, req.params.projectId, req.params.scenarioId, req.body)
-    .then(() => res.json({ message: "Test scenario updated successfully." }))
+    .then((message) => res.json({ message }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -387,7 +387,7 @@ function getTestCase(req, res) {
 function updateTestCase(req, res) {
   testCaseService
     .update(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.body)
-    .then(() => res.json({ message: "Test case updated successfully." }))
+    .then((message) => res.json({ message }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({

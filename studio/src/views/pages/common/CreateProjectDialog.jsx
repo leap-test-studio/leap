@@ -40,7 +40,7 @@ const Model = {
 function CreateProjectDialog({ showDialog, createProject, onClose }) {
   const [data, setData] = React.useState({ name: "" });
 
-  if (!showDialog) return;
+  if (!showDialog) return <></>;
 
   return (
     <CustomDialog

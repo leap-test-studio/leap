@@ -117,7 +117,8 @@ async function update(accountId, scenarioId, id, payload) {
   const tc = await get(accountId, scenarioId, id);
   Object.assign(tc, payload);
   tc.updatedAt = Date.now();
-  return await tc.save();
+  await tc.save();
+  return `Testcase[${tc.label}] changes saved successfully.`;
 }
 
 async function _delete(accountId, scenarioId, id) {

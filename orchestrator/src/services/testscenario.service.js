@@ -112,7 +112,8 @@ async function update(accountId, projectId, id, payload) {
   const ts = await get(accountId, projectId, id);
   Object.assign(ts, payload);
   ts.updatedAt = Date.now();
-  return await ts.save();
+  await ts.save();
+  return `Scenario[${ts.name}] changes saved successfully.`;
 }
 
 async function _delete(accountId, projectId, id) {

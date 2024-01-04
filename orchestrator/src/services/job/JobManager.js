@@ -26,10 +26,10 @@ class BuildManager extends events.EventEmitter {
 
   async load() {
     this.jobsProcessing.clear();
+    logger.info("Load jobs");
     const jobs = await global.DbStoreModel.Job.findAll({
       attributes: ["id"],
-      where: { result: 0 },
-      order: [["id", "ASC"]]
+      where: { result: 0 }
     });
     if (Array.isArray(jobs)) {
       const connection = await RedisMan.getConnection();

@@ -13,6 +13,7 @@ module.exports = {
 
 async function getSettingsByTestId(id) {
   try {
+    logger.info(`Get Job Settings, JobID:${id}`);
     const obj = await global.DbStoreModel.TestCase.findOne({
       attributes: ["execSteps", "settings", "type", "seqNo"],
       include: {
@@ -27,6 +28,7 @@ async function getSettingsByTestId(id) {
       raw: true,
       nest: true
     });
+
     let settings = {
       ...obj.settings,
       ...obj.TestScenario.settings,
@@ -59,19 +61,16 @@ async function getSettingsByTestId(id) {
 }
 
 async function getJobInfo(id) {
-  let jobInfo = await global.DbStoreModel.Job.findOne({
-    include: global.DbStoreModel.BuildMaster,
-    where: { id }
-  });
+  logger.info("getJobInfoById:", id);
+  let jobInfo = await global.DbStoreModel.Job.findByPk(id);
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
   Object.assign(jobInfo, await getSettingsByTestId(jobInfo.TestCaseId));
-
   return jobInfo;
 }
 
-async function getBuildInfo(id) {
+async function getBuildInfo(id, include) {
   const buildInfo = await global.DbStoreModel.BuildMaster.findOne({
-    include: [global.DbStoreModel.Job],
+    include,
     where: { id }
   });
   if (!buildInfo) throw new Error(`Build ID:${id} not found`);
@@ -95,15 +94,7 @@ async function updateScreenshot(id, payload) {
 
 async function consolidate(buildId) {
   try {
-    const results = await global.DbStoreModel.Job.findAll({
-      attributes: ["result", [sequelize.fn("COUNT", sequelize.col("id")), "Count"]],
-      where: {
-        BuildMasterId: buildId
-      },
-      group: ["result"],
-      raw: true
-    });
-
+    logger.info("consolidate: find min max-", buildId);
     const minmax = await global.DbStoreModel.Job.findAll({
       attributes: [
         [sequelize.fn("MIN", sequelize.col("startTime")), "MIN"],
@@ -125,6 +116,16 @@ async function consolidate(buildId) {
       endTime = r.MAX;
     });
 
+    logger.info("consolidate: find result summary", buildId);
+    const results = await global.DbStoreModel.Job.findAll({
+      attributes: ["result", [sequelize.fn("COUNT", sequelize.col("id")), "Count"]],
+      where: {
+        BuildMasterId: buildId
+      },
+      group: ["result"],
+      raw: true
+    });
+
     let draft = 0,
       total = 0,
       passed = 0,
@@ -132,6 +133,7 @@ async function consolidate(buildId) {
       skipped = 0,
       status = 0,
       running = 0;
+
     results.forEach((r) => {
       switch (r.result) {
         case TestStatus.DRAFT:
@@ -177,7 +179,7 @@ async function updateBuildStatus(id, params) {
 }
 
 async function updateBuild(id) {
-  const build = await getBuildInfo(id);
+  const build = await getBuildInfo(id, [global.DbStoreModel.Job]);
 
   let total = 0,
     skipped = 0,

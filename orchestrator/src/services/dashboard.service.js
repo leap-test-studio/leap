@@ -103,16 +103,11 @@ async function getBuildDetails(id, input) {
   const type = Number(arr[0]);
   const buildNo = Number(arr[1]);
 
-  const Project = await global.DbStoreModel.ProjectMaster.findOne({
-    include: {
-      model: global.DbStoreModel.BuildMaster,
-      where: {
-        type,
-        buildNo
-      }
-    },
+  const BuildMasters = await global.DbStoreModel.BuildMaster.findAll({
     where: {
-      id
+      type,
+      buildNo,
+      ProjectMasterId: id
     }
   });
 
@@ -130,7 +125,7 @@ async function getBuildDetails(id, input) {
     endTime;
 
   const buildIds = [];
-  Project?.BuildMasters.forEach((row) => {
+  BuildMasters.forEach((row) => {
     buildIds.push(row.id);
     if (row.status > 0) {
       if (row.startTime) {
@@ -161,28 +156,34 @@ async function getBuildDetails(id, input) {
   });
 
   const jobRecords = await global.DbStoreModel.Job.findAll({
+    attributes: ["id", "result", "steps", "startTime", "endTime", "screenshot", "actual"],
     include: {
+      attributes: ["type", "label", "given", "when", "then", "seqNo", "execSteps"],
       model: global.DbStoreModel.TestCase,
-      include: global.DbStoreModel.TestScenario
+      include: {
+        attributes: ["name", "description"],
+        model: global.DbStoreModel.TestScenario
+      }
     },
     where: {
       BuildMasterId: {
         [Op.in]: buildIds
       }
-    },
-    order: [["id", "ASC"]]
+    }
   });
 
-  jobRecords.forEach((j) => {
-    const job = j.toJSON();
-    const stepsExecuted = (Array.isArray(job.steps) && job.steps.filter((f) => f.result !== 5)) || [];
-    if (job.result > 1) steps += stepsExecuted.length;
-    jobs.push({
-      ...job,
-      steps: stepsExecuted.length
+  jobRecords
+    .sort((a, b) => a.id - b.id)
+    .forEach((j) => {
+      const job = j.toJSON();
+      const stepsExecuted = (Array.isArray(job.steps) && job.steps.filter((f) => f.result !== 5)) || [];
+      if (job.result > 1) steps += stepsExecuted.length;
+      jobs.push({
+        ...job,
+        steps: stepsExecuted.length
+      });
+      if (job?.TestCase?.TestScenario?.id) scenarios[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
     });
-    if (job?.TestCase?.TestScenario?.id) scenarios[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
-  });
   const executed = passed + failed + skipped;
 
   if (status < 6 && (running > 0 || total < executed + running)) {

@@ -42,7 +42,7 @@ function SelectedProject({ product, project, scenario, resetContext, changeTestS
               <i className="fad fa-xs fa-solid fa-folder-tree text-indigo-700" />
             </div>
             <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{project?.name}</span>
-            <button onClick={resetProject} className="focus:outline-none mx-2 font-extrabold text-red-600">
+            <button onClick={resetProject} className="focus:outline-none mx-2 font-extrabold text-red-600 cursor-pointer">
               <IconRenderer icon="Close" className="h-5 w-5" />
             </button>
           </div>
@@ -62,7 +62,7 @@ function SelectedProject({ product, project, scenario, resetContext, changeTestS
               <i className="fad fa-xs fa-solid fa-folder-open text-indigo-700" />
             </div>
             <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{scenario?.name}</span>
-            <button onClick={() => changeTestScenario(null)} className="focus:outline-none mx-2 font-extrabold text-red-600">
+            <button onClick={() => changeTestScenario(null)} className="focus:outline-none mx-2 font-extrabold text-red-600 cursor-pointer">
               <IconRenderer icon="Close" className="h-5 w-5" />
             </button>
           </div>

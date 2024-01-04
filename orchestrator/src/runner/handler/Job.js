@@ -15,7 +15,6 @@ class Job {
     this.execSteps = o.execSteps;
     this.type = o.type;
     this.seqNo = o.seqNo;
-    this.build = o.BuildMaster;
     this.startTime = getLocalTime();
     this.endTime = null;
     this.skipSteps = false;

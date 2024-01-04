@@ -20,6 +20,7 @@ services:
     ports:
       - 3306:3306
     #command: --init-file /data/application/init.sql
+    command: --sort_buffer_size=512K
     volumes:
       #- ./init.sql:/data/application/init.sql
       - ./data/mysql/:/var/lib/mysql/
@@ -60,6 +61,7 @@ services:
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
       - PORT=8080
+      - DATABASE_LOGGING=true
     volumes:
       - ./data/vinashak/:/app/logs
       - ./data/vinashak/nginx:/var/log/nginx

@@ -9,6 +9,7 @@ module.exports = {
 };
 
 async function getJob(AccountId, ProjectMasterId, id) {
+  logger.info(`GetScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
   return await global.DbStoreModel.ScheduleJob.findOne({
     where: {
       id,
@@ -19,6 +20,7 @@ async function getJob(AccountId, ProjectMasterId, id) {
 }
 
 async function getAllJobs(ProjectMasterId) {
+  logger.info(`GetAllScheduleJob, ProjectMasterId:${ProjectMasterId}`);
   return await global.DbStoreModel.ScheduleJob.findAll({
     where: {
       ProjectMasterId
@@ -27,10 +29,12 @@ async function getAllJobs(ProjectMasterId) {
 }
 
 async function getJobById(id) {
+  logger.info(`GetScheduleJob, JobId:${id}`);
   return await global.DbStoreModel.ScheduleJob.findByPk(id);
 }
 
 async function createJob(AccountId, ProjectMasterId, params) {
+  logger.info(`CreateScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}`);
   const job = new global.DbStoreModel.ScheduleJob({
     AccountId,
     ProjectMasterId,
@@ -44,6 +48,7 @@ async function createJob(AccountId, ProjectMasterId, params) {
 }
 
 async function updateJob(AccountId, ProjectMasterId, id, params) {
+  logger.info(`UpdateScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
   const job = await getJob(AccountId, ProjectMasterId, id);
   Object.assign(job, params);
   const result = await job.save();
@@ -54,6 +59,7 @@ async function updateJob(AccountId, ProjectMasterId, id, params) {
 }
 
 async function deleteJob(AccountId, ProjectMasterId, id) {
+  logger.info(`DeleteScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
   const job = await getJob(AccountId, ProjectMasterId, id);
   JobManager.stopJob(id);
   return await job.destroy();

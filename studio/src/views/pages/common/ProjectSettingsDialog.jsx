@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import CustomDialog from "../../utilities/CustomDialog";
@@ -87,14 +87,14 @@ function ProjectSettingsDialog({ showDialog, project, onClose }) {
   const dispatch = useDispatch(project);
   const [data, setData] = React.useState(project);
 
-  if (!showDialog) return;
-
   useEffect(() => {
     setData(project);
     return () => setData();
   }, [project]);
 
-  const saveProject = useCallback(() => {
+  if (!showDialog) return <></>;
+
+  const saveProject = () => {
     dispatch(
       updateProject(project.id, {
         name: data.name,
@@ -107,7 +107,7 @@ function ProjectSettingsDialog({ showDialog, project, onClose }) {
       })
     );
     onClose();
-  });
+  };
 
   return (
     <CustomDialog

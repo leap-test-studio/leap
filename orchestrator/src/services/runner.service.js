@@ -110,7 +110,7 @@ function create(AccountId, ProjectMasterId, payload) {
           }
         },
         0
-      )
+      );
       build.total = totalTestCases;
       await build.save();
       resolve({
@@ -146,6 +146,7 @@ async function stop(ProjectMasterId) {
       }
     );
 
+    logger.info("getJobs:", buildIds);
     const jobs = await global.DbStoreModel.Job.findAll({
       where: {
         result: {
