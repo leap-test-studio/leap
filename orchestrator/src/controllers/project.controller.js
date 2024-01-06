@@ -6,7 +6,7 @@ const authorize = require("../_middleware/authorize");
 const projectService = require("../services/project.service");
 const testScenarioService = require("../services/testscenario.service");
 const testCaseService = require("../services/testcase.service");
-const schedulerService = require("../services/scheduler");
+const schedulerService = require("../services/scheduler.service");
 
 const status = require("http-status");
 

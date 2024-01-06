@@ -158,10 +158,9 @@ class TestRunner extends Job {
     } catch (error) {
       logger.error("WebTestRunner, Failed to cleanup", error);
     }
-    const seleniumSession = this.getBuildProperties("seleniumSession")
+    const seleniumSession = this.getBuildProperties("seleniumSession");
 
     if (global.config.SELENIUM_GRID_URL && seleniumSession) {
-
       await httpRequest({
         method: "DELETE",
         baseUrl: global.config.SELENIUM_GRID_URL,

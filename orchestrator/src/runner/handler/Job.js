@@ -1,6 +1,6 @@
 const isEmpty = require("lodash/isEmpty");
 const TestStatus = require("../enums/TestStatus");
-const jobService = require("../../services/job/job.service");
+const JobService = require("../job.service");
 const { getLocalTime } = require("../../utils/time");
 
 class Job {
@@ -62,14 +62,13 @@ class Job {
     this._extras[key] = value;
   }
 
-
   getBuildProperties(key) {
     return this._extras[key];
   }
 
   async saveScreenshot(result) {
     if (!this._interruptTask) {
-      return await jobService.updateScreenshot(this._jobId, result);
+      return await JobService.updateScreenshot(this._jobId, result);
     }
   }
 
@@ -99,8 +98,8 @@ class Job {
     }
     try {
       logger.info(this.toString("Uploading Job details: " + JSON.stringify(payload)));
-      const job = await jobService.updateJob(id, payload);
-      await jobService.consolidate(job.BuildMasterId);
+      const job = await JobService.updateJob(id, payload);
+      await JobService.consolidate(job.BuildMasterId);
     } catch (error) {
       logger.error("Failed to Update", error);
     }

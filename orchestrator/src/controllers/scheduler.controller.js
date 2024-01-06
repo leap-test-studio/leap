@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const schedulerService = require("../service/scheduler.service");
+const schedulerService = require("../services/scheduler.service");
 const status = require("http-status");
 const Joi = require("joi");
 const validateRequest = require("../_middleware/validate-request");

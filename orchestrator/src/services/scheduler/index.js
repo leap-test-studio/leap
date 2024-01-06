@@ -1,66 +1,125 @@
-const JobManager = require("./job.manager");
+const Cron = require("node-cron");
+const BPromise = require("bluebird");
+const isEmpty = require("lodash/isEmpty");
+const IP = require("ip");
+const Transport = require("./transports");
+const JobService = require("../../runner/job.service");
+const TestStatus = require("../../runner/enums/TestStatus");
+
+const RunningTasks = {};
 
 module.exports = {
-  getAllJobs,
-  getJobById,
-  createJob,
-  updateJob,
-  deleteJob
+  load,
+  schedule,
+  stopJob,
+  restartJob
 };
 
-async function getJob(AccountId, ProjectMasterId, id) {
-  logger.info(`GetScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
-  return await global.DbStoreModel.ScheduleJob.findOne({
-    where: {
-      id,
-      AccountId,
-      ProjectMasterId
-    }
-  });
-}
+async function load() {
+  try {
+    logger.info(`JOB_MAN[LOAD]: Reloading Scheduler Jobs`);
+    const jobs = await global.DbStoreModel.ScheduleJob.findAll({
+      where: {
+        status: TestStatus.RUNNING
+      }
+    });
 
-async function getAllJobs(ProjectMasterId) {
-  logger.info(`GetAllScheduleJob, ProjectMasterId:${ProjectMasterId}`);
-  return await global.DbStoreModel.ScheduleJob.findAll({
-    where: {
-      ProjectMasterId
-    }
-  });
-}
-
-async function getJobById(id) {
-  logger.info(`GetScheduleJob, JobId:${id}`);
-  return await global.DbStoreModel.ScheduleJob.findByPk(id);
-}
-
-async function createJob(AccountId, ProjectMasterId, params) {
-  logger.info(`CreateScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}`);
-  const job = new global.DbStoreModel.ScheduleJob({
-    AccountId,
-    ProjectMasterId,
-    ...params
-  });
-  const result = await job.save();
-  if (result != null) {
-    result.outcome = await JobManager.schedule(result);
+    const result = await BPromise.reduce(jobs, _executor, []);
+    logger.info(`JOB_MAN[LOAD]: Response: ${result}`);
+  } catch (error) {
+    logger.error(`JOB_MAN[LOAD]: error: ${error.message}`);
   }
-  return result;
 }
 
-async function updateJob(AccountId, ProjectMasterId, id, params) {
-  logger.info(`UpdateScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
-  const job = await getJob(AccountId, ProjectMasterId, id);
-  Object.assign(job, params);
-  const result = await job.save();
-  if (result != null) {
-    result.outcome = await JobManager.schedule(result);
+async function _callbackHandler(job) {
+  const jobId = job?.id;
+
+  const jobLog = new global.DbStoreModel.ScheduleJobLog({
+    machine: IP.address(),
+    start_time: new Date(),
+    result: "Start",
+    ScheduleJobId: jobId
+  });
+  try {
+    await jobLog.save();
+    //await JobService.create(job.AccountId, job.callback.message, {});
+    logger.info(`JOB_MAN[${jobId}]: Executing Callback-${job.callback.type} - ${job.name}`);
+    switch (job.callback.type) {
+      case "kafka":
+      case "http":
+      case "redis":
+        const response = await Transport(job);
+        logger.trace(`JOB_MAN[${jobId}]: Callback response`);
+        jobLog.result = response !== null ? "Completed" : "Failed";
+        logger.info(`JOB_MAN[${jobId}]: Completed Callback - ${job.name}`);
+        break;
+      default:
+        jobLog.result = "Invalid callback";
+    }
+  } catch (error) {
+    jobLog.result = "Failed";
+    logger.error(`JOB_MAN[${jobId}]: Failed Callback, error:${error.message}`);
+  } finally {
+    jobLog.end_time = new Date();
+    await jobLog.save();
   }
-  return result;
 }
 
-async function deleteJob(AccountId, ProjectMasterId, id) {
-  logger.info(`DeleteScheduleJob, AccountId:${AccountId}, ProjectMasterId:${ProjectMasterId}, JobId:${id}`);
-  const job = await getJob(AccountId, ProjectMasterId, id);
-  JobManager.stopJob(id);
-  return await job.destroy();
+function stopJob(jobId) {
+  if (RunningTasks.hasOwnProperty(jobId)) {
+    logger.info(`JOB_MAN[${jobId}]: Stopping the Job`);
+    RunningTasks[jobId].stop();
+    delete RunningTasks[jobId];
+    logger.info(`JOB_MAN[${jobId}]: Stopped the Job`);
+  }
+}
+
+async function restartJob(jobId) {
+  stopJob(jobId);
+  const job = await global.DbStoreModel.ScheduleJob.findByPk(jobId);
+  if (job.status === 1) {
+    if (Cron.validate(job.cron_setting)) {
+      logger.info(`JOB_MAN[${jobId}]: Valid cron expression, Expression:${job.cron_setting}`);
+      const task = Cron.schedule(job.cron_setting, () => _callbackHandler(job));
+      RunningTasks[jobId] = task;
+      logger.info(`JOB_MAN[${jobId}]: Job Scheduled Successfully`);
+      return Promise.resolve({
+        id: job.id,
+        message: "Successfully scheduled"
+      });
+    } else {
+      logger.error(`JOB_MAN[${jobId}]: Invalid cron expression, Expression:${job.cron_setting}`);
+      return Promise.resolve({
+        id: job.id,
+        error: "Invalid Cron Setting"
+      });
+    }
+  }
+}
+
+async function schedule(job) {
+  const jobId = job?.id;
+  try {
+    if (!isEmpty(job?.callback)) {
+      logger.info(`JOB_MAN[${jobId}]: Scheduling the Job ${job.name}`);
+      return await restartJob(jobId);
+    } else {
+      logger.error(`JOB_MAN[${jobId}]: Callback is not configured, Job: ${job}`);
+      return Promise.resolve({
+        id: jobId,
+        error: "Invalid job"
+      });
+    }
+  } catch (error) {
+    logger.error(`JOB_MAN[${jobId}]: Callback in not configured, error: ${error.message}`);
+    return Promise.resolve({
+      id: job.id,
+      error: "Failed to process job, error: " + error.message
+    });
+  }
+}
+
+async function _executor(accumulator, job) {
+  const res = await schedule(job);
+  return [...accumulator, res !== null && res.message];
 }

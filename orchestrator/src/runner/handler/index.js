@@ -57,6 +57,10 @@ class TestCaseHandler {
       this._task.stop();
     }
   }
+
+  getStatus() {
+    return this._task.result;
+  }
 }
 
 module.exports = TestCaseHandler;
