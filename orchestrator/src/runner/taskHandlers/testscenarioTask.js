@@ -1,6 +1,6 @@
 const Task = require("../flowEngine/task");
 
-class TestscenarioTask extends Task {
+class TestScenarioTask extends Task {
   run({ node, context }) {
     console.log(Date.now(), new Date(), "TS", node?.id);
     return new Promise((resolve) => {
@@ -12,4 +12,4 @@ class TestscenarioTask extends Task {
   }
 }
 
-module.exports = TestscenarioTask;
+module.exports = TestScenarioTask;

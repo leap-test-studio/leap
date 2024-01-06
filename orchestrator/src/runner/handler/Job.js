@@ -5,39 +5,47 @@ const { getLocalTime } = require("../../utils/time");
 
 class Job {
   constructor(o) {
-    this.jobId = o.id;
-    this.buildId = o.BuildMasterId;
-    this.testCaseId = o.TestCaseId;
+    this._jobId = o.id;
+    this._buildId = o.BuildMasterId;
     this.settings = o.settings;
     this.actual = o.actual || {};
     this.result = o.result;
     this.steps = [];
     this.execSteps = o.execSteps;
     this.type = o.type;
-    this.seqNo = o.seqNo;
-    this.startTime = getLocalTime();
-    this.endTime = null;
-    this.skipSteps = false;
-    this.stopRunning = false;
-    this.extras = {};
+    this._seqNo = o.seqNo;
+    this._startTime = getLocalTime();
+    this._endTime = null;
+    this._skipSteps = false;
+    this._interruptTask = false;
+    this._extras = {};
+  }
+
+  interruptTask() {
+    this._skipSteps = true;
+    this._interruptTask = true;
+  }
+
+  shouldTaskContinue() {
+    return !this._interruptTask || !this._skipStep;
   }
 
   addStep(step) {
     logger.trace("Adding step:", JSON.stringify(step));
     if (step.result === TestStatus.FAIL) {
-      this.skipSteps = true;
+      this._skipSteps = true;
     }
     if (step.result !== TestStatus.SKIP) {
       this.steps.push(step);
     }
     this.result = step.result;
-    this.endTime = getLocalTime();
+    this._endTime = getLocalTime();
   }
 
   beforeHook() {
     return new Promise((resolve, reject) => {
       if (isEmpty(this.execSteps) || this.type == 0) {
-        this.notifyJob(TestStatus.INVALID_TESTCASE);
+        this._notifyJob(TestStatus.INVALID_TESTCASE);
         return reject({
           actual: this.execSteps,
           steps: [],
@@ -46,18 +54,22 @@ class Job {
       } else {
         resolve();
       }
-      this.notifyJob(TestStatus.RUNNING);
+      this._notifyJob(TestStatus.RUNNING);
     });
   }
 
-  async notifyJob(result) {
-    this.result = result;
-    this.updateJobDetails(this.jobId, { result, extras: this.extras });
+  setBuildProperties(key, value) {
+    this._extras[key] = value;
+  }
+
+
+  getBuildProperties(key) {
+    return this._extras[key];
   }
 
   async saveScreenshot(result) {
-    if (!this.stopRunning) {
-      return await jobService.updateScreenshot(this.jobId, result);
+    if (!this._interruptTask) {
+      return await jobService.updateScreenshot(this._jobId, result);
     }
   }
 
@@ -66,14 +78,23 @@ class Job {
       result: this.result,
       actual: this.actual,
       steps: this.steps,
-      startTime: this.startTime,
-      endTime: this.endTime
+      startTime: this._startTime,
+      endTime: this._endTime
     };
-    await this.updateJobDetails(this.jobId, payload);
+    await this._updateJobDetails(this._jobId, payload);
   }
 
-  async updateJobDetails(id, payload) {
-    if (this.stopRunning) {
+  toString(s) {
+    return `BID:${this._buildId}, JID:${this._jobId}, TCID:${this._seqNo}, Message:${s}`;
+  }
+
+  async _notifyJob(result) {
+    this.result = result;
+    this._updateJobDetails(this._jobId, { result, extras: this._extras });
+  }
+
+  async _updateJobDetails(id, payload) {
+    if (this._interruptTask) {
       return;
     }
     try {
@@ -83,10 +104,6 @@ class Job {
     } catch (error) {
       logger.error("Failed to Update", error);
     }
-  }
-
-  toString(s) {
-    return `BID:${this.buildId}, JID:${this.jobId}, TCID:${this.seqNo}, Message:${s}`;
   }
 }
 

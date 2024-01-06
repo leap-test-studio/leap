@@ -2,9 +2,10 @@ const events = require("events");
 const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
+const BPromise = require("bluebird");
+
 const Runner = require("../../runner/handler");
 const jobService = require("./job.service");
-const BPromise = require("bluebird");
 
 const REDIS_KEY = Object.freeze({
   JOB_WAITING_QUEUE: "JOB-WAITING-QUEUE",
@@ -15,17 +16,17 @@ const REDIS_KEY = Object.freeze({
 class BuildManager extends events.EventEmitter {
   constructor() {
     super();
-    this.jobsProcessing = new Set();
-    this.on("load", this.load);
-    this.on("addJobs", this.addJobs);
-    this.on("stopJob", this.stopJob);
-    this.on("stopJobs", this.stopJobs);
-    this.on("process", this.run);
-    this.TestCasehandlers = {};
+    this._handlers = {};
+    this._jobs_processing = new Set();
+
+    this.on("addJobs", this._addJobs);
+    this.on("stopJob", this._stopJob);
+    this.on("stopJobs", this._stopJobs);
+    this.on("process", this._run);
   }
 
   async load() {
-    this.jobsProcessing.clear();
+    this._jobs_processing.clear();
     logger.info("Load jobs");
     const jobs = await global.DbStoreModel.Job.findAll({
       attributes: ["id"],
@@ -38,7 +39,7 @@ class BuildManager extends events.EventEmitter {
       const queueSize = await connection.llen(REDIS_KEY.JOB_WAITING_QUEUE);
       const waitingList = await connection.lrange(REDIS_KEY.JOB_WAITING_QUEUE, 0, queueSize);
       logger.info("WaitingList", waitingList);
-      await this.addJobs(
+      await this._addJobs(
         jobs
           .map((j) => {
             if (!waitingList.includes(j.id)) return j.id;
@@ -51,7 +52,7 @@ class BuildManager extends events.EventEmitter {
     this.timer = setInterval(() => this.emit("process"), 5000);
   }
 
-  async addJobs(o) {
+  async _addJobs(o) {
     try {
       if (!isEmpty(o)) {
         logger.info("Enqueue JOB to Waiting List:", o, ", Records:", o.length);
@@ -64,59 +65,59 @@ class BuildManager extends events.EventEmitter {
     }
   }
 
-  async stopJobs(jobs) {
+  async _stopJobs(jobs) {
     logger.trace(`BUILD_MAN: Stopping Jobs[${jobs}]`);
     await BPromise.reduce(
       jobs,
       async (accumulator, jobId) => {
-        await this.stopJob(jobId);
+        await this._stopJob(jobId);
         return accumulator;
       },
       []
     );
   }
 
-  async stopJob(jobId) {
+  async _stopJob(jobId) {
     try {
       logger.trace(`BUILD_MAN: Stopping Job[${jobId}]`);
       const connection = await RedisMan.getConnection();
       await connection.lrem(REDIS_KEY.JOB_WAITING_QUEUE, 1, jobId);
-      if (this.TestCasehandlers[jobId] != null) {
+      if (this._handlers[jobId] != null) {
         try {
-          await this.TestCasehandlers[jobId].stop();
+          await this._handlers[jobId].stop();
         } catch (error) {
           loggger.error("Failed to stop", error);
         }
-        delete this.TestCasehandlers[jobId];
+        delete this._handlers[jobId];
       }
       await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
       await connection.rpush(REDIS_KEY.JOB_PROCESSED_QUEUE, jobId);
-      this.jobsProcessing.delete(jobId);
+      this._jobs_processing.delete(jobId);
       logger.trace(`BUILD_MAN: Stopped Job[${jobId}]`);
     } catch (error) {
       logger.error("Failed to delete", jobId, error);
     }
   }
 
-  async run() {
+  async _run() {
     try {
       const connection = await RedisMan.getConnection();
       const queueSize = await connection.llen(REDIS_KEY.JOB_WAITING_QUEUE);
       //logger.trace(`BUILD_MAN: QueueSize[${queueSize}]`);
       if (queueSize > 0) {
         const jobId = (await connection.lrange(REDIS_KEY.JOB_WAITING_QUEUE, 0, 0))[0];
-        logger.trace(`BUILD_MAN: HEAD[${jobId}] ${Array.from(this.jobsProcessing.keys()).join(", ")} ${this.jobsProcessing.has(jobId)}`);
-        if (jobId != null && !this.jobsProcessing.has(jobId)) {
+        logger.trace(`BUILD_MAN: HEAD[${jobId}] ${Array.from(this._jobs_processing.keys()).join(", ")} ${this._jobs_processing.has(jobId)}`);
+        if (jobId != null && !this._jobs_processing.has(jobId)) {
           try {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const job = await jobService.getJobInfo(jobId);
-            this.TestCasehandlers[jobId] = new Runner(job);
-            this.jobsProcessing.add(jobId);
-            await this.TestCasehandlers[jobId].run();
-            if (this.TestCasehandlers[jobId]?.runner?.result > 1) {
-              logger.info("BUILD_MAN_: JOB_RESULT::", this.TestCasehandlers[jobId]?.runner?.result);
-              await this.stopJob(jobId);
+            this._handlers[jobId] = new Runner(job);
+            this._jobs_processing.add(jobId);
+            await this._handlers[jobId].run();
+            if (this._handlers[jobId]?.runner?.result > 1) {
+              logger.info("BUILD_MAN_: JOB_RESULT::", this._handlers[jobId]?.runner?.result);
+              await this._stopJob(jobId);
             }
           } catch (error) {
             logger.error("BUILD_MAN: ERRORED-", error);

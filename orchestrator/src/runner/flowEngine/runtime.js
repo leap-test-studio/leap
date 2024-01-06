@@ -1,5 +1,4 @@
 const EventEmitter = require("events");
-const BPromise = require("bluebird");
 const Flow = require("./flow");
 const STATUS = require("./status");
 
@@ -51,14 +50,14 @@ class Runtime extends EventEmitter {
 
   start() {
     this.runNode({ node: this.startNode });
-    this.isRunning = true;
+    this._isRunning = true;
     this.emit("start", { node: this.startNode });
   }
 
   stop(message) {
     this._context.endTime = Date.now();
     this._context.elapsedTime = this._context.endTime - this._context.startTime;
-    this.isRunning = false;
+    this._isRunning = false;
     this.emit("end", { message });
   }
 

@@ -3,7 +3,7 @@
  *
  * @enum {number}
  */
-const TestStatus = {
+const TestStatus = Object.freeze({
   DRAFT: 0,
   RUNNING: 1,
   PASS: 2,
@@ -11,7 +11,10 @@ const TestStatus = {
   UNKNOWN: 4,
   SKIP: 5,
   ABORT: 6,
-  INVALID_TESTCASE: 999
-};
+  INVALID_TESTCASE: 999,
+  get: function (name) {
+    return this[name];
+  }
+});
 
 module.exports = TestStatus;

@@ -66,9 +66,8 @@ class TestRunner extends Job {
     manage.setTimeouts({ implicit: 300000, pageLoad: 30000 });
     await manage.window().maximize();
     const winSize = await manage.window().getSize();
-    this.extras.seleniumSession = await this.WebDriver.getSession();
+    this.setBuildProperties("seleniumSession", await this.WebDriver.getSession());
     logger.info("WebTestRunner WINSIZE:", winSize);
-    this.notifyJob(TestStatus.RUNNING);
     return BPromise.resolve(true);
   }
 
@@ -78,10 +77,10 @@ class TestRunner extends Job {
       result: TestStatus.RUNNING,
       startTime: Date.now(),
       type: event.actionType,
-      event: event
+      event
     };
 
-    if (event.enabled && !this.stopRunning && !this.skipSteps) {
+    if (event.enabled && this.shouldTaskContinue()) {
       try {
         if (ActionsTypes.includes(event.actionType)) {
           if (this.sleepTimingType === SleepTimingType.Before || this.sleepTimingType === SleepTimingType.BeforeAndAfter) {
@@ -159,11 +158,14 @@ class TestRunner extends Job {
     } catch (error) {
       logger.error("WebTestRunner, Failed to cleanup", error);
     }
-    if (global.config.SELENIUM_GRID_URL && this.extras.seleniumSession) {
+    const seleniumSession = this.getBuildProperties("seleniumSession")
+
+    if (global.config.SELENIUM_GRID_URL && seleniumSession) {
+
       await httpRequest({
         method: "DELETE",
         baseUrl: global.config.SELENIUM_GRID_URL,
-        uri: `/session/${this.extras.seleniumSession.getId()}`
+        uri: `/session/${seleniumSession.getId()}`
       });
     }
   }

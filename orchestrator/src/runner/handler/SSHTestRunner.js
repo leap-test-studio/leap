@@ -21,10 +21,10 @@ class TestRunner extends Job {
       stepNo: accumulator.length + 1,
       result: TestStatus.RUNNING,
       startTime: Date.now(),
-      event: event
+      event
     };
 
-    if (!this.skipSteps && event.enabled) {
+    if (event.enabled && this.shouldTaskContinue()) {
       try {
         logger.info("SSH Command", event.commandText);
         let result = await this.conn.exec(event.commandText);
