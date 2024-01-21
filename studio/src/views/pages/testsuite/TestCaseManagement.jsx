@@ -320,17 +320,16 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
-                ? "bg-indigo-300"
-                : record.status === 2
-                  ? "bg-blue-300"
-                  : record.status === 3
-                    ? "bg-violet-400"
-                    : ""
-          }`}
+          className={`text-xs font-normal select-none ${record.status === 0
+            ? "bg-purple-300"
+            : record.status === 1
+              ? "bg-indigo-300"
+              : record.status === 2
+                ? "bg-blue-300"
+                : record.status === 3
+                  ? "bg-violet-400"
+                  : ""
+            }`}
         >
           {tcType}
         </label>
@@ -339,40 +338,40 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
         <div className="flex flex-row justify-end">
           {record.type > 0 && (
             <IconRenderer
-              icon="PlayArrowRounded"
+              icon="PlayArrow"
               className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 20 }}
+              style={{ fontSize: 18 }}
               onClick={() => runTestCases(record)}
             />
           )}
           <IconRenderer
             icon="ContentCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 18 }}
             onClick={() => cloneTestCase(record)}
           />
           <IconRenderer
             icon="Edit"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 18 }}
             onClick={() => editTestCase(record)}
           />
           <IconRenderer
             icon="DeleteForever"
             className="text-color-0500 hover:text-cds-red-0600 mr-2 cursor-pointer"
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 18 }}
             onClick={() => deleteTestCase(record)}
           />
           <IconRenderer
             icon="FileDownload"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 18 }}
             onClick={exportTestCase}
           />
           <IconRenderer
             icon="FileUpload"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 20 }}
+            style={{ fontSize: 18 }}
             onClick={() => importTestCase(record)}
           />
         </div>

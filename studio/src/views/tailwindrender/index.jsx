@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { JsonForms } from "@jsonforms/react";
 import { createAjv } from "@jsonforms/core";
 import isEmpty from "lodash/isEmpty";
@@ -48,14 +47,13 @@ import { tailwindListWithDetailTester, TailwindListWithDetail } from "./addition
 import { tailwindAnyOfStringOrEnumControlTester, TailwindAnyOfStringOrEnumControl } from "./controls/TailwindAnyOfStringOrEnumControl";
 import { tailwindEnumArrayControlTester, TailwindEnumArrayControl } from "./renderers/TailwindEnumArrayRenderer";
 
-const ajv = createAjv();
+const hexStringPattern = /^[0-9a-fA-F]+$/;
 
+const ajv = createAjv();
 ajv.addFormat(
   "ip",
   /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))$/
 );
-
-const hexStringPattern = /^[0-9a-fA-F]+$/;
 
 ajv.addFormat("mac", /^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/);
 
@@ -87,7 +85,7 @@ ajv.addFormat("vdusim.tar.gz", {
     try {
       new URL(data);
       isUrlCorrect = true;
-    } catch (_) {}
+    } catch (_) { }
     return isUrlCorrect && /vdusim.tar.gz/.test(data);
   }
 });
@@ -148,9 +146,8 @@ export default function TailwindRenderer({ id, ...props }) {
   if (props.isValid) {
     props.isValid(ajv.validate(props.schema, props.data));
   }
-  const viewRef = useRef();
   return (
-    <div ref={viewRef} id={id} className="w-full">
+    <div id={id} className="w-full">
       {!isEmpty(props.schema) && <JsonForms cells={Cells} renderers={Renderers} readonly={props?.readonly} {...props} ajv={ajv} />}
     </div>
   );

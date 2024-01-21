@@ -324,7 +324,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
             }
           >
             <IconRenderer
-              icon="ModeEditOutline"
+              icon="ModeEdit"
               className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
               onClick={selectProject}
               style={{ fontSize: 18 }}

@@ -79,7 +79,6 @@ const TailwindInputText = React.memo((props) => {
                     placeholder={description}
                     value={value}
                     onChange={onChange}
-                    autoComplete="off"
                   />
                 )}
               </form>

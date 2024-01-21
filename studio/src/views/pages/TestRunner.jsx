@@ -78,7 +78,7 @@ export default function TestRunner({ project }) {
         <PageTitle>Test Runner</PageTitle>
         <PageActions>
           <Tooltip title="Start Automation Builds">
-            <IconButton title="Trigger" icon="PlayArrowRounded" onClick={() => dispatch(startProjectBuilds(project?.id))} />
+            <IconButton title="Trigger" icon="PlayArrow" onClick={() => dispatch(startProjectBuilds(project?.id))} />
           </Tooltip>
         </PageActions>
       </PageHeader>

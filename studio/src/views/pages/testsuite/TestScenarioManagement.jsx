@@ -258,7 +258,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
               </p>
             }
           >
-            <TailwindToggleRenderer path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+            <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
           </Tooltip>
           {status && (
             <Tooltip
@@ -270,8 +270,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
               }
             >
               <IconRenderer
-                icon="PlayArrowRounded"
-                style={{ fontSize: 20 }}
+                icon="PlayArrow"
+                style={{ fontSize: 18 }}
                 className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
                 onClick={run}
               />
@@ -286,8 +286,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             }
           >
             <IconRenderer
-              icon="FileCopyOutlined"
-              style={{ fontSize: 20 }}
+              icon="FileCopy"
+              style={{ fontSize: 18 }}
               className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
               onClick={cloneTestScenario}
             />
@@ -303,8 +303,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             }
           >
             <IconRenderer
-              icon="ModeEditOutlineOutlined"
-              style={{ fontSize: 20 }}
+              icon="ModeEdit"
+              style={{ fontSize: 18 }}
               className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
               onClick={editTestScenario}
             />
@@ -318,8 +318,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             }
           >
             <IconRenderer
-              icon="DeleteOutlineTwoTone"
-              style={{ fontSize: 20 }}
+              icon="Delete"
+              style={{ fontSize: 18 }}
               className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
               onClick={deleteTestScenario}
             />

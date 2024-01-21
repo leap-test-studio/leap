@@ -33,7 +33,7 @@ export const TailwindArrayLayout = React.memo((props) => {
         labelEnd={
           <label className="text-[10px] select-none">
             <strong>{data} </strong>
-            Records
+            Record(s)
           </label>
         }
         errors={errors}

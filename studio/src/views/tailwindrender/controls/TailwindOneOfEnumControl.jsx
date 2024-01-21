@@ -1,8 +1,7 @@
 import { isOneOfEnumControl, rankWith } from "@jsonforms/core";
 import { withJsonFormsOneOfEnumProps } from "@jsonforms/react";
 import LabelRenderer from "../renderers/common/LabelRenderer";
-import ReactSelect from "react-select";
-
+import Select from "react-select";
 import { customStyles } from "../common/Constants";
 
 export const TailwindOneOfEnum = (props) => {
@@ -16,7 +15,7 @@ export const TailwindOneOfEnum = (props) => {
       {visible && (
         <div className="mx-1">
           {label?.length > 0 && <LabelRenderer {...props} />}
-          <ReactSelect
+          <Select
             value={options.find((option) => option.value === props.data)}
             onChange={(option) => handleSelectChange(option)}
             options={options}

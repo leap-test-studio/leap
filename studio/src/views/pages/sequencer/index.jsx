@@ -269,7 +269,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
           </Tooltip>
           <Tooltip title="Start Automation Builds">
-            <IconButton title="Trigger" icon="PlayArrowRounded" onClick={() => dispatch(triggerSequence(project?.id))} />
+            <IconButton title="Trigger" icon="PlayArrow" onClick={() => dispatch(triggerSequence(project?.id))} />
           </Tooltip>
         </PageActions>
       </PageHeader>
