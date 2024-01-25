@@ -38,6 +38,7 @@ function TestScenarioManagement(props) {
   const dispatch = useDispatch();
   const [search, setSearch] = useState(null);
   const [selectedTestScenario, setSelectedTestScenario] = useState(null);
+  const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);

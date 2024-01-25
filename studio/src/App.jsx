@@ -52,7 +52,8 @@ const InititialRoutes = [
     title: "Test Reports",
     icon: "QueryStatsTwoTone",
     path: "test-reports",
-    page: "TestReports.jsx"
+    page: "TestReports.jsx",
+    projectSelectionRequired: true
   },
   {
     title: "Extentions",

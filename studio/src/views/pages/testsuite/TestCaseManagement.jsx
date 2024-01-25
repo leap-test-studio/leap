@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import IconButton from "../../utilities/IconButton";
 import DeleteItemDialog from "../../utilities/DeleteItemDialog";
 import { cropString } from "../utils";
@@ -33,9 +35,10 @@ const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
 function TestCaseManagement({ project, scenario, changeTestScenario, windowDimension }) {
   const dispatch = useDispatch();
-  const [selectedTestCase, setSelectedTestCase] = useState(null);
+  const { state } = useLocation();
+  const [selectedTestCase, setSelectedTestCase] = useState(state?.selectedTestCase);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(state?.showUpdateDialog);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
 
@@ -43,6 +46,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
 
   useEffect(() => {
     fetchTestCases();
+    return () => setSelectedTestCase(null);
   }, []);
 
   const fetchTestCases = () => {
@@ -320,16 +324,17 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
-            ? "bg-purple-300"
-            : record.status === 1
-              ? "bg-indigo-300"
-              : record.status === 2
-                ? "bg-blue-300"
-                : record.status === 3
-                  ? "bg-violet-400"
-                  : ""
-            }`}
+          className={`text-xs font-normal select-none ${
+            record.status === 0
+              ? "bg-purple-300"
+              : record.status === 1
+                ? "bg-indigo-300"
+                : record.status === 2
+                  ? "bg-blue-300"
+                  : record.status === 3
+                    ? "bg-violet-400"
+                    : ""
+          }`}
         >
           {tcType}
         </label>
@@ -345,7 +350,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             />
           )}
           <IconRenderer
-            icon="ContentCopy"
+            icon="FileCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
             style={{ fontSize: 18 }}
             onClick={() => cloneTestCase(record)}

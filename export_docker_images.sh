@@ -11,7 +11,7 @@ ARRAY=(
     #"mysql|mysql_server"
 )
 
-# npm run build
+npm run build
 OUTPUTPATH=$(pwd)"/data/images"
 
 mkdir -p ${OUTPUTPATH}

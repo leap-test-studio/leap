@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
+
 import TailwindSelectRenderer from "../tailwindrender/renderers/TailwindSelectRenderer";
 import Tooltip from "../utilities/Tooltip";
 import IconButton from "../utilities/IconButton";
-import { useReactToPrint } from "react-to-print";
 import { getBuildReports, getBuildDetails } from "../../redux/actions/DashboardActions";
-import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 import NewlineText from "../utilities/NewlineText";
 import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
 import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
+import { fetchTestScenarioList } from "../../redux/actions/TestScenarioActions";
 
 const BuildTypes = ["P", "TC", "TS"];
 
@@ -35,7 +38,7 @@ const TestTypeMapping = Object.freeze({
 const Types = ["Definition", "REST API", "Web", "SSH"];
 
 let interval;
-export default function TestReports({ project: selectedPrject }) {
+export default function TestReports({ project: selectedPrject, product, changeTestScenario }) {
   const { buildReports, buildDetails } = useSelector((state) => state.dashboard);
   const { projects } = useSelector((state) => state.project);
 
@@ -58,6 +61,7 @@ export default function TestReports({ project: selectedPrject }) {
   useEffect(() => {
     if (project?.id) {
       dispatch(getBuildReports(project.id));
+      dispatch(fetchTestScenarioList(project.id));
     }
   }, [project]);
 
@@ -172,7 +176,7 @@ export default function TestReports({ project: selectedPrject }) {
               {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
             </div>
             <BuildSummary data={data} onClick={handleFilter} testType={testType} />
-            <ReportTable {...buildDetails} testType={testType} />
+            <ReportTable {...buildDetails} testType={testType} product={product} changeTestScenario={changeTestScenario} />
           </div>
         ) : (
           <EmptyIconRenderer title="Report Not Found" />
@@ -342,13 +346,13 @@ function TestExecutionResults({ rate }) {
 
 const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Type", "Summary", "Steps", "Status", "Time"]);
 
-function ReportTable({ jobs, testType }) {
+function ReportTable({ jobs, testType, product, changeTestScenario }) {
   return (
     <table className="table-auto w-full">
       <thead className="text-xs text-slate-500 bg-slate-100 rounded-sm">
         <tr>
           {ReportTableHeader.map((header, index) => (
-            <th key={index} className="p-2 font-semibold text-left">
+            <th key={index} className="p-2 font-semibold border-x text-center">
               {header}
             </th>
           ))}
@@ -356,7 +360,8 @@ function ReportTable({ jobs, testType }) {
       </thead>
       <tbody className="text-xs font-medium divide-y divide-gray-100 text-slate-500">
         {jobs?.map((job, index) => {
-          if (testType == -1 || testType === job.result) return <JobDetails key={job.id + "-" + index} {...job} />;
+          if (testType == -1 || testType === job.result)
+            return <JobDetails key={job.id + "-" + index} {...job} product={product} changeTestScenario={changeTestScenario} />;
           return null;
         })}
       </tbody>
@@ -364,15 +369,32 @@ function ReportTable({ jobs, testType }) {
   );
 }
 
-function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, actual }) {
+function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, actual, product, changeTestScenario }) {
   const status = TestStatus[result];
   const title = TestCase?.type ? Types[TestCase?.type] : "";
   const actualResult = actual?.actualResult;
+  const navigate = useNavigate();
+  const { testscenarios } = useSelector((state) => state.testscenario);
+
+  const openTestCase = () => {
+    const scenario = testscenarios.find((ts) => ts.id === TestCase?.TestScenario?.id);
+    if (scenario) {
+      changeTestScenario(scenario);
+      navigate(`/${product?.page.base}/test-scenario`, {
+        replace: true,
+        state: {
+          showUpdateDialog: true,
+          selectedTestCase: TestCase
+        }
+      });
+    }
+  };
+
   return (
     <>
-      <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700">
-        <td className="p-1 border-x border-x-slate-200 font-bold text-center w-16">{TestCase?.label}</td>
-        <td className="p-1 border-x border-x-slate-200 max-w-40">
+      <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700 cursor-pointer" onClick={openTestCase}>
+        <td className="p-1 border-x border-x-slate-200 font-bold text-center w-20">{TestCase?.label}</td>
+        <td className="p-1 border-x border-x-slate-200 w-52">
           {TestCase?.TestScenario && (
             <div className="flex-1">
               <label className="break-all">{TestCase?.TestScenario?.name}</label>
@@ -382,14 +404,23 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             </div>
           )}
         </td>
-        <td className="p-1 border-x border-x-slate-200 text-center">{title}</td>
-        <td className="p-1 border-x border-x-slate-200 flex-1 break-words max-w-96">
-          <strong className="pb-2">Given</strong> <p>{TestCase?.given}</p>
-          <strong className="pb-2">When</strong> <p>{TestCase?.when}</p>
-          <strong className="pb-2">Then</strong> <p>{TestCase?.then}</p>
+        <td className="p-1 border-x border-x-slate-200 text-center w-20">{title}</td>
+        <td className="p-1 border-x border-x-slate-200 flex flex-col break-words">
+          <div className="inline-flex items-center mb-2 border-b">
+            <strong>GIVEN</strong>
+            <NewlineText text={TestCase?.given} className="font-normal ml-2" />
+          </div>
+          <div className="inline-flex items-center mb-2 border-b">
+            <strong>WHEN</strong>
+            <NewlineText text={TestCase?.when} className="font-normal ml-2" />
+          </div>
+          <div className="inline-flex items-center mb-2">
+            <strong>THEN</strong>
+            <NewlineText text={TestCase?.then} className="font-normal ml-2" />
+          </div>
         </td>
-        <td className="p-1 border-x border-x-slate-200 text-center">{result > 0 ? steps : 0}</td>
-        <td className="border-x border-x-slate-200">
+        <td className="p-1 border-x border-x-slate-200 text-center w-16">{result > 0 ? steps : 0}</td>
+        <td className="border-x border-x-slate-200 w-20">
           <div
             className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${status === "Running"
               ? "bg-cds-blue-0600 animate-pulse"
@@ -403,40 +434,38 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             {status}
           </div>
         </td>
-        <td className="p-1 border-x border-x-slate-200">
-          <div className="flex-1 w-32">
-            {endTime && startTime && (
-              <div className="flex flex-col">
-                <strong>Duration</strong>
-                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                  <i className="text-indigo-700 fad fa-solid fa-clock w-6 text-center" />
-                  <label>{convertDatesToHM(startTime, endTime)}</label>
-                </div>
+        <td className="p-1 border-x border-x-slate-200 flex-1 w-40">
+          {endTime && startTime && (
+            <div className="flex flex-col">
+              <strong>Duration</strong>
+              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
+                <i className="text-indigo-700 fad fa-solid fa-clock w-6 text-center" />
+                <label>{convertDatesToHM(startTime, endTime)}</label>
               </div>
-            )}
-            {startTime && (
-              <div className="flex flex-col">
-                <strong>Start</strong>
-                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                  <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
-                  <label>{startTime}</label>
-                </div>
+            </div>
+          )}
+          {startTime && (
+            <div className="flex flex-col">
+              <strong>Start</strong>
+              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
+                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
+                <label>{startTime}</label>
               </div>
-            )}
-            {endTime && (
-              <div className="flex flex-col">
-                <strong>End</strong>
-                <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                  <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
-                  <label>{endTime}</label>
-                </div>
+            </div>
+          )}
+          {endTime && (
+            <div className="flex flex-col">
+              <strong>End</strong>
+              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
+                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
+                <label>{endTime}</label>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </td>
       </tr>
       {status !== "Pass" && !isEmpty(actualResult) && actualResult.actual && (
-        <tr className="bg-white hover:bg-slate-50 border border-slate-200 text-xs">
+        <tr className="bg-white hover:bg-slate-50 border border-slate-200 text-xs cursor-pointer" onClick={openTestCase}>
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border border-slate-100">
             <p>{`Captured Result for TC${TestCase?.seqNo}`}</p>
             <table className="table-auto w-full mb-4 border border-slate-200 rounded">
@@ -485,7 +514,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </tr>
       )}
       {!isEmpty(screenshot) && (
-        <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
+        <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs cursor-pointer" onClick={openTestCase}>
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200">
             {screenshot.map((s, i) => (
               <div key={i}>

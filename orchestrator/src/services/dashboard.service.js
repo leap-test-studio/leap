@@ -158,10 +158,10 @@ async function getBuildDetails(id, input) {
   const jobRecords = await global.DbStoreModel.Job.findAll({
     attributes: ["id", "result", "steps", "startTime", "endTime", "screenshot", "actual"],
     include: {
-      attributes: ["type", "label", "given", "when", "then", "seqNo", "execSteps"],
+      attributes: ["id", "type", "label", "given", "when", "then", "seqNo", "execSteps"],
       model: global.DbStoreModel.TestCase,
       include: {
-        attributes: ["name", "description"],
+        attributes: ["id", "name", "description"],
         model: global.DbStoreModel.TestScenario
       }
     },
