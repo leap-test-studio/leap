@@ -1,7 +1,8 @@
 import React from "react";
-import ErrorMessage from "./common/ErrorMessage";
 import isEmpty from "lodash/isEmpty";
-import Tooltip from "../../utilities/Tooltip";
+
+import ErrorMessage from "./common/ErrorMessage";
+import { Tooltip } from "../../utilities";
 import IconRenderer from "../../IconRenderer";
 
 const TailwindRadioGroupRenderer = React.memo((props) => {

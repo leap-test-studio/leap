@@ -1,6 +1,6 @@
 import isEmpty from "lodash/isEmpty";
 
-function NewlineText({ text, className, style }) {
+export const NewlineText = ({ text, className, style }) => {
   let child = "";
   if (!isEmpty(text)) {
     child = text.split("\n").map((str, i) => <p key={i}>{str}</p>);
@@ -10,6 +10,4 @@ function NewlineText({ text, className, style }) {
       {child}
     </div>
   );
-}
-
-export default NewlineText;
+};

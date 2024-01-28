@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function upload(method: string, url: string, data: FormData, progress: (percent: number) => void) {
+export function UploadFile(method: string, url: string, data: FormData, progress: (percent: number) => void) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.ontimeout = reject;
@@ -25,7 +25,7 @@ export function upload(method: string, url: string, data: FormData, progress: (p
   });
 }
 
-export const downloadFile = async (url: string, name: string, contentType: string) => {
+export const DownloadFile = async (url: string, name: string, contentType: string) => {
   const blob = await axios.get(url, {
     headers: {
       "Content-Type": contentType !== undefined ? contentType : "application/vnd.tcpdump.pcap"

@@ -1,10 +1,12 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import TailwindRenderer from "../../tailwindrender";
-import IconButton from "../../utilities/IconButton";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
+
+import TailwindRenderer from "../../tailwindrender";
+import { IconButton } from "../../utilities";
 import IconRenderer from "../../IconRenderer";
+
 import WebSchema from "./schema/web_schema.json";
 import SSHSchema from "./schema/ssh_schema.json";
 import APISchema from "./schema/api_schema.json";

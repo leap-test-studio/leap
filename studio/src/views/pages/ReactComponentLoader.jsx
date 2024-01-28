@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Spinner from "../utilities/Spinner";
-import Centered from "../utilities/Centered";
+
+import { Centered, Spinner } from "../utilities";
 
 const ReactComponentLoader = ({ page, ...props }) => {
   const [error, setError] = useState(null);

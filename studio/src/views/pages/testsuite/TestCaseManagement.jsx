@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import isEmpty from "lodash/isEmpty";
 
-import IconButton from "../../utilities/IconButton";
-import DeleteItemDialog from "../../utilities/DeleteItemDialog";
+import ImportTestCaseDialog from "./ImportTestCaseDialog";
 import { cropString } from "../utils";
-import Centered from "../../utilities/Centered";
-import Spinner from "../../utilities/Spinner";
-import Tooltip from "../../utilities/Tooltip";
+import {
+  Centered,
+  IconButton,
+  Spinner,
+  Tooltip,
+  NewlineText,
+  CustomAlertDialog,
+  DeleteItemDialog,
+  EmptyIconRenderer,
+  SearchComponent
+} from "../../utilities";
 import IconRenderer from "../../IconRenderer";
-import SearchComponent from "../../utilities/SearchComponent";
 import {
   fetchTestCaseList,
   createTestCase,
@@ -19,16 +27,10 @@ import {
   cloneTestCase,
   runTestCases
 } from "../../../redux/actions/TestCaseActions";
-import { useDispatch, useSelector } from "react-redux";
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
-import CustomAlertDialog from "../../utilities/CustomAlertDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
-import isEmpty from "lodash/isEmpty";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
-import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
-import ImportTestCaseDialog from "./ImportTestCaseDialog";
-import NewlineText from "../../utilities/NewlineText";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];

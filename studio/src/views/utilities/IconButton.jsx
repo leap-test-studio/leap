@@ -1,7 +1,7 @@
 import { useState } from "react";
 import IconRenderer from "../IconRenderer";
 
-export default function IconButton({
+export const IconButton = ({
   id,
   onClick,
   icon,
@@ -14,7 +14,7 @@ export default function IconButton({
   showShadow = true,
   defaultShowTitle = true,
   color
-}) {
+}) => {
   const [showTitle, setShowTitle] = useState(defaultShowTitle);
   const toggleShowTitle = () => {
     if (!defaultShowTitle) {
@@ -37,4 +37,4 @@ export default function IconButton({
       {title !== undefined && showTitle === true && <span className="px-2 py-0.5 text-xs select-none">{title}</span>}
     </button>
   );
-}
+};

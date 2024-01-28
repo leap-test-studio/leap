@@ -1,12 +1,11 @@
+import React, { useMemo, useCallback } from "react";
+import { composePaths, findUISchema, moveDown, moveUp, Resolve, update, getFirstPrimitiveProp } from "@jsonforms/core";
+import { JsonFormsDispatch, withJsonFormsContext } from "@jsonforms/react";
 import isEmpty from "lodash/isEmpty";
 import get from "lodash/get";
 import merge from "lodash/merge";
-import React, { useMemo, useCallback } from "react";
-import { JsonFormsDispatch, withJsonFormsContext } from "@jsonforms/react";
-import { composePaths, findUISchema, moveDown, moveUp, Resolve, update, getFirstPrimitiveProp, getData } from "@jsonforms/core";
-import Accordion from "../../utilities/Accordion";
-import IconButton from "../../utilities/IconButton";
-import Tooltip from "../../utilities/Tooltip";
+
+import { Accordion, IconButton, Tooltip } from "../../utilities";
 
 const ExpandPanelRenderer = React.memo((props) => {
   const {

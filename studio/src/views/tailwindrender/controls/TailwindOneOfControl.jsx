@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
+import ReactSelect from "react-select";
 import isEmpty from "lodash/isEmpty";
 import { createCombinatorRenderInfos, createDefaultValue, isOneOfControl, rankWith } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsOneOfProps } from "@jsonforms/react";
+
 import CombinatorProperties from "../util/CombinatorProperties";
 import ErrorMessage from "../renderers/common/ErrorMessage";
-import CustomDialog from "../../utilities/CustomDialog";
-import Select from "react-select";
-import { customStyles } from "../common/Constants";
+import { CustomDialog } from "../../utilities";
+import { ReactSelectCustomStyles } from "../common/Constants";
 
 const TailwindOneOfRenderer = React.memo(
   ({ id, handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
@@ -84,13 +85,13 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
       <div className="bg-color-0100 text-left text-[10px] text-color-primary select-none px-0.5 rounded-t">
         Select OneOf {isEmpty(schema?.title) ? "" : " - " + schema.title}
       </div>
-      <Select
+      <ReactSelect
         value={{ value: selected, label: infos[selected]?.label }}
         onChange={(option) => handleChange(option.value)}
         options={options}
         isSearchable={true}
         className="rounded text-slate-700 border placeholder-slate-500 shadow focus:shadow-md"
-        styles={customStyles}
+        styles={ReactSelectCustomStyles}
       />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />
     </div>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import WebContext from "./WebContext";
 import { useDispatch, useSelector } from "react-redux";
-import CustomAlertDialog from "../utilities/CustomAlertDialog";
-import LocalStorageService from "../../redux/actions/LocalStorageService";
 import isEmpty from "lodash/isEmpty";
+
+import WebContext from "./WebContext";
+import { CustomAlertDialog } from "../utilities";
+import LocalStorageService from "../../redux/actions/LocalStorageService";
 import { openProject } from "../../redux/actions/ProjectActions";
 
 const DEFAULT_HEADER_HEIGHT = 40;

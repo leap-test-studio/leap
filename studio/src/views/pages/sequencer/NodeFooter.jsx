@@ -1,8 +1,8 @@
 import IconColors from "./IconColors";
-import IconRenderer from "../../IconRenderer";
-import IconTypes from "./IconTypes";
-import Tooltip from "../../utilities/Tooltip";
 import NodeTypes from "./NodeTypes";
+import IconTypes from "./IconTypes";
+import IconRenderer from "../../IconRenderer";
+import { Tooltip } from "../../utilities";
 
 function NodeFooter({ progress, type, status, label }) {
   const iconType = IconTypes[status];

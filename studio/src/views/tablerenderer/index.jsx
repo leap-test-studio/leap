@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from "react";
-import Pagination from "../utilities/Pagination/Pagination";
 import isEmpty from "lodash/isEmpty";
-import EmptyIconRenderer from "../utilities/EmptyIconRenderer";
-import IconRenderer from "../MuiIcons";
+import Pagination from "../utilities/Pagination/Pagination";
+import { EmptyIconRenderer } from "../utilities";
+import IconRenderer from "../IconRenderer";
 import WebContext from "../context/WebContext";
 
 function TableRenderer({
@@ -260,15 +260,13 @@ function CellRenderer(col, field, record, columns) {
   }
 }
 
-const ProgressBar = ({ colProperties }) => {
-  return (
-    <div className="w-full bg-gray-200 rounded-full">
-      <div className={`select-none text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
-        {colProperties?.title}
-      </div>
+const ProgressBar = ({ colProperties }) => (
+  <div className="w-full bg-gray-200 rounded-full">
+    <div className={`select-none text-center ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded-full hover:shadow" : ""}`}>
+      {colProperties?.title}
     </div>
-  );
-};
+  </div>
+);
 
 const ChipComponent = ({ value }) => {
   return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { createDefaultValue } from "@jsonforms/core";
-import IconButton from "../../../utilities/IconButton";
-import Tooltip from "../../../utilities/Tooltip";
+
+import { IconButton, Tooltip } from "../../../utilities";
 //import ValidationIcon from "./ValidationIcon";
 
 const TableToolbar = React.memo(({ /*errors,*/ label, labelEnd, path, addItem, schema, enabled, createDefault, readonly = false }) => {

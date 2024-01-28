@@ -1,4 +1,4 @@
-import CustomDialog from "../../utilities/CustomDialog";
+import { CustomDialog } from "../../utilities";
 
 function DeleteNodeDialog({ showDialog, deleteNode, selectedNode, onClose }) {
   return (

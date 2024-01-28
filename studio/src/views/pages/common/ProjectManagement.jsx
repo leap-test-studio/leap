@@ -5,7 +5,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import IconButton from "../../utilities/IconButton";
+import FirstTimeCard from "./FirstTimeCard";
+import DisplayCard from "./DisplayCard";
+import { ProjectColors } from "./ProjectColors";
+import CreateProjectDialog from "./CreateProjectDialog";
+import ProjectSettingsDialog from "./ProjectSettingsDialog";
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
+
 import {
   createProject,
   fetchProjectList,
@@ -16,21 +22,18 @@ import {
   updateProject,
   openProject
 } from "../../../redux/actions/ProjectActions";
-import { ProjectColors } from "./ProjectColors";
-import CreateProjectDialog from "./CreateProjectDialog";
-import ProjectSettingsDialog from "./ProjectSettingsDialog";
-import DeleteItemDialog from "../../utilities/DeleteItemDialog";
-import CustomAlertDialog from "../../utilities/CustomAlertDialog";
-import Centered from "../../utilities/Centered";
-import SearchComponent from "../../utilities/SearchComponent";
+import {
+  Centered,
+  IconButton,
+  Tooltip,
+  CustomAlertDialog,
+  DeleteItemDialog,
+  EmptyIconRenderer,
+  RoundedIconButton,
+  SearchComponent
+} from "../../utilities";
 import IconRenderer from "../../IconRenderer";
-import Tooltip from "../../utilities/Tooltip";
-import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
-import RoundedIconButton from "../../utilities/RoundedIconButton";
-import FirstTimeCard from "./FirstTimeCard";
-import DisplayCard from "./DisplayCard";
 
 dayjs.extend(relativeTime);
 

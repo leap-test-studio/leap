@@ -1,4 +1,4 @@
-export const customStyles = {
+export const ReactSelectCustomStyles = {
   control: (styles) => ({
     ...styles,
     boxShadow: "none",

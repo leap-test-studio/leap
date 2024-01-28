@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import snakeCase from "lodash/snakeCase";
+
 import IconRenderer from "../../IconRenderer";
-import Tooltip from "../../utilities/Tooltip";
-import LogoutButton from "./LogoutButton";
+import { Tooltip } from "../../utilities";
 import UserInfo from "./UserInfo";
 import LogoRenderer from "./LogoRenderer";
 

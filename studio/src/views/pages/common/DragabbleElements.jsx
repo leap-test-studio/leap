@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Accordion from "../../utilities/Accordion";
+
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import TailwindInputText from "../../tailwindrender/renderers/TailwindInputText";
-import Tooltip from "../../utilities/Tooltip";
+import { Accordion, Tooltip } from "../../utilities";
 import IconRenderer from "../../IconRenderer";
 
 const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, showFilter = true, showIcon = true }) => {

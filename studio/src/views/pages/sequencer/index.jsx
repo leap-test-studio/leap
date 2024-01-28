@@ -4,24 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import ConnectionLine from "./ConnectionLine";
 import "reactflow/dist/style.css";
 import "reactflow/dist/base.css";
+import isEmpty from "lodash/isEmpty";
+import { nanoid } from "nanoid";
 
 import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
+import TimerNode from "./TimerNode";
+import NodeTypes from "./NodeTypes";
+import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
+import DeleteNodeDialog from "./DeleteNodeDialog";
 import DragabbleElements from "../common/DragabbleElements";
 import { PageHeader, Page, PageActions, PageTitle } from "../common/PageLayoutComponents";
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
-import TimerNode from "./TimerNode";
 import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";
-import NodeTypes from "./NodeTypes";
-import { nanoid } from "nanoid";
 import TestScenarioNode from "./TestScenarioNode";
-import IconButton from "../../utilities/IconButton";
-import isEmpty from "lodash/isEmpty";
-import DeleteItemDialog from "../../utilities/DeleteItemDialog";
-import DeleteNodeDialog from "./DeleteNodeDialog";
-import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
-import Tooltip from "../../utilities/Tooltip";
+import { IconButton, Tooltip, DeleteItemDialog } from "../../utilities";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();

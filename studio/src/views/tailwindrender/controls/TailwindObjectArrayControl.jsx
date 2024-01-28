@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { rankWith, isObjectArrayControl } from "@jsonforms/core";
+
 import TailwindTableControl from "../renderers/Table/TailwindTableControl";
-import DeleteItemDialog from "../../utilities/DeleteItemDialog";
+import { DeleteItemDialog } from "../../utilities";
 import { withJsonFormsArrayProps } from "../common/JsonFormsArrayProps";
 
 export const TailwindObjectArrayControlRenderer = (props) => {

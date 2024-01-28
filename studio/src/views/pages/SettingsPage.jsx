@@ -1,10 +1,9 @@
 import React from "react";
+import isEmpty from "lodash/isEmpty";
+
 import WebContext from "../context/WebContext";
 import IconRenderer from "../IconRenderer";
-import Spinner from "../utilities/Spinner";
-import { upload } from "../utilities/http";
-import Centered from "../utilities/Centered";
-import isEmpty from "lodash/isEmpty";
+import { Centered, Spinner, UploadFile } from "../utilities";
 
 class SettingsPage extends React.Component {
   hiddenFileInput = React.createRef(null);
@@ -46,7 +45,7 @@ class SettingsPage extends React.Component {
     try {
       const data = new FormData();
       data.append("upload-file", file);
-      let response = await upload("POST", "/api/upload/default", data, (percent) =>
+      let response = await UploadFile("POST", "/api/upload/default", data, (percent) =>
         this.setState({
           percent: Math.floor(percent)
         })

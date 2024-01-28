@@ -17,7 +17,47 @@ const defaultSettings = {
   }
 };
 
-const JsonTable = React.memo((props) => {
+const Row = React.memo((props) => {
+  const getSetting = (name) => {
+    const settings = props.settings;
+    if (!settings || typeof settings[name] == "undefined") return defaultSettings[name];
+    return settings[name];
+  };
+
+  const onClickCell = (e) => {
+    props.onClickCell(e, e.target.dataset.key, props.item);
+  };
+
+  const onClickRow = (e) => {
+    props.onClickRow(e, props.item);
+  };
+
+  const cellClass = getSetting("cellClass");
+  const rowClass = getSetting("rowClass");
+
+  let className = props.i % 2 ? "bg-slate-100" : "bg-slate-50";
+
+  if (rowClass) className = rowClass(className, props.item);
+
+  return (
+    <tr key={props.reactKey} className={className} onClick={onClickRow}>
+      {props.columns.map(function (col) {
+        let content = col.cell,
+          key = col.key,
+          className = cellClass();
+
+        if (typeof content === "function") content = content(props.item, key);
+        return (
+          <td id={props.reactKey + "-" + key} key={key} className={className} data-key={key} onClick={onClickCell}>
+            {content}
+          </td>
+        );
+      })}
+    </tr>
+  );
+});
+
+export const JsonTable = React.memo((props) => {
   const getSetting = (name) => {
     const settings = props.settings;
     if (!settings || typeof settings[name] == "undefined") return defaultSettings[name];
@@ -158,46 +198,6 @@ const JsonTable = React.memo((props) => {
   );
 });
 
-const Row = React.memo((props) => {
-  const getSetting = (name) => {
-    const settings = props.settings;
-    if (!settings || typeof settings[name] == "undefined") return defaultSettings[name];
-    return settings[name];
-  };
-
-  const onClickCell = (e) => {
-    props.onClickCell(e, e.target.dataset.key, props.item);
-  };
-
-  const onClickRow = (e) => {
-    props.onClickRow(e, props.item);
-  };
-
-  const cellClass = getSetting("cellClass");
-  const rowClass = getSetting("rowClass");
-
-  let className = props.i % 2 ? "bg-slate-100" : "bg-slate-50";
-
-  if (rowClass) className = rowClass(className, props.item);
-
-  return (
-    <tr key={props.reactKey} className={className} onClick={onClickRow}>
-      {props.columns.map(function (col) {
-        let content = col.cell,
-          key = col.key,
-          className = cellClass();
-
-        if (typeof content === "function") content = content(props.item, key);
-        return (
-          <td id={props.reactKey + "-" + key} key={key} className={className} data-key={key} onClick={onClickCell}>
-            {content}
-          </td>
-        );
-      })}
-    </tr>
-  );
-});
-
 export const JsonData = React.memo(({ data, ...props }) => {
   if (data != null) {
     return (
@@ -211,5 +211,3 @@ export const JsonData = React.memo(({ data, ...props }) => {
 });
 
 export const JSONArray = React.memo(({ list }) => Array.isArray(list) && list.map((item, index) => <JsonData key={index} {...item} />));
-
-export default JsonTable;

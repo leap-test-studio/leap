@@ -1,11 +1,12 @@
 import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import IconRenderer from "../IconRenderer";
-import IconButton from "./IconButton";
-import CloseButton from "./CloseButton";
 import isEmpty from "lodash/isEmpty";
 
-function CustomDialog({
+import IconRenderer from "../IconRenderer";
+import { IconButton } from "./IconButton";
+import { CloseButton } from "./CloseButton";
+
+export const CustomDialog = ({
   open,
   largeScreen,
   title,
@@ -18,7 +19,7 @@ function CustomDialog({
   additionalInfo = null,
   customWidth = "",
   customHeight = ""
-}) {
+}) => {
   const contentHeight = {
     maxHeight: window.innerHeight - (largeScreen ? 40 : 300)
   };
@@ -121,6 +122,4 @@ function CustomDialog({
       )}
     </>
   );
-}
-
-export default CustomDialog;
+};

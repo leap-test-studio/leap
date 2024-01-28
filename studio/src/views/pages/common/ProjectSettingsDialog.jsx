@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import CustomDialog from "../../utilities/CustomDialog";
 import TailwindRenderer from "../../tailwindrender";
+import { CustomDialog } from "../../utilities";
 import { updateProject } from "../../../redux/actions/ProjectActions";
 
 const Model = {

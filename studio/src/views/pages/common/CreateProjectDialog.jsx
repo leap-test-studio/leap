@@ -1,6 +1,7 @@
 import React from "react";
-import CustomDialog from "../../utilities/CustomDialog";
+
 import TailwindRenderer from "../../tailwindrender";
+import { CustomDialog } from "../../utilities";
 
 const Model = {
   schema: {

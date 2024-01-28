@@ -1,8 +1,9 @@
 import { useState } from "react";
-import TailwindRenderer from "../../tailwindrender";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
-import CustomDialog from "../../utilities/CustomDialog";
+
+import TailwindRenderer from "../../tailwindrender";
+import { CustomDialog } from "../../utilities";
 
 import { RequestSchemas, RequestUISchemas } from "./NodeUtils";
 

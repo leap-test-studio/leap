@@ -5,9 +5,8 @@ import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import merge from "lodash/merge";
 import map from "lodash/map";
 import range from "lodash/range";
-import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
-import IconButton from "../../utilities/IconButton";
-import Tooltip from "../../utilities/Tooltip";
+
+import { IconButton, Tooltip, EmptyIconRenderer } from "../../utilities";
 
 export const TailwindArrayLayout = React.memo((props) => {
   const [expanded, setExpanded] = useState(false);

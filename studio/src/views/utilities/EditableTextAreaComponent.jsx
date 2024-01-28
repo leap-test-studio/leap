@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import NewlineText from "./NewlineText";
+
+import { NewlineText } from "./NewlineText";
 import IconRenderer from "../IconRenderer";
 
-function EditableTextAreaComponent({ data, onChange }) {
+export const EditableTextAreaComponent = ({ data, onChange }) => {
   const [description, setDescription] = useState(data);
   const [modify, setModify] = useState(false);
 
@@ -43,6 +44,4 @@ function EditableTextAreaComponent({ data, onChange }) {
       />
     </div>
   );
-}
-
-export default EditableTextAreaComponent;
+};

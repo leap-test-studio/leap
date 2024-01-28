@@ -1,13 +1,14 @@
+import { useCallback, useMemo, useState } from "react";
 import { and, composePaths, computeLabel, createDefaultValue, findUISchema, isObjectArray, rankWith, uiTypeIs } from "@jsonforms/core";
 import { JsonFormsDispatch } from "@jsonforms/react";
 import List from "@mui/material/List";
-import { useCallback, useMemo, useState } from "react";
-import TableToolbar from "../renderers/Table/TableToolbar";
-import ListWithDetailMasterItem from "./ListWithDetailMasterItem";
 import merge from "lodash/merge";
 import map from "lodash/map";
 import range from "lodash/range";
-import EmptyIconRenderer from "../../utilities/EmptyIconRenderer";
+
+import ListWithDetailMasterItem from "./ListWithDetailMasterItem";
+import TableToolbar from "../renderers/Table/TableToolbar";
+import { EmptyIconRenderer } from "../../utilities";
 import { withJsonFormsArrayProps } from "../common/JsonFormsArrayProps";
 
 const TailwindListWithDetailRenderer = ({

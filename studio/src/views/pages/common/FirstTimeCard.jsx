@@ -1,6 +1,5 @@
 import IconRenderer from "../../IconRenderer";
-import IconButton from "../../utilities/IconButton";
-import Spinner from "../../utilities/Spinner";
+import { IconButton, Spinner } from "../../utilities";
 
 function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonIcon, onClick, onClose }) {
   return (

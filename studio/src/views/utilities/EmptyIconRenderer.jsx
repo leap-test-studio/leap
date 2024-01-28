@@ -1,15 +1,4 @@
-import Centered from "./Centered";
-
-const EmptyIconRenderer = ({ title, fill = "#1e5194", showIcon = true }) => {
-  return (
-    <Centered>
-      {showIcon && <SvgComponent className="h-48" fill={fill} />}
-      <h6 style={{ color: fill }} className="select-none">
-        {title}
-      </h6>
-    </Centered>
-  );
-};
+import { Centered } from "./Centered";
 
 const SvgComponent = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 50 400 400" {...props}>
@@ -720,4 +709,12 @@ const SvgComponent = (props) => (
     </g>
   </svg>
 );
-export default EmptyIconRenderer;
+
+export const EmptyIconRenderer = ({ title, fill = "#1e5194", showIcon = true }) => (
+  <Centered>
+    {showIcon && <SvgComponent className="h-48" fill={fill} />}
+    <h6 style={{ color: fill }} className="select-none">
+      {title}
+    </h6>
+  </Centered>
+);

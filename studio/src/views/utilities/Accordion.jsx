@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import IconRenderer from "../IconRenderer";
-import IconButton from "./IconButton";
 
-const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onChange, children, pid }) => {
+import IconRenderer from "../IconRenderer";
+import { IconButton } from "./IconButton";
+
+export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onChange, children, pid }) => {
   const [defaultOpened, setDefaultOpened] = useState(defaultOpen);
   const [open, setOpen] = useState(defaultOpened);
 
@@ -63,5 +64,3 @@ const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onCha
     </>
   );
 };
-
-export default Accordion;

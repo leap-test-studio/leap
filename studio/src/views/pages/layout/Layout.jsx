@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import Spinner from "../../utilities/Spinner";
-import Centered from "../../utilities/Centered";
+import { Centered, Spinner } from "../../utilities";
 import { ShowSnack } from "../../utilities/Snackbar";
 
 function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const { project, loaded, windowDimension, isProjectSelected, meta } = props;
   const [expandSB, setExpandSB] = useState(true);
 

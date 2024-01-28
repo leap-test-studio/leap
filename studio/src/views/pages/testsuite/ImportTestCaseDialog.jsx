@@ -1,9 +1,8 @@
-import React from "react";
-import CustomDialog from "../../utilities/CustomDialog";
-import { useState } from "react";
-import { upload } from "../../utilities/http";
-import * as actionTypes from "../../../redux/actions";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+
+import * as actionTypes from "../../../redux/actions";
+import { UploadFile, CustomDialog } from "../../utilities";
 
 function ImportTestCaseDialog({ showDialog, projectId, scenarioId, testcase, onClose }) {
   const dispatch = useDispatch();
@@ -27,7 +26,7 @@ function ImportTestCaseDialog({ showDialog, projectId, scenarioId, testcase, onC
         isUploading(true);
         const formData = new FormData();
         formData.append("upload-file", selectedFile);
-        const response = await upload(
+        const response = await UploadFile(
           "POST",
           `/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testcase?.id}/import`,
           formData,

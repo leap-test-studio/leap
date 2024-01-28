@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import IconButton from "../utilities/IconButton";
-import Tooltip from "../utilities/Tooltip";
+
+import { IconButton, Tooltip } from "../utilities";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
 import { fetchProjectBuilds, startProjectBuilds } from "../../redux/actions/ProjectActions";
 import TableRenderer from "../tablerenderer";

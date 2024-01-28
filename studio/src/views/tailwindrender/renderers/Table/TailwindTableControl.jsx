@@ -1,15 +1,14 @@
+import React, { useMemo, useState, useCallback } from "react";
+import { errorsAt, formatErrorMessage, Paths, Resolve, composePaths, createDefaultValue } from "@jsonforms/core";
+import { JsonFormsDispatch, useJsonForms } from "@jsonforms/react";
 import merge from "lodash/merge";
 import isEmpty from "lodash/isEmpty";
 import startCase from "lodash/startCase";
 import range from "lodash/range";
 import union from "lodash/union";
-import { JsonFormsDispatch, useJsonForms } from "@jsonforms/react";
-import React, { useMemo, useState, useCallback } from "react";
-import IconButton from "../../../utilities/IconButton";
-import { errorsAt, formatErrorMessage, Paths, Resolve, composePaths, createDefaultValue } from "@jsonforms/core";
+
 import TableToolbar from "./TableToolbar";
-import EmptyIconRenderer from "../../../utilities/EmptyIconRenderer";
-import Tooltip from "../../../utilities/Tooltip";
+import { IconButton, Tooltip, EmptyIconRenderer } from "../../../utilities";
 
 const generateCells = (Cell, schema, uischema, rowPath, enabled, cells) => {
   if (schema?.type === "object") {
