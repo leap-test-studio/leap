@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 import { IconButton } from "./IconButton";
 
 export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onChange, children, pid }) => {
@@ -24,9 +24,8 @@ export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete
               setDefaultOpened(!defaultOpened);
               setOpen(!open);
             }}
-            className={`z-40 sticky top-0 w-full flex px-1.5 py-0.5 items-center justify-between bg-color-0200 hover:bg-color-0300 ${
-              show ? "bg-color-0100 rounded-t" : "rounded"
-            } text-left text-[10px] font-medium text-color-primary focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 select-none`}
+            className={`z-40 sticky top-0 w-full flex px-1.5 py-0.5 items-center justify-between bg-color-0200 hover:bg-color-0300 ${show ? "bg-color-0100 rounded-t" : "rounded"
+              } text-left text-[10px] font-medium text-color-primary focus:outline-none focus-visible:ring focus-visible:ring-color-0500 focus-visible:ring-opacity-75 select-none`}
           >
             <span>{title}</span>
             <div className="flex flex-row">

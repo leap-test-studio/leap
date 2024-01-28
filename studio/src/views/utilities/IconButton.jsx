@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 
 export const IconButton = ({
   id,
@@ -27,9 +27,8 @@ export const IconButton = ({
     <button
       id={id}
       disabled={disabled}
-      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded text-white ${
-        title !== undefined ? "px-1" : ""
-      } mx-2 ${showShadow ? "shadow hover:shadow-xl" : ""} inline-flex items-center justify-center`}
+      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded text-white ${title !== undefined ? "px-1" : ""
+        } mx-2 ${showShadow ? "shadow hover:shadow-xl" : ""} inline-flex items-center justify-center`}
       onClick={onClick}
       onMouseEnter={toggleShowTitle}
       onMouseLeave={toggleShowTitle}

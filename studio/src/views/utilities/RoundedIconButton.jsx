@@ -1,4 +1,4 @@
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 
 export const RoundedIconButton = ({ id, icon, size, color, handleClick }) => (
   <button

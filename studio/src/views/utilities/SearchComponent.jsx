@@ -1,4 +1,4 @@
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 
 export const SearchComponent = ({ search, onChange, onClear, placeholder = "Filter", className = "w-34" }) => (
   <div className="flex items-center mx-2 relative">

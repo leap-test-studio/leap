@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Transition } from "@headlessui/react";
 
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 
 export const Snackbar = ({ message, status }) => {
   let style;

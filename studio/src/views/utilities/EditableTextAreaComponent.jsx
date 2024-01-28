@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { NewlineText } from "./NewlineText";
-import { IconRenderer } from "./iconrenderer/IconRenderer";
+import { IconRenderer } from "./iconrenderer";
 
 export const EditableTextAreaComponent = ({ data, onChange }) => {
   const [description, setDescription] = useState(data);
