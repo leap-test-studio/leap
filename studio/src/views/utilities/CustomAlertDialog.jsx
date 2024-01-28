@@ -14,14 +14,15 @@ export const CustomAlertDialog = ({ showDialog, level, message, errorMessage, bu
         <div className="flex flex-col h-fit items-center justify-center">
           <IconRenderer
             icon={Icons[level] || "Error"}
-            className={`${level === "info"
+            className={`${
+              level === "info"
                 ? "text-color-0500"
                 : level === "warn"
                   ? "text-yellow-400"
                   : level === "success"
                     ? "text-cds-green-0600"
                     : "text-cds-red-0500"
-              }`}
+            }`}
             style={{
               fontSize: "80"
             }}

@@ -80,8 +80,9 @@ export const CustomDialog = ({
                 leaveTo="translate-y-full"
               >
                 <div
-                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${largeScreen ? "w-[60vw]" : "w-[28vw]"
-                    } ${customWidth} ${customHeight}`}
+                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${
+                    largeScreen ? "w-[60vw]" : "w-[28vw]"
+                  } ${customWidth} ${customHeight}`}
                 >
                   <div className="flex flex-col h-fit" style={contentHeight}>
                     {title != null && (
@@ -95,8 +96,9 @@ export const CustomDialog = ({
                     <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar">{children}</div>
                     {onSave && (
                       <div
-                        className={`flex border-t border-solid border-slate-200 ${additionalInfo ? "justify-between" : "justify-end"
-                          } w-full mt-1.5 pt-1`}
+                        className={`flex border-t border-solid border-slate-200 ${
+                          additionalInfo ? "justify-between" : "justify-end"
+                        } w-full mt-1.5 pt-1`}
                       >
                         {additionalInfo}
                         <div className="flex">
