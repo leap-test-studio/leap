@@ -1,7 +1,8 @@
 import React from "react";
+import { RuleEffect } from "@jsonforms/core";
+
 import WebContext from "../context/WebContext";
 import TailwindRenderer from "../tailwindrender";
-import { RuleEffect } from "@jsonforms/core";
 
 class TestPage extends React.Component {
   constructor(props) {

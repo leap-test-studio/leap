@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { Centered, Spinner } from "../../utilities";
-import { ShowSnack } from "../../utilities/Snackbar";
+import { Centered, Spinner, ShowSnack } from "../../utilities";
 
 function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
   const { project, loaded, windowDimension, isProjectSelected, meta } = props;

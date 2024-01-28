@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
-import ReactFlow, { Controls, addEdge, useNodesState, useEdgesState, Background, MarkerType } from "reactflow";
 import { useDispatch, useSelector } from "react-redux";
-import ConnectionLine from "./ConnectionLine";
+import ReactFlow, { Controls, addEdge, useNodesState, useEdgesState, Background, MarkerType } from "reactflow";
 import "reactflow/dist/style.css";
 import "reactflow/dist/base.css";
 import isEmpty from "lodash/isEmpty";
 import { nanoid } from "nanoid";
 
+import ConnectionLine from "./ConnectionLine";
 import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";

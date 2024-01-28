@@ -7,7 +7,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import FirstTimeCard from "./FirstTimeCard";
 import DisplayCard from "./DisplayCard";
-import { ProjectColors } from "./ProjectColors";
+import { ProjectColors } from "./Constants";
 import CreateProjectDialog from "./CreateProjectDialog";
 import ProjectSettingsDialog from "./ProjectSettingsDialog";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
@@ -258,9 +258,8 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
             {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
           </div>
           <div
-            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${
-              status ? "bg-green-200" : "bg-blue-200"
-            }`}
+            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
+              }`}
           >
             {status ? "Active" : "In-Active"}
           </div>

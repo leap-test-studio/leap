@@ -5,7 +5,9 @@ import { GaugeChart } from "echarts/charts";
 import * as echarts from "echarts/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+
 import IconRenderer from "../../IconRenderer";
+
 dayjs.extend(relativeTime);
 // Register the required components
 echarts.use([GaugeChart, CanvasRenderer]);

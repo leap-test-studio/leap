@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function UploadFile(method: string, url: string, data: FormData, progress: (percent: number) => void) {
+export const UploadFile = (method: string, url: string, data: FormData, progress: (percent: number) => void) => {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.ontimeout = reject;

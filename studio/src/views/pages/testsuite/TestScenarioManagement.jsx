@@ -17,7 +17,7 @@ import {
   runTestScenario
 } from "../../../redux/actions/TestScenarioActions";
 import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
-import { ProjectColors } from "../common/ProjectColors";
+import { ProjectColors } from "../common/Constants";
 import IconRenderer from "../../IconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";

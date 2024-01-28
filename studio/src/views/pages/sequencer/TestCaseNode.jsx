@@ -1,10 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Handle, Position } from "reactflow";
+
 import NodeHeader from "./NodeHeader";
 import NodeFooter from "./NodeFooter";
-import { useSelector } from "react-redux";
 import ProgressIcon from "./ProgressIcon";
-import IconTypes from "./IconTypes";
 
 const handleStyleTarget = {
   backgroundColor: "white",

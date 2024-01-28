@@ -1,7 +1,7 @@
 import IconRenderer from "../../IconRenderer";
 import { IconButton, Spinner } from "../../utilities";
 
-function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonIcon, onClick, onClose }) {
+export default function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonIcon, onClick, onClose }) {
   return (
     <>
       {loading ? (
@@ -28,6 +28,4 @@ function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonI
       )}
     </>
   );
-}
-
-export default FirstTimeCard;
+};

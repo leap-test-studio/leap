@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
 import ImportTestCaseDialog from "./ImportTestCaseDialog";
+import CreateTestCaseDialog from "./CreateTestCaseDialog";
+import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { cropString } from "../utils";
 import {
   Centered,
@@ -27,8 +29,6 @@ import {
   cloneTestCase,
   runTestCases
 } from "../../../redux/actions/TestCaseActions";
-import CreateTestCaseDialog from "./CreateTestCaseDialog";
-import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
@@ -326,8 +326,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
+          className={`text-xs font-normal select-none ${record.status === 0
               ? "bg-purple-300"
               : record.status === 1
                 ? "bg-indigo-300"
@@ -336,7 +335,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
                   : record.status === 3
                     ? "bg-violet-400"
                     : ""
-          }`}
+            }`}
         >
           {tcType}
         </label>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import LogoRenderer from "./layout/LogoRenderer";
-import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
-import * as actionTypes from "../../redux/actions";
 import isEmpty from "lodash/isEmpty";
+
+import LogoRenderer from "./layout/LogoRenderer";
+import * as actionTypes from "../../redux/actions";
+import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
 
 export function SignInPage({ product }) {
   const dispatch = useDispatch();
@@ -109,9 +110,8 @@ export function SignInPage({ product }) {
                 id="signin-btn"
                 type="submit"
                 onClick={onSubmit}
-                className={`${
-                  loading ? "cursor-not-allowed" : "cursor-pointer"
-                } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
+                className={`${loading ? "cursor-not-allowed" : "cursor-pointer"
+                  } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
               >
                 {loading && (
                   <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

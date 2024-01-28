@@ -1,8 +1,9 @@
-import { getBezierPath } from "reactflow";
-import IconRenderer from "../../MuiIcons";
-import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
-import { useDispatch } from "react-redux";
 import { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { getBezierPath } from "reactflow";
+
+import IconRenderer from "../../IconRenderer";
+import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
 
 const foreignObjectSize = 30;
 

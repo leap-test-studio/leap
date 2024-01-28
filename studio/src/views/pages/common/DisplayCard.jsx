@@ -1,4 +1,4 @@
-function DisplayCard({ name, cardIcon, actions, children }) {
+export default function DisplayCard({ name, cardIcon, actions, children }) {
   return (
     <div key={name} className="bg-slate-50 border border-slate-300 rounded-md shadow-md hover:shadow-lg transition duration-300 p-1">
       <div className="flex flex-row rounded-tr rounded-tl h-full">
@@ -11,6 +11,4 @@ function DisplayCard({ name, cardIcon, actions, children }) {
       </div>
     </div>
   );
-}
-
-export default DisplayCard;
+};

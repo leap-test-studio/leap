@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReactEcharts from "echarts-for-react";
+
 import { cashFormat } from "../utils";
 import TailwindSelectRenderer from "../../tailwindrender/renderers/TailwindSelectRenderer";
 

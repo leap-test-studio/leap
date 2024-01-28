@@ -2,18 +2,17 @@ import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import snakeCase from "lodash/snakeCase";
 
-import IconRenderer from "../../IconRenderer";
-import { Tooltip } from "../../utilities";
 import UserInfo from "./UserInfo";
 import LogoRenderer from "./LogoRenderer";
+import IconRenderer from "../../IconRenderer";
+import { Tooltip } from "../../utilities";
 
 export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerHeight, maxContentHeight, menuClicked, isSetupSelected, ...props }) {
   const isSmallScreen = maxContentHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 ${
-        showSidebar ? "w-[12%]" : "w-12"
-      } bg-sky-950 text-slate-100 flex flex-col cursor-pointer h-screen px-0.5`}
+      className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"
+        } bg-sky-950 text-slate-100 flex flex-col cursor-pointer h-screen px-0.5`}
     >
       <div className="border-b-[1px] border-slate-400 mx-px py-1 flex flex-row items-center justify-start">
         <LogoRenderer className="m-1 h-6 w-6" name={props?.product.name} />
@@ -50,9 +49,8 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
 function SidebarRender({ showSidebar, children }) {
   return (
     <div
-      className={`flex flex-col px-1.5 py-2 select-none h-full ${
-        showSidebar ? "max-h-[94%]" : "max-h-[99%]"
-      } overflow-y-auto custom-scrollbar cursor-default overflow-x-hidden`}
+      className={`flex flex-col px-1.5 py-2 select-none h-full ${showSidebar ? "max-h-[94%]" : "max-h-[99%]"
+        } overflow-y-auto custom-scrollbar cursor-default overflow-x-hidden`}
     >
       {children}
     </div>
@@ -83,13 +81,12 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
       <NavLink
         id={`nav-page-${id}`}
         to={!openNewTab ? actualPath : pathname}
-        className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "p-1 mb-2"} ${
-          pathname.includes(path)
+        className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "p-1 mb-2"} ${pathname.includes(path)
             ? "z-0 backdrop-blur-sm bg-slate-500/40 text-slate-300 border-l-4 border-slate-500"
             : hovered
               ? "backdrop-blur-sm text-slate-300"
               : "hover:text-slate-300"
-        } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
+          } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => {
@@ -99,9 +96,8 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
         }}
       >
         <div
-          className={`absolute h-full transition-all duration-300 ease-in-out ${
-            hovered ? "right-0 w-full rounded-md bg-slate-900 text-slate-300" : "right-full w-0"
-          }`}
+          className={`absolute h-full transition-all duration-300 ease-in-out ${hovered ? "right-0 w-full rounded-md bg-slate-900 text-slate-300" : "right-full w-0"
+            }`}
         />
         {icon && (
           <div className="mx-1 z-10">

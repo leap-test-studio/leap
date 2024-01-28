@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect } from "react";
 import isEmpty from "lodash/isEmpty";
-import Pagination from "../utilities/Pagination/Pagination";
-import { EmptyIconRenderer } from "../utilities";
+
+import { EmptyIconRenderer, Pagination } from "../utilities";
 import IconRenderer from "../IconRenderer";
 import WebContext from "../context/WebContext";
 
-function TableRenderer({
+export default function TableRenderer({
   columns = [],
   data = [],
   pageSizes,
@@ -29,16 +29,16 @@ function TableRenderer({
   const [checkedRecords, setCheckedRecords] = useState([]);
   const sortedItems = Array.isArray(data)
     ? [...data].sort((a, b) => {
-        if (sortProperty) {
-          if (a[sortProperty] < b[sortProperty]) {
-            return sortDirection === "asc" ? -1 : 1;
-          }
-          if (a[sortProperty] > b[sortProperty]) {
-            return sortDirection === "asc" ? 1 : -1;
-          }
+      if (sortProperty) {
+        if (a[sortProperty] < b[sortProperty]) {
+          return sortDirection === "asc" ? -1 : 1;
         }
-        return 0;
-      })
+        if (a[sortProperty] > b[sortProperty]) {
+          return sortDirection === "asc" ? 1 : -1;
+        }
+      }
+      return 0;
+    })
     : [];
 
   useEffect(() => {
@@ -135,8 +135,6 @@ function TableRenderer({
   );
 }
 
-export default TableRenderer;
-
 function TableHeader({
   columns,
   sortDirection,
@@ -175,11 +173,10 @@ function TableHeader({
         {columns.map(({ title, field, sortable, width, style = "text-left", sorter }, index, arr) => (
           <th
             key={index}
-            className={`p-1.5 sticky top-0 ${style} ${
-              sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            className={`p-1.5 sticky top-0 ${style} ${sortable ? "cursor-pointer" : ""
+              } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
             style={{ width: width + "px" }}
-            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
+            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => { }}
             onMouseOver={() => setIsHovering(true)}
             onMouseOut={() => setIsHovering(false)}
           >
@@ -250,9 +247,8 @@ function CellRenderer(col, field, record, columns) {
     default:
       return (
         <div
-          className={`select-none ${col.style ? col.style : ""} ${
-            colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""
-          } ${col.center ? "text-center" : ""}`}
+          className={`select-none ${col.style ? col.style : ""} ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""
+            } ${col.center ? "text-center" : ""}`}
         >
           {colProperties != null ? colProperties.title : field}
         </div>

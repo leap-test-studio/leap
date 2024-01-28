@@ -1,4 +1,5 @@
 import { Dialog } from "@headlessui/react";
+
 import LogoRenderer from "./LogoRenderer";
 
 function AboutDialog({ showDialog, closeDialog, product }) {

@@ -1,6 +1,14 @@
 import LocalStorageService from "../../../redux/actions/LocalStorageService";
 import IconRenderer from "./../../../views/IconRenderer";
-function UserInfo({ showTitle = false }) {
+
+const IconLabel = ({ icon, label }) => (
+  <p className="text-xs flex items-center">
+    <IconRenderer icon={icon} className="mr-1" style={{ width: "12px" }} />
+    {label}
+  </p>
+);
+
+export default function UserInfo({ showTitle = false }) {
   if (!showTitle) return null;
   const user = LocalStorageService.getItem("auth_user");
   let username, role, email;
@@ -18,15 +26,4 @@ function UserInfo({ showTitle = false }) {
       {email && <IconLabel label={email} icon="Email" />}
     </div>
   );
-}
-
-function IconLabel({ icon, label }) {
-  return (
-    <p className="text-xs flex items-center">
-      <IconRenderer icon={icon} className="mr-1" style={{ width: "12px" }} />
-      {label}
-    </p>
-  );
-}
-
-export default UserInfo;
+};

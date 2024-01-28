@@ -1,6 +1,6 @@
 import { CustomDialog } from "../../utilities";
 
-function DeleteNodeDialog({ showDialog, deleteNode, selectedNode, onClose }) {
+export default function DeleteNodeDialog({ showDialog, deleteNode, selectedNode, onClose }) {
   return (
     <CustomDialog open={showDialog} onClose={onClose} title="Delete Node">
       <span className="mt-2">Are you sure you want to delete the selected Node?</span>
@@ -17,6 +17,4 @@ function DeleteNodeDialog({ showDialog, deleteNode, selectedNode, onClose }) {
       </div>
     </CustomDialog>
   );
-}
-
-export default DeleteNodeDialog;
+};

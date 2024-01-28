@@ -1,11 +1,12 @@
-import history from "./history";
+import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+
+import history from "./history";
 import Layout from "./views/pages/layout/Layout";
 import SignInPage from "./views/pages/SignInPage";
 import ReactComponentLoader from "./views/pages/ReactComponentLoader";
 import AuthGuard from "./auth/AuthGuard";
 import WebContext from "./views/context/WebContext";
-import { useContext, useEffect, useState } from "react";
 import { authRoles } from "./auth/authRoles";
 
 const InititialRoutes = [

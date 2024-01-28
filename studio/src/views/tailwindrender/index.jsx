@@ -1,5 +1,5 @@
-import { JsonForms } from "@jsonforms/react";
 import { createAjv } from "@jsonforms/core";
+import { JsonForms } from "@jsonforms/react";
 import isEmpty from "lodash/isEmpty";
 
 import { tailwindBooleanCellTester, TailwindBooleanCell } from "./cells/TailwindBooleanCell";
@@ -85,7 +85,7 @@ ajv.addFormat("vdusim.tar.gz", {
     try {
       new URL(data);
       isUrlCorrect = true;
-    } catch (_) {}
+    } catch (_) { }
     return isUrlCorrect && /vdusim.tar.gz/.test(data);
   }
 });

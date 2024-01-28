@@ -1,8 +1,9 @@
+import { Provider } from "react-redux";
 import ReactDOM from "react-dom/client";
 import "./assets/css/index.css";
+
 import App from "./App";
 import ContextProvider from "./views/context/ContextProvider";
-import { Provider } from "react-redux";
 import { Store } from "./redux/Store";
 import Product from "./product.json";
 
