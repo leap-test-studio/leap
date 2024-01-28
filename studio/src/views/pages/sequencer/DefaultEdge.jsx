@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { getBezierPath } from "reactflow";
 
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
 
 const foreignObjectSize = 30;

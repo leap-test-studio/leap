@@ -1,8 +1,7 @@
 import { useDispatch } from "react-redux";
 
 import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
-import { Tooltip } from "../../utilities";
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 import { convertMsToHMString } from "../../tailwindrender/util/converter";
 
 function NodeHeader({ selected, timer = 0 }) {

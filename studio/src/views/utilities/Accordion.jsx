@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 
-import IconRenderer from "../IconRenderer";
+import { IconRenderer } from "./iconrenderer/IconRenderer";
 import { IconButton } from "./IconButton";
 
 export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete, onChange, children, pid }) => {

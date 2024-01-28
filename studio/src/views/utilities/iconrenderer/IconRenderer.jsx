@@ -1,5 +1,5 @@
 import loadable from "react-loadable";
-import { Tooltip } from "./utilities";
+import { Tooltip } from "../tooltip";
 
 const HourGlass = ({ className }) => (
   <svg width="16" height="16" className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,10 +14,8 @@ const MuiIcons = loadable({
   loading: () => <HourGlass className="opacity-50" />
 });
 
-export default function IconRenderer({ tooltip, description, ...props }) {
-  return (
-    <Tooltip title={tooltip} content={description}>
-      <MuiIcons {...props} />
-    </Tooltip>
-  );
-}
+export const IconRenderer = ({ tooltip, description, ...props }) => (
+  <Tooltip title={tooltip} content={description}>
+    <MuiIcons {...props} />
+  </Tooltip>
+);

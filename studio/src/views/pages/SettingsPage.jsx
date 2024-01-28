@@ -2,8 +2,7 @@ import React from "react";
 import isEmpty from "lodash/isEmpty";
 
 import WebContext from "../context/WebContext";
-import IconRenderer from "../IconRenderer";
-import { Centered, Spinner, UploadFile } from "../utilities";
+import { Centered, Spinner, UploadFile, IconRenderer } from "../utilities";
 
 class SettingsPage extends React.Component {
   hiddenFileInput = React.createRef(null);

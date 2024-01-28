@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 
 import AboutDialog from "./AboutDialog";
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 /*
 const openInNewTab = (url) => {

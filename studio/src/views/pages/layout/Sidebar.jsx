@@ -4,8 +4,7 @@ import snakeCase from "lodash/snakeCase";
 
 import UserInfo from "./UserInfo";
 import LogoRenderer from "./LogoRenderer";
-import IconRenderer from "../../IconRenderer";
-import { Tooltip } from "../../utilities";
+import { Tooltip, IconRenderer } from "../../utilities";
 
 export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerHeight, maxContentHeight, menuClicked, isSetupSelected, ...props }) {
   const isSmallScreen = maxContentHeight < 800;

@@ -2,8 +2,7 @@ import React from "react";
 import isEmpty from "lodash/isEmpty";
 
 import ErrorMessage from "./common/ErrorMessage";
-import { Tooltip } from "../../utilities";
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 const TailwindRadioGroupRenderer = React.memo((props) => {
   const onChange = (value) => {

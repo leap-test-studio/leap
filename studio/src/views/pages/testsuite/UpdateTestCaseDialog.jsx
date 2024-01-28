@@ -4,8 +4,7 @@ import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
 import TailwindRenderer from "../../tailwindrender";
-import { IconButton } from "../../utilities";
-import IconRenderer from "../../IconRenderer";
+import { IconButton, IconRenderer } from "../../utilities";
 
 import WebSchema from "./schema/web_schema.json";
 import SSHSchema from "./schema/ssh_schema.json";

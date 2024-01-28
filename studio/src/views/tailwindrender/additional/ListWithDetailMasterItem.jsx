@@ -5,7 +5,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
-import IconRenderer from "../../IconRenderer";
+
+import { IconRenderer } from "../../utilities";
 
 const ListWithDetailMasterItem = ({ index, childLabel, selected, handleSelect, removeItem, path }) => {
   return (

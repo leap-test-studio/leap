@@ -6,7 +6,7 @@ import * as echarts from "echarts/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 dayjs.extend(relativeTime);
 // Register the required components

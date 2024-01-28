@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactEcharts from "echarts-for-react";
 
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 import { getBuildTrend } from "../../../redux/actions/DashboardActions";
 
 const INTERVAL = 10 * 1000;

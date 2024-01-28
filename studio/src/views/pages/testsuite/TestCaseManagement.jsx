@@ -16,9 +16,9 @@ import {
   CustomAlertDialog,
   DeleteItemDialog,
   EmptyIconRenderer,
-  SearchComponent
+  SearchComponent,
+  IconRenderer
 } from "../../utilities";
-import IconRenderer from "../../IconRenderer";
 import {
   fetchTestCaseList,
   createTestCase,

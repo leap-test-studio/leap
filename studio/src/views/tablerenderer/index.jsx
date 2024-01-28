@@ -1,8 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import isEmpty from "lodash/isEmpty";
 
-import { EmptyIconRenderer, Pagination } from "../utilities";
-import IconRenderer from "../IconRenderer";
+import { EmptyIconRenderer, Pagination, IconRenderer } from "../utilities";
 import WebContext from "../context/WebContext";
 
 export default function TableRenderer({

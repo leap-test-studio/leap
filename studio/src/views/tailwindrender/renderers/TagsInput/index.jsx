@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import IconRenderer from "../../../IconRenderer";
+
+import { IconRenderer } from "../../../utilities";
 
 function uniq(arr) {
   const out = [];

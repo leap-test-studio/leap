@@ -1,4 +1,4 @@
-import IconRenderer from "../IconRenderer";
+import { IconRenderer } from "./iconrenderer/IconRenderer";
 import { CustomDialog } from "./CustomDialog";
 
 const Icons = {

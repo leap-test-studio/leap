@@ -1,4 +1,4 @@
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 const ProgressIcon = ({ progress = 0, status, size = 70, icon }) => {
   const running = status === "ACTIVE" || (progress > 0 && progress < 100);

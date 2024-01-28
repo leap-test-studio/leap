@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 
-import IconRenderer from "../../IconRenderer";
-import { Tooltip } from "../../utilities";
+import { Tooltip, IconRenderer } from "../../utilities";
 import { logoutUser } from "../../../redux/actions/LoginActions";
 
 export default function LogoutButton({ resetContext }) {

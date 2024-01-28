@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 function SelectedProject({ product, project, scenario, resetContext, changeTestScenario }) {
   const navigate = useNavigate();

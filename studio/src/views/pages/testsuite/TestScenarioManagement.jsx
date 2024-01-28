@@ -6,7 +6,17 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import CloneTestScenarioDialog from "./CloneTestScenarioDialog";
 import CreateTestScenarioDialog from "./CreateTestScenarioDialog";
 import TestCaseManagement from "./TestCaseManagement";
-import { Centered, IconButton, Tooltip, NewlineText, CustomAlertDialog, DeleteItemDialog, EmptyIconRenderer, SearchComponent } from "../../utilities";
+import {
+  Centered,
+  IconButton,
+  Tooltip,
+  NewlineText,
+  CustomAlertDialog,
+  DeleteItemDialog,
+  EmptyIconRenderer,
+  SearchComponent,
+  IconRenderer
+} from "../../utilities";
 import {
   createTestScenario,
   fetchTestScenarioList,
@@ -18,7 +28,6 @@ import {
 } from "../../../redux/actions/TestScenarioActions";
 import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
 import { ProjectColors } from "../common/Constants";
-import IconRenderer from "../../IconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
@@ -32,7 +41,6 @@ function TestScenarioManagement(props) {
   const dispatch = useDispatch();
   const [search, setSearch] = useState(null);
   const [selectedTestScenario, setSelectedTestScenario] = useState(null);
-  const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);

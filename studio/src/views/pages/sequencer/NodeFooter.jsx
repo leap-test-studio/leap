@@ -1,7 +1,7 @@
 import IconColors from "./IconColors";
 import NodeTypes from "./NodeTypes";
 import IconTypes from "./IconTypes";
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 const RenderStatusIcon = ({ icon, iconColor, progress, tooltip, description }) => (
   <IconRenderer

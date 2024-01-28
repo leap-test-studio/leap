@@ -1,5 +1,4 @@
-import IconRenderer from "../../IconRenderer";
-import { IconButton, Spinner } from "../../utilities";
+import { IconButton, Spinner, IconRenderer } from "../../utilities";
 
 export default function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonIcon, onClick, onClose }) {
   return (

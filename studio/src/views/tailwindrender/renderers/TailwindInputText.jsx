@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import merge from "lodash/merge";
+
 import LabelRenderer from "./common/LabelRenderer";
-import IconRenderer from "../../IconRenderer";
 import ErrorMessage from "./common/ErrorMessage";
+import { IconRenderer } from "../../utilities";
 
 /**
  * Default renderer for a string.

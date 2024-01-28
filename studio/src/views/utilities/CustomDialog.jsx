@@ -2,7 +2,7 @@ import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import isEmpty from "lodash/isEmpty";
 
-import IconRenderer from "../IconRenderer";
+import { IconRenderer } from "./iconrenderer/IconRenderer";
 import { IconButton } from "./IconButton";
 import { CloseButton } from "./CloseButton";
 

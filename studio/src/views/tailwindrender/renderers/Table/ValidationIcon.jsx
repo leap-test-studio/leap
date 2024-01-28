@@ -1,4 +1,4 @@
-import IconRenderer from "../../../IconRenderer";
+import { IconRenderer } from "../../../utilities";
 
 const ValidationIcon = ({ errorMessages }) => {
   return (

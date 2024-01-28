@@ -30,9 +30,9 @@ import {
   DeleteItemDialog,
   EmptyIconRenderer,
   RoundedIconButton,
-  SearchComponent
+  SearchComponent,
+  IconRenderer
 } from "../../utilities";
-import IconRenderer from "../../IconRenderer";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 dayjs.extend(relativeTime);
@@ -289,7 +289,15 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               )}
             </>
           )}
-          <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+          <Tooltip
+            title={
+              <p>
+                Enable or Disable the <strong>Project</strong>
+              </p>
+            }
+          >
+            <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+          </Tooltip>
           <IconRenderer
             icon="Settings"
             className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"

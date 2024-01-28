@@ -1,4 +1,4 @@
-import IconRenderer from "../../IconRenderer";
+import { IconRenderer } from "../../utilities";
 
 function RecentBuilds({ recentBuildSummary }) {
   return (

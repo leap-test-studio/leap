@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Tooltip } from "../../../utilities";
-import IconRenderer from "../../../IconRenderer";
+import { IconRenderer } from "../../../utilities";
 
 const LabelRenderer = React.memo(({ path, label, fontSize, description, ...props }) => {
   return (

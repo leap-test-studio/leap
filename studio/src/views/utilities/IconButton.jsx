@@ -1,5 +1,6 @@
 import { useState } from "react";
-import IconRenderer from "../IconRenderer";
+
+import { IconRenderer } from "./iconrenderer/IconRenderer";
 
 export const IconButton = ({
   id,
