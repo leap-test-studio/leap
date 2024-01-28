@@ -11,4 +11,4 @@ export default function DisplayCard({ name, cardIcon, actions, children }) {
       </div>
     </div>
   );
-};
+}

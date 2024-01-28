@@ -23,7 +23,7 @@ export const UploadFile = (method: string, url: string, data: FormData, progress
     request.setRequestHeader("X-Csrf-Token", String(localStorage.getItem("csrfToken")));
     request.send(data);
   });
-}
+};
 
 export const DownloadFile = async (url: string, name: string, contentType: string) => {
   const blob = await axios.get(url, {

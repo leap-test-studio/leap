@@ -49,7 +49,7 @@ export const LoadingSnackbar = ({ message }) => (
     </svg>
     <span className="font-medium ml-1">{message}</span>
   </div>
-)
+);
 
 export const ShowSnack = () => {
   const message = useSelector((state) => state.message);

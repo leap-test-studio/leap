@@ -6,8 +6,9 @@ function renderItem(item) {
     case "previous":
       return (
         <div
-          className={`inline-flex items-center p-1 px-2 rounded-l-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${item.disabled && "bg-gray-200 hover:bg-gray-200"
-            }`}
+          className={`inline-flex items-center p-1 px-2 rounded-l-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
+            item.disabled && "bg-gray-200 hover:bg-gray-200"
+          }`}
           onClick={() => {
             if (!item.disabled) item.onClick();
           }}
@@ -25,8 +26,9 @@ function renderItem(item) {
     case "next":
       return (
         <div
-          className={`inline-flex items-center p-1 px-2 rounded-r-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${item.disabled && "bg-gray-200 hover:bg-gray-200"
-            }`}
+          className={`inline-flex items-center p-1 px-2 rounded-r-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 select-none cursor-pointer ${
+            item.disabled && "bg-gray-200 hover:bg-gray-200"
+          }`}
           onClick={() => {
             if (!item.disabled) item.onClick();
           }}
@@ -46,8 +48,9 @@ function renderItem(item) {
     case "page":
       return (
         <div
-          className={`flex text-center p-1.5 px-3 border text-xs font-medium select-none cursor-pointer ${item.selected ? "bg-cds-ice-0050 border-cds-ice-0500 text-cds-ice-0600" : "border-gray-300 text-gray-500 hover:bg-gray-50"
-            }`}
+          className={`flex text-center p-1.5 px-3 border text-xs font-medium select-none cursor-pointer ${
+            item.selected ? "bg-cds-ice-0050 border-cds-ice-0500 text-cds-ice-0600" : "border-gray-300 text-gray-500 hover:bg-gray-50"
+          }`}
           onClick={item.onClick}
         >
           {item.page}
@@ -115,5 +118,4 @@ export const Pagination = (props) => {
       </div>
     </div>
   );
-}
-
+};

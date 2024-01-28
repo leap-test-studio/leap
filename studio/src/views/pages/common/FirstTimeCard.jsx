@@ -28,4 +28,4 @@ export default function FirstTimeCard({ id, loading, title, details, icon, butto
       )}
     </>
   );
-};
+}

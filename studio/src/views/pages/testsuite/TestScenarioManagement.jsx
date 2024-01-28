@@ -256,69 +256,57 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
           </Tooltip>
           {status && (
-            <Tooltip
-              title="Run Test Scenario"
-              content={
+            <IconRenderer
+              icon="PlayArrow"
+              style={{ fontSize: 18 }}
+              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+              onClick={run}
+              tooltip="Run Test Scenario"
+              description={
                 <p>
                   Execute test cases of <strong>Test Scenario</strong>
                 </p>
               }
-            >
-              <IconRenderer
-                icon="PlayArrow"
-                style={{ fontSize: 18 }}
-                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-                onClick={run}
-              />
-            </Tooltip>
+            />
           )}
-          <Tooltip
-            title="Clone Test Scenario"
-            content={
+          <IconRenderer
+            icon="FileCopy"
+            style={{ fontSize: 18 }}
+            className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+            onClick={cloneTestScenario}
+            tooltip="Clone Test Scenario"
+            description={
               <p>
                 Clone the <strong>Test Scenario</strong>
               </p>
             }
-          >
-            <IconRenderer
-              icon="FileCopy"
-              style={{ fontSize: 18 }}
-              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-              onClick={cloneTestScenario}
-            />
-          </Tooltip>
-          <Tooltip
-            title="Edit Test Scenario"
-            content={
+          />
+          <IconRenderer
+            icon="ModeEdit"
+            style={{ fontSize: 18 }}
+            className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+            onClick={editTestScenario}
+            tooltip="Edit Test Scenario"
+            description={
               <p>
                 View and modify the <strong>Test Scenario</strong> details.
                 <br />
                 Create network elements, deploy, Simulate and more
               </p>
             }
-          >
-            <IconRenderer
-              icon="ModeEdit"
-              style={{ fontSize: 18 }}
-              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-              onClick={editTestScenario}
-            />
-          </Tooltip>
-          <Tooltip
-            title="Delete Test Scenario"
-            content={
+          />
+          <IconRenderer
+            icon="Delete"
+            style={{ fontSize: 18 }}
+            className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
+            onClick={deleteTestScenario}
+            tooltip="Delete Test Scenario"
+            description={
               <p>
                 Permanently purges the <strong>Test Scenario</strong> from system including all backups.
               </p>
             }
-          >
-            <IconRenderer
-              icon="Delete"
-              style={{ fontSize: 18 }}
-              className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
-              onClick={deleteTestScenario}
-            />
-          </Tooltip>
+          />
         </div>
       }
     >

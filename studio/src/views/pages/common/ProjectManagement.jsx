@@ -258,8 +258,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
             {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
           </div>
           <div
-            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
-              }`}
+            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${
+              status ? "bg-green-200" : "bg-blue-200"
+            }`}
           >
             {status ? "Active" : "In-Active"}
           </div>
@@ -270,50 +271,49 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           {status && (
             <>
               {builds >= 1 ? (
-                <Tooltip title="Stop All Running Builds">
-                  <IconRenderer
-                    icon="Stop"
-                    className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
-                    onClick={() => dispatch(stopProjectBuilds(id))}
-                    style={{ fontSize: 18 }}
-                  />
-                </Tooltip>
+                <IconRenderer
+                  icon="Stop"
+                  className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
+                  onClick={() => dispatch(stopProjectBuilds(id))}
+                  style={{ fontSize: 18 }}
+                  tooltip="Stop All Running Builds"
+                />
               ) : (
-                <Tooltip title="Start Automation Build">
-                  <IconRenderer
-                    icon="PlayArrow"
-                    className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-                    onClick={() => dispatch(startProjectBuilds(id))}
-                    style={{ fontSize: 18 }}
-                  />
-                </Tooltip>
+                <IconRenderer
+                  icon="PlayArrow"
+                  className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+                  onClick={() => dispatch(startProjectBuilds(id))}
+                  style={{ fontSize: 18 }}
+                  tooltip="Start Automation Build"
+                />
               )}
             </>
           )}
           <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
-          <Tooltip
-            title="Project Settings"
-            content={
+          <IconRenderer
+            icon="Settings"
+            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            style={{ fontSize: 18 }}
+            onClick={() =>
+              handleAction({
+                project,
+                showSettingsDialog: true
+              })
+            }
+            tooltip="Project Settings"
+            description={
               <p>
                 View and modify the <strong>Project Settings</strong>.
               </p>
             }
-          >
-            <IconRenderer
-              icon="Settings"
-              className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() =>
-                handleAction({
-                  project,
-                  showSettingsDialog: true
-                })
-              }
-            />
-          </Tooltip>
-          <Tooltip
-            title="Edit Project"
-            content={
+          />
+          <IconRenderer
+            icon="ModeEdit"
+            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            onClick={selectProject}
+            style={{ fontSize: 18 }}
+            tooltip="Edit Project"
+            description={
               <>
                 View and modify the <strong>Project Test Scenarios</strong>.
                 <br />
@@ -324,52 +324,38 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                 </ul>
               </>
             }
-          >
-            <IconRenderer
-              icon="ModeEdit"
-              className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-              onClick={selectProject}
-              style={{ fontSize: 18 }}
-            />
-          </Tooltip>
-          <Tooltip
-            title="Delete Project"
-            content={
+          />
+          <IconRenderer
+            icon="Delete"
+            className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
+            onClick={() =>
+              handleAction({
+                project,
+                showDeleteDialog: true
+              })
+            }
+            style={{ fontSize: 18 }}
+            tooltip="Delete Project"
+            description={
               <p>
                 Permanently purges the <strong>Project</strong> from system including all backups.
               </p>
             }
-          >
-            <IconRenderer
-              icon="Delete"
-              className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
-              onClick={() =>
-                handleAction({
-                  project,
-                  showDeleteDialog: true
-                })
-              }
-              style={{ fontSize: 18 }}
-            />
-          </Tooltip>
-
-          <Tooltip
-            title="Export Project"
-            content={
+          />
+          <IconRenderer
+            icon="FileDownload"
+            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            style={{ fontSize: 18 }}
+            onClick={exportProject}
+            tooltip="Export Project"
+            description={
               <p>
                 Export the <strong>Project</strong> in JSON format.
                 <br />
                 Filename: {`ProjectExport-${id}.json`}
               </p>
             }
-          >
-            <IconRenderer
-              icon="FileDownload"
-              className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={exportProject}
-            />
-          </Tooltip>
+          />
         </div>
       }
     >

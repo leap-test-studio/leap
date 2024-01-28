@@ -21,4 +21,4 @@ export default function LogoutButton({ resetContext }) {
       </div>
     </Tooltip>
   );
-};
+}

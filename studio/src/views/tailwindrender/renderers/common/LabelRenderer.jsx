@@ -10,11 +10,7 @@ const LabelRenderer = React.memo(({ path, label, fontSize, description, ...props
         <label style={{ fontSize: fontSize !== undefined ? fontSize : "10px" }}>{label}</label>
         {showAsRequired(props) && <label className="text-red-500 items-center">*</label>}
       </div>
-      {description && (
-        <Tooltip title={description}>
-          <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" />
-        </Tooltip>
-      )}
+      {description && <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" tooltip={description} />}
     </div>
   );
 });

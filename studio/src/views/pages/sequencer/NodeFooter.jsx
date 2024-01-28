@@ -2,7 +2,16 @@ import IconColors from "./IconColors";
 import NodeTypes from "./NodeTypes";
 import IconTypes from "./IconTypes";
 import IconRenderer from "../../IconRenderer";
-import { Tooltip } from "../../utilities";
+
+const RenderStatusIcon = ({ icon, iconColor, progress, tooltip, description }) => (
+  <IconRenderer
+    icon={icon}
+    className={`ml-1 first-line:${progress < 100 && icon === IconTypes.ACTIVE && "animate-pulse"} ${iconColor}`}
+    style={{ fontSize: 14 }}
+    tooltip={tooltip}
+    description={description}
+  />
+);
 
 function NodeFooter({ progress, type, status, label }) {
   const iconType = IconTypes[status];
@@ -12,20 +21,8 @@ function NodeFooter({ progress, type, status, label }) {
   return (
     <div className="inline-flex justify-between items-center p-0.5">
       {label && <span className="break-words text-xs font-medium">{label}</span>}
-      <Tooltip title={label} content={iconTooltip}>
-        <RenderStatusIcon icon={iconType} iconColor={iconColor} progress={progress} />
-      </Tooltip>
+      <RenderStatusIcon icon={iconType} iconColor={iconColor} progress={progress} tooltip={label} description={iconTooltip} />
     </div>
-  );
-}
-
-function RenderStatusIcon({ icon, iconColor, progress }) {
-  return (
-    <IconRenderer
-      icon={icon}
-      className={`ml-1 first-line:${progress < 100 && icon === IconTypes.ACTIVE && "animate-pulse"} ${iconColor}`}
-      style={{ fontSize: 14 }}
-    />
   );
 }
 

@@ -22,24 +22,22 @@ function NodeHeader({ selected, timer = 0 }) {
       )}
       {selected && (
         <div className="flex flex-row items-center justify-end">
-          <Tooltip title="Clone this Node?">
-            <IconRenderer
-              icon="FileCopy"
-              className="text-color-0500 mr-0.5 cursor-pointer"
-              aria-hidden="true"
-              style={{ fontSize: "13" }}
-              onClick={() => dispatch(sequenceEvents("nodeAction:cloneNode"))}
-            />
-          </Tooltip>
-          <Tooltip title="Delete this Node?">
-            <IconRenderer
-              icon="DeleteForever"
-              className="text-color-0500 mr-0.5 cursor-pointer"
-              aria-hidden="true"
-              style={{ fontSize: "14" }}
-              onClick={() => dispatch(sequenceEvents("nodeAction:deleteNode"))}
-            />
-          </Tooltip>
+          <IconRenderer
+            icon="FileCopy"
+            className="text-color-0500 mr-0.5 cursor-pointer"
+            aria-hidden="true"
+            style={{ fontSize: "13" }}
+            onClick={() => dispatch(sequenceEvents("nodeAction:cloneNode"))}
+            tooltip="Clone this Node?"
+          />
+          <IconRenderer
+            icon="DeleteForever"
+            className="text-color-0500 mr-0.5 cursor-pointer"
+            aria-hidden="true"
+            style={{ fontSize: "14" }}
+            onClick={() => dispatch(sequenceEvents("nodeAction:deleteNode"))}
+            tooltip="Delete this Node?"
+          />
         </div>
       )}
     </div>

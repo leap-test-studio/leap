@@ -37,9 +37,7 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
           <div className="flex flex-row items-center justify-between bg-color-0100 rounded-t select-none px-2 py-px">
             {props.label?.length > 0 && <span className="text-xs font-normal text-color-primary">{props.label}</span>}
             {props.description?.length > 0 && (
-              <Tooltip title={props.description}>
-                <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1 text-color-0500" />
-              </Tooltip>
+              <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1 text-color-0500" tooltip={props.description} />
             )}
           </div>
           <div className={`grid px-2 py-1 gap-1 ${props.options?.length >= 3 ? "grid-cols-4" : "grid-cols-2"}`}>

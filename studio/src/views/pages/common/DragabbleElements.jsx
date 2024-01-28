@@ -116,11 +116,7 @@ const RenderElement = React.memo(({ id, type, value, label, description, showIco
       {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
       <div className="inline-flex items-center justify-center">
         <span className={`text-xs text-center ${showIcon ? "" : "p-2"} break-all font-medium mx-0.5`}>{label}</span>
-        {description && (
-          <Tooltip placement="bottom" title={label} content={description}>
-            <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" />
-          </Tooltip>
-        )}
+        {description && <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" tooltip={label} description={description} />}
       </div>
     </div>
   );

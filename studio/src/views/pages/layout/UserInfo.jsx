@@ -26,4 +26,4 @@ export default function UserInfo({ showTitle = false }) {
       {email && <IconLabel label={email} icon="Email" />}
     </div>
   );
-};
+}
