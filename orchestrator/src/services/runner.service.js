@@ -253,7 +253,7 @@ function createTestCase(AccountId, ProjectMasterId, type = 1, payload) {
         resolve({
           buildNumber: nextBuildNumber,
           totalTestCases,
-          message: `Test Runner Started. ${type === 0 ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}, Total test Cases: ${totalTestCases}`
+          message: `Test Runner Started. ${type === 1 ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}${type !== 1 ? ", Total test cases: " + totalTestCases : ""}`
         });
       } else {
         resolve({

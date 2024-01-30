@@ -9,10 +9,6 @@ class TestRunner extends Job {
     super(job);
   }
 
-  async before() {
-    return Promise.resolve();
-  }
-
   async execute() {
     this.steps = [];
     const stepOutcome = {
@@ -53,12 +49,6 @@ class TestRunner extends Job {
     this.result = stepOutcome.result;
     return Promise.resolve();
   }
-
-  async after() {
-    return Promise.resolve();
-  }
-
-  async stop() {}
 }
 
 module.exports = TestRunner;

@@ -112,11 +112,12 @@ class BuildManager extends events.EventEmitter {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const job = await jobService.getJobInfo(jobId);
-            this._handlers[jobId] = new Runner(job);
+            const runner = new Runner(job);
+            this._handlers[jobId] = runner;
             this._jobs_processing.add(jobId);
-            await this._handlers[jobId].run();
-            logger.info("BUILD_MAN: JOB_RESULT::", this._handlers[jobId]?.getStatus());
-            if (this._handlers[jobId]?.getStatus() > 1) {
+            await runner.run();
+            logger.info("BUILD_MAN: JOB_RESULT::", runner?.getStatus());
+            if (runner.getStatus() > 1) {
               await this._stopJob(jobId);
             }
           } catch (error) {

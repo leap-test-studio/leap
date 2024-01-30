@@ -104,6 +104,22 @@ class Job {
       logger.error("Failed to Update", error);
     }
   }
+
+  before() {
+    return Promise.resolve();
+  }
+
+  execute() {
+    this.actual = { actualResult: "Invalid Test Case" };
+    this.result = TestStatus.INVALID_TESTCASE;
+    return Promise.resolve(true);
+  }
+
+  after() {
+    return Promise.resolve();
+  }
+
+  stop() {}
 }
 
 module.exports = Job;
