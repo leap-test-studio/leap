@@ -28,7 +28,7 @@ class Job {
   }
 
   shouldTaskContinue() {
-    return !this._interruptTask || !this._skipStep;
+    return !this._interruptTask || !this._skipSteps;
   }
 
   addStep(step) {
