@@ -1,4 +1,5 @@
 const isEmpty = require("lodash/isEmpty");
+
 const TestStatus = require("../enums/TestStatus");
 const JobService = require("../job.service");
 const { getLocalTime } = require("../../utils/time");
@@ -119,7 +120,7 @@ class Job {
     return Promise.resolve();
   }
 
-  stop() {}
+  stop() { }
 }
 
 module.exports = Job;

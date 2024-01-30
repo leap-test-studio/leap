@@ -1,16 +1,18 @@
 const { Builder, By, Browser, Capabilities, until, Key } = require("selenium-webdriver");
 const proxy = require("selenium-webdriver/proxy");
 const BPromise = require("bluebird");
-const SleepTimingType = require("../enums/SleepTimingType");
-//const ScreenshotConditionType = require("../enums/ScreenshotConditionType");
-const WebActionTypes = require("../../config/web_action_types.json");
-const TestStatus = require("../enums/TestStatus");
 const merge = require("lodash/merge");
+
 const Job = require("./Job");
 const { httpRequest } = require("./common");
 const DragAndDrop = require("./html_dnd");
+const TestStatus = require("../enums/TestStatus");
+const SleepTimingType = require("../enums/SleepTimingType");
+//const ScreenshotConditionType = require("../enums/ScreenshotConditionType");
 
+const WebActionTypes = require("../../config/web_action_types.json");
 const ActionsTypes = Object.keys(WebActionTypes);
+
 class TestRunner extends Job {
   constructor(job) {
     super(job);

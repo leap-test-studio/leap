@@ -1,8 +1,9 @@
-const TestStatus = require("../enums/TestStatus");
-const Job = require("./Job");
 const isEqual = require("lodash/isEqual");
 const isEmpty = require("lodash/isEmpty");
+
+const Job = require("./Job");
 const { httpRequest } = require("./common");
+const TestStatus = require("../enums/TestStatus");
 
 class TestRunner extends Job {
   constructor(job) {
