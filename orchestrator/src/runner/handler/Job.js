@@ -120,7 +120,7 @@ class Job {
     return Promise.resolve();
   }
 
-  stop() { }
+  stop() {}
 }
 
 module.exports = Job;

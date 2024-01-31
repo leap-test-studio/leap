@@ -1,13 +1,13 @@
 const EventEmitter = require("events");
 const Flow = require("./flow");
 const STATUS = require("./status");
+const Task = require("./task");
 
 class Runtime extends EventEmitter {
-  constructor({ flow, context = {}, tasks } = {}) {
+  constructor({ flow, context = {} } = {}) {
     super();
     this._flow = new Flow(flow);
     this._context = context;
-    this._tasks = tasks;
     this._isRunning = false;
     this._started = false;
     this._completed = false;
@@ -19,10 +19,6 @@ class Runtime extends EventEmitter {
 
   get flow() {
     return this._flow;
-  }
-
-  get tasks() {
-    return this._tasks;
   }
 
   get startNode() {
@@ -78,8 +74,8 @@ class Runtime extends EventEmitter {
     if (canRun) {
       this.changeNodeStatus(node.id, STATUS.RUNNING);
       try {
-        const task = this.tasks.get(node.type);
-        const result = await task?.run({ node, context: this._context, message });
+        const task = new Task({ node, context: this._context, message });
+        const result = await task.run();
         this.completeNode({ node, message: result });
       } catch (error) {
         this.emit("error", { error });

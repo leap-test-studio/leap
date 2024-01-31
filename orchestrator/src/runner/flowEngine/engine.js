@@ -1,12 +1,10 @@
-const Tasks = require("./tasks");
 const Runtime = require("./runtime");
 
 class FlowEngine {
-  constructor({ flow, context = {}, tasks }) {
+  constructor({ flow, context = {} }) {
     this._flow = flow;
     this._context = context;
-    this._tasks = new Tasks(tasks);
-    this._runtime = new Runtime({ flow: this._flow, context: this._context, tasks: this._tasks });
+    this._runtime = new Runtime({ flow: this._flow, context: this._context });
   }
 
   get runtime() {

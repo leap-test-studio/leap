@@ -44,7 +44,7 @@ export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete
               <IconRenderer
                 icon="ChevronRight"
                 className={`${show ? "-rotate-90 transform" : "rotate-90"} h-5 w-5 text-color-primary`}
-                iconSize={14}
+                style={{ fontSize: 14 }}
               />
             </div>
           </div>
