@@ -1,4 +1,4 @@
-const { FlowEngine } = require("./flowEngine");
+const FlowEngine = require("../flowEngine");
 
 exports.executeSequence = function ({ settings, ...context }) {
   return new Promise((resolve) => {

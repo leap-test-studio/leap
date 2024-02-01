@@ -1,0 +1,5 @@
+exports.STATUSCODES = Object.freeze({
+  RUNNING: "RUNNING",
+  COMPLETED: "COMPLETED",
+  ERROR: "ERROR"
+});
