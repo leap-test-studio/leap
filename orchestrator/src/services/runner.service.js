@@ -2,8 +2,7 @@ const BPromise = require("bluebird");
 const isEmpty = require("lodash/isEmpty");
 const { Op } = require("sequelize");
 
-const BuildManager = require("../runner/build_manager");
-const { executeSequence } = require("../runner");
+const { executeSequence, BuildManager } = require("../build_handler");
 const { TestStatus, RUN_TYPE, TestType } = require("../constants");
 const Role = require("../_helpers/role");
 
@@ -38,7 +37,7 @@ function create(AccountId, ProjectMasterId, payload) {
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
         where: {
           ProjectMasterId,
-          type: 0
+          type: RUN_TYPE.PROJECT
         }
       });
 
@@ -49,7 +48,7 @@ function create(AccountId, ProjectMasterId, payload) {
 
       const build = new global.DbStoreModel.BuildMaster({
         ...payload,
-        type: RUN_TYPE.TESTSCENARIO,
+        type: RUN_TYPE.PROJECT,
         buildNo: nextBuildNumber,
         total: 0,
         status: TestStatus.RUNNING,

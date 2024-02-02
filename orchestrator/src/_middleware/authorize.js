@@ -1,8 +1,8 @@
 const { expressjwt: jwt } = require("express-jwt");
 const fs = require("fs");
 const path = require("path");
-const PUB_KEY = fs.readFileSync(path.join(__dirname, "../..", "/keys/id_rsa_pub.pem"), "utf8");
 const status = require("http-status");
+const PUB_KEY = fs.readFileSync(path.join(__dirname, "../..", "/keys/id_rsa_pub.pem"), "utf8");
 
 module.exports = authorize;
 

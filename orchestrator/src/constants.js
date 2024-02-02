@@ -5,6 +5,7 @@ exports.REDIS_KEY = Object.freeze({
 });
 
 exports.RUN_TYPE = Object.freeze({
+  PROJECT: 0,
   TESTCASE: 1,
   TESTSCENARIO: 2
 });

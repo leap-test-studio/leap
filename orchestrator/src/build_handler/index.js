@@ -4,10 +4,10 @@ const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
 
-const TestHandler = require("../task_handler");
 const JobService = require("./job_service");
 const { TestStatus, REDIS_KEY } = require("../constants");
-
+const TestHandler = require("../task_handler");
+const FlowEngine = require("../flowEngine");
 
 class BuildManager extends events.EventEmitter {
   constructor() {
@@ -145,4 +145,19 @@ class BuildManager extends events.EventEmitter {
   }
 }
 
-module.exports = new BuildManager();
+exports.BuildManager = new BuildManager();
+
+exports.executeSequence = function ({ settings, ...context }) {
+  return new Promise((resolve) => {
+    const flowEngine = new FlowEngine({
+      flow: settings,
+      context
+    });
+
+    const runtime = flowEngine.start();
+    runtime.on("end", () => {
+      console.log(context);
+      resolve(context);
+    });
+  });
+};

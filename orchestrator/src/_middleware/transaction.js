@@ -1,5 +1,6 @@
 "use strict";
 const cluster = require("cluster");
+
 const nodeId = "";
 let previousID = 0;
 let lastDuplicate = 0;

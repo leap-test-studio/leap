@@ -8,7 +8,7 @@ whiteboard.init(global.config.redis);
 const logger = require("./logger");
 const DbStore = require("./dbStore");
 const JobScheduler = require("./services/scheduler");
-const BuildManager = require("./runner/build_manager");
+const { BuildManager } = require("./build_handler");
 
 if (!fs.existsSync("tmp")) {
   fs.mkdirSync("tmp");
