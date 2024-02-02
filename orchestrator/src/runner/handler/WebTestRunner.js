@@ -132,12 +132,16 @@ class TestRunner extends Task {
   }
 
   async captureScreenshot(stepNo) {
+    if (this._interruptTask) {
+      return Promise.resolve(false);
+    }
     try {
       const image = await this.WebDriver.takeScreenshot();
       let buffer = Buffer.from(image, "base64").toJSON();
       if (buffer.data?.length === 0) return Promise.resolve(true);
       buffer = Buffer.from(buffer, "binary").toString("base64");
-      return await this.saveScreenshot({
+      this.emit("CAPTURE_SCREENSHOT", {
+        taskId: this._taskId,
         stepNo,
         buffer
       });

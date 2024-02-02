@@ -1,11 +1,12 @@
+const { EventEmitter } = require("events");
 const isEmpty = require("lodash/isEmpty");
 
-const JobService = require("../job.service");
 const { TestStatus } = require("../../constants");
 const { getLocalTime } = require("../../utils/time");
 
-class Task {
+class Task extends EventEmitter {
   constructor(o) {
+    super();
     this._taskId = o.id;
     this._buildId = o.BuildMasterId;
     this.settings = o.settings;
@@ -67,12 +68,6 @@ class Task {
     return this._extras[key];
   }
 
-  async saveScreenshot(result) {
-    if (!this._interruptTask) {
-      return await JobService.updateScreenshot(this._taskId, result);
-    }
-  }
-
   async afterHook() {
     const payload = {
       result: this.result,
@@ -97,13 +92,7 @@ class Task {
     if (this._interruptTask) {
       return;
     }
-    try {
-      logger.info(this.toString("Uploading Job details: " + JSON.stringify(payload)));
-      const job = await JobService.updateJob(id, payload);
-      await JobService.consolidate(job.BuildMasterId);
-    } catch (error) {
-      logger.error("Failed to Update", error);
-    }
+    this.emit("UPDATE_STATUS", { id, payload });
   }
 
   before() {

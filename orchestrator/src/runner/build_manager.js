@@ -4,8 +4,8 @@ const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
 
-const Runner = require("./handler");
-const jobService = require("./job.service");
+const TestHandler = require("./handler");
+const JobService = require("./job_service");
 const { TestStatus } = require("../constants");
 
 const REDIS_KEY = Object.freeze({
@@ -112,8 +112,8 @@ class BuildManager extends events.EventEmitter {
           try {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
-            const job = await jobService.getJobInfo(jobId);
-            const runner = new Runner(job);
+            const jobInfo = await JobService.getJobInfo(jobId);
+            const runner = new TestHandler(jobInfo);
             this._handlers[jobId] = runner;
             this._jobs_processing.add(jobId);
             await runner.start();

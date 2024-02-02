@@ -3,8 +3,9 @@ const APITestRunner = require("./APITestRunner");
 const SSHTestRunner = require("./SSHTestRunner");
 const DefaultTestRunner = require("./DefaultTestRunner");
 const { TestStatus, TestType } = require("../../constants");
+const JobService = require("../job_service");
 
-class TestCaseHandler {
+class TestHandler {
   constructor(jobInfo) {
     if (jobInfo != null) {
       switch (jobInfo.type) {
@@ -25,6 +26,18 @@ class TestCaseHandler {
 
   async start() {
     if (this._task) {
+      this._task.on("UPDATE_STATUS", async ({ id, payload }) => {
+        try {
+          logger.info(this.toString("Uploading Job details: " + JSON.stringify(payload)));
+          const job = await JobService.updateJob(id, payload);
+          await JobService.consolidate(job.BuildMasterId);
+        } catch (error) {
+          logger.error("Failed to Update", error);
+        }
+      });
+      this._task.on("CAPTURE_SCREENSHOT", async ({ taskId, ...result }) => {
+        await JobService.updateScreenshot(taskId, result);
+      });
       logger.info(this._task.toString("Execute Before Hook"));
       try {
         await this._task?.beforeHook();
@@ -62,4 +75,4 @@ class TestCaseHandler {
   }
 }
 
-module.exports = TestCaseHandler;
+module.exports = TestHandler;
