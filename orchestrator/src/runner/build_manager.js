@@ -4,15 +4,10 @@ const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
 
-const TestHandler = require("./handler");
+const TestHandler = require("../task_handler");
 const JobService = require("./job_service");
-const { TestStatus } = require("../constants");
+const { TestStatus, REDIS_KEY } = require("../constants");
 
-const REDIS_KEY = Object.freeze({
-  JOB_WAITING_QUEUE: "JOB-WAITING-QUEUE",
-  JOB_PROCESSING_QUEUE: "JOB-PROCESSING-QUEUE",
-  JOB_PROCESSED_QUEUE: "JOB-PROCESSED-QUEUE"
-});
 
 class BuildManager extends events.EventEmitter {
   constructor() {
@@ -124,6 +119,7 @@ class BuildManager extends events.EventEmitter {
                 logger.error("Failed to Update", error);
               }
             });
+
             runner.on("CAPTURE_SCREENSHOT", async ({ taskId, ...result }) => {
               await JobService.updateScreenshot(taskId, result);
             });

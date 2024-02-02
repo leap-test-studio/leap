@@ -19,7 +19,7 @@ const PASSWORD_RULE = {
 const checkCSRF = require("../_middleware/checkCSRF");
 const uuid = require("uuid");
 const status = require("http-status");
-const { getLocalTime } = require("../utils/time");
+const { getLocalTime } = require("../utils");
 
 // routes
 router.post("/authenticate", authenticateSchema, authenticate);

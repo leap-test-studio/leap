@@ -2,7 +2,7 @@ const BPromise = require("bluebird");
 const SSH2Promise = require("ssh2-promise");
 
 const Task = require("./Task");
-const { TestStatus } = require("../../constants");
+const { TestStatus } = require("../constants");
 
 class TestRunner extends Task {
   constructor(taskInfo) {

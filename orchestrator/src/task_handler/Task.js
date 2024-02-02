@@ -1,8 +1,8 @@
 const { EventEmitter } = require("events");
 const isEmpty = require("lodash/isEmpty");
 
-const { TestStatus } = require("../../constants");
-const { getLocalTime } = require("../../utils/time");
+const { TestStatus } = require("../constants");
+const { getLocalTime } = require("../utils");
 
 class Task extends EventEmitter {
   constructor(o) {

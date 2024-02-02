@@ -1,5 +1,6 @@
-const { getPagination, getPagingData } = require("../utils/pagination");
 const { Op } = require("sequelize");
+
+const { getPagination, getPagingData } = require("../utils");
 const fs = require("fs");
 const Types = ["Definition", "REST API", "Web", "SSH"];
 

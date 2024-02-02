@@ -2,21 +2,24 @@
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const moment = require("moment");
 const crypto = require("crypto");
-const sendEmail = require("../_helpers/send-email");
-const Role = require("../_helpers/role");
-const API_URL = process.env.PUBLIC_URL + "/api/v1";
+const { Op } = require("sequelize");
 const timeParser = require("parse-duration");
 const RedisMan = require("whiteboard-pubsub").RedisMan;
-const moment = require("moment");
+
+const sendEmail = require("../_helpers/send-email");
+const Role = require("../_helpers/role");
+const { getPagination, getPagingData } = require("../utils");
+
+const API_URL = process.env.PUBLIC_URL + "/api/v1";
 const OTP_EXPIRY_TIME = timeParser(global.config.OTP_EXPIRY_TIME);
 const REFRESH_TOKEN_EXPIRY = timeParser(global.config.REFRESH_TOKEN_EXPIRY);
 const TOKEN_EXPIRY = global.config.JWT_TOKEN_EXPIRY;
 const CLIENT_NAME = process.env.CLIENT_NAME || "Automation Suite";
 const PRIV_KEY = fs.readFileSync(path.join(__dirname, "../..", "/keys/id_rsa_priv.pem"), "utf8");
 const MAX_ALLOWED_OTP = global.config.MAX_ALLOWED_OTP;
-const { Op } = require("sequelize");
-const { getPagination, getPagingData } = require("../utils/pagination");
+
 
 module.exports = {
   authenticate,

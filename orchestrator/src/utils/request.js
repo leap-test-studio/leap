@@ -1,6 +1,6 @@
 const request = require("request");
 
-module.exports.httpRequest = (req) => {
+exports.httpRequest = (req) => {
   let diagnostics = {
     statusCode: 999
   };
