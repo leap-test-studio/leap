@@ -103,7 +103,7 @@ async function consolidate(buildId) {
       where: {
         BuildMasterId: buildId,
         result: {
-          [Op.not]: 0
+          [Op.not]: TestStatus.DRAFT
         }
       },
       raw: true

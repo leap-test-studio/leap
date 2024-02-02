@@ -58,7 +58,7 @@ class Runtime extends EventEmitter {
     this.emit("end", { message });
   }
 
-  async runNode({ node, prevNode, message = {} } = {}) {
+  async runNode({ node, prevNode } = {}) {
     if (!node) {
       return;
     }
@@ -75,7 +75,9 @@ class Runtime extends EventEmitter {
     if (canRun) {
       this.changeNodeStatus(node.id, STATUSCODES.RUNNING);
       try {
-        const task = TaskFactory.createNewTask(node);
+        node.projectId = this._context.id;
+
+        const task = TaskFactory.createNew(node);
         const result = await task.run();
         this.completeNode({ node, message: result });
       } catch (error) {

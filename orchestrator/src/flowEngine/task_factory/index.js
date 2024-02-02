@@ -1,12 +1,13 @@
-const { TASK_TYPES } = require("../../constants");
 const TestCaseTask = require("./case_task");
 const TestScenarioTask = require("./scenario_task");
 const StartTask = require("./start_task");
 const StopTask = require("./stop_task");
 const TimerTask = require("./timer_task");
+const { TASK_TYPES } = require("../../constants");
 
 const TaskFactory = {
-  createNewTask: (info) => {
+  createNew: (info) => {
+    console.log(JSON.stringify(info));
     switch (info.type) {
       case TASK_TYPES.START_TASK:
         return new StartTask(info);

@@ -1,8 +1,11 @@
 const { EventEmitter } = require("events");
 
 class Task extends EventEmitter {
-  constructor(info) {
-    this._data = { ...info };
+  constructor({ id, type, data }) {
+    super();
+    this._id = id;
+    this._type = type;
+    this._data = { ...data };
     this._context = {
       testcases: 0
     };

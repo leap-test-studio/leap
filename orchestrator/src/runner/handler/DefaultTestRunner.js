@@ -1,6 +1,6 @@
-const Job = require("./Job");
+const Task = require("./Task");
 
-class TestRunner extends Job {
+class TestRunner extends Task {
   constructor(job) {
     super(job);
   }

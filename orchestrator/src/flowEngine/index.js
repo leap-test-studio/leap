@@ -7,11 +7,7 @@ class FlowEngine {
     this._runtime = new Runtime({ flow: this._flow, context: this._context });
   }
 
-  get runtime() {
-    return this._runtime;
-  }
-
-  run() {
+  start() {
     this._runtime.start();
     return this._runtime;
   }

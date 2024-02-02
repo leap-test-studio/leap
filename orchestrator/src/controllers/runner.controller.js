@@ -5,6 +5,7 @@ const status = require("http-status");
 const isEmpty = require("lodash/isEmpty");
 const authorize = require("../_middleware/authorize");
 const csrf = require("../_middleware/checkCSRF");
+const { RUN_TYPE } = require("../constants");
 
 router.post("/:projectId/stop", csrf, authorize(), stopProjectBuilds);
 router.post(
@@ -27,12 +28,6 @@ module.exports = router;
 
 // Build Runner functions
 function triggerSequence(req, res) {
-  let options = {};
-  if (!isEmpty(req.body)) {
-    options = {
-      ...req.body
-    };
-  }
   logger.info("triggerSequence", req.params.projectId);
   runner
     .triggerSequence(req.params.projectId)
@@ -75,7 +70,7 @@ function stopProjectBuilds(req, res) {
 function startTestCases(req, res) {
   logger.info("StartTestCases", req.params.projectId, req.body);
   runner
-    .createTestCase(req.auth?.id, req.params.projectId, 1, req.body)
+    .createTestCase(req.auth?.id, req.params.projectId, RUN_TYPE.TESTCASE, req.body)
     .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);

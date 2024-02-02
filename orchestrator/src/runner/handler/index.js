@@ -23,7 +23,7 @@ class TestCaseHandler {
     }
   }
 
-  async run() {
+  async start() {
     if (this._task) {
       logger.info(this._task.toString("Execute Before Hook"));
       try {

@@ -1,12 +1,12 @@
 const BPromise = require("bluebird");
 const SSH2Promise = require("ssh2-promise");
 
-const Job = require("./Job");
+const Task = require("./Task");
 const { TestStatus } = require("../../constants");
 
-class TestRunner extends Job {
-  constructor(job) {
-    super(job);
+class TestRunner extends Task {
+  constructor(taskInfo) {
+    super(taskInfo);
     this.stepExecutor = this.stepExecutor.bind(this);
     this.conn = new SSH2Promise(this.settings);
   }

@@ -1,13 +1,13 @@
 const isEqual = require("lodash/isEqual");
 const isEmpty = require("lodash/isEmpty");
 
-const Job = require("./Job");
+const Task = require("./Task");
 const { httpRequest } = require("./common");
 const { TestStatus } = require("../../constants");
 
-class TestRunner extends Job {
-  constructor(job) {
-    super(job);
+class TestRunner extends Task {
+  constructor(taskInfo) {
+    super(taskInfo);
   }
 
   async execute() {

@@ -4,7 +4,7 @@ const { Op } = require("sequelize");
 
 const BuildManager = require("../runner/build_manager");
 const { executeSequence } = require("../runner");
-const { TestStatus } = require("../constants");
+const { TestStatus, RUN_TYPE, TestType } = require("../constants");
 const Role = require("../_helpers/role");
 
 module.exports = {
@@ -49,7 +49,7 @@ function create(AccountId, ProjectMasterId, payload) {
 
       const build = new global.DbStoreModel.BuildMaster({
         ...payload,
-        type: 0,
+        type: RUN_TYPE.TESTSCENARIO,
         buildNo: nextBuildNumber,
         total: 0,
         status: TestStatus.RUNNING,
@@ -79,7 +79,7 @@ function create(AccountId, ProjectMasterId, payload) {
               where: {
                 TestScenarioId,
                 type: {
-                  [Op.not]: 0
+                  [Op.not]: TestType.Scenario
                 },
                 enabled: true
               },
@@ -188,12 +188,12 @@ async function createTestScenario(AccountId, ProjectMasterId, TestScenarioId) {
   return createTestCase(
     AccountId,
     ProjectMasterId,
-    2,
+    RUN_TYPE.TESTSCENARIO,
     testCases.map((t) => t.id)
   );
 }
 
-function createTestCase(AccountId, ProjectMasterId, type = 1, payload) {
+function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, payload) {
   return new Promise(async (resolve, reject) => {
     try {
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
@@ -211,7 +211,7 @@ function createTestCase(AccountId, ProjectMasterId, type = 1, payload) {
       const testCases = await global.DbStoreModel.TestCase.findAll({
         where: {
           type: {
-            [Op.not]: 0
+            [Op.not]: TestType.Scenario
           },
           enabled: true,
           id: {
@@ -254,7 +254,7 @@ function createTestCase(AccountId, ProjectMasterId, type = 1, payload) {
         resolve({
           buildNumber: nextBuildNumber,
           totalTestCases,
-          message: `Test Runner Started. ${type === 1 ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}${type !== 1 ? ", Total test cases: " + totalTestCases : ""}`
+          message: `Test Runner Started. ${type === RUN_TYPE.TESTCASE ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}${type !== RUN_TYPE.TESTCASE ? ", Total test cases: " + totalTestCases : ""}`
         });
       } else {
         resolve({

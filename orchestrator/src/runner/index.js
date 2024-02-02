@@ -7,7 +7,7 @@ exports.executeSequence = function ({ settings, ...context }) {
       context
     });
 
-    const runtime = flowEngine.run();
+    const runtime = flowEngine.start();
     runtime.on("end", () => {
       console.log(context);
       resolve(context);

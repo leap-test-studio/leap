@@ -3,7 +3,7 @@ const proxy = require("selenium-webdriver/proxy");
 const BPromise = require("bluebird");
 const merge = require("lodash/merge");
 
-const Job = require("./Job");
+const Task = require("./Task");
 const { httpRequest } = require("./common");
 const DragAndDrop = require("./html_dnd");
 const { TestStatus, SleepTimingType /*, ScreenshotConditionType*/ } = require("../../constants");
@@ -11,9 +11,9 @@ const { TestStatus, SleepTimingType /*, ScreenshotConditionType*/ } = require(".
 const WebActionTypes = require("../../config/web_action_types.json");
 const ActionsTypes = Object.keys(WebActionTypes);
 
-class TestRunner extends Job {
-  constructor(job) {
-    super(job);
+class TestRunner extends Task {
+  constructor(taskInfo) {
+    super(taskInfo);
     this.settings.capability = this.settings.capability || "chrome";
     this.sleepTimingType = this.settings.sleep?.timeType;
     this.sleepInterval = this.settings.sleep?.interval;

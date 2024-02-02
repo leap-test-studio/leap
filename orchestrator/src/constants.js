@@ -1,3 +1,8 @@
+exports.RUN_TYPE = Object.freeze({
+  TESTCASE: 1,
+  TESTSCENARIO: 2
+});
+
 exports.STATUSCODES = Object.freeze({
   RUNNING: "RUNNING",
   COMPLETED: "COMPLETED",

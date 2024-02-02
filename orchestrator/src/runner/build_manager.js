@@ -6,6 +6,7 @@ const RedisMan = Whiteboard.RedisMan;
 
 const Runner = require("./handler");
 const jobService = require("./job.service");
+const { TestStatus } = require("../constants");
 
 const REDIS_KEY = Object.freeze({
   JOB_WAITING_QUEUE: "JOB-WAITING-QUEUE",
@@ -30,7 +31,7 @@ class BuildManager extends events.EventEmitter {
     logger.info("Load jobs");
     const jobs = await global.DbStoreModel.Job.findAll({
       attributes: ["id"],
-      where: { result: 0 }
+      where: { result: TestStatus.DRAFT }
     });
     if (Array.isArray(jobs)) {
       const connection = await RedisMan.getConnection();
@@ -115,7 +116,7 @@ class BuildManager extends events.EventEmitter {
             const runner = new Runner(job);
             this._handlers[jobId] = runner;
             this._jobs_processing.add(jobId);
-            await runner.run();
+            await runner.start();
             logger.info("BUILD_MAN: JOB_RESULT::", runner?.getStatus());
             if (runner.getStatus() > 1) {
               await this._stopJob(jobId);
