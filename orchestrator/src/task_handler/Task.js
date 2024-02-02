@@ -142,7 +142,7 @@ class Task extends EventEmitter {
     return Promise.resolve();
   }
 
-  stop() { }
+  stop() {}
 }
 
 module.exports = Task;

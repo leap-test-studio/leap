@@ -4,7 +4,7 @@ const isEmpty = require("lodash/isEmpty");
 const Whiteboard = require("whiteboard-pubsub");
 const RedisMan = Whiteboard.RedisMan;
 
-const JobService = require("./job_service");
+const { getJobInfo, updateJob, consolidate, updateScreenshot } = require("../services/job_service");
 const { TestStatus, REDIS_KEY } = require("../constants");
 const TestHandler = require("../task_handler");
 const FlowEngine = require("../flowEngine");
@@ -107,21 +107,21 @@ class BuildManager extends events.EventEmitter {
           try {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
-            const jobInfo = await JobService.getJobInfo(jobId);
+            const jobInfo = await getJobInfo(jobId);
             const runner = TestHandler.createHandler(jobInfo);
 
             runner.on("UPDATE_STATUS", async ({ id, payload }) => {
               try {
                 logger.info(runner.toString("Uploading Job details: " + JSON.stringify(payload)));
-                const job = await JobService.updateJob(id, payload);
-                await JobService.consolidate(job.BuildMasterId);
+                const job = await updateJob(id, payload);
+                await consolidate(job.BuildMasterId);
               } catch (error) {
                 logger.error("Failed to Update", error);
               }
             });
 
             runner.on("CAPTURE_SCREENSHOT", async ({ taskId, ...result }) => {
-              await JobService.updateScreenshot(taskId, result);
+              await updateScreenshot(taskId, result);
             });
 
             this._handlers[jobId] = runner;

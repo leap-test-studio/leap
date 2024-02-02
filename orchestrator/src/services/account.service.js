@@ -20,7 +20,6 @@ const CLIENT_NAME = process.env.CLIENT_NAME || "Automation Suite";
 const PRIV_KEY = fs.readFileSync(path.join(__dirname, "../..", "/keys/id_rsa_priv.pem"), "utf8");
 const MAX_ALLOWED_OTP = global.config.MAX_ALLOWED_OTP;
 
-
 module.exports = {
   authenticate,
   refreshToken,
