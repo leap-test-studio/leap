@@ -113,11 +113,25 @@ class BuildManager extends events.EventEmitter {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const jobInfo = await JobService.getJobInfo(jobId);
-            const runner = new TestHandler(jobInfo);
+            const runner = TestHandler.createHandler(jobInfo);
+
+            runner.on("UPDATE_STATUS", async ({ id, payload }) => {
+              try {
+                logger.info(runner.toString("Uploading Job details: " + JSON.stringify(payload)));
+                const job = await JobService.updateJob(id, payload);
+                await JobService.consolidate(job.BuildMasterId);
+              } catch (error) {
+                logger.error("Failed to Update", error);
+              }
+            });
+            runner.on("CAPTURE_SCREENSHOT", async ({ taskId, ...result }) => {
+              await JobService.updateScreenshot(taskId, result);
+            });
+
             this._handlers[jobId] = runner;
             this._jobs_processing.add(jobId);
             await runner.start();
-            logger.info("BUILD_MAN: JOB_RESULT::", runner?.getStatus());
+            logger.info("BUILD_MAN: JOB_RESULT::", runner.getStatus());
             if (runner.getStatus() > 1) {
               await this._stopJob(jobId);
             }

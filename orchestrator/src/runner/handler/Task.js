@@ -83,6 +83,39 @@ class Task extends EventEmitter {
     return `BID:${this._buildId}, JID:${this._taskId}, TCID:${this._seqNo}, Message:${s}`;
   }
 
+  async start() {
+    logger.info(this.toString("Execute Before Hook"));
+    try {
+      await this.beforeHook();
+      await this.before();
+      logger.info(this.toString("Execute Testcase"));
+      await this.execute();
+      logger.info(this.toString("Execute After Hook"));
+    } catch (e) {
+      logger.error("Execution failed", e);
+      this.actual = { error: e.message };
+      this.result = TestStatus.SKIP;
+    }
+    try {
+      await this.after();
+    } catch (e) {
+      logger.error("After Hook failed", e);
+    }
+    try {
+      await this.afterHook();
+    } catch (e) {
+      logger.error("After Hook failed", e);
+    }
+  }
+
+  async stop() {
+    this.interruptTask();
+  }
+
+  getStatus() {
+    return this.result;
+  }
+
   async _notifyJob(result) {
     this.result = result;
     this._updateJobDetails(this._taskId, { result, extras: this._extras });
