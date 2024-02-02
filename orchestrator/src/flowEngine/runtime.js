@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const Flow = require("./flow");
 const { STATUSCODES } = require("./constants");
-const Task = require("./task");
+const Task = require("./task/task");
 
 class Runtime extends EventEmitter {
   constructor({ flow, context = {} } = {}) {
@@ -92,7 +92,6 @@ class Runtime extends EventEmitter {
   completeNode({ node, message }) {
     this.changeNodeStatus(node.id, STATUSCODES.COMPLETED);
     const outboundConnections = this.flow.getOutboundConnections(node.id);
-    console.log(node.id, outboundConnections);
     if (this.allNodesTraversed()) {
       return this.stop(message);
     }

@@ -3,3 +3,10 @@ exports.STATUSCODES = Object.freeze({
   COMPLETED: "COMPLETED",
   ERROR: "ERROR"
 });
+
+exports.TASK_TYPES = Object.freeze({
+  START_NODE: "SN",
+  TIMER_NODE: "TIMER",
+  TESTCASE_NODE: "TC",
+  TESTSCENARIO_NODE: "TS"
+});
