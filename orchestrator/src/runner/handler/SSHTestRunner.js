@@ -2,7 +2,7 @@ const BPromise = require("bluebird");
 const SSH2Promise = require("ssh2-promise");
 
 const Job = require("./Job");
-const TestStatus = require("../enums/TestStatus");
+const { TestStatus } = require("../../constants");
 
 class TestRunner extends Job {
   constructor(job) {

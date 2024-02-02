@@ -7,12 +7,6 @@ class Task extends EventEmitter {
       testcases: 0
     };
   }
-
-  async run() {
-    // To be implemented by the derived class
-    console.log("Run", this._node.id);
-    return Promise.resolve();
-  }
 }
 
 module.exports = Task;

@@ -2,9 +2,9 @@ const Cron = require("node-cron");
 const BPromise = require("bluebird");
 const isEmpty = require("lodash/isEmpty");
 const IP = require("ip");
+
 const Transport = require("./transports");
-const JobService = require("../../runner/job.service");
-const TestStatus = require("../../runner/enums/TestStatus");
+const { TestStatus } = require("../../constants");
 
 const RunningTasks = {};
 
@@ -42,7 +42,6 @@ async function _callbackHandler(job) {
   });
   try {
     await jobLog.save();
-    //await JobService.create(job.AccountId, job.callback.message, {});
     logger.info(`JOB_MAN[${jobId}]: Executing Callback-${job.callback.type} - ${job.name}`);
     switch (job.callback.type) {
       case "kafka":

@@ -1,7 +1,6 @@
 const Task = require("./task");
 
 class TimerTask extends Task {
-
   constructor(info) {
     super(info);
   }

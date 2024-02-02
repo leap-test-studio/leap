@@ -3,7 +3,7 @@ const isEmpty = require("lodash/isEmpty");
 
 const Job = require("./Job");
 const { httpRequest } = require("./common");
-const TestStatus = require("../enums/TestStatus");
+const { TestStatus } = require("../../constants");
 
 class TestRunner extends Job {
   constructor(job) {

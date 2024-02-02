@@ -6,9 +6,7 @@ const merge = require("lodash/merge");
 const Job = require("./Job");
 const { httpRequest } = require("./common");
 const DragAndDrop = require("./html_dnd");
-const TestStatus = require("../enums/TestStatus");
-const SleepTimingType = require("../enums/SleepTimingType");
-//const ScreenshotConditionType = require("../enums/ScreenshotConditionType");
+const { TestStatus, SleepTimingType /*, ScreenshotConditionType*/ } = require("../../constants");
 
 const WebActionTypes = require("../../config/web_action_types.json");
 const ActionsTypes = Object.keys(WebActionTypes);

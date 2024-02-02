@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
+
 const { getPagination, getPagingData } = require("../utils/pagination");
-const TestStatus = require("../runner/enums/TestStatus");
+const { TestStatus } = require("../constants");
 
 module.exports = {
   list,

@@ -1,6 +1,6 @@
 const isEmpty = require("lodash/isEmpty");
 
-const TestStatus = require("../enums/TestStatus");
+const { TestStatus } = require("../../constants");
 const JobService = require("../job.service");
 const { getLocalTime } = require("../../utils/time");
 

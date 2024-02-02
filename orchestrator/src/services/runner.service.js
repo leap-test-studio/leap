@@ -1,10 +1,11 @@
 const BPromise = require("bluebird");
 const isEmpty = require("lodash/isEmpty");
 const { Op } = require("sequelize");
+
 const BuildManager = require("../runner/build_manager");
-const TestStatus = require("../runner/enums/TestStatus");
-const Role = require("../_helpers/role");
 const { executeSequence } = require("../runner");
+const { TestStatus } = require("../constants");
+const Role = require("../_helpers/role");
 
 module.exports = {
   create,

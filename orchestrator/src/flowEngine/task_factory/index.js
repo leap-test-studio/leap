@@ -5,7 +5,6 @@ const StartTask = require("./start_task");
 const StopTask = require("./stop_task");
 const TimerTask = require("./timer_task");
 
-
 const TaskFactory = {
   createNewTask: (info) => {
     switch (info.type) {

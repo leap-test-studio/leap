@@ -1,7 +1,6 @@
 const Task = require("./task");
 
 class StartTask extends Task {
-
   constructor(info) {
     super(info);
   }

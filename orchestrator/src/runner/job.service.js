@@ -1,6 +1,7 @@
 const sequelize = require("sequelize");
-const TestStatus = require("./enums/TestStatus");
-const { Op } = sequelize;
+const { Op } = require("sequelize");
+
+const { TestStatus } = require("../constants");
 
 module.exports = {
   getJobInfo,

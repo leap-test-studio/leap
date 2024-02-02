@@ -2,8 +2,7 @@ const WebTestRunner = require("./WebTestRunner");
 const APITestRunner = require("./APITestRunner");
 const SSHTestRunner = require("./SSHTestRunner");
 const DefaultTestRunner = require("./DefaultTestRunner");
-const TestType = require("../enums/TestType");
-const TestStatus = require("../enums/TestStatus");
+const { TestStatus, TestType } = require("../../constants");
 
 class TestCaseHandler {
   constructor(jobInfo) {
