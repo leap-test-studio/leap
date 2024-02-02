@@ -64,10 +64,10 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const nodeTypes = useMemo(
     () => ({
-      [NodeTypes.START_NODE]: StartNode,
-      [NodeTypes.TESTCASE_NODE]: TestCaseNode,
-      [NodeTypes.TESTSCENARIO_NODE]: TestScenarioNode,
-      [NodeTypes.TIMER_NODE]: TimerNode
+      [NodeTypes.START_TASK]: StartNode,
+      [NodeTypes.CASE_TASK]: TestCaseNode,
+      [NodeTypes.SCENARIO_TASK]: TestScenarioNode,
+      [NodeTypes.TIMER_TASK]: TimerNode
     }),
     []
   );
@@ -91,7 +91,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
   const onNodeDoubleClick = useCallback(
     (_, node) => {
       setSelectedNode(node);
-      setShowConfigDialog(node.type === NodeTypes.TIMER_NODE);
+      setShowConfigDialog(node.type === NodeTypes.TIMER_TASK);
     },
     [setSelectedNode, setShowConfigDialog]
   );
@@ -248,7 +248,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     const ns = [
       {
         id: "start",
-        type: NodeTypes.START_NODE,
+        type: NodeTypes.START_TASK,
         data: { label: "Start" },
         position: { x: 50, y: 300 }
       }

@@ -242,7 +242,7 @@ class TestRunner extends Job {
         const webElement = await getElement("xpath", `//*[@id="select-${element}"]/div/div[1]/div[2]`);
         await webElement.click();
         await this.WebDriver.sleep(3000);
-        const inputElement = await getElement("xpath", `/html/body`);
+        const inputElement = await getElement("xpath", "/html/body");
         await this.WebDriver.sleep(1000);
         const option = await inputElement.findElement(By.xpath(`//div[text()='${value}']`));
         return {

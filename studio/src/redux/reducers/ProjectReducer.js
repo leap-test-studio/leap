@@ -42,14 +42,14 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           elements: [
             {
               id: 0,
-              type: "TIMER",
+              type: NodeTypes.TIMER_TASK,
               value: {
                 timer: 0,
                 label: "Timer Event"
               },
               icon: "Timer",
               label: "Timer",
-              description: "Delay Node"
+              description: "Timer Task"
             }
           ]
         }
@@ -66,7 +66,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
         state.settings.nodes = [
           {
             id: "start",
-            type: NodeTypes.START_NODE,
+            type: NodeTypes.START_TASK,
             data: { label: "Start" },
             position: { x: 50, y: 300 }
           }
@@ -78,7 +78,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
         const elements = [
           {
             id: ts.id,
-            type: NodeTypes.TESTSCENARIO_NODE,
+            type: NodeTypes.SCENARIO_TASK,
             value: ts,
             label: ts.name,
             icon: "DynamicForm",
@@ -90,7 +90,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           if (tc.enabled) {
             elements.push({
               ...tc,
-              type: NodeTypes.TESTCASE_NODE,
+              type: NodeTypes.CASE_TASK,
               value: tc,
               label: tc.label,
               icon: "ElectricBolt",

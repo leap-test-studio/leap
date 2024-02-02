@@ -1,7 +1,8 @@
 const EventEmitter = require("events");
+
 const Flow = require("./flow");
-const { STATUSCODES } = require("./constants");
-const Task = require("./task/task");
+const { STATUSCODES } = require("../constants");
+const TaskFactory = require("./task_factory");
 
 class Runtime extends EventEmitter {
   constructor({ flow, context = {} } = {}) {
@@ -74,7 +75,7 @@ class Runtime extends EventEmitter {
     if (canRun) {
       this.changeNodeStatus(node.id, STATUSCODES.RUNNING);
       try {
-        const task = new Task({ node, context: this._context, message });
+        const task = TaskFactory.createNewTask(node);
         const result = await task.run();
         this.completeNode({ node, message: result });
       } catch (error) {

@@ -1,7 +1,7 @@
 import NodeTypes from "./NodeTypes";
 
 export const RequestSchemas = {
-  [NodeTypes.TIMER_NODE]: {
+  [NodeTypes.TIMER_TASK]: {
     description:
       "Timer Intermediate Catch Event - Pauses a Sequenceflow thread (of activities) for a specific period of time or until E_INTERMEDIATE_CATCH_EVENT received.",
     properties: {
@@ -18,7 +18,7 @@ export const RequestSchemas = {
   }
 };
 export const RequestUISchemas = {
-  [NodeTypes.TIMER_NODE]: {
+  [NodeTypes.TIMER_TASK]: {
     elements: [
       {
         scope: "#/properties/timer",

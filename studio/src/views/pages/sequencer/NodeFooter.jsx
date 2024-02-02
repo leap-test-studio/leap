@@ -16,7 +16,7 @@ const RenderStatusIcon = ({ icon, iconColor, progress, tooltip, description }) =
 function NodeFooter({ progress, type, status, label }) {
   const iconType = IconTypes[status];
   const iconColor = IconColors[status];
-  const iconTooltip = `Test ${NodeTypes.TESTSCENARIO_NODE === type ? "scenario" : "case"} is ${status}`;
+  const iconTooltip = `Test ${NodeTypes.SCENARIO_TASK === type ? "scenario" : "case"} is ${status}`;
 
   return (
     <div className="inline-flex justify-between items-center p-0.5">

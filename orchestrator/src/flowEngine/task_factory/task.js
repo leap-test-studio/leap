@@ -3,7 +3,9 @@ const { EventEmitter } = require("events");
 class Task extends EventEmitter {
   constructor(info) {
     this._data = { ...info };
-    this._context = {};
+    this._context = {
+      testcases: 0
+    };
   }
 
   async run() {
