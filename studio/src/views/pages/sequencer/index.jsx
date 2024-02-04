@@ -122,20 +122,17 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         if (type == "TIMER") {
           id = nanoid(10);
         }
-        const node = {
-          id,
-          type,
-          data,
-          position: reactFlowInstance.project({
-            x: clientX - reactFlowBounds.left - 40,
-            y: clientY - reactFlowBounds.top - 40
-          })
-        };
 
         const changes = [
           ...nodes,
           {
-            ...node
+            id,
+            type,
+            data,
+            position: reactFlowInstance.project({
+              x: clientX - reactFlowBounds.left - 40,
+              y: clientY - reactFlowBounds.top - 40
+            })
           }
         ];
         setNodes(changes);
@@ -176,7 +173,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
       setEdges(changes);
       saveTemplate(nodes, changes);
     },
-    [edges, setEdges]
+    [edges, nodes, setEdges]
   );
 
   useEffect(() => {

@@ -5,16 +5,16 @@ const DefaultTestRunner = require("./DefaultTestRunner");
 const { TestType } = require("../constants");
 
 module.exports = {
-  createHandler: (jobInfo) => {
-    switch (jobInfo.type) {
+  createHandler: (taskInfo) => {
+    switch (taskInfo.type) {
       case TestType.API:
-        return new APITestRunner(jobInfo);
+        return new APITestRunner(taskInfo);
       case TestType.WEB:
-        return new WebTestRunner(jobInfo);
+        return new WebTestRunner(taskInfo);
       case TestType.SSH:
-        return new SSHTestRunner(jobInfo);
+        return new SSHTestRunner(taskInfo);
       default:
-        return new DefaultTestRunner(jobInfo);
+        return new DefaultTestRunner(taskInfo);
     }
   }
 };

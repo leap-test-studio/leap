@@ -6,7 +6,7 @@ const RedisMan = Whiteboard.RedisMan;
 
 const { getJobInfo, updateJob, consolidate, updateScreenshot } = require("../services/job_service");
 const { TestStatus, REDIS_KEY } = require("../constants");
-const TestHandler = require("../task_handler");
+const TaskHandler = require("../task_handler");
 const FlowEngine = require("../flowEngine");
 
 class BuildManager extends events.EventEmitter {
@@ -109,7 +109,7 @@ class BuildManager extends events.EventEmitter {
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const jobInfo = await getJobInfo(jobId);
             console.log(jobInfo.type, JSON.stringify(jobInfo));
-            const runner = TestHandler.createHandler(jobInfo);
+            const runner = TaskHandler.createHandler(jobInfo);
 
             runner.on("UPDATE_STATUS", async ({ id, payload }) => {
               try {
