@@ -7,7 +7,6 @@ const { TASK_TYPES } = require("../../constants");
 
 const TaskFactory = {
   createNew: (info) => {
-    console.log(JSON.stringify(info));
     switch (info.type) {
       case TASK_TYPES.START_TASK:
         return new StartTask(info);

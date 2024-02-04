@@ -9,7 +9,8 @@ module.exports = {
   updateBuild,
   updateBuildStatus: _updateBuildStatus,
   consolidate,
-  updateScreenshot
+  updateScreenshot,
+  getSettingsByTestId
 };
 
 async function getSettingsByTestId(id) {
