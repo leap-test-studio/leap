@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Handle, Position } from "reactflow";
 
 import NodeHeader from "./NodeHeader";
@@ -24,9 +23,8 @@ const handleStyleSource = {
   marginTop: 0
 };
 
-const TestCaseNode = ({ id, type, selected }) => {
-  const { testcases } = useSelector((state) => state.project);
-  const data = testcases[id];
+const TestCaseNode = ({ id, data, type, selected }) => {
+  console.log(id, data);
   return (
     <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
       <NodeHeader selected={selected} />

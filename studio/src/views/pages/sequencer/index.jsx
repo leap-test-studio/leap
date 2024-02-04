@@ -105,7 +105,6 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     (ev) => {
       ev.preventDefault();
       if (reactFlowInstance) {
-        let id = ev.dataTransfer.getData("node-id");
         const type = ev.dataTransfer.getData("node-type");
         try {
           var data = JSON.parse(ev.dataTransfer.getData("node-value"));
@@ -119,14 +118,10 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         if (clientX < 0) clientX = 300;
         if (clientY < 0) clientY = 300;
 
-        if (type == "TIMER") {
-          id = nanoid(10);
-        }
-
         const changes = [
           ...nodes,
           {
-            id,
+            id: nanoid(10),
             type,
             data,
             position: reactFlowInstance.project({

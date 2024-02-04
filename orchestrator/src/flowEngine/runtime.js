@@ -5,8 +5,9 @@ const { STATUSCODES } = require("../constants");
 const TaskFactory = require("./task_factory");
 
 class Runtime extends EventEmitter {
-  constructor({ flow, context = {} } = {}) {
+  constructor({ instanceId, flow, context = {} } = {}) {
     super();
+    this._instanceId = instanceId;
     this._flow = new Flow(flow);
     this._context = context;
     this._isRunning = false;
@@ -62,6 +63,7 @@ class Runtime extends EventEmitter {
     if (!node) {
       return;
     }
+    logger.info("Processing Task", node.id);
     let canRun = false;
     if (prevNode) {
       const inboundConnections = this.flow.getInboundConnections(node.id);
@@ -76,6 +78,7 @@ class Runtime extends EventEmitter {
       this.changeNodeStatus(node.id, STATUSCODES.RUNNING);
       try {
         node.projectId = this._context.id;
+        node.instanceId = this._instanceId;
 
         const task = TaskFactory.createNew(node);
         const result = await task.run();
@@ -93,6 +96,7 @@ class Runtime extends EventEmitter {
   }
 
   completeNode({ node, message }) {
+    logger.info("Processed Task", node.id);
     this.changeNodeStatus(node.id, STATUSCODES.COMPLETED);
     const outboundConnections = this.flow.getOutboundConnections(node.id);
     if (this.allNodesTraversed()) {

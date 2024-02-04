@@ -9,6 +9,13 @@ class TestCaseTask extends Task {
 
   run() {
     return new Promise(async (resolve) => {
+      const testcase = await getSettingsByTestId(this._data.id);
+      this._data = {
+        BuildMasterId: this._instanceId,
+        ...this._data,
+        ...testcase
+      };
+
       const runner = TaskHandler.createHandler(this._data);
       runner.on("UPDATE_STATUS", async (response) => {
         try {
@@ -19,11 +26,7 @@ class TestCaseTask extends Task {
       });
 
       runner.on("CAPTURE_SCREENSHOT", async (captureData) => {
-        try {
-          logger.info(runner.toString("CaptureData: " + JSON.stringify(captureData)));
-        } catch (error) {
-          logger.error("Failed to Update", error);
-        }
+        logger.info(runner.toString("CaptureData"));
       });
 
       await runner.start();
