@@ -25,17 +25,22 @@ const handleStyleSource = {
 };
 
 const TestScenarioNode = ({ id, type, selected }) => {
-  const { testscenarios } = useSelector((state) => state.project);
-  const data = testscenarios[id];
+  const {
+    testscenarios,
+    settings: { nodes }
+  } = useSelector((state) => state.project);
+  const node = nodes?.find((n) => n.id === id);
+  if (node) node.data = testscenarios[node.data.id];
+
   return (
     <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
       <NodeHeader selected={selected} />
       <div className={`relative ${selected ? "shadow-lg" : "shadow"} bg-slate-100 border-2 border-slate-300 rounded cursor-pointer`}>
         <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />
-        <ProgressIcon icon="DynamicForm" progress={data?.progress || 0} status={data?.status} size={50} />
+        <ProgressIcon icon="DynamicForm" progress={node?.data?.progress || 0} status={node?.data?.status} size={50} />
         <Handle id={`source:${type}`} type="source" position={Position.Right} style={handleStyleSource} />
       </div>
-      <NodeFooter id={id} type={type} label={data?.name} status={data?.status ? "ACTIVE" : "INACTIVE"} />
+      <NodeFooter id={id} type={type} label={node?.data?.name} status={node?.data?.status ? "ACTIVE" : "INACTIVE"} />
     </div>
   );
 };

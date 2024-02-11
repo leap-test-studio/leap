@@ -1,5 +1,5 @@
 // action - state management
-import NodeTypes from "../../views/pages/sequencer/NodeTypes";
+import { NodeTypes } from "../../views/pages/sequencer/Constants";
 import * as actionTypes from "../actions";
 
 const initialState = {

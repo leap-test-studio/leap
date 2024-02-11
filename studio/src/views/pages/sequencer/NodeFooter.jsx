@@ -1,5 +1,5 @@
 import IconColors from "./IconColors";
-import NodeTypes from "./NodeTypes";
+import { NodeTypes } from "./Constants";
 import IconTypes from "./IconTypes";
 import { IconRenderer } from "../../utilities";
 

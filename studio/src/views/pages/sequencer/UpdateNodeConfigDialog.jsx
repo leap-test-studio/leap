@@ -6,13 +6,29 @@ import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
 
 import { RequestSchemas, RequestUISchemas } from "./NodeUtils";
+import { useSelector } from "react-redux";
 
 function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
-  const [nodeData, setNodeData] = useState(selectedNode?.data || {});
+  const [nodeData, setNodeData] = useState(
+    selectedNode?.data
+      ? {
+          conditions: [],
+          ...selectedNode?.data
+        }
+      : {}
+  );
   const [disableSave, setDisableSave] = useState(false);
-
   const schema = RequestSchemas[selectedNode?.type];
   const uischema = RequestUISchemas[selectedNode?.type];
+
+  if (schema.properties?.conditions?.items?.properties?.fallback) {
+    const {
+      settings: { edges, nodes }
+    } = useSelector((state) => state.project);
+    const nextNodes = edges && nodes ? edges.filter((e) => e.source === selectedNode?.id).map((e) => nodes.find((n) => n.id == e.target)) : [];
+    if (nextNodes?.length > 0)
+      schema.properties.conditions.items.properties.fallback.oneOf = nextNodes.map((n) => ({ const: n.id, title: n.data.label || n.data.name }));
+  }
 
   return (
     <CustomDialog

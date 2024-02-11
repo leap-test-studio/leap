@@ -1,14 +1,33 @@
 import { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getBezierPath } from "reactflow";
 
 import { IconRenderer } from "../../utilities";
 import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
-
+import { TestStatus } from "./Constants";
 const foreignObjectSize = 30;
 
 const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, label, animated, markerEnd }) => {
   const dispatch = useDispatch();
+  const {
+    settings: { edges, nodes }
+  } = useSelector((state) => state.project);
+  const edgeInfo = edges?.find((e) => e.id === id);
+  let strokeColor = "gray";
+  edgeInfo &&
+    nodes
+      ?.filter((n) => n.id === edgeInfo.source)
+      .forEach((n) =>
+        n.data?.conditions?.forEach((c) => {
+          if (c.fallback === edgeInfo.target) {
+            c.statement?.forEach((s) => {
+              if (s.operator === "eq") {
+                strokeColor = s.rightOp == TestStatus.FAIL ? "red" : s.rightOp == TestStatus.PASS ? "green" : strokeColor;
+              }
+            });
+          }
+        })
+      );
   const onEdgeClick = useCallback(
     (evt) => {
       evt.stopPropagation();
@@ -27,7 +46,7 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
 
   return (
     <>
-      <path id={id} fill="none" stroke="rgb(148 163 184)" strokeWidth={2.0} className={`${animated && animated}`} d={path} markerEnd={markerEnd} />
+      <path id={id} fill="none" stroke={strokeColor} strokeWidth={2.0} className={`${animated && animated}`} d={path} markerEnd={markerEnd} />
       {label && (
         <text className="react-flow__edge-text" x={labelX - 10} y={labelY - 10} dy="0.3em">
           {label}

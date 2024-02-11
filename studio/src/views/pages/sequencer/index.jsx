@@ -11,7 +11,7 @@ import TestCaseNode from "./TestCaseNode";
 import StartNode from "./StartNode";
 import DefaultEdge from "./DefaultEdge";
 import TimerNode from "./TimerNode";
-import NodeTypes from "./NodeTypes";
+import { NodeTypes } from "./Constants";
 import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
 import DeleteNodeDialog from "./DeleteNodeDialog";
 import DragabbleElements from "../common/DragabbleElements";
@@ -20,6 +20,7 @@ import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSeque
 import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";
 import TestScenarioNode from "./TestScenarioNode";
 import { IconButton, Tooltip, DeleteItemDialog } from "../../utilities";
+import { RequestSchemas } from "./NodeUtils";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
@@ -91,7 +92,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
   const onNodeDoubleClick = useCallback(
     (_, node) => {
       setSelectedNode(node);
-      setShowConfigDialog(node.type === NodeTypes.TIMER_TASK);
+      setShowConfigDialog(RequestSchemas[node.type] !== undefined);
     },
     [setSelectedNode, setShowConfigDialog]
   );
