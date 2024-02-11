@@ -228,14 +228,26 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const deleteEdge = useCallback(() => {
     if (eid) {
-      const changes = [...edges];
-      const index = changes.findIndex((e) => e.id === eid);
-      changes.splice(index, 1);
-      setEdges(changes);
-      saveTemplate(nodes, changes);
+      const edgeChanges = [...edges];
+      const nodeChanges = [];
+      const deletingEdge = edges.find((e) => e.id === eid);
+      const index = edges.findIndex((e) => e.id === eid);
+      edgeChanges.splice(index, 1);
+      nodes.forEach((n) => {
+        nodeChanges.push({
+          ...n,
+          data: {
+            ...n.data,
+            conditions: n.data.conditions?.filter((c) => c.fallback !== deletingEdge.target)
+          }
+        });
+      });
+      setEdges(edgeChanges);
+      setNodes(nodeChanges);
+      saveTemplate(nodeChanges, edgeChanges);
     }
     handleDialogClose();
-  }, [edges, eid, handleDialogClose, nodes, saveTemplate, setEdges]);
+  }, [edges, eid, handleDialogClose, nodes, saveTemplate, setEdges, setNodes]);
 
   const resetCanvas = () => {
     const ns = [
