@@ -16,9 +16,9 @@ const Jobs = [];
 const BuildMasterId = uuid.v4();
 global.config = {};
 
-ProjectMaster.TestScenarios?.forEach(scenario => {
+ProjectMaster.TestScenarios?.forEach((scenario) => {
   if (scenario.status) {
-    scenario.TestCases.forEach(tc => {
+    scenario.TestCases.forEach((tc) => {
       Jobs.push({
         ...tc,
         BuildMasterId,
@@ -28,18 +28,24 @@ ProjectMaster.TestScenarios?.forEach(scenario => {
   }
 });
 
+bluebird
+  .reduce(
+    Jobs,
+    async (acc, job) => {
+      const runner = TaskHandler.createHandler(job);
 
-bluebird.reduce(Jobs, async (acc, job) => {
-  const runner = TaskHandler.createHandler(job);
-
-  runner.on("UPDATE_STATUS", async ({ id, payload }) => {
-    try {
-      logger.info(runner.toString("Uploading Job details: " + JSON.stringify(payload)));
-    } catch (error) {
-      logger.error("Failed to Update", error);
-    }
-  });
-  return acc + 1;
-}, 0).then(acc => {
-  console.log("Accumulator:", acc);
-}).catch(console.error);
+      runner.on("UPDATE_STATUS", async ({ id, payload }) => {
+        try {
+          logger.info(runner.toString("Uploading Job details: " + JSON.stringify(payload)));
+        } catch (error) {
+          logger.error("Failed to Update", error);
+        }
+      });
+      return acc + 1;
+    },
+    0
+  )
+  .then((acc) => {
+    console.log("Accumulator:", acc);
+  })
+  .catch(console.error);
