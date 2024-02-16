@@ -28,13 +28,13 @@ module.exports = merge(common, {
     compress: true,
     hot: true,
     port: process.env.PORT || 4000,
-    proxy: {
-      "/api": {
+    proxy: [
+      {
+        context: ["/api"],
         target: process.env.API_URL || "http://localhost",
-        // pathRewrite: { '^/api': '' },
         secure: false
       }
-    }
+    ]
   },
 
   module: {
