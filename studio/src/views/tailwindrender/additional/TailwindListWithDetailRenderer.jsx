@@ -28,7 +28,9 @@ const TailwindListWithDetailRenderer = ({
   config,
   ctx
 }) => {
+
   const [selectedIndex, setSelectedIndex] = useState(undefined);
+
   const handleRemoveItem = useCallback(
     (p, value) => () => {
       removeItems(p, [value])();
@@ -47,54 +49,53 @@ const TailwindListWithDetailRenderer = ({
     [uischemas, schema, path, uischema]
   );
 
+  if (!visible) return null;
+
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+
   return (
     <>
-      {visible && (
-        <>
-          <TableToolbar
-            label={computeLabel(label, required, appliedUiSchemaOptions.hideRequiredAsterisk)}
-            errors={errors}
-            path={path}
-            addItem={addItem}
-            createDefault={handleCreateDefaultValue}
-            enabled={data === 0}
-            schema={schema}
-            readonly={ctx?.readonly}
-          />
-          <div className="w-full grid grid-flow-row">
-            <div className="row-span-3">
-              <List>
-                {data > 0 ? (
-                  map(range(data), (index) => (
-                    <ListWithDetailMasterItem
-                      index={index}
-                      path={path}
-                      schema={schema}
-                      handleSelect={handleListItemClick}
-                      removeItem={handleRemoveItem}
-                      selected={selectedIndex === index}
-                      key={index}
-                    />
-                  ))
-                ) : (
-                  <EmptyIconRenderer title="No items found" fill="#90b6e8" showIcon={false} />
-                )}
-              </List>
-            </div>
-            {selectedIndex !== undefined && (
-              <JsonFormsDispatch
-                renderers={renderers}
-                cells={cells}
-                visible={visible}
-                schema={schema}
-                uischema={foundUISchema}
-                path={composePaths(path, `${selectedIndex}`)}
-              />
+      <TableToolbar
+        label={computeLabel(label, required, appliedUiSchemaOptions.hideRequiredAsterisk)}
+        errors={errors}
+        path={path}
+        addItem={addItem}
+        createDefault={handleCreateDefaultValue}
+        enabled={data === 0}
+        schema={schema}
+        readonly={ctx?.readonly}
+      />
+      <div className="w-full grid grid-flow-row">
+        <div className="row-span-3">
+          <List>
+            {data > 0 ? (
+              map(range(data), (index) => (
+                <ListWithDetailMasterItem
+                  index={index}
+                  path={path}
+                  schema={schema}
+                  handleSelect={handleListItemClick}
+                  removeItem={handleRemoveItem}
+                  selected={selectedIndex === index}
+                  key={index}
+                />
+              ))
+            ) : (
+              <EmptyIconRenderer title="No items found" fill="#90b6e8" showIcon={false} />
             )}
-          </div>
-        </>
-      )}
+          </List>
+        </div>
+        {selectedIndex !== undefined && (
+          <JsonFormsDispatch
+            renderers={renderers}
+            cells={cells}
+            visible={visible}
+            schema={schema}
+            uischema={foundUISchema}
+            path={composePaths(path, `${selectedIndex}`)}
+          />
+        )}
+      </div>
     </>
   );
 };

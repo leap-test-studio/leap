@@ -4,16 +4,13 @@ import { withJsonFormsLayoutProps } from "@jsonforms/react";
 /**
  * Default renderer for a label.
  */
-const TailwindLabelRenderer = ({ uischema, visible, path }) => {
-  const labelElement = uischema;
+const TailwindLabelRenderer = ({ uischema: { text }, visible, path }) => {
+  if (!visible || text == null) return null;
+
   return (
-    <>
-      {visible && (
-        <div htmlFor={path} className="text-base text-color-0700 w-full">
-          <label>{labelElement.text !== undefined && labelElement.text !== null && labelElement.text}</label>
-        </div>
-      )}
-    </>
+    <div htmlFor={path} className="text-base text-color-0700 w-full">
+      <label>{text}</label>
+    </div>
   );
 };
 

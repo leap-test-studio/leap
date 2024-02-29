@@ -28,16 +28,16 @@ export default function TableRenderer({
   const [checkedRecords, setCheckedRecords] = useState([]);
   const sortedItems = Array.isArray(data)
     ? [...data].sort((a, b) => {
-        if (sortProperty) {
-          if (a[sortProperty] < b[sortProperty]) {
-            return sortDirection === "asc" ? -1 : 1;
-          }
-          if (a[sortProperty] > b[sortProperty]) {
-            return sortDirection === "asc" ? 1 : -1;
-          }
+      if (sortProperty) {
+        if (a[sortProperty] < b[sortProperty]) {
+          return sortDirection === "asc" ? -1 : 1;
         }
-        return 0;
-      })
+        if (a[sortProperty] > b[sortProperty]) {
+          return sortDirection === "asc" ? 1 : -1;
+        }
+      }
+      return 0;
+    })
     : [];
 
   useEffect(() => {
@@ -172,11 +172,10 @@ function TableHeader({
         {columns.map(({ title, field, sortable, width, style = "text-left", sorter }, index, arr) => (
           <th
             key={index}
-            className={`p-1.5 sticky top-0 ${style} ${
-              sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            className={`p-1.5 sticky top-0 ${style} ${sortable ? "cursor-pointer" : ""
+              } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
             style={{ width: width + "px" }}
-            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
+            onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => { }}
             onMouseOver={() => setIsHovering(true)}
             onMouseOut={() => setIsHovering(false)}
           >
@@ -203,7 +202,7 @@ function paginate(array, page_size, page_number) {
 function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handleSelect, isChecked, checkedRecords }) {
   const checkedRecord = checkedRecords?.map((r) => r.id).includes(record.id);
   return (
-    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0800"}  hover:bg-slate-100 border-b border-slate-200`}>
+    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0800"}  hover:bg-slate-100 border-b border-slate-300`}>
       {showSelect && (
         <td className="border border-r-slate-100 w-10">
           <input
@@ -224,7 +223,7 @@ function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handl
           </td>
         );
       })}
-      {actionHandler && <td className="text-center border-slate-200">{actionHandler(record)}</td>}
+      {actionHandler && <td className="text-center border-slate-300">{actionHandler(record)}</td>}
     </tr>
   );
 }
@@ -247,9 +246,8 @@ function CellRenderer(col, field, record, columns) {
     default:
       return (
         <div
-          className={`select-none ${col.style ? col.style : ""} ${
-            colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""
-          } ${col.center ? "text-center" : ""}`}
+          className={`select-none ${col.style ? col.style : ""} ${colProperties?.class ? colProperties.class + " px-1 py-0.5 rounded hover:shadow" : ""
+            } ${col.center ? "text-center" : ""}`}
         >
           {colProperties != null ? colProperties.title : field}
         </div>
@@ -328,7 +326,7 @@ const AccordionComponent = ({ record, col }) => {
               <tbody>
                 <tr>
                   {Object.values(recordData).map((item, index) => (
-                    <td key={index} className="bg-white border-b text-center border-slate-200 text-[10px] select-none text-slate-700">
+                    <td key={index} className="bg-white border-b text-center border-slate-300 text-[10px] select-none text-slate-700">
                       {item}
                     </td>
                   ))}
