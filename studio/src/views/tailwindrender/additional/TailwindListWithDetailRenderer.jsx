@@ -28,7 +28,6 @@ const TailwindListWithDetailRenderer = ({
   config,
   ctx
 }) => {
-
   const [selectedIndex, setSelectedIndex] = useState(undefined);
 
   const handleRemoveItem = useCallback(

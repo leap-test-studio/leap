@@ -6,8 +6,9 @@ import { JsonFormsDispatch, withJsonFormsOneOfProps } from "@jsonforms/react";
 
 import CombinatorProperties from "../util/CombinatorProperties";
 import ErrorMessage from "../renderers/common/ErrorMessage";
-import { CustomDialog } from "../../utilities";
 import { ReactSelectCustomStyles } from "../common/Constants";
+import { CustomDialog } from "../../utilities";
+import { Card, CardHeader } from "../common/CardRenderer";
 
 const TailwindOneOfRenderer = React.memo(
   ({ id, handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
@@ -15,6 +16,8 @@ const TailwindOneOfRenderer = React.memo(
     const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
     const oneOfRenderInfos = createCombinatorRenderInfos(schema.oneOf, rootSchema, "oneOf", uischema, path, uischemas);
     const [oneOfValue, setOneOfValue] = useState(oneOfRenderInfos[0]);
+
+    if (!visible) return null;
 
     const cancel = useCallback(() => {
       setOpen(false);
@@ -39,36 +42,28 @@ const TailwindOneOfRenderer = React.memo(
     );
 
     return (
-      <>
-        {visible && (
-          <>
-            <div className="w-full flex flex-col mx-1">
-              {uischema.label?.length > 0 && (
-                <div className="bg-color-0100 text-left text-xs text-color-primary select-none p-0.5 pl-2 rounded-t">{uischema.label}</div>
-              )}
-              <CombinatorProperties schema={schema} combinatorKeyword={"oneOf"} path={path} />
-              <div className="flex flex-col break-words w-full p-0.5 pr-0">
-                <DropDownMenu
-                  selected={selectedIndex}
-                  handleChange={handleChangeOneOf}
-                  infos={oneOfRenderInfos}
-                  path={path}
-                  renderers={renderers}
-                  cells={cells}
-                  oneOfValue={oneOfValue}
-                  schema={schema}
-                />
-                <ErrorMessage id={id} path={path} errors={errors} />
-              </div>
-            </div>
-            <CustomDialog title="Clear Form" open={open} onClose={cancel} onSave={confirm} saveIcon="Delete" saveTitle="Clear">
-              <span id="confirm-message" className="px-3 py-5  text-center select-none">
-                Your data will be cleared if you navigate away from this tab. Do you want to proceed?
-              </span>
-            </CustomDialog>
-          </>
-        )}
-      </>
+      <Card>
+        <CardHeader>{uischema.label}</CardHeader>
+        <CombinatorProperties schema={schema} combinatorKeyword={"oneOf"} path={path} />
+        <div className="flex flex-col break-words w-full p-0.5 pr-0">
+          <DropDownMenu
+            selected={selectedIndex}
+            handleChange={handleChangeOneOf}
+            infos={oneOfRenderInfos}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+            oneOfValue={oneOfValue}
+            schema={schema}
+          />
+          <ErrorMessage id={id} path={path} errors={errors} />
+        </div>
+        <CustomDialog title="Clear Form" open={open} onClose={cancel} onSave={confirm} saveIcon="Delete" saveTitle="Clear">
+          <span id="confirm-message" className="px-3 py-5  text-center select-none">
+            Your data will be cleared if you navigate away from this tab. Do you want to proceed?
+          </span>
+        </CustomDialog>
+      </Card>
     );
   }
 );

@@ -1,24 +1,23 @@
-import isEmpty from "lodash/isEmpty";
+import React from "react";
 import { Generate, isObjectControl, rankWith } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsDetailProps } from "@jsonforms/react";
-import React from "react";
+import isEmpty from "lodash/isEmpty";
 
 const TailwindObjectRenderer = React.memo(({ renderers, cells, schema, label, path, visible, enabled }) => {
   const detailUiSchema = isEmpty(path) ? Generate.uiSchema(schema, "VerticalLayout") : { ...Generate.uiSchema(schema, "Group"), label };
+
+  if (!visible) return null;
+
   return (
-    <>
-      {visible && (
-        <JsonFormsDispatch
-          visible={visible}
-          enabled={enabled}
-          schema={schema}
-          uischema={detailUiSchema}
-          path={path}
-          renderers={renderers}
-          cells={cells}
-        />
-      )}
-    </>
+    <JsonFormsDispatch
+      visible={visible}
+      enabled={enabled}
+      schema={schema}
+      uischema={detailUiSchema}
+      path={path}
+      renderers={renderers}
+      cells={cells}
+    />
   );
 });
 

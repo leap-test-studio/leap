@@ -8,28 +8,31 @@ import { and, categorizationHasCategory, isVisible, optionIs, rankWith, uiTypeIs
 import { withJsonFormsLayoutProps } from "@jsonforms/react";
 import { TailwindLayoutRenderer, withAjvProps } from "../util";
 
+const buttonWrapperStyle = {
+  textAlign: "right",
+  width: "100%",
+  margin: "1em auto"
+};
+const buttonNextStyle = {
+  float: "right"
+};
+const buttonStyle = {
+  marginRight: "1em"
+};
+
 const TailwindCategorizationStepperLayoutRenderer = (props) => {
+  const { data, path, renderers, schema, uischema, visible, cells, config, ajv } = props;
   const [activeCategory, setActiveCategory] = useState(0);
+
+  if (!visible) return null;
 
   const handleStep = (step) => {
     setActiveCategory(step);
   };
 
-  const { data, path, renderers, schema, uischema, visible, cells, config, ajv } = props;
-  const categorization = uischema;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const buttonWrapperStyle = {
-    textAlign: "right",
-    width: "100%",
-    margin: "1em auto"
-  };
-  const buttonNextStyle = {
-    float: "right"
-  };
-  const buttonStyle = {
-    marginRight: "1em"
-  };
-  const categories = categorization.elements.filter((category) => isVisible(category, data, undefined, ajv));
+
+  const categories = uischema.elements.filter((category) => isVisible(category, data, undefined, ajv));
   const childProps = {
     elements: categories[activeCategory].elements,
     schema,
@@ -41,45 +44,41 @@ const TailwindCategorizationStepperLayoutRenderer = (props) => {
   };
   return (
     <>
-      {visible && (
-        <>
-          <Stepper activeStep={activeCategory} nonLinear>
-            {Array.isArray(categories) &&
-              categories.map((e, idx) => (
-                <Step key={e.label}>
-                  <StepButton onClick={() => handleStep(idx)}>{e.label}</StepButton>
-                </Step>
-              ))}
-          </Stepper>
-          <div>
-            <TailwindLayoutRenderer layout="categorization-step" {...childProps} />
-          </div>
-          {!!appliedUiSchemaOptions.showNavButtons ? (
-            <div style={buttonWrapperStyle}>
-              <Button
-                style={buttonNextStyle}
-                variant="contained"
-                color="primary"
-                disabled={activeCategory >= categories.length - 1}
-                onClick={() => handleStep(activeCategory + 1)}
-              >
-                Next
-              </Button>
-              <Button
-                style={buttonStyle}
-                color="secondary"
-                variant="contained"
-                disabled={activeCategory <= 0}
-                onClick={() => handleStep(activeCategory - 1)}
-              >
-                Previous
-              </Button>
-            </div>
-          ) : (
-            <></>
-          )}
-        </>
-      )}
+      <Stepper activeStep={activeCategory} nonLinear>
+        {Array.isArray(categories) &&
+          categories.map((e, idx) => (
+            <Step key={e.label}>
+              <StepButton onClick={() => handleStep(idx)}>{e.label}</StepButton>
+            </Step>
+          ))}
+      </Stepper>
+      <div>
+        <TailwindLayoutRenderer layout="categorization-step" {...childProps} />
+      </div>
+      {!!appliedUiSchemaOptions.showNavButtons ? (
+        <div style={buttonWrapperStyle}>
+          <Button
+            style={buttonNextStyle}
+            variant="contained"
+            color="primary"
+            disabled={activeCategory >= categories.length - 1}
+            onClick={() => handleStep(activeCategory + 1)}
+          >
+            Next
+          </Button>
+          <Button
+            style={buttonStyle}
+            color="secondary"
+            variant="contained"
+            disabled={activeCategory <= 0}
+            onClick={() => handleStep(activeCategory - 1)}
+          >
+            Previous
+          </Button>
+        </div>
+      ) :
+        null
+      }
     </>
   );
 };

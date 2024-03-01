@@ -1,12 +1,14 @@
+import { useMemo } from "react";
 import { and, rankWith, schemaMatches, uiTypeIs } from "@jsonforms/core";
-import { Control, withJsonFormsControlProps } from "@jsonforms/react";
+import { withJsonFormsControlProps } from "@jsonforms/react";
 import Input from "@mui/material/Input";
 import merge from "lodash/merge";
-import { useMemo } from "react";
-import { useDebouncedChange } from "../util";
+
 import { TailwindInputControl } from "./TailwindInputControl";
+import { useDebouncedChange } from "../util";
 
 const findEnumSchema = (schemas) => schemas.find((s) => s.enum !== undefined && (s.type === "string" || s.type === undefined));
+
 const findTextSchema = (schemas) => schemas.find((s) => s.type === "string" && s.enum === undefined);
 
 const TailwindAutocompleteInputText = (props) => {
@@ -50,11 +52,8 @@ const TailwindAutocompleteInputText = (props) => {
   );
 };
 
-class TailwindAnyOfStringOrEnum extends Control {
-  render() {
-    return <TailwindInputControl {...this.props} input={TailwindAutocompleteInputText} />;
-  }
-}
+const TailwindAnyOfStringOrEnum = (props) => <TailwindInputControl {...props} input={TailwindAutocompleteInputText} />;
+
 const hasEnumAndText = (schemas) => {
   // idea: map to type,enum and check that all types are string and at least one item is of type enum,
   const enumSchema = findEnumSchema(schemas);
@@ -63,11 +62,13 @@ const hasEnumAndText = (schemas) => {
   const wrongType = remainingSchemas.find((s) => s.type && s.type !== "string");
   return enumSchema && stringSchema && !wrongType;
 };
-const simpleAnyOf = and(
-  uiTypeIs("Control"),
-  schemaMatches((schema) => schema.hasOwnProperty("anyOf") && hasEnumAndText(schema.anyOf))
-);
 
-export const tailwindAnyOfStringOrEnumControlTester = rankWith(1005, simpleAnyOf);
+export const tailwindAnyOfStringOrEnumControlTester = rankWith(
+  1005,
+  and(
+    uiTypeIs("Control"),
+    schemaMatches((schema) => schema.hasOwnProperty("anyOf") && hasEnumAndText(schema.anyOf))
+  )
+);
 
 export const TailwindAnyOfStringOrEnumControl = withJsonFormsControlProps(TailwindAnyOfStringOrEnum);

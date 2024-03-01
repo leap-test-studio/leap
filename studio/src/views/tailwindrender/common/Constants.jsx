@@ -3,9 +3,12 @@ export const ReactSelectCustomStyles = {
     ...styles,
     boxShadow: "none",
     padding: 0,
-    minHeight: 24,
-    height: 24,
-    borderStyle: "none"
+    minHeight: 26,
+    height: 26,
+    border: "1px solid #CBD5E1",
+    "&:hover": {
+      border: "1px solid #CBD5E1"
+    }
   }),
   menuPortal: (base) => ({ ...base, zIndex: 100000 }),
   menu: (base) => ({ ...base, width: "auto", minWidth: "40%", zIndex: 100000 }),
@@ -51,6 +54,7 @@ export const ReactSelectCustomStyles = {
   }),
   input: (base) => ({
     ...base,
+    border: "none",
     fontSize: 12,
     borderStyle: "none",
     paddingTop: 0,

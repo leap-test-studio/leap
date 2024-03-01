@@ -2,14 +2,17 @@ import { useCallback, useState } from "react";
 import { rankWith, isObjectArrayControl } from "@jsonforms/core";
 
 import TailwindTableControl from "../renderers/Table/TailwindTableControl";
-import { DeleteItemDialog } from "../../utilities";
 import { withJsonFormsArrayProps } from "../common/JsonFormsArrayProps";
+import { DeleteItemDialog } from "../../utilities";
 
 export const TailwindObjectArrayControlRenderer = (props) => {
   const [open, setOpen] = useState(false);
   const [path, setPath] = useState(undefined);
   const [rowData, setRowData] = useState(undefined);
-  const { ctx } = props;
+  const { ctx, visible } = props;
+
+  if (!visible) return null;
+
   const openDeleteDialog = useCallback(
     (p, rowIndex) => {
       setOpen(true);
@@ -26,20 +29,16 @@ export const TailwindObjectArrayControlRenderer = (props) => {
   }, [setOpen, path, rowData, props]);
 
   return (
-    <>
-      {props.visible && (
-        <div className="overflow-y-scroll custom-scrollbar">
-          <TailwindTableControl {...props} openDeleteDialog={openDeleteDialog} readonly={ctx?.readonly} />
-          <DeleteItemDialog
-            title="Delete Entry"
-            question="Are you sure you want to delete the selected entry?"
-            showDialog={open}
-            onClose={deleteCancel}
-            onDelete={deleteConfirm}
-          />
-        </div>
-      )}
-    </>
+    <div className="overflow-y-scroll custom-scrollbar">
+      <TailwindTableControl {...props} openDeleteDialog={openDeleteDialog} readonly={ctx?.readonly} />
+      <DeleteItemDialog
+        title="Delete Entry"
+        question="Are you sure you want to delete the selected entry?"
+        showDialog={open}
+        onClose={deleteCancel}
+        onDelete={deleteConfirm}
+      />
+    </div>
   );
 };
 
