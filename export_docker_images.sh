@@ -1,4 +1,5 @@
-start=$(date +5s%N)
+start=$(date +%s%N)
+
 ARRAY=(
     "yuvarajsomavamshi/vinashak-studio|vinashak_studio"
     #"selenium/video|selenium_video"
@@ -13,10 +14,9 @@ ARRAY=(
 )
 
 npm run build
-OUTPUTPATH=`$(pwd)/data/images`
+OUTPUTPATH=$($(pwd)/data/images)
 TARGET=10.34.97.113
 REMOTE_PATH=/root/workspace/vinashak
-
 
 mkdir -p ${OUTPUTPATH}
 
@@ -46,3 +46,7 @@ done
 
 ssh root@${TARGET} 'cd '${REMOTE_PATH}';npm start'
 ssh root@${TARGET} 'rm -rf ${REMOTE_PATH}/vinashak_studio.*'
+
+end=$(date +%s%N)
+
+echo "Elapsed Time: $(($(($end - $start)) / 1000000))"
