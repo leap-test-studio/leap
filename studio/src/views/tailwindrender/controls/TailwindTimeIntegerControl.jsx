@@ -20,7 +20,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Hours"}
           onWheel={(ev) => ev.target.blur()}
           autoComplete="off"
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
             }`}
           value={hours}
           disabled={!props.enabled}
@@ -43,7 +43,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Minutes"}
           onWheel={(ev) => ev.target.blur()}
           autoComplete="off"
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
             }`}
           value={minutes}
           disabled={!props.enabled}
@@ -66,7 +66,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Seconds"}
           autoComplete="off"
           onWheel={(ev) => ev.target.blur()}
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${!props.enabled && "bg-slate-200"
             }`}
           value={seconds}
           disabled={!props.enabled}

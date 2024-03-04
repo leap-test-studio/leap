@@ -36,9 +36,8 @@ const TailwindDateRenderer = React.memo((props) => {
             placeholderText={props.placeholderText || "Select date"}
             isClearable={true}
             minDate={new Date()}
-            className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md ${
-              props.errors?.length > 0 ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-200"
-            } focus:outline-none w-full`}
+            className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md ${props.errors?.length > 0 ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300"
+              } focus:outline-none w-full`}
           />
           <ErrorMessage {...props} />
         </div>

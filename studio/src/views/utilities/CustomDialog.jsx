@@ -80,13 +80,12 @@ export const CustomDialog = ({
                 leaveTo="translate-y-full"
               >
                 <div
-                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${
-                    largeScreen ? "w-[60vw]" : "w-[28vw]"
-                  } ${customWidth} ${customHeight}`}
+                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${largeScreen ? "w-[60vw]" : "w-[28vw]"
+                    } ${customWidth} ${customHeight}`}
                 >
                   <div className="flex flex-col h-fit" style={contentHeight}>
                     {title != null && (
-                      <div className="text-base font-medium leading-6 text-slate-800 group flex items-start justify-between px-0.5 border-b border-solid border-slate-200 rounded-t">
+                      <div className="text-base font-medium leading-6 text-slate-800 group flex items-start justify-between px-0.5 border-b border-solid border-slate-300 rounded-t">
                         <div className="text-color-0700 font-medium text-lg tracking-wide select-none">{title}</div>
                         <button type="button" onClick={onClose} className="text-cds-red-0700 hover:text-cds-red-0300 focus:outline-none">
                           <IconRenderer icon="Close" className="h-5 w-5" />
@@ -96,9 +95,8 @@ export const CustomDialog = ({
                     <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar">{children}</div>
                     {onSave && (
                       <div
-                        className={`flex border-t border-solid border-slate-200 ${
-                          additionalInfo ? "justify-between" : "justify-end"
-                        } w-full mt-1.5 pt-1`}
+                        className={`flex border-t border-solid border-slate-300 ${additionalInfo ? "justify-between" : "justify-end"
+                          } w-full mt-1.5 pt-1`}
                       >
                         {additionalInfo}
                         <div className="flex">

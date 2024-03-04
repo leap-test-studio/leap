@@ -27,7 +27,7 @@ export const EditableTextAreaComponent = ({ data, onChange }) => {
         {modify ? (
           <textarea
             autoComplete="off"
-            className="block caret-slate-300 h-10 text-xs rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-200 focus:outline-none w-full text-slate-700"
+            className="block caret-slate-300 h-10 text-xs rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full text-slate-700"
             placeholder="Enter the setup description"
             value={description}
             onChange={onTextChange}

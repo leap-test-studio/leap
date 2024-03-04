@@ -207,15 +207,14 @@ function BuildDetails({ project, status, buildInfo }) {
             <td>Status</td>
             <td>
               <div
-                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${
-                  isRunning
+                className={`rounded text-xs text-center font-medium w-24 py-0.5 ${isRunning
                     ? "bg-cds-blue-0600 animate-pulse"
                     : report === "Pass"
                       ? "bg-cds-green-0600"
                       : report === "Fail" || report === "Aborted"
                         ? "bg-cds-red-0700"
                         : "bg-material-yellow-600"
-                } text-white select-none`}
+                  } text-white select-none`}
               >
                 {report}
               </div>
@@ -322,9 +321,8 @@ function BuildSummary({ data, onClick, testType }) {
 function SummaryCard({ title, value, className, onClick, selected }) {
   return (
     <div
-      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${
-        className != null ? className : ""
-      }`}
+      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${className != null ? className : ""
+        }`}
       onClick={onClick}
     >
       <p className="font-normal text-2xl text-center">{value}</p>
@@ -391,7 +389,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
 
   return (
     <>
-      <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs text-slate-700 cursor-pointer" onClick={openTestCase}>
+      <tr className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs text-slate-700 cursor-pointer" onClick={openTestCase}>
         <td className="p-1 border-x border-x-slate-200 font-bold text-center w-20">{TestCase?.label}</td>
         <td className="p-1 border-x border-x-slate-200 w-52">
           {TestCase?.TestScenario && (
@@ -421,15 +419,14 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         <td className="p-1 border-x border-x-slate-200 text-center w-16">{result > 0 ? steps : 0}</td>
         <td className="border-x border-x-slate-200 w-20">
           <div
-            className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
-              status === "Running"
+            className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${status === "Running"
                 ? "bg-cds-blue-0600 animate-pulse"
                 : status === "Pass"
                   ? "bg-cds-green-0600"
                   : status === "Fail" || status === "Aborted"
                     ? "bg-cds-red-0700"
                     : "bg-material-yellow-600"
-            } text-white select-none`}
+              } text-white select-none`}
           >
             {status}
           </div>
@@ -465,41 +462,40 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
       </tr>
       {status !== "Pass" && !isEmpty(actualResult) && actualResult.actual && (
-        <tr className="bg-white hover:bg-slate-50 border border-slate-200 text-xs cursor-pointer" onClick={openTestCase}>
+        <tr className="bg-white hover:bg-slate-50 border border-slate-300 text-xs cursor-pointer" onClick={openTestCase}>
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border border-slate-100">
             <p>{`Captured Result for TC${TestCase?.seqNo}`}</p>
-            <table className="table-auto w-full mb-4 border border-slate-200 rounded">
+            <table className="table-auto w-full mb-4 border border-slate-300 rounded">
               <thead className="text-xs text-slate-500 bg-slate-100">
                 <tr className="text-xs text-center">
-                  <th className="border-r border-slate-200">Step Number</th>
-                  <th className="border-r border-slate-200">Step Details</th>
-                  <th className="border-r border-slate-200">Result</th>
-                  <th className="border-r border-slate-200">Step Time</th>
+                  <th className="border-r border-slate-300">Step Number</th>
+                  <th className="border-r border-slate-300">Step Details</th>
+                  <th className="border-r border-slate-300">Result</th>
+                  <th className="border-r border-slate-300">Step Time</th>
                   <th>Actual Output</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="bg-white hover:bg-slate-50 text-xs">
-                  <td className="border-r border-slate-200 text-center">{actualResult.stepNo}</td>
-                  <td className="border-r border-slate-200">
+                  <td className="border-r border-slate-300 text-center">{actualResult.stepNo}</td>
+                  <td className="border-r border-slate-300">
                     <NewlineText text={JSON.stringify(TestCase?.execSteps[actualResult.stepNo - 1], null, 2)} />
                   </td>
-                  <td className="border-r border-slate-200">
+                  <td className="border-r border-slate-300">
                     <p
-                      className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
-                        TestStatus[actualResult.result] === "Running"
+                      className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${TestStatus[actualResult.result] === "Running"
                           ? "bg-cds-blue-0600 animate-pulse"
                           : TestStatus[actualResult.result] === "Pass"
                             ? "bg-cds-green-0600"
                             : TestStatus[actualResult.result] === "Fail"
                               ? "bg-cds-red-0700"
                               : "bg-material-yellow-600"
-                      } text-white select-none`}
+                        } text-white select-none`}
                     >
                       {TestStatus[actualResult.result]}
                     </p>
                   </td>
-                  <td className="flex-1 border-r border-slate-200">
+                  <td className="flex-1 border-r border-slate-300">
                     <strong>Elapsed</strong>
                     <p>{actualResult.stepTime}ms</p>
                     <strong>Start Time</strong>
@@ -515,7 +511,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </tr>
       )}
       {!isEmpty(screenshot) && (
-        <tr className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs cursor-pointer" onClick={openTestCase}>
+        <tr className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs cursor-pointer" onClick={openTestCase}>
           <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200">
             {screenshot.map((s, i) => (
               <div key={i}>

@@ -53,7 +53,7 @@ export default function UserMenu({ product }) {
       </button>
 
       <Transition
-        className="origin-top-right z-10 absolute top-full right-0 min-w-44 bg-white border border-slate-200 py-1.5 rounded shadow-lg overflow-hidden mt-0.5"
+        className="origin-top-right z-10 absolute top-full right-0 min-w-44 bg-white border border-slate-300 py-1.5 rounded shadow-lg overflow-hidden mt-0.5"
         show={dropdownOpen}
         enter="transition ease-in-out duration-[100ms]"
         enterFrom="transform opacity-0 scale-95"
@@ -63,7 +63,7 @@ export default function UserMenu({ product }) {
         leaveTo="transform opacity-0 scale-95"
       >
         <div ref={dropdown} onFocus={() => setDropdownOpen(true)} onBlur={() => setDropdownOpen(false)}>
-          <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-200 w-40">
+          <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-300 w-40">
             <div className="text-xs font-medium break-words">{user.email}</div>
             <div className="text-xs text-slate-500 italic">{user.role}</div>
           </div>

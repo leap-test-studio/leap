@@ -42,9 +42,8 @@ function Help(props) {
     <div className="relative inline-flex mx-1">
       <button
         ref={trigger}
-        className={`w-5 h-5 flex items-center justify-center bg-slate-200 hover:bg-slate-300 transition duration-150 rounded-full ${
-          dropdownOpen && "bg-slate-300"
-        }`}
+        className={`w-5 h-5 flex items-center justify-center bg-slate-200 hover:bg-slate-300 transition duration-150 rounded-full ${dropdownOpen && "bg-slate-300"
+          }`}
         aria-haspopup="true"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-expanded={dropdownOpen}
@@ -54,7 +53,7 @@ function Help(props) {
       </button>
 
       <Transition
-        className="origin-top-right z-10 absolute top-full right-0 min-w-44 bg-white border border-slate-200 py-1.5 rounded shadow-lg overflow-hidden"
+        className="origin-top-right z-10 absolute top-full right-0 min-w-44 bg-white border border-slate-300 py-1.5 rounded shadow-lg overflow-hidden"
         show={dropdownOpen}
         enter="transition ease-in-out duration-[100ms]"
         enterFrom="transform opacity-0 scale-95"

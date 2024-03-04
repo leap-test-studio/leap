@@ -266,7 +266,7 @@ function TableHeader(props) {
 
 function Header({ title }) {
   return (
-    <th className="sticky top-0 pl-2 py-2 border-b-2 border-slate-200 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
+    <th className="sticky top-0 pl-2 py-2 border-b-2 border-slate-300 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
       {title}
     </th>
   );
@@ -289,7 +289,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
     linkElement.click();
   };
   return (
-    <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-200 text-xs">
+    <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs">
       <td className="border border-r-slate-100 w-[5.5rem]">
         <Tooltip title="Enable/Disable test case" placement="bottom">
           <div className="flex flex-row items-center justify-between px-2">
@@ -326,8 +326,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
+          className={`text-xs font-normal select-none ${record.status === 0
               ? "bg-purple-300"
               : record.status === 1
                 ? "bg-indigo-300"
@@ -336,7 +335,7 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
                   : record.status === 3
                     ? "bg-violet-400"
                     : ""
-          }`}
+            }`}
         >
           {tcType}
         </label>
