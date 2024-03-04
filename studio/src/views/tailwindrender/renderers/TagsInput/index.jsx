@@ -322,7 +322,8 @@ export default function TagsInput(props) {
       id={props.id}
       ref={div}
       onClick={!readonly ? null : handleClick}
-      className="w-full border rounded hover:border-blue-300 flex flex-wrap select-none">
+      className="w-full border rounded hover:border-blue-300 flex flex-wrap select-none"
+    >
       <div className="flex flex-wrap" ref={tags} onKeyDown={handleKeyDownOnTags}>
         {Array.isArray(value) &&
           value.map((tag, index) => (

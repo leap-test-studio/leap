@@ -56,9 +56,11 @@ const TailwindInputText = React.memo((props) => {
                 name={path}
                 id={id}
                 autoComplete="off"
-                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-36" : "h-16"} ${trim ? "text-[11px]" : "text-xs px-1.5 py-1"
-                  } rounded border placeholder-gray-300 shadow focus:shadow-md ${isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300"
-                  } focus:outline-none w-full text-slate-700`}
+                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-36" : "h-16"} ${
+                  trim ? "text-[11px]" : "text-xs px-1.5 py-1"
+                } rounded border placeholder-gray-300 shadow focus:shadow-md ${
+                  isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300"
+                } focus:outline-none w-full text-slate-700`}
                 placeholder={description}
                 value={value}
                 onChange={onChange}
@@ -69,11 +71,13 @@ const TailwindInputText = React.memo((props) => {
                 type={passwordShow ? "text" : "password"}
                 name={path}
                 id={id}
-                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${trim ? "text-[11px] py-px px-1" : "text-xs px-1.5 py-1"
-                  } rounded border text-slate-700 placeholder-gray-300 shadow focus:shadow-md ${isError
+                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${
+                  trim ? "text-[11px] py-px px-1" : "text-xs px-1.5 py-1"
+                } rounded border text-slate-700 placeholder-gray-300 shadow focus:shadow-md ${
+                  isError
                     ? "focus:border-red-500 border-red-600 focus:ring-red-600"
                     : "focus:border-color-0600 border-slate-300 focus:ring-color-0500"
-                  } focus:outline-none w-full`}
+                } focus:outline-none w-full`}
                 placeholder={description}
                 value={value}
                 onChange={onChange}

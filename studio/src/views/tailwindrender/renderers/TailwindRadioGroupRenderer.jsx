@@ -29,7 +29,7 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
     if (data === undefined && props.schema?.default !== undefined) {
       onChange(props.schema?.default);
     }
-  }, [data])
+  }, [data]);
 
   if (!props.visible) return null;
 
@@ -57,8 +57,9 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
               type="radio"
               className={`form-radio h-5 w-5
               ${!props.enabled && "cursor-default opacity-50 text-slate-500"}
-              ${plan.value === data ? "text-color-0700" : "text-slate-400"
-                } focus:outline-none relative flex cursor-pointer rounded-full p-1 shadow hover:shadow-lg ml-1 ring-transparent`}
+              ${
+                plan.value === data ? "text-color-0700" : "text-slate-400"
+              } focus:outline-none relative flex cursor-pointer rounded-full p-1 shadow hover:shadow-lg ml-1 ring-transparent`}
               onChange={() => onChange(plan.value)}
             />
             <span className={`ml-2 text-gray-700 ${plan.value === data ? "font-semibold" : ""}`}>{plan.label}</span>

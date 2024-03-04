@@ -1,3 +1,4 @@
+start=$(date +5s%N)
 ARRAY=(
     "yuvarajsomavamshi/vinashak-studio|vinashak_studio"
     #"selenium/video|selenium_video"
@@ -12,15 +13,18 @@ ARRAY=(
 )
 
 npm run build
-OUTPUTPATH=$(pwd)"/data/images"
+OUTPUTPATH=`$(pwd)/data/images`
+TARGET=10.34.97.113
+REMOTE_PATH=/root/workspace/vinashak
+
 
 mkdir -p ${OUTPUTPATH}
 
-scp docker-compose.yml root@10.34.97.144:/root/workspace/vinashak
+scp docker-compose.yml root@${TARGET}:${REMOTE_PATH}
 
 cd ${OUTPUTPATH}
 rm -rf *.docker *.tgz
-ssh root@10.34.97.144 'cd /root/workspace/vinashak;npm stop'
+ssh root@${TARGET} 'cd '${REMOTE_PATH}';npm stop'
 for item in "${ARRAY[@]}"; do
     IMAGE=$(echo "${item}" | awk -F "|" '{print $1}')
     FILENAME=$(echo "${item}" | awk -F "|" '{print $2}')
@@ -30,15 +34,15 @@ for item in "${ARRAY[@]}"; do
     echo "Compress Docker Image: ${IMAGE}"
     tar -zcvf ${FILENAME}.tgz ${FILENAME}.docker
 
-    ssh root@10.34.97.144 'cd /root/workspace/vinashak; rm -rf '${FILENAME}'.docker '${FILENAME}'.tgz'
-    ssh root@10.34.97.144 'docker rmi yuvarajsomavamshi/vinashak-studio'
+    ssh root@${TARGET} 'cd '${REMOTE_PATH}'; rm -rf '${FILENAME}'.docker '${FILENAME}'.tgz'
+    ssh root@${TARGET} 'docker rmi yuvarajsomavamshi/vinashak-studio'
     echo "Ship Docker Image: ${IMAGE}"
 
-    scp ${FILENAME}.tgz root@10.34.97.144:/root/workspace/vinashak
-    ssh root@10.34.97.144 'cd /root/workspace/vinashak; tar -zxvf '${FILENAME}'.tgz'
+    scp ${FILENAME}.tgz root@${TARGET}:${REMOTE_PATH}
+    ssh root@${TARGET} 'cd '${REMOTE_PATH}'; tar -zxvf '${FILENAME}'.tgz'
     echo "Load Docker Image: ${IMAGE}"
-    ssh root@10.34.97.144 'cd /root/workspace/vinashak; docker load -i '${FILENAME}'.docker'
+    ssh root@${TARGET} 'cd '${REMOTE_PATH}'; docker load -i '${FILENAME}'.docker'
 done
 
-ssh root@10.34.97.144 'cd /root/workspace/vinashak;npm start'
-ssh root@10.34.97.144 'rm -rf /root/workspace/vinashak/vinashak_studio.*'
+ssh root@${TARGET} 'cd '${REMOTE_PATH}';npm start'
+ssh root@${TARGET} 'rm -rf ${REMOTE_PATH}/vinashak_studio.*'
