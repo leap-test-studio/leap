@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import { IconRenderer } from "../../../utilities";
+import { usePrevious } from "../../util/useHooks";
 
 function uniq(arr) {
   const out = [];
@@ -22,14 +23,6 @@ function getClipboardData(e) {
   }
 
   return "";
-}
-
-function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value; //assign the value of ref to the argument
-  }, [value]); //this code will run when the value of "value" changes
-  return ref.current; //in the end, return the current ref value.
 }
 
 export default function TagsInput(props) {
@@ -325,7 +318,11 @@ export default function TagsInput(props) {
   }
 
   return (
-    <div ref={div} onClick={!readonly ? null : handleClick} className="w-full border rounded hover:border-blue-300 flex flex-wrap select-none">
+    <div
+      id={props.id}
+      ref={div}
+      onClick={!readonly ? null : handleClick}
+      className="w-full border rounded hover:border-blue-300 flex flex-wrap select-none">
       <div className="flex flex-wrap" ref={tags} onKeyDown={handleKeyDownOnTags}>
         {Array.isArray(value) &&
           value.map((tag, index) => (
@@ -345,6 +342,7 @@ export default function TagsInput(props) {
           ))}
         {!readonly && (
           <input
+            id={props.id + "-input"}
             {...other}
             className="block caret-slate-300 py-px px-1 my-1 mx-2 rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none"
           />

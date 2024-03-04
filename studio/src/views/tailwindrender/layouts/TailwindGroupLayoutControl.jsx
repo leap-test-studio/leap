@@ -1,6 +1,8 @@
-import { TailwindLayoutRenderer } from "../util/layout";
 import { rankWith, uiTypeIs, withIncreasedRank } from "@jsonforms/core";
 import { withJsonFormsLayoutProps, withJsonFormsContext } from "@jsonforms/react";
+
+import { TailwindLayoutRenderer } from "../util/layout";
+import { Card, CardHeader } from "../common/CardRenderer";
 
 const TailwindGroupLayout = (properties) => {
   const { schema, path, visible, enabled, renderers, cells, direction } = properties.props;
@@ -8,27 +10,22 @@ const TailwindGroupLayout = (properties) => {
     schema.definitions = properties.ctx?.core?.schema?.definitions;
   }
   const groupLayout = generateUISchema("#", schema);
+  if (!visible || !groupLayout) return null;
   return (
-    <>
-      {visible && groupLayout && (
-        <div className="w-full flex flex-col rounded border my-px">
-          {groupLayout.label?.length > 0 && (
-            <span className="bg-color-0100 text-left text-xs text-color-primary select-none pl-2 py-1 rounded-t">{groupLayout.label}</span>
-          )}
-          <TailwindLayoutRenderer
-            layout="group"
-            schema={schema}
-            path={path}
-            elements={groupLayout.elements}
-            direction={direction}
-            renderers={renderers}
-            cells={cells}
-            visible={visible}
-            enabled={enabled}
-          />
-        </div>
-      )}
-    </>
+    <Card>
+      <CardHeader>{groupLayout.label}</CardHeader>
+      <TailwindLayoutRenderer
+        layout="group"
+        schema={schema}
+        path={path}
+        elements={groupLayout.elements}
+        direction={direction}
+        renderers={renderers}
+        cells={cells}
+        visible={visible}
+        enabled={enabled}
+      />
+    </Card>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from "react";
+
 import TailwindNumeric from "./common/TailwindNumeric";
 
 const TailwindInputNumber = React.memo((props) => {

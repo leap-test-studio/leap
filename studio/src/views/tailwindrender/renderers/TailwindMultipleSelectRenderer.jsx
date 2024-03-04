@@ -1,6 +1,7 @@
 import React from "react";
-import LabelRenderer from "./common/LabelRenderer";
 import isEmpty from "lodash/isEmpty";
+
+import LabelRenderer from "./common/LabelRenderer";
 
 const TailwindMultipleSelectRenderer = React.memo(
   ({

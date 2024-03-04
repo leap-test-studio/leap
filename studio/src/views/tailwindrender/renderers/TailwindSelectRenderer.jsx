@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactSelect from "react-select";
 import isEmpty from "lodash/isEmpty";
 import merge from "lodash/merge";
@@ -43,30 +43,34 @@ const TailwindSelectRenderer = React.memo(
       selectedOption = options?.find((item) => item.value === data);
     }
 
+    useEffect(() => {
+      if (data === undefined && props.schema?.default !== undefined) {
+        onChange(options?.find((item) => item.value === props.schema?.default));
+      }
+    }, [data]);
+
+    if (!visible) return null;
+
     return (
-      <>
-        {visible && (
-          <div id={id} className="mx-1">
-            {showLabel && label?.length > 0 && <LabelRenderer path={path} label={label} {...props} />}
-            <ReactSelect
-              id={`select-${id}`}
-              classNamePrefix={`twr-select-${id}`}
-              className={`caret-slate-300 block rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md ${className}`}
-              placeholder={!isEmpty(label) ? label : "Select..."}
-              styles={ReactSelectCustomStyles}
-              isSearchable={enableFilter}
-              value={selectedOption}
-              onChange={onChange}
-              options={options}
-              isDisabled={!enabled}
-              menuPortalTarget={document.body}
-              menuPosition="absolute"
-              required={props?.required}
-            />
-            {appliedUiSchemaOptions.returnIndex != null && <ErrorMessage id={id} path={path} errors={errors} />}
-          </div>
-        )}
-      </>
+      <div id={id} className="mx-1">
+        {showLabel && label?.length > 0 && <LabelRenderer path={path} label={label} {...props} />}
+        <ReactSelect
+          id={`select-${id}`}
+          classNamePrefix={`twr-select-${id}`}
+          className="caret-slate-300 block rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md"
+          placeholder={!isEmpty(label) ? label : "Select..."}
+          styles={ReactSelectCustomStyles}
+          isSearchable={enableFilter}
+          value={selectedOption}
+          onChange={onChange}
+          options={options}
+          isDisabled={!enabled}
+          menuPortalTarget={document.body}
+          menuPosition="absolute"
+          required={props?.required}
+        />
+        {appliedUiSchemaOptions.returnIndex != null && <ErrorMessage id={id} path={path} errors={errors} />}
+      </div>
     );
   }
 );

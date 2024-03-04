@@ -44,6 +44,9 @@ const TailwindCategorizationLayoutRenderer = (props) => {
   );
 };
 
-export const tailwindCategorizationControlTester = rankWith(1001, and(uiTypeIs("Categorization"), (uischema) => uischema.elements?.reduce((acc, e) => acc && e.type === "Category", true)));
+export const tailwindCategorizationControlTester = rankWith(
+  1001,
+  and(uiTypeIs("Categorization"), (uischema) => uischema.elements?.reduce((acc, e) => acc && e.type === "Category", true))
+);
 
 export const TailwindCategorizationControl = withJsonFormsLayoutProps(withAjvProps(TailwindCategorizationLayoutRenderer));

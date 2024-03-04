@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import Input from "@mui/material/Input";
 import merge from "lodash/merge";
+
 import { useDebouncedChange } from "../util";
 
 export const TailwindInputNumberFormat = React.memo((props) => {

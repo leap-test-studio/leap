@@ -1,5 +1,6 @@
 import { rankWith, uiTypeIs } from "@jsonforms/core";
 import { withJsonFormsLayoutProps } from "@jsonforms/react";
+
 import { TailwindLayoutRenderer } from "../util";
 
 const TailwindVerticalLayoutRenderer = ({ uischema, renderers, cells, schema, path, enabled, visible }) => {

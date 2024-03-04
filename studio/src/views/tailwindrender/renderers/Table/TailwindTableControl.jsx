@@ -124,7 +124,7 @@ const NonEmptyRow = React.memo(
     return (
       <div key={childPath} className="w-full flex flex-row justify-between items-center text-xs bg-white my-1.5 shadow rounded">
         <div className="w-full flex flex-col">
-          <div className="flex flex-row justify-between items-center bg-color-0100 px-1 py-0.5 rounded-t">
+          <div className="flex flex-row justify-between items-center bg-color-0100 text-left text-xs font-medium text-color-primary px-2 py-1 rounded-t">
             <span>{`${rowTitle || "Record"} #${rowIndex + 1}`}</span>
             {!readonly && (
               <IconButton

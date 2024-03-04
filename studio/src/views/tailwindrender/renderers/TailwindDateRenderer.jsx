@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import merge from "lodash/merge";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getData, createOnChangeHandler } from "../util";
+import merge from "lodash/merge";
+
 import LabelRenderer from "./common/LabelRenderer";
 import ErrorMessage from "./common/ErrorMessage";
+import { getData, createOnChangeHandler } from "../util";
 
 const DateFormats = {
   "YYYY-MM-DD": "yyyy-MM-dd",

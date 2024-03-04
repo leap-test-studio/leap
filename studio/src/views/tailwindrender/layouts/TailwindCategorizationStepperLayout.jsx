@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { and, categorizationHasCategory, isVisible, optionIs, rankWith, uiTypeIs } from "@jsonforms/core";
+import { withJsonFormsLayoutProps } from "@jsonforms/react";
 import merge from "lodash/merge";
 import Button from "@mui/material/Button";
 import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
 import Stepper from "@mui/material/Stepper";
-import { and, categorizationHasCategory, isVisible, optionIs, rankWith, uiTypeIs } from "@jsonforms/core";
-import { withJsonFormsLayoutProps } from "@jsonforms/react";
+
 import { TailwindLayoutRenderer, withAjvProps } from "../util";
 
 const buttonWrapperStyle = {
@@ -76,9 +77,7 @@ const TailwindCategorizationStepperLayoutRenderer = (props) => {
             Previous
           </Button>
         </div>
-      ) :
-        null
-      }
+      ) : null}
     </>
   );
 };

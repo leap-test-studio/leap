@@ -1,11 +1,11 @@
 import { rankWith, uiTypeIs } from "@jsonforms/core";
 import { withJsonFormsLayoutProps } from "@jsonforms/react";
+
 import { TailwindLayoutRenderer } from "../util";
 
 const TailwindHorizontalLayoutRenderer = ({ uischema, renderers, cells, schema, path, enabled, visible }) => {
-  const layout = uischema;
   const childProps = {
-    elements: layout.elements,
+    elements: uischema.elements,
     schema,
     path,
     enabled,

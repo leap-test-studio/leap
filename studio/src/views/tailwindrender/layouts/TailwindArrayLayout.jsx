@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { composePaths, computeLabel, createDefaultValue } from "@jsonforms/core";
-import TableToolbar from "../renderers/Table/TableToolbar";
-import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import merge from "lodash/merge";
 import map from "lodash/map";
 import range from "lodash/range";
 
+import ExpandPanelRenderer from "./ExpandPanelRenderer";
+import TableToolbar from "../renderers/Table/TableToolbar";
 import { IconButton, Tooltip, EmptyIconRenderer } from "../../utilities";
 
 export const TailwindArrayLayout = React.memo((props) => {

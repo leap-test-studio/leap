@@ -37,8 +37,9 @@ const TailwindNumeric = React.memo((props) => {
             placeholder={description}
             onWheel={(ev) => ev.target.blur()}
             autoComplete="off"
-            className={`text-xs caret-slate-300 block px-1.5 py-1 rounded border placeholder-slate-500 shadow focus:shadow-md ${!props.enabled && "bg-slate-200"
-              } ${isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300"} focus:outline-none w-full`}
+            className={`text-xs caret-slate-300 block px-1.5 py-1 rounded border placeholder-slate-500 shadow focus:shadow-md ${
+              !props.enabled && "bg-slate-200"
+            } ${isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300"} focus:outline-none w-full`}
             onChange={(ev) => {
               ev.preventDefault();
               handleChange(path, Parse(step, ev.target.value));
