@@ -42,29 +42,30 @@ const TailwindRadioGroupRenderer = React.memo((props) => {
         )}
       </div>
       <div className={`grid px-2 py-1 gap-1 ${props.options?.length >= 3 ? "grid-cols-4" : "grid-cols-2"}`}>
-        {props.options?.map((plan, index) => (
-          <div
-            id={props.id + "/" + index}
-            key={index}
-            className={`inline-flex items-center border ${plan.value === data ? "bg-color-0200 shadow border-color-0400" : "border-slate-300"}
+        {typeof props.options?.map === "function" &&
+          props.options?.map((plan, index) => (
+            <div
+              id={props.id + "/" + index}
+              key={index}
+              className={`inline-flex items-center border ${plan.value === data ? "bg-color-0200 shadow border-color-0400" : "border-slate-300"}
             ${plan.value === data && !props.enabled && "bg-slate-300 border-slate-400 opacity-70"}
             p-1 rounded text-[10px] select-none`}
-            onClick={() => onChange(plan.value)}
-          >
-            <input
-              disabled={!props.enabled}
-              checked={plan.value === data}
-              type="radio"
-              className={`form-radio h-5 w-5
+              onClick={() => onChange(plan.value)}
+            >
+              <input
+                disabled={!props.enabled}
+                checked={plan.value === data}
+                type="radio"
+                className={`form-radio h-5 w-5
               ${!props.enabled && "cursor-default opacity-50 text-slate-500"}
               ${
                 plan.value === data ? "text-color-0700" : "text-slate-400"
               } focus:outline-none relative flex cursor-pointer rounded-full p-1 shadow hover:shadow-lg ml-1 ring-transparent`}
-              onChange={() => onChange(plan.value)}
-            />
-            <span className={`ml-2 text-gray-700 ${plan.value === data ? "font-semibold" : ""}`}>{plan.label}</span>
-          </div>
-        ))}
+                onChange={() => onChange(plan.value)}
+              />
+              <span className={`ml-2 text-gray-700 ${plan.value === data ? "font-semibold" : ""}`}>{plan.label}</span>
+            </div>
+          ))}
       </div>
       {!props.uischema?.options?.returnIndex && <ErrorMessage {...props} />}
     </div>

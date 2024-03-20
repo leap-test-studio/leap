@@ -7,7 +7,7 @@ export const ReactSelectCustomStyles = {
     height: 26,
     border: "1px solid #CBD5E1",
     "&:hover": {
-      border: "1px solid #CBD5E1"
+      border: "1px solid #CBD5E1 !important"
     }
   }),
   menuPortal: (base) => ({ ...base, zIndex: 100000 }),

@@ -1,18 +1,21 @@
+import { useEffect } from "react";
 import ReactSelect from "react-select";
 import { isOneOfEnumControl, rankWith } from "@jsonforms/core";
 import { withJsonFormsOneOfEnumProps } from "@jsonforms/react";
 
 import LabelRenderer from "../renderers/common/LabelRenderer";
 import { ReactSelectCustomStyles } from "../common/Constants";
-import { useEffect } from "react";
 
 export const TailwindOneOfEnum = (props) => {
-  const { handleChange, path, visible, label, options, data, schema } = props;
-
-  const handleSelectChange = (selectedOption) => selectedOption && handleChange(path, selectedOption.value);
+  const { id, handleChange, path, visible, label, options, data, schema } = props;
+  const handleSelectChange = (selectedOption) => {
+    if (selectedOption) {
+      handleChange(path, selectedOption.value);
+    }
+  };
 
   useEffect(() => {
-    if (data != undefined && schema?.default != undefined) {
+    if (data === undefined && schema?.default !== undefined) {
       handleSelectChange(options?.find((item) => item.value === schema.default));
     }
   }, [data]);
@@ -23,7 +26,8 @@ export const TailwindOneOfEnum = (props) => {
     <div className="mx-1">
       {label?.length > 0 && <LabelRenderer {...props} />}
       <ReactSelect
-        value={options.find((option) => option.value === props.data)}
+        id={id}
+        value={options.find((option) => option.value === data)}
         onChange={(option) => handleSelectChange(option)}
         options={options}
         isSearchable={true}

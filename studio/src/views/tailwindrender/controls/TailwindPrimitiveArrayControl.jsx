@@ -5,12 +5,13 @@ import LabelRenderer from "../renderers/common/LabelRenderer";
 import { withJsonFormsArrayProps } from "../common/JsonFormsArrayProps";
 
 export const TailwindPrimitiveArrayControlRenderer = (props) => {
-  const { visible, ctx, path, schema, label, addItem, removeItems, description, handleChange } = props;
+  const { id, visible, ctx, path, schema, label, addItem, removeItems, description, handleChange } = props;
   if (!visible) return null;
   return (
     <div className="grow mb-1 mx-1">
       {label?.length > 0 && <LabelRenderer {...props} />}
       <TagsInput
+        id={id}
         path={path}
         value={resolveData(ctx?.core?.data, path) || []}
         addItem={addItem}

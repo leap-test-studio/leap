@@ -8,8 +8,7 @@ import LabelRenderer from "./common/LabelRenderer";
  */
 const TailwindCheckboxRenderer = React.memo((props) => {
   const { id, visible, enabled, path, description, uischema, data, handleChange, label, schema, removeMt } = props;
-  const { resetTo } = merge({}, uischema.options);
-
+  const { resetTo } = merge({}, uischema?.options);
   useEffect(() => {
     if (!enabled && resetTo != null && data != resetTo) {
       handleChange(path, Boolean(resetTo));

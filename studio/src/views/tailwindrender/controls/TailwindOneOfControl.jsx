@@ -6,9 +6,9 @@ import { JsonFormsDispatch, withJsonFormsOneOfProps } from "@jsonforms/react";
 
 import CombinatorProperties from "../util/CombinatorProperties";
 import ErrorMessage from "../renderers/common/ErrorMessage";
-import { ReactSelectCustomStyles } from "../common/Constants";
 import { CustomDialog } from "../../utilities";
 import { Card, CardHeader } from "../common/CardRenderer";
+import { ReactSelectCustomStyles } from "../common/Constants";
 
 const TailwindOneOfRenderer = React.memo(
   ({ id, handleChange, schema, path, renderers, cells, rootSchema, visible, indexOfFittingSchema, uischema, uischemas, data, errors }) => {
@@ -16,8 +16,6 @@ const TailwindOneOfRenderer = React.memo(
     const [selectedIndex, setSelectedIndex] = useState(indexOfFittingSchema || 0);
     const oneOfRenderInfos = createCombinatorRenderInfos(schema.oneOf, rootSchema, "oneOf", uischema, path, uischemas);
     const [oneOfValue, setOneOfValue] = useState(oneOfRenderInfos[0]);
-
-    if (!visible) return null;
 
     const cancel = useCallback(() => {
       setOpen(false);
@@ -40,6 +38,8 @@ const TailwindOneOfRenderer = React.memo(
       },
       [setOpen, data]
     );
+
+    if (!visible) return null;
 
     return (
       <Card>
@@ -76,10 +76,8 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
     label: info.label
   }));
   return (
-    <div className="mx-1">
-      <div className="bg-color-0100 text-left text-[10px] text-color-primary select-none px-0.5 rounded-t">
-        Select OneOf {isEmpty(schema?.title) ? "" : " - " + schema.title}
-      </div>
+    <Card>
+      <CardHeader>{`Select OneOf ${isEmpty(schema?.title) ? "" : " - " + schema.title}`}</CardHeader>
       <ReactSelect
         value={{ value: selected, label: infos[selected]?.label }}
         onChange={(option) => handleChange(option.value)}
@@ -89,7 +87,7 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
         styles={ReactSelectCustomStyles}
       />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />
-    </div>
+    </Card>
   );
 };
 export const tailwindOneOfControlTester = rankWith(1003, isOneOfControl);
