@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/styled": "^11.11.5",
     "@headlessui/react": "^1.7.18",
     "@jsonforms/core": "3.2.1",
     "@jsonforms/react": "3.2.1",
@@ -64,7 +64,7 @@
     "@tailwindcss/typography": "^0.5.12",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "@types/react": "^18.2.73",
     "@types/react-dom": "^18.2.23",
     "@types/react-router-dom": "^5.3.3",

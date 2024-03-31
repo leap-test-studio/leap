@@ -51,7 +51,7 @@
     "protobufjs": "^7.2.6",
     "request": "^2.88.2",
     "selenium-webdriver": "^4.19.0",
-    "sequelize": "^6.37.1",
+    "sequelize": "^6.37.2",
     "ssh2-promise": "^1.0.3",
     "swig-email-templates": "^6.0.0",
     "ts-proto": "^1.170.0",
