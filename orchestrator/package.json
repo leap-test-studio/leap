@@ -9,7 +9,7 @@
     "upgrade": "npm-check-updates -x swig-email-templates -u --packageFile package.json && npm i --force"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.4",
+    "@grpc/grpc-js": "^1.10.5",
     "@grpc/proto-loader": "^0.7.12",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
@@ -54,7 +54,7 @@
     "sequelize": "^6.37.2",
     "ssh2-promise": "^1.0.3",
     "swig-email-templates": "^6.0.0",
-    "ts-proto": "^1.170.0",
+    "ts-proto": "^1.171.0",
     "typescript": "^5.4.3",
     "uuid": "^9.0.1",
     "whiteboard-pubsub": "^0.0.3"
