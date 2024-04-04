@@ -1,5 +1,5 @@
 {
-  "name": "vinashak-docs",
+  "name": "vinashak-documentation",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,11 +12,9 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc",
     "dev": "npm run dev:upgrade && npm run dev:prettify && npm run build",
     "dev:prettify": "prettier --ignore-path \"./.prettierignore\" --write \"./**/*.{js,jsx,json,html,ts,tsx,css,md,mdx}\"",
-    "dev:upgrade": "ncu -u -x @mdx-js/react,react,react-dom  && npm i --force --silent",
-    "change-engine": "grep -Rl \">=16.14\" node_modules/*|xargs sed -i 's/>=16.14/>=14.17.1/g'"
+    "dev:upgrade": "ncu -u -x @mdx-js/react,react,react-dom  && npm i --force --silent"
   },
   "dependencies": {
     "@docusaurus/core": "3.2.1",
@@ -30,8 +28,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.2.1",
     "@docusaurus/types": "3.2.1",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.3"
+    "prettier": "^3.2.5"
   },
   "browserslist": {
     "production": [

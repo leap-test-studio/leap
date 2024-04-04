@@ -11,7 +11,7 @@ const config = {
   title: Product.name,
   tagline: Product.description,
   url: Product.website,
-  baseUrl: Product.baseURL + "/docs/",
+  baseUrl: Product.baseURL + "/documentation/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "icons/logo.svg",
@@ -58,7 +58,7 @@ const config = {
           alt: "Logo",
           src: "icons/logo.svg",
           srcDark: "icons/logo.svg",
-          href: Product.baseURL + "/docs/",
+          href: Product.baseURL + "/documentation/",
           target: "_self",
           width: 30,
           height: 30
@@ -71,7 +71,7 @@ const config = {
           alt: Product.name + " Logo",
           src: "icons/logo.svg",
           srcDark: "icons/logo.svg",
-          href: Product.baseURL + "/docs/",
+          href: Product.baseURL + "/documentation/",
           width: 40,
           height: 40
         },

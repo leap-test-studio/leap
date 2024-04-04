@@ -7,9 +7,9 @@ sidebar_position: 1
 <head>
   <title>Welcome to Vinashak!</title>
   <meta name="description" content="Open Test Automation Tool." />
-  <link rel="canonical" href="/docs" />
-  <link rel="alternate" href="/docs" hreflang="x-default" />
-  <link rel="alternate" href="/docs" hreflang="en" /> <meta property="og:url" content="/docs" />
+  <link rel="canonical" href="/documentation" />
+  <link rel="alternate" href="/documentation" hreflang="x-default" />
+  <link rel="alternate" href="/documentation" hreflang="en" /> <meta property="og:url" content="/documentation" />
 </head>
 
 <h1>What is Test Automation?</h1>
