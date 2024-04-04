@@ -1,10 +1,11 @@
 // @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
+// `@type` JSDoc annotations allow editor autocompletion and type checking
+// (when paired with `@ts-check`).
+// There are various equivalent ways to declare your Docusaurus config.
+// See: https://docusaurus.io/docs/api/docusaurus-config
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+import { themes as prismThemes } from "prism-react-renderer";
 const Product = require("./src/product.json");
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: Product.name,
@@ -13,16 +14,16 @@ const config = {
   baseUrl: Product.baseURL + "/docs/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
-  favicon: "/icons/favicon.svg",
+  favicon: "icons/logo.svg",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: Product.organization.name, // Usually your GitHub org/user name.
   projectName: Product.name, // Usually your repo name.
 
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
+  // Even if you don't use internationalization, you can use this field to set
+  // useful metadata like html lang. For example, if your site is Chinese, you
+  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
     locales: ["en"]
@@ -49,37 +50,27 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      colorMode: {
-        defaultMode: "light",
-        disableSwitch: true
-      },
+      // Replace with your project's social card
+      image: "img/docusaurus-social-card.jpg",
       navbar: {
         title: Product.name,
         logo: {
-          alt: Product.name + " Logo",
-          src: `/img/logo.png`,
-          srcDark: `/img/logo.png`,
+          alt: "Logo",
+          src: "icons/logo.svg",
+          srcDark: "icons/logo.svg",
           href: Product.baseURL + "/docs/",
           target: "_self",
           width: 30,
           height: 30
         },
-        items: [
-          {
-            type: "doc",
-            docId: "intro",
-            position: "left",
-            label: "Product"
-          },
-          { to: "/blog", label: "Notes", position: "left" }
-        ]
+        items: []
       },
       footer: {
         style: "dark",
         logo: {
           alt: Product.name + " Logo",
-          src: `/img/logo.png`,
-          srcDark: `/img/logo.png`,
+          src: "icons/logo.svg",
+          srcDark: "icons/logo.svg",
           href: Product.baseURL + "/docs/",
           width: 40,
           height: 40
@@ -87,10 +78,10 @@ const config = {
         copyright: `Copyright © ${Product.copyrightYear} ${Product.organization.name}. All rights reserved.`
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula
       }
     })
 };
 
-module.exports = config;
+export default config;

@@ -9,7 +9,7 @@
     "upgrade": "npm-check-updates -x swig-email-templates -u --packageFile package.json && npm i --force"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.5",
+    "@grpc/grpc-js": "^1.10.6",
     "@grpc/proto-loader": "^0.7.12",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
@@ -32,7 +32,7 @@
     "http-status": "^1.7.4",
     "ioredis": "^5.3.2",
     "ip": "^2.0.1",
-    "joi": "^17.12.2",
+    "joi": "^17.12.3",
     "jsonwebtoken": "^9.0.2",
     "kafka-node": "^5.0.0",
     "lodash": "^4.17.21",
