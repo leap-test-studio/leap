@@ -6,7 +6,7 @@ sidebar_position: 1
 
 <head>
   <title>Welcome to Vinashak!</title>
-  <meta name="description" content="Open Test Automation Tool." />
+  <meta name="description" content="Multi Channel Automation Tool" />
   <link rel="canonical" href="/documentation" />
   <link rel="alternate" href="/documentation" hreflang="x-default" />
   <link rel="alternate" href="/documentation" hreflang="en" /> <meta property="og:url" content="/documentation" />
@@ -45,7 +45,9 @@ test-data handling methods, object repositories, processes for storing test resu
 not mandatory rules and testers can still script or record tests without following them, using an organized framework typically provides additional benefits
 that would otherwise be missed out on.
 
-<h2>Benefits of a Test Automation Framework</h2> Utilizing a framework for automated testing will increase a team’s test speed and efficiency, improve
+<h2>Benefits of a Test Automation Framework</h2>
+
+Utilizing a framework for automated testing will increase a team’s test speed and efficiency, improve
 test accuracy, and will reduce test maintenance costs as well as lower risks. They are essential to an efficient automated testing process for a few key
 reasons:
 
@@ -58,7 +60,9 @@ reasons:
   <li>Reusability</li>
 </ul>
 
-<h2>Types of Automated Testing Frameworks</h2> There are six common types of test automation frameworks, each with their own architecture and differing
+<h2>Types of Automated Testing Frameworks</h2>
+
+There are seven common types of test automation frameworks, each with their own architecture and differing
 benefits and disadvantages. When building out a test plan, it’s important to choose the framework that is right for you.
 
 <ul>
@@ -69,6 +73,15 @@ benefits and disadvantages. When building out a test plan, it’s important to c
   <li>Keyword-Driven Framework</li>
   <li>Hybrid Testing Framework</li>
   <li>Behavior Driven Development (BDD) Framework</li>
+</ul>
+
+<h2>Supported Channels</h2>
+
+<ul>
+  <li>Web - Selenium Grid</li>
+  <li>API</li>
+  <li>SSH</li>
+  <li>gRPC Services - WIP </li>
 </ul>
 
 <intro-end />
