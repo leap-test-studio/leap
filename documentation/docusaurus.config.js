@@ -14,7 +14,7 @@ const config = {
   baseUrl: Product.baseURL + "/documentation/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
-  favicon: "icons/logo.svg",
+  favicon: "icons/favicon.png",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -56,8 +56,8 @@ const config = {
         title: Product.name,
         logo: {
           alt: "Logo",
-          src: "icons/logo.svg",
-          srcDark: "icons/logo.svg",
+          src: "icons/favicon.png",
+          srcDark: "icons/favicon.png",
           href: Product.baseURL + "/documentation/",
           target: "_self",
           width: 30,
@@ -69,8 +69,8 @@ const config = {
         style: "dark",
         logo: {
           alt: Product.name + " Logo",
-          src: "icons/logo.svg",
-          srcDark: "icons/logo.svg",
+          src: "icons/favicon.png",
+          srcDark: "icons/favicon.png",
           href: Product.baseURL + "/documentation/",
           width: 40,
           height: 40

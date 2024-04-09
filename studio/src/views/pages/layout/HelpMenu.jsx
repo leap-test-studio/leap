@@ -5,12 +5,11 @@ import { Transition } from "@headlessui/react";
 import AboutDialog from "./AboutDialog";
 import { IconRenderer } from "../../utilities";
 
-/*
 const openInNewTab = (url) => {
   const newWindow = window.open(url, "_blank", "noopener,noreferrer");
   if (newWindow) newWindow.opener = null;
 };
-*/
+
 function Help(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -66,12 +65,12 @@ function Help(props) {
         <div ref={dropdown} onFocus={() => setDropdownOpen(true)} onBlur={() => setDropdownOpen(false)}>
           <div className="text-xs font-semibold text-color-0400 uppercase pt-1.5 pb-2 px-4">Need help?</div>
           <ul>
-            {/*<li>
+            <li>
               <div
                 className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3 cursor-pointer"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
-                  openInNewTab("/vinashak/docs");
+                  openInNewTab("/vinashak/documentation");
                 }}
               >
                 <svg className="w-3 h-3 fill-current text-color-0500 shrink-0 mr-2" viewBox="0 0 12 12">
@@ -81,18 +80,6 @@ function Help(props) {
                 <span>Documentation</span>
               </div>
             </li>
-            <li>
-              <Link
-                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
-                to="#0"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <svg className="w-3 h-3 fill-current text-color-0500 shrink-0 mr-2" viewBox="0 0 12 12">
-                  <path d="M10.5 0h-9A1.5 1.5 0 000 1.5v9A1.5 1.5 0 001.5 12h9a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0010.5 0zM10 7L8.207 5.207l-3 3-1.414-1.414 3-3L5 2h5v5z" />
-                </svg>
-                <span>Support Site</span>
-              </Link>
-            </li> */}
             <li>
               <Link
                 className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"

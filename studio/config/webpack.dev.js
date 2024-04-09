@@ -33,6 +33,11 @@ module.exports = merge(common, {
         context: ["/api"],
         target: process.env.API_URL || "http://localhost",
         secure: false
+      },
+      {
+        context: ["/vinashak/documentation"],
+        target: process.env.DOCS_URL || "http://localhost:3000",
+        secure: false
       }
     ]
   },

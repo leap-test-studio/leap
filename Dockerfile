@@ -1,5 +1,5 @@
-FROM node:14.21.3-slim as studio
-RUN apt-get update || : && apt-get install python make g++ -y
+FROM node:18 as studio
+RUN apt-get update
 
 WORKDIR /app/studio
 RUN rm -rf /app/studio/build
@@ -8,37 +8,38 @@ RUN npm config set strict-ssl false
 RUN npm config set fetch-retry-maxtimeout 120000
 RUN npm config set fetch-timeout 120000
 RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true
-RUN npm install --unsafe-perm=true
+RUN npm install --omit=dev --unsafe-perm=true --force
+RUN npm install --unsafe-perm=true --force
 COPY studio/. .
 RUN npm run build
 
 
-FROM node:14.21.3-slim as documentation
-RUN apt-get update || : && apt-get install python make g++ -y
+FROM node:18 as documentation
+RUN apt-get update
 
 WORKDIR /app/documentation
 RUN rm -rf /app/documentation/build
 COPY documentation/package.json .
 RUN npm config set strict-ssl false
 RUN npm config set fetch-retry-maxtimeout 120000
+
 RUN npm config set fetch-timeout 120000
 RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true
-RUN npm install --unsafe-perm=true
+RUN npm install --omit=dev --unsafe-perm=true --force
+RUN npm install --unsafe-perm=true --force
 COPY documentation/. .
 RUN npm run build
 
-FROM node:14.21.3-slim as orchestrator
-RUN apt-get update || : && apt-get install python make g++ -y
+FROM node:18 as orchestrator
+RUN apt-get update
 WORKDIR /app/orchestrator
 COPY orchestrator/package.json .
 RUN npm config set strict-ssl false
 RUN npm config set fetch-retry-maxtimeout 120000
 RUN npm config set fetch-timeout 120000
 RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true
-RUN npm install --unsafe-perm=true
+RUN npm install --omit=dev --unsafe-perm=true --force
+RUN npm install --unsafe-perm=true --force
 COPY orchestrator/. .
 EXPOSE 80
 CMD npm start;
