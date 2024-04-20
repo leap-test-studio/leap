@@ -70,7 +70,7 @@ function Help(props) {
                 className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3 cursor-pointer"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
-                  openInNewTab("/vinashak/documentation");
+                  openInNewTab("/documentation");
                 }}
               >
                 <svg className="w-3 h-3 fill-current text-color-0500 shrink-0 mr-2" viewBox="0 0 12 12">
