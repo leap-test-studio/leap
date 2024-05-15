@@ -54,7 +54,7 @@
     "sequelize": "^6.37.3",
     "ssh2-promise": "^1.0.3",
     "swig-email-templates": "^6.0.0",
-    "ts-proto": "^1.174.0",
+    "ts-proto": "^1.175.1",
     "typescript": "^5.4.5",
     "uuid": "^9.0.1",
     "whiteboard-pubsub": "^0.0.3"
