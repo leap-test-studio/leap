@@ -40,6 +40,13 @@ class TestRunner extends Task {
       "--tls1.2"
     ];
 
+    if (global.config.proxy) {
+      chromeCapabilities.setProxy({
+        httpProxy: global.config.proxy
+      });
+      args.push("--proxy=" + global.config.proxy);
+    }
+
     if (global.config.bypass) {
       args.push("--proxy-bypass-list=" + global.config.bypass);
     }

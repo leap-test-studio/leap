@@ -131,5 +131,6 @@ module.exports = {
     port: envVars.REDIS_PORT,
     password: envVars.REDIS_PASSWORD
   },
-  bypass: process.env.no_proxy || process.env.NO_PROXY
+  bypass: process.env.no_proxy || process.env.NO_PROXY,
+  proxy: process.env.proxy || process.env.PROXY
 };
