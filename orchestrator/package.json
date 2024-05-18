@@ -50,7 +50,7 @@
     "parse-duration": "^1.1.0",
     "protobufjs": "^7.3.0",
     "request": "^2.88.2",
-    "selenium-webdriver": "^4.20.0",
+    "selenium-webdriver": "^4.21.0",
     "sequelize": "^6.37.3",
     "ssh2-promise": "^1.0.3",
     "swig-email-templates": "^6.0.0",
