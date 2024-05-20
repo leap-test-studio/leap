@@ -1,4 +1,4 @@
-FROM --platform=amd64 node:18 as studio
+FROM --platform=linux/amd64 node:18 as studio
 RUN apt-get update
 
 WORKDIR /app/studio
@@ -14,7 +14,7 @@ COPY studio/. .
 RUN npm run build
 
 
-FROM --platform=amd64 node:18 as documentation
+FROM --platform=linux/amd64 node:18 as documentation
 RUN apt-get update
 
 WORKDIR /app/documentation
@@ -30,7 +30,7 @@ RUN npm install --unsafe-perm=true --force
 COPY documentation/. .
 RUN npm run build
 
-FROM --platform=amd64 node:18 as orchestrator
+FROM --platform=linux/amd64 node:18 as orchestrator
 RUN apt-get update
 WORKDIR /app/orchestrator
 COPY orchestrator/package.json .
@@ -44,7 +44,7 @@ COPY orchestrator/. .
 EXPOSE 80
 CMD npm start;
 
-FROM --platform=amd64 nginx
+FROM --platform=linux/amd64 nginx
 RUN apt-get update && apt-get install procps nodejs -y && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app/orchestrator /app/studio /app/documentation
 

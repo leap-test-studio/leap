@@ -1,7 +1,7 @@
 start=$(date +%s%N)
 
 ARRAY=(
-    "yuvarajsomavamshi/vinashak-studio|vinashak_studio"
+    "vinashakstudio/vinashak-studio|vinashak_studio"
     #"selenium/video|selenium_video"
     #"selenium/node-chrome|selenium_node_chrome"
     #"selenium/event-bus|selenium_event_bus"
@@ -35,7 +35,7 @@ for item in "${ARRAY[@]}"; do
     tar -zcvf ${FILENAME}.tgz ${FILENAME}.docker
 
     ssh root@${TARGET} 'cd '${REMOTE_PATH}'; rm -rf '${FILENAME}'.docker '${FILENAME}'.tgz'
-    ssh root@${TARGET} 'docker rmi yuvarajsomavamshi/vinashak-studio'
+    ssh root@${TARGET} 'docker rmi vinashak/vinashak-studio'
     echo "Ship Docker Image: ${IMAGE}"
 
     scp ${FILENAME}.tgz root@${TARGET}:${REMOTE_PATH}
