@@ -28,7 +28,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.18",
     "@popperjs/core": "^2.11.8",
-    "axios": "^1.6.8",
+    "axios": "^1.7.0",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.11",
     "echarts": "^5.5.0",
