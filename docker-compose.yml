@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   vinashak-cache:
     image: redis/redis-stack-server:latest
