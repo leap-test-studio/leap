@@ -11,7 +11,7 @@
     "clean:js": "rimraf ./build",
     "dev": "npm run upgrade && npm run prebuild && npm run prettify",
     "prettify": "prettier --ignore-path \"./.prettierignore\" --write \"./**/*.{js,jsx,json,html,ts,tsx}\"",
-    "upgrade": "npm-check-updates -u -x *redux* && npm i --force",
+    "upgrade": "npm-check-updates -u -x *redux* -x @headlessui/react && npm i --force",
     "first-time": "npm i -g npm-check-updates && npm run dev",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
