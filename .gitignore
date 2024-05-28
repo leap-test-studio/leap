@@ -112,3 +112,4 @@ audit.json
 *.patch
 orchestrator/src/runner/flow.json
 orchestrator/src/runner/settings.json
+.DS_Store

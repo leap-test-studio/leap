@@ -108,9 +108,7 @@ class BuildManager extends events.EventEmitter {
             logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const jobInfo = await getJobInfo(jobId);
-            console.log(jobInfo.type, JSON.stringify(jobInfo));
             const runner = TaskHandler.createHandler(jobInfo);
-
             runner.on("UPDATE_STATUS", async ({ id, payload }) => {
               try {
                 logger.info(runner.toString("Uploading Job details: " + JSON.stringify(payload)));
