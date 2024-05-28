@@ -197,7 +197,11 @@ class TestRunner extends Task {
         };
       },
       delay: async ({ interval = 1000 }) => {
-        await this.WebDriver.sleep(interval);
+        do {
+          await this.WebDriver.getTitle();
+          await this.WebDriver.sleep(5000);
+          interval -= 5000;
+        } while (interval > 0);
         return {
           result: TestStatus.PASS
         };
