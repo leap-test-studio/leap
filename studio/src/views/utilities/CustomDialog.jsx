@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, TransitionChild } from "@headlessui/react";
 import isEmpty from "lodash/isEmpty";
 
 import { IconRenderer } from "./iconrenderer";
@@ -54,7 +54,7 @@ export const CustomDialog = ({
       {open && (
         <Transition appear={true} show={open === true} as={Fragment}>
           <Dialog as="div" className="fixed inset-0 z-50 bg-slate-400 bg-opacity-60 transition-opacity" onClose={() => null}>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transform transition ease-in-out duration-[300ms]"
               enterFrom="opacity-0"
@@ -63,14 +63,14 @@ export const CustomDialog = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="inset-0 bg-slate-400 bg-opacity-40" />
-            </Transition.Child>
+              <div className="inset-0 bg-slate-400 bg-opacity-40" />
+            </TransitionChild>
             <div className="min-h-screen px-4 text-center">
               {/* This element is to trick the browser into centering the modal contents. */}
               <span className="inline-block h-screen align-middle" aria-hidden="true">
                 &#8203;
               </span>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="transform transition ease-in-out duration-[300ms] sm:duration-[600ms]"
                 enterFrom="translate-y-full"
@@ -115,7 +115,7 @@ export const CustomDialog = ({
                     )}
                   </div>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
             </div>
           </Dialog>
         </Transition>

@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
@@ -51,7 +51,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 overflow-hidden z-[10000]" onClose={() => null}>
         <div className="absolute inset-0 overflow-hidden">
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-in-out duration-600"
             enterFrom="opacity-0"
@@ -60,10 +60,10 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="absolute inset-0 bg-slate-400 bg-opacity-40" />
-          </Transition.Child>
+            <div className="absolute inset-0 bg-slate-400 bg-opacity-40" />
+          </TransitionChild>
           <div className="fixed inset-y-0 right-0 max-w-full flex">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transform transition ease-in-out duration-600 sm:duration-700"
               enterFrom="translate-x-full"
@@ -74,14 +74,14 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
             >
               <div className="relative w-screen max-w-full h-screen flex flex-col bg-white">
                 <div className="px-4 py-1 sm:px-6 flex justify-between border-b border-slate-300">
-                  <Dialog.Title as="div" className="text-sm font-bold text-color-0500 py-0">
+                  <DialogTitle as="div" className="text-sm font-bold text-color-0500 py-0">
                     Configure Test Case
                     <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
                       <p className="select-none">{`Test Scenario: ${testscenario.name} - [`}</p>
                       <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
                       <p className="select-none">]</p>
                     </div>
-                  </Dialog.Title>
+                  </DialogTitle>
                   <button
                     type="button"
                     className="rounded-md text-slate-300 hover:text-white focus:outline-none focus:ring-1"
@@ -141,7 +141,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
                   />
                 </div>
               </div>
-            </Transition.Child>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>

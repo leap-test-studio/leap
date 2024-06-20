@@ -1,4 +1,4 @@
-import { Dialog } from "@headlessui/react";
+import { Dialog, DialogTitle, Description } from "@headlessui/react";
 
 import LogoRenderer from "./LogoRenderer";
 
@@ -6,10 +6,10 @@ function AboutDialog({ showDialog, closeDialog, product }) {
   const { name, version, build } = product;
   return (
     <Dialog open={showDialog} onClose={closeDialog} as="div" className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto">
-      <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+      <div className="fixed inset-0 bg-black opacity-30" />
       <div className="flex flex-col pt-4 pb-4 px-4 bg-white rounded shadow-lg z-50 min-w-0.25">
-        <Dialog.Title className="text-color-0500 font-medium text-lg tracking-wide">{name}</Dialog.Title>
-        <Dialog.Description as="div" className="text-slate-700">
+        <DialogTitle className="text-color-0500 font-medium text-lg tracking-wide">{name}</DialogTitle>
+        <Description as="div" className="text-slate-700">
           <div className="flex justify-center">
             <LogoRenderer className="h-32 w-32" name={name} />
           </div>
@@ -22,7 +22,7 @@ function AboutDialog({ showDialog, closeDialog, product }) {
             <br />
             Build Host: {build.host}
           </span>
-        </Dialog.Description>
+        </Description>
         <div className="flex justify-end text-cds-white mt-2">
           <button className="px-5 py-1 bg-color-0800 hover:bg-color-0700 rounded" onClick={closeDialog}>
             Close
