@@ -11,7 +11,7 @@
     "clean:js": "rimraf ./build",
     "dev": "npm run upgrade && npm run prebuild && npm run prettify",
     "prettify": "prettier --ignore-path \"./.prettierignore\" --write \"./**/*.{js,jsx,json,html,ts,tsx}\"",
-    "upgrade": "npm-check-updates -u -x *redux* && npm i --force",
+    "upgrade": "npm-check-updates -u && npm i --force",
     "first-time": "npm i -g npm-check-updates && npm run dev",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
@@ -43,13 +43,13 @@
     "react-dom": "^18.3.1",
     "react-loadable": "^5.5.0",
     "react-popper": "^2.3.0",
-    "react-redux": "^8.1.3",
+    "react-redux": "^9.1.2",
     "react-router-dom": "^6.23.1",
     "react-select": "^5.8.0",
     "react-to-print": "^2.15.1",
     "reactflow": "^11.11.3",
-    "redux": "^4.2.1",
-    "redux-thunk": "^2.4.2"
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
