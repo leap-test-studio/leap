@@ -8,6 +8,10 @@ class LocalStorageService {
     return true;
   }
 
+  clear() {
+    this.cache = {};
+    localStorage.clear();
+  }
   getItem(key) {
     if (this.cache[key]) return this.cache[key];
     const value = localStorage.getItem(key);

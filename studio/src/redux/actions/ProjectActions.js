@@ -95,14 +95,17 @@ export const createProject =
       });
   };
 
-export const updateProject = (projectId, data) => (dispatch) => {
+export const resetFlags = () => (dispatch) => {
   dispatch({
-    type: actionTypes.UPDATE_PROJECT,
+    type: actionTypes.RESET_PROJECT,
     payload: {
-      showMessage: false,
+      update_settings_status: null,
       message: null
     }
   });
+};
+
+export const updateProject = (projectId, data) => (dispatch) => {
   axios
     .put(`/api/v1/project/${projectId}`, data)
     .then((res) => {
@@ -111,9 +114,8 @@ export const updateProject = (projectId, data) => (dispatch) => {
           type: actionTypes.UPDATE_PROJECT,
           payload: {
             ...res.data,
-            isError: false,
-            message: "Project Updated Successfully",
-            showMessage: true
+            update_settings_status: "success",
+            message: "Project Updated Successfully"
           }
         });
     })
@@ -122,9 +124,8 @@ export const updateProject = (projectId, data) => (dispatch) => {
         type: actionTypes.UPDATE_PROJECT,
         payload: {
           ...e.response.data,
-          isError: true,
-          message: "Failed to Update Project",
-          showMessage: true
+          update_settings_status: "error",
+          message: "Failed to Update Project"
         }
       });
     });

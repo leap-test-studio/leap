@@ -6,6 +6,7 @@ import isEmpty from "lodash/isEmpty";
 import LogoRenderer from "./layout/LogoRenderer";
 import * as actionTypes from "../../redux/actions";
 import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
+import LocalStorageService from "../../redux/actions/LocalStorageService";
 
 export function SignInPage({ product }) {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export function SignInPage({ product }) {
 
   useEffect(() => {
     document.title = `${name} - ${description}`;
-    localStorage.clear();
+    LocalStorageService.clear();
   }, []);
 
   useEffect(() => {

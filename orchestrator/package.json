@@ -9,7 +9,7 @@
     "upgrade": "npm-check-updates -x swig-email-templates -u --packageFile package.json && npm i --force"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.9",
+    "@grpc/grpc-js": "^1.10.11",
     "@grpc/proto-loader": "^0.7.13",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
@@ -38,12 +38,12 @@
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
     "mariadb": "^3.3.1",
-    "marked": "^13.0.0",
+    "marked": "^13.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multiline": "^2.0.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.10.1",
+    "mysql2": "^3.10.2",
     "nocache": "^4.0.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
@@ -54,13 +54,13 @@
     "sequelize": "^6.37.3",
     "ssh2-promise": "^1.0.3",
     "swig-email-templates": "^6.0.0",
-    "ts-proto": "^1.180.0",
-    "typescript": "^5.5.2",
+    "ts-proto": "^1.181.1",
+    "typescript": "^5.5.3",
     "uuid": "^10.0.0",
     "whiteboard-pubsub": "^0.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.4",
-    "prettier": "^3.3.2"
+    "prettier": "^3.3.3"
   }
 }

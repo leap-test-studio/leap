@@ -18,7 +18,8 @@ const initialState = {
     nodes: [],
     edges: []
   },
-  builds: null
+  builds: null,
+  update_settings_status: null
 };
 
 const ProjectReducer = function (state = initialState, { payload, type }) {
@@ -124,14 +125,15 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           });
       });
       return {
-        ...payload,
         ...state,
+        ...payload,
         testcases,
         testscenarios,
         projectData: payload,
         draggableItems
       };
     }
+    case actionTypes.RESET_PROJECT:
     case actionTypes.START_PROJECT_BUILDS:
     case actionTypes.STOP_PROJECT_BUILDS:
     case actionTypes.CREATE_PROJECT:
