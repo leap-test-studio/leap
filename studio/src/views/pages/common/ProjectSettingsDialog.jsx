@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
-import { updateProject, resetFlags } from "../../../redux/actions/ProjectActions";
+import { updateProject } from "../../../redux/actions/ProjectActions";
 
 const Model = {
   schema: {
@@ -88,7 +87,6 @@ const Model = {
 function ProjectSettingsDialog({ showDialog, project, onClose }) {
   const dispatch = useDispatch();
   const [data, setData] = React.useState();
-  const { update_settings_status, message } = useSelector((state) => state.project);
 
   useEffect(() => {
     if (isEmpty(data)) {
@@ -96,22 +94,6 @@ function ProjectSettingsDialog({ showDialog, project, onClose }) {
     }
     return () => setData();
   }, [project]);
-
-  useEffect(() => {
-    if (update_settings_status) {
-      console.log(update_settings_status, message);
-      Swal.fire({
-        title: message,
-        icon: update_settings_status,
-        text: `ProjectId: ${project.id}`,
-        showConfirmButton: true
-      }).then((response) => {
-        if (response.isConfirmed || response.isDismissed) {
-          dispatch(resetFlags());
-        }
-      });
-    }
-  }, [update_settings_status]);
 
   const saveProject = () => {
     dispatch(

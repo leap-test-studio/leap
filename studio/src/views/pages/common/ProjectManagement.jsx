@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Swal from "sweetalert2";
 
 import FirstTimeCard from "./FirstTimeCard";
 import DisplayCard from "./DisplayCard";
@@ -22,17 +23,7 @@ import {
   updateProject,
   openProject
 } from "../../../redux/actions/ProjectActions";
-import {
-  Centered,
-  IconButton,
-  Tooltip,
-  CustomAlertDialog,
-  DeleteItemDialog,
-  EmptyIconRenderer,
-  RoundedIconButton,
-  SearchComponent,
-  IconRenderer
-} from "../../utilities";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, IconRenderer } from "../../utilities";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 dayjs.extend(relativeTime);
@@ -46,7 +37,7 @@ const ProjectManagement = (props) => {
 
   const { product, project, changeProject } = props;
 
-  const { showMessage, isError, message, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
+  const { showMessage, message, error_details, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
 
   const [search, setSearch] = useState("");
   const [selectedProject, setSelectedProject] = useState();
@@ -76,6 +67,22 @@ const ProjectManagement = (props) => {
     }
   }, [project, navigate]);
 
+  useEffect(() => {
+    if (showMessage) {
+      Swal.fire({
+        title: message,
+        icon: showMessage,
+        text: error_details,
+        showConfirmButton: true
+      }).then((response) => {
+        if (response.isConfirmed || response.isDismissed) {
+          dispatch(resetProjectFlags());
+          fetchList();
+        }
+      });
+    }
+  }, [showMessage]);
+
   const fetchList = () => dispatch(fetchProjectList());
 
   const handleProjectSelection = (s) => dispatch(openProject(s));
@@ -85,14 +92,10 @@ const ProjectManagement = (props) => {
     dispatch(createProject(payload));
   };
 
-  const handleDeleteProject = () => {
-    setShowDeleteDialog(!showDeleteDialog);
-    dispatch(deleteProject(selectedProject?.id));
-  };
-
   const handleCardAction = (action) => {
     if (action) {
       setSelectedProject(action.project);
+
       if (action.showCreateDialog) {
         setShowCreateDialog(!showCreateDialog);
       } else if (action.showDeleteDialog) {
@@ -187,30 +190,9 @@ const ProjectManagement = (props) => {
             )}
           </>
         )}
-        {selectedProject && (
-          <DeleteItemDialog
-            title="Delete Project"
-            question="Are you sure you want to delete the selected project?"
-            showDialog={showDeleteDialog}
-            onClose={() => {
-              setSelectedProject(null);
-              setShowDeleteDialog(false);
-            }}
-            item={selectedProject?.name}
-            onDelete={handleDeleteProject}
-          />
-        )}
+
         <CreateProjectDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createProject={handleCreateProject} />
         <ProjectSettingsDialog showDialog={showSettingsDialog} onClose={() => setSettingsDialog(false)} project={selectedProject} />
-        <CustomAlertDialog
-          level={isError ? "warn" : "success"}
-          message={message}
-          showDialog={showMessage}
-          onClose={() => {
-            dispatch(resetProjectFlags());
-            fetchList();
-          }}
-        />
       </PageBody>
     </Page>
   );
@@ -274,7 +256,19 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                 <IconRenderer
                   icon="Stop"
                   className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
-                  onClick={() => dispatch(stopProjectBuilds(id))}
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Stop Project Execution?",
+                      text: `Project Id: ${id}`,
+                      icon: "question",
+                      confirmButtonText: "YES",
+                      showDenyButton: true
+                    }).then((response) => {
+                      if (response.isConfirmed) {
+                        dispatch(stopProjectBuilds(id));
+                      }
+                    });
+                  }}
                   style={{ fontSize: 18 }}
                   tooltip="Stop All Running Builds"
                 />
@@ -282,7 +276,19 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                 <IconRenderer
                   icon="PlayArrow"
                   className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
-                  onClick={() => dispatch(startProjectBuilds(id))}
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Start Project Execution?",
+                      text: `Project Id: ${id}`,
+                      icon: "question",
+                      confirmButtonText: "YES",
+                      showDenyButton: true
+                    }).then((response) => {
+                      if (response.isConfirmed) {
+                        dispatch(startProjectBuilds(id));
+                      }
+                    });
+                  }}
                   style={{ fontSize: 18 }}
                   tooltip="Start Automation Build"
                 />
@@ -336,12 +342,19 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           <IconRenderer
             icon="Delete"
             className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
-            onClick={() =>
-              handleAction({
-                project,
-                showDeleteDialog: true
-              })
-            }
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure you want to Delete Project?",
+                text: `Project Id: ${id}`,
+                icon: "question",
+                confirmButtonText: "YES",
+                showDenyButton: true
+              }).then((response) => {
+                if (response.isConfirmed) {
+                  dispatch(deleteProject(id));
+                }
+              });
+            }}
             style={{ fontSize: 18 }}
             tooltip="Delete Project"
             description={
@@ -367,6 +380,18 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
         </div>
       }
     >
+      <div className="text-slate-700 text-sm break-words select-all flex flex-row items-center">
+        <IconRenderer icon="Fingerprint" fontSize="10" className="text-color-0600 pr-0.5" />
+        {id}
+      </div>
+      {createdAt?.length > 0 && (
+        <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
+          <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />
+          <Tooltip title={`Created on ${new Date(createdAt)?.toUTCString()}`} placement="bottom">
+            {`Created on  - ${dayjs(Number(new Date(createdAt).getTime())).fromNow()}`}
+          </Tooltip>
+        </div>
+      )}
       {createdAt?.length > 0 && (
         <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
           <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />

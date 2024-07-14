@@ -2,16 +2,19 @@ import axios from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 
-export const resetProjectFlags = () => (dispatch) => {
-  dispatch({
-    type: actionTypes.CREATE_PROJECT,
-    payload: {
-      isError: false,
-      showMessage: false,
-      message: null
-    }
-  });
-};
+export const resetProjectFlags =
+  (props = {}) =>
+  (dispatch) => {
+    dispatch({
+      type: actionTypes.RESET_PROJECT,
+      payload: {
+        loading: false,
+        message: null,
+        showMessage: false,
+        ...props
+      }
+    });
+  };
 
 export const openProject = (openedProject) => (dispatch) => {
   dispatch({
@@ -57,14 +60,7 @@ export const fetchProjectBuilds = (projectId) => (dispatch) => {
 export const createProject =
   ({ name, description }) =>
   (dispatch) => {
-    dispatch({
-      type: actionTypes.CREATE_PROJECT,
-      payload: {
-        loading: true,
-        showMessage: false,
-        message: null
-      }
-    });
+    dispatch(resetProjectFlags());
     axios
       .post("/api/v1/project", { name, description })
       .then((res) => {
@@ -73,10 +69,9 @@ export const createProject =
             type: actionTypes.CREATE_PROJECT,
             payload: {
               ...res.data,
-              isError: false,
-              message: "Project created successfully",
-              showMessage: true,
               loading: false,
+              message: "Project Created Successfully",
+              showMessage: "success",
               isFirstProject: false
             }
           });
@@ -85,27 +80,17 @@ export const createProject =
         dispatch({
           type: actionTypes.CREATE_PROJECT,
           payload: {
-            ...e.response.data,
-            isError: true,
+            loading: false,
             message: "Failed to Create Project",
-            showMessage: true,
-            loading: false
+            showMessage: "error",
+            error_details: e.response.data.error
           }
         });
       });
   };
 
-export const resetFlags = () => (dispatch) => {
-  dispatch({
-    type: actionTypes.RESET_PROJECT,
-    payload: {
-      update_settings_status: null,
-      message: null
-    }
-  });
-};
-
 export const updateProject = (projectId, data) => (dispatch) => {
+  dispatch(resetProjectFlags());
   axios
     .put(`/api/v1/project/${projectId}`, data)
     .then((res) => {
@@ -114,8 +99,9 @@ export const updateProject = (projectId, data) => (dispatch) => {
           type: actionTypes.UPDATE_PROJECT,
           payload: {
             ...res.data,
-            update_settings_status: "success",
-            message: "Project Updated Successfully"
+            showMessage: "success",
+            message: "Project Updated Successfully",
+            error_details: `Project Id: ${projectId}`
           }
         });
     })
@@ -124,21 +110,16 @@ export const updateProject = (projectId, data) => (dispatch) => {
         type: actionTypes.UPDATE_PROJECT,
         payload: {
           ...e.response.data,
-          update_settings_status: "error",
-          message: "Failed to Update Project"
+          showMessage: "error",
+          message: "Failed to Update Project",
+          error_details: `Project Id: ${projectId}`
         }
       });
     });
 };
 
 export const deleteProject = (project) => (dispatch) => {
-  dispatch({
-    type: actionTypes.DELETE_PROJECT,
-    payload: {
-      showMessage: false,
-      message: null
-    }
-  });
+  dispatch(resetProjectFlags());
   axios
     .delete(`/api/v1/project/${project}`)
     .then((res) => {
@@ -147,9 +128,9 @@ export const deleteProject = (project) => (dispatch) => {
           type: actionTypes.DELETE_PROJECT,
           payload: {
             ...res.data,
-            isError: false,
             message: "Project Deleted Successfully",
-            showMessage: true
+            showMessage: "success",
+            error_details: `Project Id: ${project}`
           }
         });
     })
@@ -158,9 +139,9 @@ export const deleteProject = (project) => (dispatch) => {
         type: actionTypes.DELETE_PROJECT,
         payload: {
           ...e.response.data,
-          isError: true,
           message: "Failed to Delete Project",
-          showMessage: true
+          showMessage: "error",
+          error_details: `Project Id: ${project}`
         }
       });
     });
@@ -181,8 +162,7 @@ export const triggerSequence = (project) => (dispatch) => {
           type: actionTypes.START_PROJECT_BUILDS,
           payload: {
             ...res.data,
-            installing: false,
-            isProjectUpdated: true
+            installing: false
           }
         });
     })
@@ -212,9 +192,8 @@ export const startProjectBuilds = (project) => (dispatch) => {
           type: actionTypes.START_PROJECT_BUILDS,
           payload: {
             ...res.data,
-            installing: false,
-            isProjectUpdated: true,
-            showMessage: true
+            showMessage: "success",
+            error_details: `Project Id: ${project}`
           }
         });
     })
@@ -223,19 +202,15 @@ export const startProjectBuilds = (project) => (dispatch) => {
         type: actionTypes.START_PROJECT_BUILDS,
         payload: {
           ...e.response.data,
-          installing: false
+          showMessage: "error",
+          message: "Failed to Start Project Execution"
         }
       });
     });
 };
 
 export const stopProjectBuilds = (project) => (dispatch) => {
-  dispatch({
-    type: actionTypes.STOP_PROJECT_BUILDS,
-    payload: {
-      stopping: true
-    }
-  });
+  dispatch(resetProjectFlags());
   axios
     .post(`/api/v1/runner/${project}/stop`)
     .then((res) => {
@@ -244,8 +219,9 @@ export const stopProjectBuilds = (project) => (dispatch) => {
           type: actionTypes.STOP_PROJECT_BUILDS,
           payload: {
             ...res.data,
-            stopping: false,
-            isProjectUpdated: true
+            showMessage: "success",
+            message: "Project Execution Stopped Successfully",
+            error_details: `Project Id: ${project}`
           }
         });
     })
@@ -254,7 +230,9 @@ export const stopProjectBuilds = (project) => (dispatch) => {
         type: actionTypes.STOP_PROJECT_BUILDS,
         payload: {
           ...e.response.data,
-          stopping: false
+          showMessage: "error",
+          message: "Failed to Stop Project Execution",
+          error_details: `Project Id: ${project}`
         }
       });
     });

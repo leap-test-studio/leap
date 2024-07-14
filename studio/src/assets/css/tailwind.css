@@ -268,3 +268,12 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.swal2-confirm {
+  border: 0;
+  border-radius: .3em;
+  background: initial;
+  background-color: #037dc9;
+  color: #fff;
+  font-size: 1em;
+}

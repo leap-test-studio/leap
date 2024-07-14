@@ -8,6 +8,7 @@ const initialState = {
   isError: false,
   showMessage: false,
   message: null,
+  error_details: null,
   isFirstProject: false,
   openedProject: null,
   projectData: null,
@@ -18,8 +19,7 @@ const initialState = {
     nodes: [],
     edges: []
   },
-  builds: null,
-  update_settings_status: null
+  builds: null
 };
 
 const ProjectReducer = function (state = initialState, { payload, type }) {
