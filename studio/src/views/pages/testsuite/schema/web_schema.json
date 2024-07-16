@@ -125,6 +125,10 @@
                 },
                 {
                   "label": "Select DropDown",
+                  "value": "selectDropDown"
+                },
+                {
+                  "label": "React-Select DropDown",
                   "value": "reactSelectDropDown"
                 },
                 {
@@ -368,6 +372,11 @@
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
+                        "expectedValue": "selectDropDown"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
                         "expectedValue": "reactSelectDropDown"
                       },
                       {
@@ -493,6 +502,11 @@
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
                         "expectedValue": "setText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "selectDropDown"
                       },
                       {
                         "type": "LEAF",
