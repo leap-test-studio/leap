@@ -13,7 +13,7 @@ const Model = {
       },
       description: {
         type: "string",
-        description: "Test Scenario"
+        description: "Scenario Details"
       }
     },
     required: ["name"]

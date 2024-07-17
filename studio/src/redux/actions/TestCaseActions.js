@@ -2,18 +2,20 @@ import axios from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 
-export const resetTestCaseFlags = (options) => (dispatch) => {
-  dispatch({
-    type: actionTypes.RESET_TESTCASE,
-    payload: {
-      loading: false,
-      isError: false,
-      showMessage: false,
-      message: null,
-      ...options
-    }
-  });
-};
+export const resetTestCaseFlags =
+  (options = {}) =>
+  (dispatch) => {
+    dispatch({
+      type: actionTypes.RESET_TESTCASE,
+      payload: {
+        loading: false,
+        message: null,
+        showMessage: false,
+        details: false,
+        ...options
+      }
+    });
+  };
 
 export const fetchTestCaseList = (projectId, scenarioId) => (dispatch) => {
   axios.get(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase`).then((res) => {
@@ -34,7 +36,7 @@ export const createTestCase = (projectId, scenarioId, data) => (dispatch) => {
           type: actionTypes.CREATE_TESTCASE,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
             loading: false,
             isFirstTestCase: false
           }
@@ -45,9 +47,9 @@ export const createTestCase = (projectId, scenarioId, data) => (dispatch) => {
         type: actionTypes.CREATE_TESTCASE,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
-          loading: false
+          showMessage: "error",
+          loading: false,
+          details: e.response.data.error
         }
       });
     });
@@ -63,7 +65,7 @@ export const cloneTestCase = (projectId, scenarioId, id) => (dispatch) => {
           type: actionTypes.CLONE_TESTCASE,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
             loading: false,
             isFirstTestCase: false
           }
@@ -74,9 +76,9 @@ export const cloneTestCase = (projectId, scenarioId, id) => (dispatch) => {
         type: actionTypes.CLONE_TESTCASE,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
-          loading: false
+          showMessage: "error",
+          loading: false,
+          details: e.response.data.error
         }
       });
     });
@@ -92,7 +94,7 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
           type: actionTypes.RUN_TESTCASE,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
             loading: false
           }
         });
@@ -102,8 +104,8 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
         type: actionTypes.RUN_TESTCASE,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
@@ -120,7 +122,7 @@ export const updateTestCase = (projectId, scenarioId, testCaseId, data) => (disp
           type: actionTypes.UPDATE_TESTCASE,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
             loading: false
           }
         });
@@ -130,8 +132,8 @@ export const updateTestCase = (projectId, scenarioId, testCaseId, data) => (disp
         type: actionTypes.UPDATE_TESTCASE,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
@@ -148,7 +150,7 @@ export const deleteTestCase = (projectId, scenarioId, testCaseId) => (dispatch) 
           type: actionTypes.DELETE_TESTCASE,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
             loading: false
           }
         });
@@ -158,8 +160,8 @@ export const deleteTestCase = (projectId, scenarioId, testCaseId) => (dispatch) 
         type: actionTypes.DELETE_TESTCASE,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });

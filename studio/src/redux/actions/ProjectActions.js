@@ -83,7 +83,7 @@ export const createProject =
             loading: false,
             message: "Failed to Create Project",
             showMessage: "error",
-            error_details: e.response.data.error
+            details: e.response.data.error
           }
         });
       });
@@ -101,7 +101,7 @@ export const updateProject = (projectId, data) => (dispatch) => {
             ...res.data,
             showMessage: "success",
             message: "Project Updated Successfully",
-            error_details: `Project Id: ${projectId}`
+            details: `Project Id: ${projectId}`
           }
         });
     })
@@ -112,7 +112,7 @@ export const updateProject = (projectId, data) => (dispatch) => {
           ...e.response.data,
           showMessage: "error",
           message: "Failed to Update Project",
-          error_details: `Project Id: ${projectId}`
+          details: `Project Id: ${projectId}`
         }
       });
     });
@@ -130,7 +130,7 @@ export const deleteProject = (project) => (dispatch) => {
             ...res.data,
             message: "Project Deleted Successfully",
             showMessage: "success",
-            error_details: `Project Id: ${project}`
+            details: `Project Id: ${project}`
           }
         });
     })
@@ -141,7 +141,7 @@ export const deleteProject = (project) => (dispatch) => {
           ...e.response.data,
           message: "Failed to Delete Project",
           showMessage: "error",
-          error_details: `Project Id: ${project}`
+          details: `Project Id: ${project}`
         }
       });
     });
@@ -193,7 +193,7 @@ export const startProjectBuilds = (project) => (dispatch) => {
           payload: {
             ...res.data,
             showMessage: "success",
-            error_details: `Project Id: ${project}`
+            details: `Project Id: ${project}`
           }
         });
     })
@@ -221,7 +221,7 @@ export const stopProjectBuilds = (project) => (dispatch) => {
             ...res.data,
             showMessage: "success",
             message: "Project Execution Stopped Successfully",
-            error_details: `Project Id: ${project}`
+            details: `Project Id: ${project}`
           }
         });
     })
@@ -232,7 +232,7 @@ export const stopProjectBuilds = (project) => (dispatch) => {
           ...e.response.data,
           showMessage: "error",
           message: "Failed to Stop Project Execution",
-          error_details: `Project Id: ${project}`
+          details: `Project Id: ${project}`
         }
       });
     });

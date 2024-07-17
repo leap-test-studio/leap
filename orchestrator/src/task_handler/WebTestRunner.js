@@ -91,26 +91,36 @@ class TestRunner extends Task {
       try {
         if (ActionsTypes.includes(event.actionType)) {
           if (this.sleepTimingType === SleepTimingType.Before || this.sleepTimingType === SleepTimingType.BeforeAndAfter) {
-            logger.info("WebTestRunner:SleepTimingType: Executing Before-", this.sleepTimingType, ", SleepInterval:", this.sleepInterval);
+            logger.info(
+              "WebTestRunner: Step[" + stepOutcome.stepNo + "] SleepTimingType: Executing Before-",
+              this.sleepTimingType,
+              ", SleepInterval:",
+              this.sleepInterval
+            );
             await this.WebDriver.sleep(this.sleepInterval);
           }
 
-          logger.info("WebTestRunner:Executing:", event.actionType, ", Payload:", event.data);
+          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Executing:", event.actionType, ", Payload:", event.data);
           const hanndlerOutput = await this.getActionHandler(event.actionType, event.data);
-          logger.info("WebTestRunner:Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));
+          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));
           stepOutcome = merge({}, stepOutcome, hanndlerOutput);
-          logger.info("WebTestRunner:Merged Outcome", event.actionType, ", Outcome:", JSON.stringify(stepOutcome));
+          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Merged Outcome", event.actionType, ", Outcome:", JSON.stringify(stepOutcome));
           if (this.sleepTimingType === SleepTimingType.After || this.sleepTimingType === SleepTimingType.BeforeAndAfter) {
-            logger.info("WebTestRunner:SleepTimingType: Executing After-", this.sleepTimingType, ", SleepInterval:", this.sleepInterval);
+            logger.info(
+              "WebTestRunner: Step[" + stepOutcome.stepNo + "] SleepTimingType: Executing After-",
+              this.sleepTimingType,
+              ", SleepInterval:",
+              this.sleepInterval
+            );
             await this.WebDriver.sleep(this.sleepInterval);
           }
         } else {
-          logger.info("WebTestRunner:Skipping:", event.actionType);
+          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Skipping:", event.actionType);
           stepOutcome.actual = "Test step is skipped, Invalid action type";
           stepOutcome.result = TestStatus.SKIP;
         }
       } catch (e) {
-        logger.error("WebTestRunner:stepExecutor", e);
+        logger.error("WebTestRunner: Step[" + stepOutcome.stepNo + "] StepExecutor", e);
         stepOutcome.result = TestStatus.FAIL;
         stepOutcome.actual = e.message;
       }
@@ -153,7 +163,7 @@ class TestRunner extends Task {
         buffer
       });
     } catch (e) {
-      logger.error("WebTestRunner:captureScreenshot", e);
+      logger.error("WebTestRunner: Step[" + stepNo + "] CaptureScreenshot", e);
       return Promise.resolve(true);
     }
   }
@@ -248,6 +258,18 @@ class TestRunner extends Task {
         await this.WebDriver.sleep(1000);
         return {
           actual: await webElement.sendKeys(value),
+          result: TestStatus.PASS
+        };
+      },
+      selectDropDown: async ({ element, value }) => {
+        const webElement = await getElement("id", element);
+        await webElement.click();
+        await this.WebDriver.sleep(3000);
+        const inputElement = await getElement("xpath", "/html/body");
+        await this.WebDriver.sleep(1000);
+        const option = await inputElement.findElement(By.xpath(`//option[text()='${value}']`));
+        return {
+          actual: await option.click(),
           result: TestStatus.PASS
         };
       },

@@ -33,7 +33,18 @@ function create(AccountId, ProjectMasterId, payload) {
         });
         AccountId = account.id;
       }
+      const testScenarios = await global.DbStoreModel.TestScenario.findAll({
+        attributes: ["id", "status"],
+        where: {
+          ProjectMasterId
+        },
+        order: [["createdAt", "ASC"]]
+      });
 
+      const scenarioIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
+      if (scenarioIds.length === 0) {
+        return reject("No Test Scenario");
+      }
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
         where: {
           ProjectMasterId,
@@ -59,17 +70,6 @@ function create(AccountId, ProjectMasterId, payload) {
       });
 
       await build.save();
-
-      const testScenarios = await global.DbStoreModel.TestScenario.findAll({
-        attributes: ["id", "status"],
-        where: {
-          ProjectMasterId
-        },
-        order: [["createdAt", "ASC"]]
-      });
-
-      const scenarioIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
-
       const totalTestCases = await BPromise.reduce(
         scenarioIds,
         async function (total, TestScenarioId) {
@@ -168,6 +168,7 @@ async function stop(ProjectMasterId) {
         }
       }
     );
+    logger.info("Aborting", jobIds);
     BuildManager.emit("stopJobs", jobIds);
   }
 

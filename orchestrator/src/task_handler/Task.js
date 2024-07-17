@@ -33,7 +33,7 @@ class Task extends EventEmitter {
   }
 
   addStep(step) {
-    logger.trace("Adding step:", JSON.stringify(step));
+    logger.trace("Adding step:", JSON.stringify(step), " SkipSteps:", this._skipSteps);
     if (step.result === TestStatus.FAIL) {
       this._skipSteps = true;
     }
@@ -88,7 +88,7 @@ class Task extends EventEmitter {
     try {
       await this.beforeHook();
       await this.before();
-      logger.info(this.toString("Execute Testcase"));
+      logger.info(this.toString("Execute Test Case"));
       await this.execute();
       logger.info(this.toString("Execute After Hook"));
     } catch (e) {

@@ -37,7 +37,7 @@ const ProjectManagement = (props) => {
 
   const { product, project, changeProject } = props;
 
-  const { showMessage, message, error_details, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
+  const { showMessage, message, details, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
 
   const [search, setSearch] = useState("");
   const [selectedProject, setSelectedProject] = useState();
@@ -72,8 +72,7 @@ const ProjectManagement = (props) => {
       Swal.fire({
         title: message,
         icon: showMessage,
-        text: error_details,
-        showConfirmButton: true
+        text: details
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetProjectFlags());

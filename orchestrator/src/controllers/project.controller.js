@@ -337,7 +337,8 @@ function cloneTestCase(req, res) {
     .then((o) =>
       res.json({
         id: o?.id,
-        message: `Test case cloned successfully.`
+        message: "Test Case Cloned successfully",
+        details: `TID: #${o.label}`
       })
     )
     .catch((err) => {
@@ -359,7 +360,8 @@ function importTestCase(req, res) {
     .then((o) =>
       res.json({
         id: o?.id,
-        message: `Test case imported successfully.`
+        message: "Test Case Imported Successfully",
+        details: `TID: #${o.label}`
       })
     )
     .catch((err) => {
@@ -387,7 +389,7 @@ function getTestCase(req, res) {
 function updateTestCase(req, res) {
   testCaseService
     .update(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.body)
-    .then((message) => res.json({ message }))
+    .then((o) => res.json({ message: "Test Case Modified Successfully", details: `TID: #${o.label}` }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -400,7 +402,7 @@ function updateTestCase(req, res) {
 function deleteTestCase(req, res) {
   testCaseService
     .delete(req.auth.id, req.params.scenarioId, req.params.testcaseId)
-    .then(() => res.json({ message: "Test case deleted successfully" }))
+    .then((o) => res.json({ message: "Test Case Deleted Successfully", details: `TID: #${o.label}` }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({

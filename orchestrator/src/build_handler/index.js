@@ -62,7 +62,7 @@ class BuildManager extends events.EventEmitter {
   }
 
   async _stopJobs(jobs) {
-    logger.trace(`BUILD_MAN: Stopping Jobs[${jobs}]`);
+    logger.trace(`BUILD_MAN: Stopping Jobs:${jobs}`);
     await BPromise.reduce(
       jobs,
       async (accumulator, jobId) => {
@@ -75,8 +75,10 @@ class BuildManager extends events.EventEmitter {
 
   async _stopJob(jobId) {
     try {
-      logger.trace(`BUILD_MAN: Stopping Job[${jobId}]`);
+      logger.trace(`BUILD_MAN: JID:${jobId} STOPPING_JOB`);
       const connection = await RedisMan.getConnection();
+      await connection.rpush(REDIS_KEY.JOB_PROCESSED_QUEUE, jobId);
+      await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
       await connection.lrem(REDIS_KEY.JOB_WAITING_QUEUE, 1, jobId);
       if (this._handlers[jobId] != null) {
         try {
@@ -86,13 +88,11 @@ class BuildManager extends events.EventEmitter {
         }
         delete this._handlers[jobId];
       }
-      await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
-      await connection.rpush(REDIS_KEY.JOB_PROCESSED_QUEUE, jobId);
-      this._jobs_processing.delete(jobId);
-      logger.trace(`BUILD_MAN: Stopped Job[${jobId}]`);
+      logger.trace(`BUILD_MAN: JID:${jobId} STOPPED_JOB`);
     } catch (error) {
       logger.error("Failed to delete", jobId, error);
     }
+    this._jobs_processing.delete(jobId);
   }
 
   async _run() {
@@ -102,10 +102,10 @@ class BuildManager extends events.EventEmitter {
       //logger.trace(`BUILD_MAN: QueueSize[${queueSize}]`);
       if (queueSize > 0) {
         const jobId = (await connection.lrange(REDIS_KEY.JOB_WAITING_QUEUE, 0, 0))[0];
-        logger.trace(`BUILD_MAN: HEAD[${jobId}] ${Array.from(this._jobs_processing.keys()).join(", ")} ${this._jobs_processing.has(jobId)}`);
+        //logger.trace(`BUILD_MAN: HEAD[${jobId}] ${Array.from(this._jobs_processing.keys()).join(", ")} ${this._jobs_processing.has(jobId)}`);
         if (jobId != null && !this._jobs_processing.has(jobId)) {
           try {
-            logger.trace(`BUILD_MAN: PROCESSING[${jobId}]`);
+            logger.trace(`BUILD_MAN: JID:${jobId} START_JOB`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const jobInfo = await getJobInfo(jobId);
             const runner = TaskHandler.createHandler(jobInfo);
@@ -126,12 +126,12 @@ class BuildManager extends events.EventEmitter {
             this._handlers[jobId] = runner;
             this._jobs_processing.add(jobId);
             await runner.start();
-            logger.info("BUILD_MAN: JOB_RESULT::", runner.getStatus());
+            logger.trace(`BUILD_MAN: JID:${jobId} JOB_RESULT: ${runner.getStatus()}`);
             if (runner.getStatus() > 1) {
               await this._stopJob(jobId);
             }
           } catch (error) {
-            logger.error("BUILD_MAN: ERRORED-", error);
+            logger.error(`BUILD_MAN: JID:${jobId} ERRORED-`, error);
             await connection.lrem(REDIS_KEY.JOB_WAITING_QUEUE, 1, jobId);
             await connection.lrem(REDIS_KEY.JOB_PROCESSING_QUEUE, 1, jobId);
             delete this._handlers[jobId];

@@ -15,6 +15,7 @@ function ImportTestCaseDialog({ showDialog, projectId, scenarioId, testcase, onC
     setSelectedFile(null);
     isUploading(false);
   };
+
   return (
     <CustomDialog
       open={showDialog}
@@ -32,15 +33,15 @@ function ImportTestCaseDialog({ showDialog, projectId, scenarioId, testcase, onC
           formData,
           (percent) => setProgress(Math.floor(percent))
         );
+        const text = await response.text();
         if (response.status == 200) {
           reset();
           onClose();
-
           dispatch({
-            type: actionTypes.UPDATE_TESTCASE,
+            type: actionTypes.RESET_TESTCASE,
             payload: {
-              showMessage: true,
-              message: "Testcase imported successfully",
+              ...JSON.parse(text),
+              showMessage: "success",
               loading: false
             }
           });

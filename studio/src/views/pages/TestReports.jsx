@@ -516,11 +516,11 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
       )}
       {!isEmpty(screenshot) && (
         <tr className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs cursor-pointer" onClick={openTestCase}>
-          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200">
+          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200 flex-wrap w-full">
             {screenshot.map((s, i) => (
               <div key={i}>
                 <label>{s?.stepNo === "Evidence" ? s?.stepNo : "Screenshot for Step:" + s?.stepNo + " Capture Number:" + (i + 1)}</label>
-                <img src={`data:image/*;base64,${s.buffer}`} className="rounded border border-slate-500" alt="" />
+                <img src={`data:image/*;base64,${s.buffer}`} className="rounded border border-slate-500" alt="" style={{ height: "400px" }} />
               </div>
             ))}
           </td>

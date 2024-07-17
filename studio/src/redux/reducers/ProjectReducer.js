@@ -8,7 +8,7 @@ const initialState = {
   isError: false,
   showMessage: false,
   message: null,
-  error_details: null,
+  details: null,
   isFirstProject: false,
   openedProject: null,
   projectData: null,

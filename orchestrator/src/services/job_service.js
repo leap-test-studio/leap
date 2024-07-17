@@ -15,7 +15,7 @@ module.exports = {
 
 async function getSettingsByTestId(id) {
   try {
-    logger.info(`Get Job Settings, JobID:${id}`);
+    logger.trace(`Get Job Settings, JobID:${id}`);
     const obj = await global.DbStoreModel.TestCase.findOne({
       attributes: ["execSteps", "settings", "type", "seqNo"],
       include: {
@@ -44,8 +44,8 @@ async function getSettingsByTestId(id) {
       obj.execSteps = JSON.stringify(obj.execSteps);
       settings = JSON.stringify(settings);
       env.forEach(({ key, value }) => {
-        obj.execSteps = obj.execSteps.replace(`\${${key}}`, value);
-        settings = settings.replace(`\${${key}}`, value);
+        obj.execSteps = obj.execSteps.replaceAll(`\${${key}}`, value);
+        settings = settings.replaceAll(`\${${key}}`, value);
       });
       obj.execSteps = JSON.parse(obj.execSteps);
       settings = JSON.parse(settings);
@@ -63,7 +63,7 @@ async function getSettingsByTestId(id) {
 }
 
 async function getJobInfo(id) {
-  logger.info("getJobInfoById:", id);
+  logger.trace("Get JobInfo By ID:", id);
   let jobInfo = await global.DbStoreModel.Job.findByPk(id);
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
   Object.assign(jobInfo, await getSettingsByTestId(jobInfo.TestCaseId));

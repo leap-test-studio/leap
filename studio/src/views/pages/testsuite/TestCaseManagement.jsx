@@ -7,18 +7,7 @@ import ImportTestCaseDialog from "./ImportTestCaseDialog";
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { cropString } from "../utils";
-import {
-  Centered,
-  IconButton,
-  Spinner,
-  Tooltip,
-  NewlineText,
-  CustomAlertDialog,
-  DeleteItemDialog,
-  EmptyIconRenderer,
-  SearchComponent,
-  IconRenderer
-} from "../../utilities";
+import { Centered, IconButton, Spinner, Tooltip, NewlineText, EmptyIconRenderer, SearchComponent, IconRenderer } from "../../utilities";
 import {
   fetchTestCaseList,
   createTestCase,
@@ -32,6 +21,7 @@ import {
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
+import Swal from "sweetalert2";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
@@ -41,15 +31,29 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
   const [selectedTestCase, setSelectedTestCase] = useState(state?.selectedTestCase);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(state?.showUpdateDialog);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
 
-  const { isFirstTestCase, loading, testcases, isError, message, showMessage } = useSelector((state) => state.testcase);
+  const { isFirstTestCase, loading, testcases, details, message, showMessage } = useSelector((state) => state.testcase);
 
   useEffect(() => {
     fetchTestCases();
     return () => setSelectedTestCase(null);
   }, []);
+
+  useEffect(() => {
+    if (showMessage) {
+      Swal.fire({
+        title: message,
+        icon: showMessage,
+        text: details
+      }).then((response) => {
+        if (response.isConfirmed || response.isDismissed) {
+          dispatch(resetTestCaseFlags());
+          fetchTestCases();
+        }
+      });
+    }
+  }, [showMessage]);
 
   const fetchTestCases = () => {
     if (project?.id && scenario?.id) {
@@ -61,7 +65,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
     setSelectedTestCase(null);
     setShowCreateDialog(false);
     setShowUpdateDialog(false);
-    setShowDeleteDialog(false);
     setShowImportDialog(false);
   };
 
@@ -91,10 +94,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
       ) : (
         <RenderList
           testcases={testcases}
-          showDeleteDialog={(selectedTestCase) => {
-            setSelectedTestCase(selectedTestCase);
-            setShowDeleteDialog(true);
-          }}
           showAddTestCaseDialog={() => setShowCreateDialog(true)}
           loading={loading}
           editTestCase={(selectedTestCase) => {
@@ -104,8 +103,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           }}
           updateTestCase={(t) => dispatch(updateTestCase(project?.id, scenario?.id, t.id, t))}
           deleteTestCase={(selectedTestCase) => {
-            setSelectedTestCase(selectedTestCase);
-            setShowDeleteDialog(true);
+            dispatch(deleteTestCase(project?.id, scenario?.id, selectedTestCase?.id));
           }}
           cloneTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
@@ -117,19 +115,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           importTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
             setShowImportDialog(true);
-          }}
-        />
-      )}
-      {showDeleteDialog && (
-        <DeleteItemDialog
-          title="Delete Test Case"
-          question="Are you sure you want to delete the selected Test Case?"
-          showDialog={showDeleteDialog}
-          onClose={resetState}
-          item={selectedTestCase.name}
-          onDelete={() => {
-            dispatch(deleteTestCase(project?.id, scenario?.id, selectedTestCase?.id));
-            setShowDeleteDialog(false);
           }}
         />
       )}
@@ -165,15 +150,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           onClose={resetState}
         />
       )}
-      <CustomAlertDialog
-        level={isError ? "warn" : "success"}
-        message={message}
-        showDialog={showMessage}
-        onClose={() => {
-          dispatch(resetTestCaseFlags());
-          fetchTestCases();
-        }}
-      />
     </>
   );
 }
@@ -224,7 +200,7 @@ function RenderList({
             <Spinner>Loading</Spinner>
           </Centered>
         ) : filtered?.length === 0 ? (
-          <EmptyIconRenderer title="Testcase not found" />
+          <EmptyIconRenderer title="Test Case Not Found" />
         ) : (
           <table className="relative w-full border">
             <TableHeader headers={["#TID", "Given", "When", "Then", "Type", "Actions"]} />
@@ -299,9 +275,22 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
               enabled={true}
               data={record.enabled}
               handleChange={(_, ev) =>
-                updateTestCase({
-                  id: record.id,
-                  enabled: ev
+                Swal.fire({
+                  title: `Are you sure you want to ${record.enabled ? "Disable" : "Enable"} the Test Case?`,
+                  text: `TID: #${record.label}`,
+                  confirmButtonText: "YES",
+                  icon: "question",
+                  confirmButtonColor: `${record.enabled ? "red" : "green"}`,
+                  showCancelButton: true,
+                  cancelButtonText: "NO",
+                  cancelButtonColor: `${record.enabled ? "green" : "red"}`
+                }).then((response) => {
+                  if (response.isConfirmed) {
+                    updateTestCase({
+                      id: record.id,
+                      enabled: ev
+                    });
+                  }
                 })
               }
             />
@@ -355,7 +344,22 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             icon="FileCopy"
             className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
             style={{ fontSize: 18 }}
-            onClick={() => cloneTestCase(record)}
+            onClick={() =>
+              Swal.fire({
+                title: "Are you sure you want to Clone the Test Case?",
+                text: `TID: #${record.label}`,
+                icon: "question",
+                confirmButtonText: "YES",
+                confirmButtonColor: "green",
+                showCancelButton: true,
+                cancelButtonText: "NO",
+                cancelButtonColor: "red"
+              }).then((response) => {
+                if (response.isConfirmed) {
+                  cloneTestCase(record);
+                }
+              })
+            }
           />
           <IconRenderer
             icon="Edit"
@@ -367,7 +371,22 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
             icon="DeleteForever"
             className="text-color-0500 hover:text-cds-red-0600 mr-2 cursor-pointer"
             style={{ fontSize: 18 }}
-            onClick={() => deleteTestCase(record)}
+            onClick={() =>
+              Swal.fire({
+                title: "Are you sure you want to Delete the Test Case?",
+                text: `TID: #${record.label}`,
+                icon: "question",
+                confirmButtonText: "YES",
+                confirmButtonColor: `${record.enabled ? "red" : "green"}`,
+                showCancelButton: true,
+                cancelButtonText: "NO",
+                cancelButtonColor: `${record.enabled ? "green" : "red"}`
+              }).then((response) => {
+                if (response.isConfirmed) {
+                  deleteTestCase(record);
+                }
+              })
+            }
           />
           <IconRenderer
             icon="FileDownload"

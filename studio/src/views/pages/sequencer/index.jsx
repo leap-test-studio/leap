@@ -33,8 +33,8 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const { testcases, draggableItems, settings } = useSelector((state) => state.project);
   const { simulationData } = useSelector((state) => state.sequencer);
-  const [nodes, setNodes, onNodesChange] = useNodesState(settings.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(settings.edges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(settings.nodes || []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(settings.edges || []);
 
   const actionType = simulationData?.type;
   const eid = simulationData?.opts;

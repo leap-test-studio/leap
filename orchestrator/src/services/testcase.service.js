@@ -19,6 +19,9 @@ async function _import(accountId, scenarioId, testcaseId, file) {
     const rawdata = fs.readFileSync(file);
     const tc = JSON.parse(rawdata);
     delete tc.seqNo;
+    delete tc.given;
+    delete tc.when;
+    delete tc.then;
     tc.type = Types.findIndex((t) => t == tc.type);
     return await update(accountId, scenarioId, testcaseId, tc);
   } catch (e) {
@@ -119,12 +122,13 @@ async function update(accountId, scenarioId, id, payload) {
   Object.assign(tc, payload);
   tc.updatedAt = Date.now();
   await tc.save();
-  return `Testcase[${tc.label}] changes saved successfully.`;
+  return tc;
 }
 
 async function _delete(accountId, scenarioId, id) {
   const tc = await get(accountId, scenarioId, id);
-  return await tc.destroy({ force: true });
+  await tc.destroy({ force: true });
+  return tc;
 }
 
 // helper functions
