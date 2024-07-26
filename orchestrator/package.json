@@ -15,7 +15,6 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
-    "colors": "^1.4.2",
     "compression": "^1.7.4",
     "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.6",

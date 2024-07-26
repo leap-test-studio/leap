@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const config = global.config.DBstore;
-const colors = require("colors");
 
 global.DbStoreModel = {};
 module.exports = {
@@ -47,7 +46,7 @@ module.exports = {
         const result = await global.DbStoreModel.sequelize.query("SELECT 1");
 
         if (logger.isInfoEnabled()) {
-          logger.info("Database Test:", result?.length > 0 ? colors.green("Pass") : colors.red("Fail"));
+          logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
         }
         resolve(result);
       } catch (e) {
