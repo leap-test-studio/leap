@@ -12,7 +12,6 @@ import {
   Tooltip,
   NewlineText,
   CustomAlertDialog,
-  DeleteItemDialog,
   EmptyIconRenderer,
   SearchComponent,
   IconRenderer
@@ -32,6 +31,7 @@ import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggl
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import DisplayCard from "../common/DisplayCard";
+import Swal from "sweetalert2";
 
 dayjs.extend(relativeTime);
 
@@ -42,19 +42,18 @@ function TestScenarioManagement(props) {
   const [search, setSearch] = useState(null);
   const [selectedTestScenario, setSelectedTestScenario] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
 
   const {
     testscenarios,
     isFirstTestScenario,
     showMessage,
+    details,
     message,
-    error: errorMessage,
-    isError,
     loading
   } = useSelector((state) => state.testscenario);
   const { project, scenario, changeTestScenario } = props;
+
   useEffect(() => {
     if (project?.id) {
       fetchTestScenarios();
@@ -63,6 +62,22 @@ function TestScenarioManagement(props) {
       }
     }
   }, [project, scenario]);
+
+  useEffect(() => {
+    if (showMessage) {
+      Swal.fire({
+        title: message,
+        icon: showMessage,
+        text: details,
+        width: 550,
+      }).then((response) => {
+        if (response.isConfirmed || response.isDismissed) {
+          dispatch(resetTestScenarioFlags());
+          fetchTestScenarios();
+        }
+      });
+    }
+  }, [showMessage]);
 
   const handleCreateTestScenario = (testscenario) => {
     if (project?.id) {
@@ -78,10 +93,9 @@ function TestScenarioManagement(props) {
     }
   };
 
-  const handleDeleteTestScenario = () => {
-    if (project?.id && selectedTestScenario?.id) {
-      dispatch(deleteTestScenario(project?.id, selectedTestScenario.id));
-      setShowDeleteDialog(false);
+  const handleDeleteTestScenario = (scenario) => {
+    if (project?.id && scenario?.id) {
+      dispatch(deleteTestScenario(project?.id, scenario.id));
     }
   };
 
@@ -98,7 +112,6 @@ function TestScenarioManagement(props) {
     setSelectedTestScenario(null);
     setShowCreateDialog(false);
     setShowCloneDialog(false);
-    setShowDeleteDialog(false);
   };
 
   if (scenario) {
@@ -163,7 +176,7 @@ function TestScenarioManagement(props) {
                     openTestScenario={openTestScenario}
                     setSelectedTestScenario={setSelectedTestScenario}
                     setShowCloneDialog={setShowCloneDialog}
-                    setShowDeleteDialog={setShowDeleteDialog}
+                    handleDeleteTestScenario={handleDeleteTestScenario}
                   />
                 ))}
               </div>
@@ -175,16 +188,6 @@ function TestScenarioManagement(props) {
             )}
           </>
         )}
-        {showDeleteDialog && (
-          <DeleteItemDialog
-            title="Delete Test Scenario"
-            question="Are you sure you want to delete the selected test scenario?"
-            showDialog={showDeleteDialog}
-            onClose={resetState}
-            item={selectedTestScenario?.name}
-            onDelete={handleDeleteTestScenario}
-          />
-        )}
         <CreateTestScenarioDialog showDialog={showCreateDialog} onClose={resetState} createTestScenario={handleCreateTestScenario} />
         {showCloneDialog && (
           <CloneTestScenarioDialog
@@ -194,16 +197,6 @@ function TestScenarioManagement(props) {
             cloneTestScenario={handleCloneTestScenario}
           />
         )}
-        <CustomAlertDialog
-          level={isError ? "warn" : "success"}
-          message={message}
-          errorMessage={errorMessage}
-          showDialog={showMessage}
-          onClose={() => {
-            fetchTestScenarios();
-            dispatch(resetTestScenarioFlags());
-          }}
-        />
       </PageBody>
     </Page>
   );
@@ -211,14 +204,28 @@ function TestScenarioManagement(props) {
 
 export default TestScenarioManagement;
 
-const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelectedTestScenario, setShowCloneDialog, setShowDeleteDialog }) => {
+const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelectedTestScenario, setShowCloneDialog, handleDeleteTestScenario }) => {
   const dispatch = useDispatch();
 
   const { id, name, status, description, createdAt, updatedAt } = testscenario;
+  const trimmedName = name?.trim() || "";
 
   const editTestScenario = () => openTestScenario(testscenario);
 
-  const run = () => dispatch(runTestScenario(projectId, id));
+  const run = () => {
+
+    Swal.fire({
+      title: "Start Scenario Execution?",
+      text: `Scenario Id: ${id}`,
+      icon: "question",
+      confirmButtonText: "YES",
+      showDenyButton: true
+    }).then((response) => {
+      if (response.isConfirmed) {
+        dispatch(runTestScenario(projectId, id));
+      }
+    });
+  }
 
   const cloneTestScenario = () => {
     setSelectedTestScenario(testscenario);
@@ -226,13 +233,21 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
   };
 
   const deleteTestScenario = () => {
-    setSelectedTestScenario(testscenario);
-    setShowDeleteDialog(true);
+    Swal.fire({
+      title: "Are you sure you want to Delete Scenario?",
+      text: `Scenario: ${trimmedName}`,
+      icon: "question",
+      confirmButtonText: "YES",
+      showDenyButton: true
+    }).then((response) => {
+      if (response.isConfirmed) {
+        handleDeleteTestScenario(testscenario);
+      }
+    });
   };
 
   const handleToggle = () => dispatch(updateTestScenario(projectId, id, { name, status: !status }));
 
-  const trimmedName = name?.trim() || "";
 
   return (
     <DisplayCard

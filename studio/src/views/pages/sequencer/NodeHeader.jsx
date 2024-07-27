@@ -3,8 +3,9 @@ import { useDispatch } from "react-redux";
 import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
 import { IconRenderer } from "../../utilities";
 import { convertMsToHMString } from "../../tailwindrender/util/converter";
+import Swal from "sweetalert2";
 
-function NodeHeader({ selected, timer = 0 }) {
+function NodeHeader({ id, selected, timer = 0 }) {
   const dispatch = useDispatch();
 
   return (
@@ -34,7 +35,19 @@ function NodeHeader({ selected, timer = 0 }) {
             className="text-color-0500 mr-0.5 cursor-pointer"
             aria-hidden="true"
             style={{ fontSize: "14" }}
-            onClick={() => dispatch(sequenceEvents("nodeAction:deleteNode"))}
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure you want to Delete Node?",
+                text: `Node Id: ${id}`,
+                icon: "question",
+                confirmButtonText: "YES",
+                showDenyButton: true
+              }).then((response) => {
+                if (response.isConfirmed) {
+                  dispatch(sequenceEvents("nodeAction:deleteNode"));
+                }
+              });              
+            }}
             tooltip="Delete this Node?"
           />
         </div>

@@ -48,7 +48,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
   const payloadSchema = Schemas[nodeData.type] || {};
 
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
+    <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 overflow-hidden z-[10000]" onClose={() => null}>
         <div className="absolute inset-0 overflow-hidden">
           <TransitionChild
@@ -145,7 +145,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
           </div>
         </div>
       </Dialog>
-    </Transition.Root>
+    </Transition>
   );
 }
 

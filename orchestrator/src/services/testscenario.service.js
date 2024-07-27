@@ -74,7 +74,7 @@ async function clone(AccountId, ProjectMasterId, scenarioId, payload) {
   }
 
   const testScenario = testcases[0].TestScenario.toJSON();
-  await global.DbStoreModel.sequelize.transaction(async (t) => {
+  const scenario = await global.DbStoreModel.sequelize.transaction(async (t) => {
     const tsData = {
       ...testScenario,
       ...payload,
@@ -104,9 +104,10 @@ async function clone(AccountId, ProjectMasterId, scenarioId, payload) {
       testcase.seqNo = nextSeqNo;
       request.push(global.DbStoreModel.TestCase.create(testcase, { transaction: t }));
     });
-    return Promise.all(request);
+    await Promise.all(request);
+    return Promise.resolve(ts);
   });
-  return testcases;
+  return scenario;
 }
 
 async function update(accountId, projectId, id, payload) {

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmpty from "lodash/isEmpty";
 
-import LogoRenderer from "./layout/LogoRenderer";
+import LogoRenderer, { VINASHAK_LOGO } from "./layout/LogoRenderer";
 import * as actionTypes from "../../redux/actions";
 import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
@@ -56,11 +56,11 @@ export function SignInPage({ product }) {
     >
       <div className="flex w-1/2 h-screen items-center justify-center">
         <div className="max-w-sm transform duration-[300ms] hover:scale-110 cursor-pointer items-center justify-center">
-          <div className="flex flex-col justify-center items-center space-y-5">
-            <LogoRenderer className="h-36 w-36" />
+          <div className="flex flex-col justify-center items-center">
+            <LogoRenderer className="h-40 w-40" />
             <div className="flex flex-row space-x-5 items-center">
               <div className="flex flex-col space-y-2 items-center">
-                <div className="cursor-pointer text-4xl text-slate-100 tracking-normal">{name}</div>
+                <VINASHAK_LOGO className="w-56" />
                 <div className="cursor-pointer text-sm text-slate-400 tracking-tighter font-semibold">
                   {description} v{version}
                 </div>
@@ -111,9 +111,8 @@ export function SignInPage({ product }) {
                 id="signin-btn"
                 type="submit"
                 onClick={onSubmit}
-                className={`${
-                  loading ? "cursor-not-allowed" : "cursor-pointer"
-                } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
+                className={`${loading ? "cursor-not-allowed" : "cursor-pointer"
+                  } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
               >
                 {loading && (
                   <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

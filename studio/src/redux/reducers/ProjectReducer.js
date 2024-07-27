@@ -55,7 +55,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
           ]
         }
       ];
-
+      if (!state.settings) state.settings = { nodes: [], edges: [] };
       if (payload.settings) {
         if (payload.settings.nodes) {
           state.settings.nodes = [...payload.settings.nodes];

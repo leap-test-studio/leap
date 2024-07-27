@@ -4,21 +4,21 @@ import * as actionTypes from "../actions";
 
 export const resetTestCaseFlags =
   (options = {}) =>
-  (dispatch) => {
-    dispatch({
-      type: actionTypes.RESET_TESTCASE,
-      payload: {
-        loading: false,
-        message: null,
-        showMessage: false,
-        details: false,
-        ...options
-      }
-    });
-  };
+    (dispatch) => {
+      dispatch({
+        type: actionTypes.RESET_TESTCASE,
+        payload: {
+          loading: false,
+          message: null,
+          showMessage: false,
+          details: false,
+          ...options
+        }
+      });
+    };
 
-export const fetchTestCaseList = (projectId, scenarioId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase`).then((res) => {
+export const fetchTestCaseList = (pid, sid) => (dispatch) => {
+  axios.get(`/api/v1/project/${pid}/scenario/${sid}/testcases`).then((res) => {
     dispatch({
       type: actionTypes.GET_TESTCASE_LIST,
       payload: res.data
@@ -26,10 +26,10 @@ export const fetchTestCaseList = (projectId, scenarioId) => (dispatch) => {
   });
 };
 
-export const createTestCase = (projectId, scenarioId, data) => (dispatch) => {
+export const createTestCase = (pid, sid, data) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase`, data)
+    .post(`/api/v1/project/${pid}/scenario/${sid}/testcase`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -55,10 +55,10 @@ export const createTestCase = (projectId, scenarioId, data) => (dispatch) => {
     });
 };
 
-export const cloneTestCase = (projectId, scenarioId, id) => (dispatch) => {
+export const cloneTestCase = (pid, sid, id) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${id}/clone`)
+    .post(`/api/v1/project/${pid}/scenario/${sid}/testcase/${id}/clone`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -84,10 +84,10 @@ export const cloneTestCase = (projectId, scenarioId, id) => (dispatch) => {
     });
 };
 
-export const runTestCases = (projectId, payload) => (dispatch) => {
+export const runTestCases = (pid, payload) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .post(`/api/v1/runner/${projectId}/runTestCases`, payload)
+    .post(`/api/v1/runner/${pid}/runTestCases`, payload)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -112,10 +112,10 @@ export const runTestCases = (projectId, payload) => (dispatch) => {
     });
 };
 
-export const updateTestCase = (projectId, scenarioId, testCaseId, data) => (dispatch) => {
+export const updateTestCase = (pid, sid, tid, data) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`, data)
+    .put(`/api/v1/project/${pid}/scenario/${sid}/testcase/${tid}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -140,10 +140,10 @@ export const updateTestCase = (projectId, scenarioId, testCaseId, data) => (disp
     });
 };
 
-export const deleteTestCase = (projectId, scenarioId, testCaseId) => (dispatch) => {
+export const deleteTestCase = (pid, sid, tid) => (dispatch) => {
   resetTestCaseFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`)
+    .delete(`/api/v1/project/${pid}/scenario/${sid}/testcase/${tid}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -168,7 +168,7 @@ export const deleteTestCase = (projectId, scenarioId, testCaseId) => (dispatch) 
     });
 };
 
-export const fetchTestCase = (projectId, scenarioId, testCaseId) => (dispatch) => {
+export const fetchTestCase = (pid, sid, tid) => (dispatch) => {
   dispatch({
     type: actionTypes.GET_TESTCASE,
     payload: {
@@ -176,7 +176,7 @@ export const fetchTestCase = (projectId, scenarioId, testCaseId) => (dispatch) =
     }
   });
   axios
-    .get(`/api/v1/project/${projectId}/scenario/${scenarioId}/testcase/${testCaseId}`)
+    .get(`/api/v1/project/${pid}/scenario/${sid}/testcase/${tid}`)
     .then((res) => {
       if (res?.data)
         dispatch({

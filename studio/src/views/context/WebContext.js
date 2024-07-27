@@ -1,4 +1,5 @@
 import React from "react";
+import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT } from "./constants";
 
 const WebContext = React.createContext({
   isProjectSelected: false,
@@ -7,8 +8,8 @@ const WebContext = React.createContext({
   online: false,
   routes: [],
   windowDimension: {
-    headerHeight: 40,
-    footerHeight: 12,
+    headerHeight: DEFAULT_HEADER_HEIGHT,
+    footerHeight: DEFAULT_FOOTER_HEIGHT,
     maxContentHeight: window.innerHeight,
     winWidth: window.innerWidth,
     winHeight: window.innerHeight

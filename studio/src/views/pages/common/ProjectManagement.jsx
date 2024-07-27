@@ -72,7 +72,8 @@ const ProjectManagement = (props) => {
       Swal.fire({
         title: message,
         icon: showMessage,
-        text: details
+        text: details,
+        width: 550,
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetProjectFlags());

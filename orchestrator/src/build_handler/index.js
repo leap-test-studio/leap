@@ -88,11 +88,11 @@ class BuildManager extends events.EventEmitter {
         }
         delete this._handlers[jobId];
       }
+      this._jobs_processing.delete(jobId);
       logger.trace(`BUILD_MAN: JID:${jobId} STOPPED_JOB`);
     } catch (error) {
       logger.error("Failed to delete", jobId, error);
     }
-    this._jobs_processing.delete(jobId);
   }
 
   async _run() {

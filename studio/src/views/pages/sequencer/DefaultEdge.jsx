@@ -5,6 +5,7 @@ import { getBezierPath } from "reactflow";
 import { IconRenderer } from "../../utilities";
 import { sequenceEvents } from "../../../redux/actions/TestSequencerActions";
 import { TestStatus } from "./Constants";
+import Swal from "sweetalert2";
 const foreignObjectSize = 30;
 
 const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, label, animated, markerEnd }) => {
@@ -31,7 +32,16 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
   const onEdgeClick = useCallback(
     (evt) => {
       evt.stopPropagation();
-      dispatch(sequenceEvents("nodeAction:deleteEdge", id));
+      Swal.fire({
+        title: "Are you sure you want to Delete Edge?",
+        icon: "question",
+        confirmButtonText: "YES",
+        showDenyButton: true
+      }).then((response) => {
+        if (response.isConfirmed) {
+          dispatch(sequenceEvents("nodeAction:deleteEdge", id));
+        }
+      });       
     },
     [id, dispatch]
   );

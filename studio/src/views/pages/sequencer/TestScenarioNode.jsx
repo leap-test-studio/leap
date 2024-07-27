@@ -34,7 +34,7 @@ const TestScenarioNode = ({ id, type, selected }) => {
 
   return (
     <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
-      <NodeHeader selected={selected} />
+      <NodeHeader id={id} selected={selected} />
       <div className={`relative ${selected ? "shadow-lg" : "shadow"} bg-slate-100 border-2 border-slate-300 rounded cursor-pointer`}>
         <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />
         <ProgressIcon icon="DynamicForm" progress={node?.data?.progress || 0} status={node?.data?.status} size={50} />

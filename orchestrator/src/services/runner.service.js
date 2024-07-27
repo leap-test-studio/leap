@@ -43,7 +43,7 @@ function create(AccountId, ProjectMasterId, payload) {
 
       const scenarioIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
       if (scenarioIds.length === 0) {
-        return reject("No Test Scenario");
+        return reject("No Test Scenario Defined");
       }
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
         where: {

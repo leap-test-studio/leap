@@ -6,9 +6,7 @@ import WebContext from "./WebContext";
 import { CustomAlertDialog } from "../utilities";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
 import { openProject } from "../../redux/actions/ProjectActions";
-
-const DEFAULT_HEADER_HEIGHT = 40;
-const DEFAULT_FOOTER_HEIGHT = 0;
+import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT } from "./constants";
 
 const initialState = {
   project: null,

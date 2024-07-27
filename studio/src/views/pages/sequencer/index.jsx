@@ -13,21 +13,18 @@ import DefaultEdge from "./DefaultEdge";
 import TimerNode from "./TimerNode";
 import { NodeTypes } from "./Constants";
 import UpdateNodeConfigDialog from "./UpdateNodeConfigDialog";
-import DeleteNodeDialog from "./DeleteNodeDialog";
 import DragabbleElements from "../common/DragabbleElements";
 import { PageHeader, Page, PageActions, PageTitle } from "../common/PageLayoutComponents";
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";
 import TestScenarioNode from "./TestScenarioNode";
-import { IconButton, Tooltip, DeleteItemDialog } from "../../utilities";
+import { IconButton, Tooltip } from "../../utilities";
 import { RequestSchemas } from "./NodeUtils";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
   const reactFlowWrapper = useRef();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showDeleteEdgeDialog, setShowDeleteEdgeDialog] = useState(false);
   const [showConfigDialog, setShowConfigDialog] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
 
@@ -58,8 +55,6 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const handleDialogClose = useCallback(() => {
     setShowConfigDialog(false);
-    setShowDeleteDialog(false);
-    setShowDeleteEdgeDialog(false);
     dispatch(sequenceEvents("nodeAction:reset"));
   }, [dispatch]);
 
@@ -178,15 +173,13 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         setShowConfigDialog(true);
         break;
       case "nodeAction:deleteNode":
-        setShowDeleteDialog(true);
+        deleteNode();
         break;
       case "nodeAction:deleteEdge":
-        setShowDeleteEdgeDialog(true);
+        deleteEdge();
         break;
       case "nodeAction:reset":
         setShowConfigDialog(false);
-        setShowDeleteDialog(false);
-        setShowDeleteEdgeDialog(false);
         dispatch(sequenceEvents("nodeAction:clear"));
         break;
       default:
@@ -320,17 +313,6 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
                 isOpen={true}
               />
             )}
-            {showDeleteDialog && selectedNode !== null && (
-              <DeleteNodeDialog showDialog={showDeleteDialog} selectedNode={selectedNode} onClose={handleDialogClose} deleteNode={deleteNode} />
-            )}
-            <DeleteItemDialog
-              showDialog={showDeleteEdgeDialog}
-              title="Confirmation"
-              question="Are you sure you want to delete this edge?"
-              item={selectedNode?.id}
-              onDelete={deleteEdge}
-              onClose={handleDialogClose}
-            />
             <Background color="#aaa" gap={15} />
           </ReactFlow>
         </div>

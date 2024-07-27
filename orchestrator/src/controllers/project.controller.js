@@ -32,7 +32,7 @@ router.put("/:projectId/scenario/:scenarioId", csrf, authorize([Role.Admin, Role
 router.delete("/:projectId/scenario/:scenarioId", csrf, authorize([Role.Admin, Role.Manager, Role.Lead]), deleteTestScenario);
 
 // Test case routes
-router.get("/:projectId/scenario/:scenarioId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
+router.get("/:projectId/scenario/:scenarioId/testcases", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), getAllTestCases);
 router.post("/:projectId/scenario/:scenarioId/testcase", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), testCaseSchema, createTestCase);
 router.post("/:projectId/scenario/:scenarioId/testcase/:testcaseId/clone", csrf, authorize([Role.Admin, Role.Lead, Role.Engineer]), cloneTestCase);
 router.post(
@@ -318,8 +318,8 @@ function createTestCase(req, res) {
     .create(req.auth.id, req.params.scenarioId, req.body)
     .then((o) =>
       res.json({
-        id: o?.id,
-        message: `Test case created successfully.`
+        details: `TID: ${o?.label}`,
+        message: `Test Case Created Successfully.`
       })
     )
     .catch((err) => {
@@ -338,7 +338,7 @@ function cloneTestCase(req, res) {
       res.json({
         id: o?.id,
         message: "Test Case Cloned successfully",
-        details: `TID: #${o.label}`
+        details: `TID: ${o.label}`
       })
     )
     .catch((err) => {
@@ -361,7 +361,7 @@ function importTestCase(req, res) {
       res.json({
         id: o?.id,
         message: "Test Case Imported Successfully",
-        details: `TID: #${o.label}`
+        details: `TID: ${o.label}`
       })
     )
     .catch((err) => {
@@ -389,7 +389,7 @@ function getTestCase(req, res) {
 function updateTestCase(req, res) {
   testCaseService
     .update(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.body)
-    .then((o) => res.json({ message: "Test Case Modified Successfully", details: `TID: #${o.label}` }))
+    .then((o) => res.json({ message: "Test Case Modified Successfully", details: `TID: ${o.label}` }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({
@@ -402,7 +402,7 @@ function updateTestCase(req, res) {
 function deleteTestCase(req, res) {
   testCaseService
     .delete(req.auth.id, req.params.scenarioId, req.params.testcaseId)
-    .then((o) => res.json({ message: "Test Case Deleted Successfully", details: `TID: #${o.label}` }))
+    .then((o) => res.json({ message: "Test Case Deleted Successfully", details: `TID: ${o.label}` }))
     .catch((err) => {
       logger.error(err);
       res.status(status.INTERNAL_SERVER_ERROR).send({

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
+import * as actionTypes from "../../../redux/actions";
 
-import ImportTestCaseDialog from "./ImportTestCaseDialog";
+
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { cropString } from "../utils";
-import { Centered, IconButton, Spinner, Tooltip, NewlineText, EmptyIconRenderer, SearchComponent, IconRenderer } from "../../utilities";
+import { Centered, IconButton, Spinner, Tooltip, NewlineText, EmptyIconRenderer, SearchComponent, IconRenderer, UploadFile } from "../../utilities";
 import {
   fetchTestCaseList,
   createTestCase,
@@ -31,7 +32,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
   const [selectedTestCase, setSelectedTestCase] = useState(state?.selectedTestCase);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(state?.showUpdateDialog);
-  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const { isFirstTestCase, loading, testcases, details, message, showMessage } = useSelector((state) => state.testcase);
 
@@ -45,7 +46,8 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
       Swal.fire({
         title: message,
         icon: showMessage,
-        text: details
+        text: details,
+        width: 550
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetTestCaseFlags());
@@ -65,7 +67,52 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
     setSelectedTestCase(null);
     setShowCreateDialog(false);
     setShowUpdateDialog(false);
-    setShowImportDialog(false);
+  };
+
+  const importTestCase = (tc) => {
+
+    Swal.fire({
+      title: "Select JSON File",
+      text: `Import Configuration for TID: ${tc?.label}`,
+      input: "file",
+      inputAttributes: {
+        "accept": "application/json",
+        "aria-label": "Upload Test Case Export file(JSON)"
+      }
+    }).then(async ({ value: file }) => {
+      if (file) {
+        const formData = new FormData();
+        formData.append("upload-file", file);
+        const response = await UploadFile(
+          "POST",
+          `/api/v1/project/${project?.id}/scenario/${scenario?.id}/testcase/${tc?.id}/import`,
+          formData,
+          (percent) => setProgress(Math.floor(percent))
+        );
+        const text = await response.text();
+        if (response.status == 200) {
+          setProgress(0);
+          dispatch({
+            type: actionTypes.RESET_TESTCASE,
+            payload: {
+              ...JSON.parse(text),
+              showMessage: "success",
+              loading: false
+            }
+          });
+        } else {
+          setProgress(0);
+          dispatch({
+            type: actionTypes.RESET_TESTCASE,
+            payload: {
+              ...JSON.parse(text),
+              showMessage: "error",
+              loading: false
+            }
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -114,7 +161,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           }}
           importTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
-            setShowImportDialog(true);
+            importTestCase(selectedTestCase);
           }}
         />
       )}
@@ -139,15 +186,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
             resetState();
           }}
           windowDimension={windowDimension}
-        />
-      )}
-      {showImportDialog && (
-        <ImportTestCaseDialog
-          projectId={project?.id}
-          scenarioId={scenario?.id}
-          testcase={selectedTestCase}
-          showDialog={showImportDialog}
-          onClose={resetState}
         />
       )}
     </>
@@ -315,17 +353,16 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
-                ? "bg-indigo-300"
-                : record.status === 2
-                  ? "bg-blue-300"
-                  : record.status === 3
-                    ? "bg-violet-400"
-                    : ""
-          }`}
+          className={`text-xs font-normal select-none ${record.status === 0
+            ? "bg-purple-300"
+            : record.status === 1
+              ? "bg-indigo-300"
+              : record.status === 2
+                ? "bg-blue-300"
+                : record.status === 3
+                  ? "bg-violet-400"
+                  : ""
+            }`}
         >
           {tcType}
         </label>

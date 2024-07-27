@@ -16,8 +16,8 @@ export const resetTestScenarioFlags = (options) => (dispatch) => {
   });
 };
 
-export const fetchTestScenarioList = (projectId) => (dispatch) => {
-  axios.get(`/api/v1/project/${projectId}/scenario`).then((res) => {
+export const fetchTestScenarioList = (pid) => (dispatch) => {
+  axios.get(`/api/v1/project/${pid}/scenario`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_TEST_SCENARIO_LIST,
@@ -26,19 +26,21 @@ export const fetchTestScenarioList = (projectId) => (dispatch) => {
   });
 };
 
-export const createTestScenario = (projectId, data) => (dispatch) => {
+export const createTestScenario = (pid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/scenario`, data)
+    .post(`/api/v1/project/${pid}/scenario`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.CREATE_TEST_SCENARIO,
           payload: {
             ...res.data,
-            showMessage: true,
-            loading: false,
-            isFirstTestScenario: false
+            showMessage: "success",
+            message: "Scenario Created Successfully",
+            details: `Scenario Id: ${res.data.id}`,
+            isFirstTestScenario: false,
+            loading: false
           }
         });
     })
@@ -47,25 +49,28 @@ export const createTestScenario = (projectId, data) => (dispatch) => {
         type: actionTypes.CREATE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          message: "Failed to Create Scenario",
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
     });
 };
 
-export const updateTestScenario = (projectId, scenarioId, data) => (dispatch) => {
+export const updateTestScenario = (pid, sid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${projectId}/scenario/${scenarioId}`, data)
+    .put(`/api/v1/project/${pid}/scenario/${sid}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.UPDATE_TEST_SCENARIO,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
+            message: "Scenario Updated Successfully",
+            details: `Scenario Id: ${sid}`,
             loading: false
           }
         });
@@ -75,25 +80,28 @@ export const updateTestScenario = (projectId, scenarioId, data) => (dispatch) =>
         type: actionTypes.UPDATE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          message: "Failed to Update Scenario",
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
     });
 };
 
-export const deleteTestScenario = (projectId, scenarioId) => (dispatch) => {
+export const deleteTestScenario = (pid, sid) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${projectId}/scenario/${scenarioId}`)
+    .delete(`/api/v1/project/${pid}/scenario/${sid}`)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.DELETE_TEST_SCENARIO,
           payload: {
             ...res.data,
-            showMessage: true,
+            showMessage: "success",
+            message: "Scenario Deleted Successfully",
+            details: `Scenario Id: ${sid}`,
             loading: false
           }
         });
@@ -103,27 +111,30 @@ export const deleteTestScenario = (projectId, scenarioId) => (dispatch) => {
         type: actionTypes.DELETE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          message: "Failed to Delete Scenario",
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
     });
 };
 
-export const cloneTestScenario = (projectId, scenarioId, data) => (dispatch) => {
+export const cloneTestScenario = (pid, sid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${projectId}/scenario/${scenarioId}/clone`, data)
+    .post(`/api/v1/project/${pid}/scenario/${sid}/clone`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.CLONE_TEST_SCENARIO,
           payload: {
             ...res.data,
-            showMessage: true,
-            loading: false,
-            isFirstTestScenario: false
+            showMessage: "success",
+            message: "Scenario Cloned Successfully",
+            details: `Scenario Id: ${res.data.id}`,
+            isFirstTestScenario: false,
+            loading: false
           }
         });
     })
@@ -132,24 +143,27 @@ export const cloneTestScenario = (projectId, scenarioId, data) => (dispatch) => 
         type: actionTypes.CLONE_TEST_SCENARIO,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true,
+          message: "Failed to Clone Scenario",
+          showMessage: "error",
+          details: e.response.data.error,
           loading: false
         }
       });
     });
 };
 
-export const runTestScenario = (projectId, scenarioId) => (dispatch) => {
+export const runTestScenario = (pid, sid) => (dispatch) => {
   axios
-    .post(`/api/v1/runner/${projectId}/runTestScenario/${scenarioId}`)
+    .post(`/api/v1/runner/${pid}/runTestScenario/${sid}`)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.RUN_TEST_SCENARIO,
           payload: {
             ...res.data,
-            showMessage: true
+            showMessage: "success",
+            details: `Scenario Id: ${sid}`,
+            loading: false
           }
         });
     })
@@ -158,8 +172,9 @@ export const runTestScenario = (projectId, scenarioId) => (dispatch) => {
         type: actionTypes.RUN_TEST_SCENARIO,
         payload: {
           ...e.response.data,
-          showMessage: true,
-          isError: true
+          showMessage: "error",
+          details: e.response.data.error,
+          loading: false
         }
       });
     });
