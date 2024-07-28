@@ -74,6 +74,7 @@ function AuthGuard({ product, children }) {
       axios.interceptors.response.use(
         (response) => response,
         (error) => {
+          console.log(error);
           const originalRequest = error.config;
           if (!localStorage.getItem("jwt_token")) {
             return cancelRequest(originalRequest);
@@ -104,17 +105,18 @@ function AuthGuard({ product, children }) {
                 }
               )
               .then((response) => {
+                console.log(response);
                 if (tokens[refreshToken] || response.status == 200) {
                   if (!tokens[refreshToken]) {
                     tokens[refreshToken] = {
                       ...response.data,
-                      ...jwtDecode(response.data)
+                      ...jwtDecode(response.data.jwtToken)
                     };
                   }
 
-                  localStorage.setItem("jwt_token", payload.jwtToken);
-                  localStorage.setItem("refreshToken", payload.refreshToken);
-                  localStorage.setItem("csrfToken", payload.csrfToken);
+                  localStorage.setItem("jwt_token", response.data.jwtToken);
+                  localStorage.setItem("refreshToken", response.data.refreshToken);
+                  localStorage.setItem("csrfToken", response.data.csrfToken);
 
                   updateRequestInterceptor();
 

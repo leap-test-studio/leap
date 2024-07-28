@@ -171,7 +171,7 @@ const ProjectManagement = (props) => {
         ) : (
           <>
             {projects && filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-5 p-2 pr-0">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-y-5 gap-x-5 p-2 pr-0">
                 {filtered.map((project, index) => (
                   <ProjectCard
                     key={index}
@@ -227,22 +227,50 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
     });
   };
 
+  let labels = [{
+    icon: "Fingerprint",
+    tooltip: `Project ID ${id}`,
+    prefix: "ID",
+    element: id
+  },
+  {
+    icon: "Description",
+    prefix: "Description",
+    element: description
+  }];
+
+  if (createdAt?.length > 0) {
+    labels.push({
+      icon: "Event",
+      tooltip: `Created on ${new Date(createdAt)?.toUTCString()}`,
+      prefix: "Created on",
+      element: dayjs(Number(new Date(createdAt).getTime())).fromNow()
+    })
+  }
+  if (updatedAt?.length > 0) {
+    labels.push({
+      icon: "AccessTime",
+      tooltip: `Modified on ${new Date(updatedAt)?.toUTCString()}`,
+      prefix: "Modified on",
+      element: dayjs(Number(new Date(updatedAt).getTime())).fromNow()
+    })
+  }
+
   return (
     <DisplayCard
       name={name}
       cardIcon={
         <>
           <div
-            className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
+            className="relative w-16 h-16 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium text-lg"
             style={{ backgroundColor: ProjectColors[name.charAt(0).toLowerCase()] }}
             onClick={selectProject}
           >
             {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
           </div>
           <div
-            className={`text-slate-500 text-[10px] text-center font-bold mt-0.5 mb-2 px-2 py-0.5 rounded shadow ${
-              status ? "bg-green-200" : "bg-blue-200"
-            }`}
+            className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
+              }`}
           >
             {status ? "Active" : "In-Active"}
           </div>
@@ -379,41 +407,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
         </div>
       }
-    >
-      <div className="text-slate-700 text-sm break-words select-all flex flex-row items-center">
-        <IconRenderer icon="Fingerprint" fontSize="10" className="text-color-0600 pr-0.5" />
-        {id}
-      </div>
-      {createdAt?.length > 0 && (
-        <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
-          <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />
-          <Tooltip title={`Created on ${new Date(createdAt)?.toUTCString()}`} placement="bottom">
-            {`Created on  - ${dayjs(Number(new Date(createdAt).getTime())).fromNow()}`}
-          </Tooltip>
-        </div>
-      )}
-      {createdAt?.length > 0 && (
-        <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
-          <IconRenderer icon="Event" fontSize="10" className="text-color-0600 pr-0.5" />
-          <Tooltip title={`Created on ${new Date(createdAt)?.toUTCString()}`} placement="bottom">
-            {`Created on  - ${dayjs(Number(new Date(createdAt).getTime())).fromNow()}`}
-          </Tooltip>
-        </div>
-      )}
-      {updatedAt?.length > 0 && (
-        <div className="text-slate-500 text-xs break-words select-all flex flex-row items-center">
-          <IconRenderer icon="AccessTime" fontSize="10" className="text-color-0600 pr-0.5" />
-          <Tooltip title={`Last Modified on ${new Date(updatedAt).toUTCString()}`} placement="bottom">
-            {`Modified on - ${dayjs(new Date(updatedAt).getTime()).fromNow()}`}
-          </Tooltip>
-        </div>
-      )}
-      {description?.length > 0 && (
-        <div className="text-slate-500 text-xs break-words pr-2 select-all">
-          <IconRenderer icon="Description" fontSize="10" className="text-color-0600 pr-0.5" />
-          {`Description - ${description}`}
-        </div>
-      )}
-    </DisplayCard>
+      records={labels}
+    />
   );
 };

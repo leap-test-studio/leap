@@ -21,7 +21,7 @@ export const fetchTestCaseList = (pid, sid) => (dispatch) => {
   axios.get(`/api/v1/project/${pid}/scenario/${sid}/testcases`).then((res) => {
     dispatch({
       type: actionTypes.GET_TESTCASE_LIST,
-      payload: res.data
+      payload: res?.data
     });
   });
 };

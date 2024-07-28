@@ -167,7 +167,7 @@ function TestScenarioManagement(props) {
         ) : (
           <>
             {filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3 p-2 pr-0">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-y-5 gap-x-5 p-2 pr-0">
                 {filtered.map((testscenario, index) => (
                   <TestScenarioCard
                     key={index}
@@ -248,6 +248,34 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
 
   const handleToggle = () => dispatch(updateTestScenario(projectId, id, { name, status: !status }));
 
+  let labels = [{
+    icon: "Fingerprint",
+    tooltip: `Scenario ID ${id}`,
+    prefix: "ID",
+    element: id
+  },
+  {
+    icon: "Description",
+    prefix: "Description",
+    element: description
+  }];
+
+  if (createdAt?.length > 0) {
+    labels.push({
+      icon: "Event",
+      tooltip: `Created on ${new Date(createdAt)?.toUTCString()}`,
+      prefix: "Created on",
+      element: dayjs(Number(new Date(createdAt).getTime())).fromNow()
+    })
+  }
+  if (updatedAt?.length > 0) {
+    labels.push({
+      icon: "AccessTime",
+      tooltip: `Modified on ${new Date(updatedAt)?.toUTCString()}`,
+      prefix: "Modified on",
+      element: dayjs(Number(new Date(updatedAt).getTime())).fromNow()
+    })
+  }
 
   return (
     <DisplayCard
@@ -255,19 +283,20 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
       cardIcon={
         <>
           <div
-            className="relative w-12 h-12 m-3 mb-1.5 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium"
+            className="relative w-16 h-16 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium text-lg"
             style={{ backgroundColor: ProjectColors[trimmedName.charAt(0).toLowerCase()] }}
             onClick={editTestScenario}
           >
             {trimmedName.charAt(0).toUpperCase() + trimmedName.charAt(name.length - 1).toUpperCase()}
           </div>
-          <p className={`text-slate-500 text-xs break-words select-all rounded px-1 ${status ? "bg-green-200" : "bg-slate-200"}`}>
+          <p className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
+            }`}>
             {status ? "Active" : "In-Active"}
           </p>
         </>
       }
       actions={
-        <div className="flex flex-row mb-0.5 items-center justify-end">
+        < div className="flex flex-row mb-0.5 items-center justify-end" >
           <Tooltip
             title="Enable/Disable Test Scenario"
             content={
@@ -278,20 +307,22 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           >
             <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
           </Tooltip>
-          {status && (
-            <IconRenderer
-              icon="PlayArrow"
-              style={{ fontSize: 18 }}
-              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-              onClick={run}
-              tooltip="Run Test Scenario"
-              description={
-                <p>
-                  Execute test cases of <strong>Test Scenario</strong>
-                </p>
-              }
-            />
-          )}
+          {
+            status && (
+              <IconRenderer
+                icon="PlayArrow"
+                style={{ fontSize: 18 }}
+                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+                onClick={run}
+                tooltip="Run Test Scenario"
+                description={
+                  <p>
+                    Execute test cases of <strong>Test Scenario</strong>
+                  </p>
+                }
+              />
+            )
+          }
           <IconRenderer
             icon="FileCopy"
             style={{ fontSize: 18 }}
@@ -330,31 +361,9 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
               </p>
             }
           />
-        </div>
+        </div >
       }
-    >
-      {createdAt?.length > 0 && (
-        <Tooltip title={`Created on ${createdAt}`}>
-          <div className="text-slate-500 text-xs break-words select-all">
-            <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
-            {dayjs(Number(new Date(createdAt).getTime())).fromNow()}
-          </div>
-        </Tooltip>
-      )}
-      {updatedAt?.length > 0 && (
-        <Tooltip title={`Last Modified on ${updatedAt}`}>
-          <div className="text-slate-500 text-xs break-words select-all">
-            <IconRenderer icon="CalendarToday" fontSize="12" className="text-color-0600 pr-0.5" />
-            {dayjs(Number(new Date(updatedAt).getTime())).fromNow()}
-          </div>
-        </Tooltip>
-      )}
-      {description?.length > 0 && (
-        <div className="my-0.5 text-slate-500 text-xs break-words pr-2 select-all inline-flex items-center">
-          <IconRenderer icon="InfoOutlined" fontSize="12" className="text-color-0600 pr-0.5" />
-          <NewlineText text={description} />
-        </div>
-      )}
-    </DisplayCard>
+      records={labels}
+    />
   );
 };
