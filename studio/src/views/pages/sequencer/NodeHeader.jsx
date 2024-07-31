@@ -46,7 +46,7 @@ function NodeHeader({ id, selected, timer = 0 }) {
                 if (response.isConfirmed) {
                   dispatch(sequenceEvents("nodeAction:deleteNode"));
                 }
-              });              
+              });
             }}
             tooltip="Delete this Node?"
           />

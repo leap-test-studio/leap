@@ -6,16 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import CloneTestScenarioDialog from "./CloneTestScenarioDialog";
 import CreateTestScenarioDialog from "./CreateTestScenarioDialog";
 import TestCaseManagement from "./TestCaseManagement";
-import {
-  Centered,
-  IconButton,
-  Tooltip,
-  NewlineText,
-  CustomAlertDialog,
-  EmptyIconRenderer,
-  SearchComponent,
-  IconRenderer
-} from "../../utilities";
+import { Centered, IconButton, Tooltip, NewlineText, CustomAlertDialog, EmptyIconRenderer, SearchComponent, IconRenderer } from "../../utilities";
 import {
   createTestScenario,
   fetchTestScenarioList,
@@ -44,14 +35,7 @@ function TestScenarioManagement(props) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
 
-  const {
-    testscenarios,
-    isFirstTestScenario,
-    showMessage,
-    details,
-    message,
-    loading
-  } = useSelector((state) => state.testscenario);
+  const { testscenarios, isFirstTestScenario, showMessage, details, message, loading } = useSelector((state) => state.testscenario);
   const { project, scenario, changeTestScenario } = props;
 
   useEffect(() => {
@@ -69,7 +53,7 @@ function TestScenarioManagement(props) {
         title: message,
         icon: showMessage,
         text: details,
-        width: 550,
+        width: 550
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetTestScenarioFlags());
@@ -213,7 +197,6 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
   const editTestScenario = () => openTestScenario(testscenario);
 
   const run = () => {
-
     Swal.fire({
       title: "Start Scenario Execution?",
       text: `Scenario Id: ${id}`,
@@ -225,7 +208,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
         dispatch(runTestScenario(projectId, id));
       }
     });
-  }
+  };
 
   const cloneTestScenario = () => {
     setSelectedTestScenario(testscenario);
@@ -248,17 +231,19 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
 
   const handleToggle = () => dispatch(updateTestScenario(projectId, id, { name, status: !status }));
 
-  let labels = [{
-    icon: "Fingerprint",
-    tooltip: `Scenario ID ${id}`,
-    prefix: "ID",
-    element: id
-  },
-  {
-    icon: "Description",
-    prefix: "Description",
-    element: description
-  }];
+  let labels = [
+    {
+      icon: "Fingerprint",
+      tooltip: `Scenario ID ${id}`,
+      prefix: "ID",
+      element: id
+    },
+    {
+      icon: "Description",
+      prefix: "Description",
+      element: description
+    }
+  ];
 
   if (createdAt?.length > 0) {
     labels.push({
@@ -266,7 +251,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
       tooltip: `Created on ${new Date(createdAt)?.toUTCString()}`,
       prefix: "Created on",
       element: dayjs(Number(new Date(createdAt).getTime())).fromNow()
-    })
+    });
   }
   if (updatedAt?.length > 0) {
     labels.push({
@@ -274,7 +259,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
       tooltip: `Modified on ${new Date(updatedAt)?.toUTCString()}`,
       prefix: "Modified on",
       element: dayjs(Number(new Date(updatedAt).getTime())).fromNow()
-    })
+    });
   }
 
   return (
@@ -289,14 +274,13 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           >
             {trimmedName.charAt(0).toUpperCase() + trimmedName.charAt(name.length - 1).toUpperCase()}
           </div>
-          <p className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
-            }`}>
+          <p className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"}`}>
             {status ? "Active" : "In-Active"}
           </p>
         </>
       }
       actions={
-        < div className="flex flex-row mb-0.5 items-center justify-end" >
+        <div className="flex flex-row mb-0.5 items-center justify-end">
           <Tooltip
             title="Enable/Disable Test Scenario"
             content={
@@ -307,22 +291,20 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           >
             <TailwindToggleRenderer small={true} path={id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
           </Tooltip>
-          {
-            status && (
-              <IconRenderer
-                icon="PlayArrow"
-                style={{ fontSize: 18 }}
-                className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
-                onClick={run}
-                tooltip="Run Test Scenario"
-                description={
-                  <p>
-                    Execute test cases of <strong>Test Scenario</strong>
-                  </p>
-                }
-              />
-            )
-          }
+          {status && (
+            <IconRenderer
+              icon="PlayArrow"
+              style={{ fontSize: 18 }}
+              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+              onClick={run}
+              tooltip="Run Test Scenario"
+              description={
+                <p>
+                  Execute test cases of <strong>Test Scenario</strong>
+                </p>
+              }
+            />
+          )}
           <IconRenderer
             icon="FileCopy"
             style={{ fontSize: 18 }}
@@ -361,7 +343,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
               </p>
             }
           />
-        </div >
+        </div>
       }
       records={labels}
     />

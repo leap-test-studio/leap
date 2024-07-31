@@ -9,12 +9,17 @@ export default function DisplayCard({ name, cardIcon, actions, records, children
           <div className="flex flex-col w-full">{actions}</div>
           <div className="text-color-0700 text-lg font-medium break-words pb-0.5 -mt-1">{name}</div>
           <div className="flex flex-col text-xs">
-            {records?.map(({ icon, tooltip, prefix, element }, index) => element && <div key={index} className="text-slate-700 break-words select-all flex flex-row items-center mt-1">
-              <IconRenderer icon={icon} className="text-color-0600 mr-2" />
-              <Tooltip title={tooltip} placement="bottom">
-                {`${prefix}: ${element}`}
-              </Tooltip>
-            </div>)}
+            {records?.map(
+              ({ icon, tooltip, prefix, element }, index) =>
+                element && (
+                  <div key={index} className="text-slate-700 break-words select-all flex flex-row items-center mt-1">
+                    <IconRenderer icon={icon} className="text-color-0600 mr-2" />
+                    <Tooltip title={tooltip} placement="bottom">
+                      {`${prefix}: ${element}`}
+                    </Tooltip>
+                  </div>
+                )
+            )}
             {children}
           </div>
         </div>

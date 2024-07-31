@@ -121,7 +121,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
   const buildList = buildReports.map((item) => {
     const buildNo = String(item.buildNo).padStart(4, "0");
     return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + "-" + buildNo };
-  });
+  }).sort((a,b)=>a.label.localeCompare(b.type) && b.label.localeCompare(a.label));
 
   useEffect(() => {
     if (!buildNo && buildList?.length > 0) {
@@ -164,7 +164,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
         {buildSelected ? (
           <div id="BuildReport" ref={reportRef} className="p-4">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} />
+              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}-${buildNumber}`}/>
               {!isEmpty(buildDetails?.options) && (
                 <div className="col-span-2">
                   <BuildEnvironmentVariables options={buildDetails.options} />
@@ -187,7 +187,7 @@ function toNumber(num) {
   return Math.trunc(+num);
 }
 
-function BuildDetails({ project, status, buildInfo }) {
+function BuildDetails({ project, status, buildInfo, buildNo }) {
   const isRunning = TestStatus[status] === "Running";
   const report = TestStatus[status];
   return (
@@ -201,7 +201,7 @@ function BuildDetails({ project, status, buildInfo }) {
           </tr>
           <tr>
             <td>Build No</td>
-            <td>{String(buildInfo.buildNo).padStart(4, "0")}</td>
+            <td>{buildNo}</td>
           </tr>
           <tr>
             <td>Status</td>

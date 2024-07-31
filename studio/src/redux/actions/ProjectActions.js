@@ -4,17 +4,17 @@ import * as actionTypes from "../actions";
 
 export const resetProjectFlags =
   (props = {}) =>
-    (dispatch) => {
-      dispatch({
-        type: actionTypes.RESET_PROJECT,
-        payload: {
-          loading: false,
-          message: null,
-          showMessage: false,
-          ...props
-        }
-      });
-    };
+  (dispatch) => {
+    dispatch({
+      type: actionTypes.RESET_PROJECT,
+      payload: {
+        loading: false,
+        message: null,
+        showMessage: false,
+        ...props
+      }
+    });
+  };
 
 export const openProject = (openedProject) => (dispatch) => {
   dispatch({
@@ -59,36 +59,36 @@ export const fetchProjectBuilds = (pid) => (dispatch) => {
 
 export const createProject =
   ({ name, description }) =>
-    (dispatch) => {
-      dispatch(resetProjectFlags());
-      axios
-        .post("/api/v1/project", { name, description })
-        .then((res) => {
-          if (res?.data)
-            dispatch({
-              type: actionTypes.CREATE_PROJECT,
-              payload: {
-                ...res.data,
-                loading: false,
-                message: "Project Created Successfully",
-                details: `Project ID: ${res.data.id}`,
-                showMessage: "success",
-                isFirstProject: false
-              }
-            });
-        })
-        .catch((e) => {
+  (dispatch) => {
+    dispatch(resetProjectFlags());
+    axios
+      .post("/api/v1/project", { name, description })
+      .then((res) => {
+        if (res?.data)
           dispatch({
             type: actionTypes.CREATE_PROJECT,
             payload: {
+              ...res.data,
               loading: false,
-              message: "Failed to Create Project",
-              showMessage: "error",
-              details: e.response.data.error
+              message: "Project Created Successfully",
+              details: `Project ID: ${res.data.id}`,
+              showMessage: "success",
+              isFirstProject: false
             }
           });
+      })
+      .catch((e) => {
+        dispatch({
+          type: actionTypes.CREATE_PROJECT,
+          payload: {
+            loading: false,
+            message: "Failed to Create Project",
+            showMessage: "error",
+            details: e.response.data.error
+          }
         });
-    };
+      });
+  };
 
 export const updateProject = (pid, data) => (dispatch) => {
   dispatch(resetProjectFlags());

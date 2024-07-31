@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 import * as actionTypes from "../../../redux/actions";
 
-
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { cropString } from "../utils";
@@ -70,13 +69,12 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
   };
 
   const importTestCase = (tc) => {
-
     Swal.fire({
       title: "Select JSON File",
       text: `Import Configuration for TID: ${tc?.label}`,
       input: "file",
       inputAttributes: {
-        "accept": "application/json",
+        accept: "application/json",
         "aria-label": "Upload Test Case Export file(JSON)"
       }
     }).then(async ({ value: file }) => {
@@ -353,16 +351,17 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
       </td>
       <td className="px-2 py-0.5 border border-r-slate-100 w-20">
         <label
-          className={`text-xs font-normal select-none ${record.status === 0
-            ? "bg-purple-300"
-            : record.status === 1
-              ? "bg-indigo-300"
-              : record.status === 2
-                ? "bg-blue-300"
-                : record.status === 3
-                  ? "bg-violet-400"
-                  : ""
-            }`}
+          className={`text-xs font-normal select-none ${
+            record.status === 0
+              ? "bg-purple-300"
+              : record.status === 1
+                ? "bg-indigo-300"
+                : record.status === 2
+                  ? "bg-blue-300"
+                  : record.status === 3
+                    ? "bg-violet-400"
+                    : ""
+          }`}
         >
           {tcType}
         </label>

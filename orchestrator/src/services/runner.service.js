@@ -135,42 +135,40 @@ async function stop(ProjectMasterId) {
     }
   });
 
-  if (!isEmpty(list)) {
-    const buildIds = list?.map((o) => o.id);
-    await global.DbStoreModel.BuildMaster.update(
-      { status: TestStatus.ABORT },
-      {
-        where: {
-          id: buildIds
-        }
-      }
-    );
-
-    logger.info("getJobs:", buildIds);
-    const jobs = await global.DbStoreModel.Job.findAll({
+  const buildIds = list?.map((o) => o.id);
+  await global.DbStoreModel.BuildMaster.update(
+    { status: TestStatus.ABORT },
+    {
       where: {
-        result: {
-          [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING]
-        },
-        BuildMasterId: {
-          [Op.in]: buildIds
+        id: buildIds
+      }
+    }
+  );
+
+  logger.info("getJobs:", buildIds);
+  const jobs = await global.DbStoreModel.Job.findAll({
+    where: {
+      result: {
+        [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING]
+      },
+      BuildMasterId: {
+        [Op.in]: buildIds
+      }
+    }
+  });
+  const jobIds = jobs?.map((o) => o.id);
+  await global.DbStoreModel.Job.update(
+    { result: TestStatus.ABORT },
+    {
+      where: {
+        id: {
+          [Op.in]: jobIds
         }
       }
-    });
-    const jobIds = jobs?.map((o) => o.id);
-    await global.DbStoreModel.Job.update(
-      { result: TestStatus.ABORT },
-      {
-        where: {
-          id: {
-            [Op.in]: jobIds
-          }
-        }
-      }
-    );
-    logger.info("Aborting", jobIds);
-    BuildManager.emit("stopJobs", jobIds);
-  }
+    }
+  );
+  logger.info("Aborting", jobIds);
+  BuildManager.emit("stopJobs", jobIds);
 
   return list;
 }

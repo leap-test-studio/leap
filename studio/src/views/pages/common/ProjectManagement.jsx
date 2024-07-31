@@ -73,7 +73,7 @@ const ProjectManagement = (props) => {
         title: message,
         icon: showMessage,
         text: details,
-        width: 550,
+        width: 550
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetProjectFlags());
@@ -227,17 +227,19 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
     });
   };
 
-  let labels = [{
-    icon: "Fingerprint",
-    tooltip: `Project ID ${id}`,
-    prefix: "ID",
-    element: id
-  },
-  {
-    icon: "Description",
-    prefix: "Description",
-    element: description
-  }];
+  let labels = [
+    {
+      icon: "Fingerprint",
+      tooltip: `Project ID ${id}`,
+      prefix: "ID",
+      element: id
+    },
+    {
+      icon: "Description",
+      prefix: "Description",
+      element: description
+    }
+  ];
 
   if (createdAt?.length > 0) {
     labels.push({
@@ -245,7 +247,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
       tooltip: `Created on ${new Date(createdAt)?.toUTCString()}`,
       prefix: "Created on",
       element: dayjs(Number(new Date(createdAt).getTime())).fromNow()
-    })
+    });
   }
   if (updatedAt?.length > 0) {
     labels.push({
@@ -253,7 +255,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
       tooltip: `Modified on ${new Date(updatedAt)?.toUTCString()}`,
       prefix: "Modified on",
       element: dayjs(Number(new Date(updatedAt).getTime())).fromNow()
-    })
+    });
   }
 
   return (
@@ -268,10 +270,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           >
             {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
           </div>
-          <div
-            className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"
-              }`}
-          >
+          <div className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"}`}>
             {status ? "Active" : "In-Active"}
           </div>
         </>

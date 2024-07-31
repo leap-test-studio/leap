@@ -41,7 +41,7 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
         if (response.isConfirmed) {
           dispatch(sequenceEvents("nodeAction:deleteEdge", id));
         }
-      });       
+      });
     },
     [id, dispatch]
   );

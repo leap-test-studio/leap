@@ -4,18 +4,18 @@ import * as actionTypes from "../actions";
 
 export const resetTestCaseFlags =
   (options = {}) =>
-    (dispatch) => {
-      dispatch({
-        type: actionTypes.RESET_TESTCASE,
-        payload: {
-          loading: false,
-          message: null,
-          showMessage: false,
-          details: false,
-          ...options
-        }
-      });
-    };
+  (dispatch) => {
+    dispatch({
+      type: actionTypes.RESET_TESTCASE,
+      payload: {
+        loading: false,
+        message: null,
+        showMessage: false,
+        details: false,
+        ...options
+      }
+    });
+  };
 
 export const fetchTestCaseList = (pid, sid) => (dispatch) => {
   axios.get(`/api/v1/project/${pid}/scenario/${sid}/testcases`).then((res) => {
