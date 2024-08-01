@@ -118,10 +118,12 @@ export default function TestReports({ project: selectedPrject, product, changeTe
     setTestType(TestTypeMapping[index] || -1);
   };
 
-  const buildList = buildReports.map((item) => {
-    const buildNo = String(item.buildNo).padStart(4, "0");
-    return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + "-" + buildNo };
-  }).sort((a,b)=>a.label.localeCompare(b.type) && b.label.localeCompare(a.label));
+  const buildList = buildReports
+    .map((item) => {
+      const buildNo = String(item.buildNo).padStart(4, "0");
+      return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + "-" + buildNo };
+    })
+    .sort((a, b) => a.label.localeCompare(b.type) && b.label.localeCompare(a.label));
 
   useEffect(() => {
     if (!buildNo && buildList?.length > 0) {
@@ -164,7 +166,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
         {buildSelected ? (
           <div id="BuildReport" ref={reportRef} className="p-4">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}-${buildNumber}`}/>
+              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}-${buildNumber}`} />
               {!isEmpty(buildDetails?.options) && (
                 <div className="col-span-2">
                   <BuildEnvironmentVariables options={buildDetails.options} />
