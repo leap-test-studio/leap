@@ -10,13 +10,11 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
   const isSmallScreen = maxContentHeight < 800;
   return (
     <aside
-      className={`transition-all duration-500 ${
-        showSidebar ? "w-[12%]" : "w-12"
-      } bg-sky-950 text-slate-100 flex flex-col cursor-pointer h-screen px-0.5`}
+      className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"} bg-sky-950 text-white flex flex-col cursor-pointer h-screen shadow`}
     >
       <div className="border-b-[1px] border-slate-400 mx-px py-2 flex flex-row items-center justify-start my-2">
         <LogoRenderer className="mx-1 h-7 w-7" name={props?.product.name} />
-        {showSidebar && <VINASHAK_LOGO className="w-32" />}
+        {showSidebar && <VINASHAK_LOGO className="w-28" />}
       </div>
       <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen} {...props}>
         {sideBarItems.map((item, index) =>
@@ -42,7 +40,7 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
 function SidebarRender({ showSidebar, children }) {
   return (
     <div
-      className={`flex flex-col px-1.5 py-2 select-none h-full ${
+      className={`flex flex-col py-2 select-none h-full ${
         showSidebar ? "max-h-[94%]" : "max-h-[99%]"
       } overflow-y-auto custom-scrollbar cursor-default overflow-x-hidden`}
     >
@@ -59,7 +57,7 @@ function SidebarDividerItem({ title, isSmallScreen }) {
         e.stopPropagation();
       }}
     >
-      <p className={`${isSmallScreen ? "text-[10px]" : "text-xs"} font-normal tracking-wide`}>{title}</p>
+      <p className={`${isSmallScreen ? "text-[11px]" : "text-xs"} font-normal tracking-wide`}>{title}</p>
     </div>
   );
 }
@@ -75,13 +73,13 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
       <NavLink
         id={`nav-page-${id}`}
         to={!openNewTab ? actualPath : pathname}
-        className={`relative inline-flex items-center w-full transition-all duration-300 ease-in-out ${isSmallScreen ? "mb-1" : "p-1 mb-2"} ${
+        className={`relative inline-flex border-l-4 items-center w-full transition-all duration-300 ease-in-out py-2 cursor-pointer ${
           pathname.includes(path)
-            ? "z-0 backdrop-blur-sm bg-slate-500/40 text-slate-300 border-l-4 border-slate-500"
+            ? "z-0 backdrop-blur-sm bg-slate-500/40 text-white border-slate-500"
             : hovered
-              ? "backdrop-blur-sm text-slate-300"
-              : "hover:text-slate-300"
-        } ${!showTitle ? "justify-center rounded" : "rounded-md"}`}
+              ? "backdrop-blur-sm text-white border-slate-900"
+              : "hover:text-white border-transparent"
+        } ${!showTitle ? "justify-center" : ""}`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => {
@@ -92,15 +90,15 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
       >
         <div
           className={`absolute h-full transition-all duration-300 ease-in-out ${
-            hovered ? "right-0 w-full rounded-md bg-slate-900 text-slate-300" : "right-full w-0"
+            hovered ? "right-0 w-full bg-slate-900 text-white" : "right-full w-0"
           }`}
         />
         {icon && (
           <div className="mx-1 z-10">
-            <IconRenderer icon={icon} className="h-4 w-4" viewBox={`${isSmallScreen ? "0 0 30 30" : "0 0 25 25"}`} />
+            <IconRenderer icon={icon} className="h-5 w-5" viewBox={`${isSmallScreen ? "0 0 30 30" : "0 0 25 25"}`} />
           </div>
         )}
-        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-[10px]">{title}</label>}
+        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-xs">{title}</label>}
       </NavLink>
     </Tooltip>
   );

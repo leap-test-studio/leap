@@ -16,7 +16,7 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
 
   if (disableLayout) return children;
   return (
-    <main role="main" className="w-full max-w-full h-screen bg-blue-50/50">
+    <main role="main" className="w-full max-w-full h-screen bg-slate-200/70">
       <div
         className="flex flex-row"
         style={{
@@ -43,7 +43,7 @@ function Layout({ disableLayout, base, sideBarItems, children, ...props }) {
             menuClicked={() => setExpandSB(!expandSB)}
           />
           <div
-            className="w-full pl-2 overflow-y-scroll custom-scrollbar"
+            className="w-full pl-2.5 overflow-y-scroll custom-scrollbar"
             style={{
               minHeight: windowDimension.maxContentHeight,
               maxHeight: windowDimension.maxContentHeight

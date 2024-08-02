@@ -7,11 +7,11 @@ export default function FirstTimeCard({ id, loading, title, details, icon, butto
         <Spinner>Loading</Spinner>
       ) : (
         <div className="bg-white h-fit shadow-lg w-96 rounded-md flex flex-col items-center p-5">
-          <IconRenderer icon={icon} className="text-color-0500 animate-bounce mt-5" style={{ fontSize: 70 }} />
-          <span id={`${id}-label`} className="my-4 text-center text-slate-800 uppercase text-xl select-none">
+          <IconRenderer icon={icon} className="text-color-0600 animate-bounce mt-5" style={{ fontSize: 70 }} />
+          <span id={`${id}-label`} className="my-4 text-center text-color-label uppercase text-xl select-none">
             {title}
           </span>
-          {details && <label className="my-2 text-center text-slate-700 text-base select-none">{details}</label>}
+          {details && <label className="my-2 text-center text-color-label text-base select-none">{details}</label>}
           <div className="flex flex-row items-center justify-center select-none">
             <IconButton id={`${id}-btn`} title={buttonTitle} icon={buttonIcon} onClick={onClick} />
             {onClose && (

@@ -261,12 +261,12 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #154374;
+  background: #4d2d87;
   border-radius: 7px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #6d48bf;
 }
 
 .swal2-confirm {

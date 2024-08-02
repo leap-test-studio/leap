@@ -132,7 +132,7 @@ const NonEmptyRow = React.memo(
                 icon="Delete"
                 ariaLabel="Delete"
                 onClick={() => openDeleteDialog(childPath, rowIndex)}
-                className="text-color-0500 hover:text-cds-red-0800"
+                className="text-color-0600 hover:text-cds-red-0800"
                 showShadow={false}
               />
             )}
@@ -142,10 +142,24 @@ const NonEmptyRow = React.memo(
         {enabled && showSortButtons && (
           <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
             {rowIndex > 0 && (
-              <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp} disabled={!enableUp} />
+              <IconButton
+                id={`moveup-item-${childPath}`}
+                className="text-color-0600 hover:text-color-0500"
+                icon="ArrowUpward"
+                ariaLabel="Move up"
+                onClick={moveUp}
+                disabled={!enableUp}
+              />
             )}
             {rowIndex < records - 1 && (
-              <IconButton id={`movedown-item-${childPath}`} icon="ArrowDownward" ariaLabel="Move down" onClick={moveDown} disabled={!enableDown} />
+              <IconButton
+                id={`movedown-item-${childPath}`}
+                className="text-color-0600 hover:text-color-0500"
+                icon="ArrowDownward"
+                ariaLabel="Move down"
+                onClick={moveDown}
+                disabled={!enableDown}
+              />
             )}
           </div>
         )}
@@ -220,7 +234,7 @@ export default function TailwindTableControl(props) {
           <div className="w-full px-2 pb-2">
             <TableRows openDeleteDialog={openDeleteDialog} {...props} />
             {data !== 0 && !readonly && (
-              <div className="w-full flex flex-row justify-end text-color-0500 select-none">
+              <div className="w-full flex flex-row justify-end text-color-0600 select-none">
                 <label>Add a {appliedUiSchemaOptions.rowTitle || "Record"}</label>
                 <Tooltip id="tooltip-add" title={`Add to ${label}`} placement="left">
                   <IconButton
@@ -229,7 +243,7 @@ export default function TailwindTableControl(props) {
                     ariaLabel={`Add to ${label}`}
                     onClick={props.addItem(path, createDefaultValue(schema))}
                     iconSize="24"
-                    className="text-color-0800 hover:text-color-0700 my-0.5"
+                    className="text-color-0600 hover:text-color-0500 my-0.5"
                   />
                 </Tooltip>
               </div>

@@ -3,7 +3,7 @@ import { IconRenderer } from "../../utilities";
 function RecentBuilds({ recentBuildSummary }) {
   return (
     <>
-      <div className="relative bg-white p-4 rounded-md w-full shadow-xl mt-1 border">
+      <div className="relative bg-white p-4 rounded-lg w-full hover:shadow-xl mt-1 border hover:bg-color-0050 hover:border-color-0300 cursor-pointer">
         <div className="text-white flex items-center absolute rounded-md p-2 shadow-xl bg-yellow-500 left-4 -top-4 select-none">
           <IconRenderer icon="Summarize" className="h-10 w-10" />
           <p className="text-sm font-semibold ml-3">Recent Build Summary</p>
@@ -40,7 +40,7 @@ function RecentBuilds({ recentBuildSummary }) {
             </thead>
             <tbody className="text-xs font-medium divide-y divide-gray-100">
               {recentBuildSummary?.slice(0, 10)?.map((record, index) => (
-                <Row key={index} {...record} />
+                <RenderRow key={index} {...record} />
               ))}
             </tbody>
           </table>
@@ -53,16 +53,16 @@ function RecentBuilds({ recentBuildSummary }) {
 export default RecentBuilds;
 
 const STATUS_MAP = Object.freeze([
-  { color: "bg-slate-200", label: "In-Queue" },
-  { color: "animate-pulse bg-cds-green-0600", label: "Running" },
-  { color: "bg-purple-100 text-purple-800", label: "Completed" },
-  { color: "bg-cds-red-0500", label: "Failed" },
-  { color: "bg-cds-red-0500", label: "Unknown" },
-  { color: "bg-cds-yellow-0500", label: "Skipped" },
-  { color: "bg-cds-red-0500", label: "Aborted" }
+  { color: "text-color-label bg-slate-200", label: "In-Queue" },
+  { color: "text-white animate-pulse bg-cds-green-0600", label: "Running" },
+  { color: "text-color-0600 bg-color-0200", label: "Completed" },
+  { color: "text-white bg-cds-red-0800", label: "Failed" },
+  { color: "text-white bg-cds-red-0800", label: "Unknown" },
+  { color: "text-color-label bg-cds-yellow-0500", label: "Skipped" },
+  { color: "text-white bg-cds-red-0600", label: "Aborted" }
 ]);
 
-function Row({ project, buildNo, status, total, passed, failed, skipped, running }) {
+function RenderRow({ project, buildNo, status, total, passed, failed, skipped, running }) {
   let obj = STATUS_MAP[status];
   if (status === 1 && running === 0) {
     obj = STATUS_MAP[0];
@@ -77,7 +77,7 @@ function Row({ project, buildNo, status, total, passed, failed, skipped, running
         <label>{String(buildNo).padStart(4, "0")}</label>
       </td>
       <td>
-        <span className={`text-slate-700 rounded text-xs font-normal px-1.5 py-0.5 select-none ${obj?.color || "bg-slate-200"}`}>{obj?.label}</span>
+        <div className={`text-center w-20 rounded text-sm font-medium px-1.5 py-0.5 select-none ${obj?.color}`}>{obj?.label}</div>
       </td>
 
       <td className="px-2 py-1 text-center text-blue-500">

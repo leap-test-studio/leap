@@ -22,6 +22,7 @@ import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/Pa
 import FirstTimeCard from "../common/FirstTimeCard";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import Swal from "sweetalert2";
+import CardLayout from "../common/CardLayout";
 
 const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
 
@@ -238,12 +239,18 @@ function RenderList({
         ) : filtered?.length === 0 ? (
           <EmptyIconRenderer title="Test Case Not Found" />
         ) : (
-          <table className="relative w-full border">
-            <TableHeader headers={["#TID", "Given", "When", "Then", "Type", "Actions"]} />
+          <div className="relative w-full px-2">
+            <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white p-2 rounded-lg border">
+              <div className="col-span-1 text-center">#TID</div>
+              <div className="col-span-3 text-center">Given</div>
+              <div className="col-span-3 text-center">When</div>
+              <div className="col-span-3 text-center">Then</div>
+              <div className="col-span-2 text-center">Actions</div>
+            </div>
             {filtered?.length > 0 && (
-              <tbody className="divide-y">
+              <div className="flex flex-col w-full">
                 {filtered.map((s, index) => (
-                  <Row
+                  <DisplayTestCase
                     key={index}
                     rowIndex={index}
                     editTestCase={editTestCase}
@@ -255,36 +262,16 @@ function RenderList({
                     importTestCase={importTestCase}
                   />
                 ))}
-              </tbody>
+              </div>
             )}
-          </table>
+          </div>
         )}
       </PageBody>
     </Page>
   );
 }
 
-function TableHeader(props) {
-  return (
-    <thead>
-      <tr>
-        {props.headers.map((header, index) => (
-          <Header key={index} title={header} />
-        ))}
-      </tr>
-    </thead>
-  );
-}
-
-function Header({ title }) {
-  return (
-    <th className="sticky top-0 pl-2 py-2 border-b-2 border-slate-300 bg-slate-100 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider truncate">
-      {title}
-    </th>
-  );
-}
-
-function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases, importTestCase }) {
+function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases, importTestCase }) {
   const tcType = TC_TYPES[record.type] || "Unknown";
 
   const exportTestCase = () => {
@@ -301,10 +288,34 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
     linkElement.click();
   };
   return (
-    <tr key={"row-" + rowIndex} className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs">
-      <td className="border border-r-slate-100 w-[5.5rem]">
-        <Tooltip title="Enable/Disable test case" placement="bottom">
-          <div className="flex flex-row items-center justify-between px-2">
+    <CardLayout key={"row-" + rowIndex} className="grid grid-cols-12">
+      <div className="col-span-1 flex flex-col text-center justify-center cursor-pointer" onClick={() => editTestCase(record)}>
+        <div className="flex flex-col text-center items-center justify-between border-r">
+          <label className="mt-2 text-base cursor-pointer">{record.label}</label>
+          <label className="mt-2 text-xs font-normal">{tcType}</label>
+          <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-16 rounded ${record.enabled ? "bg-green-600" : "bg-red-500"}`}>
+            {record.enabled ? "Active" : "In-Active"}
+          </div>
+        </div>
+      </div>
+      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
+        <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
+          <NewlineText text={record.given && cropString(record.given, 40 * 3).toString()} />
+        </Tooltip>
+      </div>
+      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
+        <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
+          <NewlineText text={record.when && cropString(record.when, 40 * 3).toString()} />
+        </Tooltip>
+      </div>
+      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
+        <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
+          <NewlineText text={record.then && cropString(record.then, 40 * 3).toString()} />
+        </Tooltip>
+      </div>
+      <div className="p-1 col-span-2 flex flex-col text-center justify-center">
+        <div className="flex flex-row justify-center">
+          <Tooltip title="Enable/Disable test case" placement="bottom">
             <TailwindToggleRenderer
               path={rowIndex}
               visible={true}
@@ -330,114 +341,89 @@ function Row({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, up
                 })
               }
             />
-            <label className="pl-4">{record.label}</label>
-          </div>
-        </Tooltip>
-      </td>
-      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
-        <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
-          <NewlineText text={record.given && cropString(record.given, 40 * 3).toString()} />
-        </Tooltip>
-      </td>
-      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
-        <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
-          <NewlineText text={record.when && cropString(record.when, 40 * 3).toString()} />
-        </Tooltip>
-      </td>
-      <td className="p-1.5 border border-r-slate-100 break-words max-w-[10rem]">
-        <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
-          <NewlineText text={record.then && cropString(record.then, 40 * 3).toString()} />
-        </Tooltip>
-      </td>
-      <td className="px-2 py-0.5 border border-r-slate-100 w-20">
-        <label
-          className={`text-xs font-normal select-none ${
-            record.status === 0
-              ? "bg-purple-300"
-              : record.status === 1
-                ? "bg-indigo-300"
-                : record.status === 2
-                  ? "bg-blue-300"
-                  : record.status === 3
-                    ? "bg-violet-400"
-                    : ""
-          }`}
-        >
-          {tcType}
-        </label>
-      </td>
-      <td className="px-2 py-0.5 w-40">
-        <div className="flex flex-row justify-end">
+          </Tooltip>
           {record.type > 0 && (
-            <IconRenderer
-              icon="PlayArrow"
-              className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() => runTestCases(record)}
-            />
+            <Tooltip title="Run Test Case">
+              <IconRenderer
+                icon="PlayArrow"
+                className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
+                style={{ fontSize: 18 }}
+                onClick={() => runTestCases(record)}
+              />
+            </Tooltip>
           )}
-          <IconRenderer
-            icon="FileCopy"
-            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 18 }}
-            onClick={() =>
-              Swal.fire({
-                title: "Are you sure you want to Clone the Test Case?",
-                text: `TID: #${record.label}`,
-                icon: "question",
-                confirmButtonText: "YES",
-                confirmButtonColor: "green",
-                showCancelButton: true,
-                cancelButtonText: "NO",
-                cancelButtonColor: "red"
-              }).then((response) => {
-                if (response.isConfirmed) {
-                  cloneTestCase(record);
-                }
-              })
-            }
-          />
-          <IconRenderer
-            icon="Edit"
-            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 18 }}
-            onClick={() => editTestCase(record)}
-          />
-          <IconRenderer
-            icon="DeleteForever"
-            className="text-color-0500 hover:text-cds-red-0600 mr-2 cursor-pointer"
-            style={{ fontSize: 18 }}
-            onClick={() =>
-              Swal.fire({
-                title: "Are you sure you want to Delete the Test Case?",
-                text: `TID: #${record.label}`,
-                icon: "question",
-                confirmButtonText: "YES",
-                confirmButtonColor: `${record.enabled ? "red" : "green"}`,
-                showCancelButton: true,
-                cancelButtonText: "NO",
-                cancelButtonColor: `${record.enabled ? "green" : "red"}`
-              }).then((response) => {
-                if (response.isConfirmed) {
-                  deleteTestCase(record);
-                }
-              })
-            }
-          />
-          <IconRenderer
-            icon="FileDownload"
-            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 18 }}
-            onClick={exportTestCase}
-          />
-          <IconRenderer
-            icon="FileUpload"
-            className="text-color-0500 hover:text-cds-blue-0500 mr-2 cursor-pointer"
-            style={{ fontSize: 18 }}
-            onClick={() => importTestCase(record)}
-          />
+          <Tooltip title="Clone Test Case">
+            <IconRenderer
+              icon="FileCopy"
+              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
+              style={{ fontSize: 18 }}
+              onClick={() =>
+                Swal.fire({
+                  title: "Are you sure you want to Clone the Test Case?",
+                  text: `TID: #${record.label}`,
+                  icon: "question",
+                  confirmButtonText: "YES",
+                  confirmButtonColor: "green",
+                  showCancelButton: true,
+                  cancelButtonText: "NO",
+                  cancelButtonColor: "red"
+                }).then((response) => {
+                  if (response.isConfirmed) {
+                    cloneTestCase(record);
+                  }
+                })
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Modify Steps">
+            <IconRenderer
+              icon="Edit"
+              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
+              style={{ fontSize: 18 }}
+              onClick={() => editTestCase(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete Test Case">
+            <IconRenderer
+              icon="DeleteForever"
+              className="text-color-0600 hover:text-cds-red-0800 mr-2 cursor-pointer"
+              style={{ fontSize: 18 }}
+              onClick={() =>
+                Swal.fire({
+                  title: "Are you sure you want to Delete the Test Case?",
+                  text: `TID: #${record.label}`,
+                  icon: "question",
+                  confirmButtonText: "YES",
+                  confirmButtonColor: `${record.enabled ? "red" : "green"}`,
+                  showCancelButton: true,
+                  cancelButtonText: "NO",
+                  cancelButtonColor: `${record.enabled ? "green" : "red"}`
+                }).then((response) => {
+                  if (response.isConfirmed) {
+                    deleteTestCase(record);
+                  }
+                })
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Export Test Case to JSON file">
+            <IconRenderer
+              icon="FileDownload"
+              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
+              style={{ fontSize: 18 }}
+              onClick={exportTestCase}
+            />
+          </Tooltip>
+          <Tooltip title="Import Test Case from JSON file">
+            <IconRenderer
+              icon="FileUpload"
+              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
+              style={{ fontSize: 18 }}
+              onClick={() => importTestCase(record)}
+            />
+          </Tooltip>
         </div>
-      </td>
-    </tr>
+      </div>
+    </CardLayout>
   );
 }

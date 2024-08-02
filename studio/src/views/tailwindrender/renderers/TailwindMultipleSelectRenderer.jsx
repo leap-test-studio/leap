@@ -54,7 +54,7 @@ const TailwindMultipleSelectRenderer = React.memo(
             data-popper-escaped=""
             data-popper-placement="bottom"
           >
-            <ul className="space-y-1 text-xs text-gray-700" aria-labelledby="dropdownBgHoverButton">
+            <ul className="space-y-1 text-xs text-color-label" aria-labelledby="dropdownBgHoverButton">
               {options.map((item, index) => {
                 return (
                   <li key={index}>
@@ -64,10 +64,10 @@ const TailwindMultipleSelectRenderer = React.memo(
                         name={index}
                         id={index}
                         checked={Boolean(item.value)}
-                        className="text-color-0500 ring-blue-500 rounded mx-2"
+                        className="text-color-0600 ring-color-0600 rounded mx-2"
                         onChange={(ev) => handleChange(item, ev)}
                       />
-                      <label htmlFor="checkbox-item-4" className="ml-2 w-full text-xs font-medium text-gray-900 rounded">
+                      <label htmlFor="checkbox-item-4" className="ml-2 w-full text-xs font-medium text-color-label rounded">
                         {item.label}
                       </label>
                     </div>

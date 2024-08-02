@@ -69,13 +69,20 @@ const ExpandPanelRenderer = React.memo((props) => {
                 icon="Delete"
                 ariaLabel="Delete Record"
                 onClick={removeItems(path, [index])}
-                className="text-color-0500 hover:text-cds-red-0800"
+                className="text-color-0600 hover:text-cds-red-0800"
                 showShadow={false}
               />
             </Tooltip>
             {showAddItem && (
               <Tooltip title={`Clone and add ${appliedUiSchemaOptions.rowTitle || "Record"}`}>
-                <IconButton id={`delete-add-${index}`} icon="FileCopy" ariaLabel="Add Record" onClick={addItem(path, [index])} showShadow={false} />
+                <IconButton
+                  id={`clone-add-${index}`}
+                  className="text-color-0600 hover:text-color-0500"
+                  icon="FileCopy"
+                  ariaLabel="Add Record"
+                  onClick={addItem(path, [index])}
+                  showShadow={false}
+                />
               </Tooltip>
             )}
           </div>
@@ -83,10 +90,24 @@ const ExpandPanelRenderer = React.memo((props) => {
         {appliedUiSchemaOptions.showSortButtons && (
           <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
             {enableMoveUp && (
-              <IconButton id={`moveup-item-${childPath}`} icon="ArrowUpward" ariaLabel="Move up" onClick={moveUp(path, index)} bg="" />
+              <IconButton
+                id={`moveup-item-${childPath}`}
+                className="text-color-0600 hover:text-color-0500"
+                icon="ArrowUpward"
+                ariaLabel="Move up"
+                onClick={moveUp(path, index)}
+                bg=""
+              />
             )}
             {enableMoveDown && (
-              <IconButton id={`movedown-item-${childPath}`} icon="ArrowDownward" ariaLabel="Move down" onClick={moveDown(path, index)} bg="" />
+              <IconButton
+                id={`movedown-item-${childPath}`}
+                className="text-color-0600 hover:text-color-0500"
+                icon="ArrowDownward"
+                ariaLabel="Move down"
+                onClick={moveDown(path, index)}
+                bg=""
+              />
             )}
           </div>
         )}

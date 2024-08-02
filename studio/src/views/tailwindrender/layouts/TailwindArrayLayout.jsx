@@ -71,7 +71,7 @@ export const TailwindArrayLayout = React.memo((props) => {
           <EmptyIconRenderer title="No data found" fill="#90b6e8" showIcon={false} />
         )}
         {showAddItem && data !== 0 && (
-          <div className="w-full flex flex-row justify-end text-color-0500 select-none mt-1">
+          <div className="w-full flex flex-row justify-end text-color-0600 select-none mt-1">
             {!readonly && (
               <>
                 <label className="text-[10px] text-center mt-0.5">Add a {uischema?.options?.rowTitle || "Record"}</label>
@@ -82,7 +82,7 @@ export const TailwindArrayLayout = React.memo((props) => {
                     ariaLabel={`Add to ${label}`}
                     onClick={addItem(path, innerCreateDefaultValue())}
                     iconSize="20"
-                    className="text-color-0800 hover:text-color-0700"
+                    className="text-color-0600 hover:text-color-0500"
                     bg="bg-white"
                   />
                 </Tooltip>

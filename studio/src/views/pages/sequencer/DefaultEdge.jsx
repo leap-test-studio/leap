@@ -35,8 +35,11 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
       Swal.fire({
         title: "Are you sure you want to Delete Edge?",
         icon: "question",
+        showCancelButton: true,
         confirmButtonText: "YES",
-        showDenyButton: true
+        cancelButtonText: "NO",
+        confirmButtonColor: "red",
+        cancelButtonColor: "green"
       }).then((response) => {
         if (response.isConfirmed) {
           dispatch(sequenceEvents("nodeAction:deleteEdge", id));

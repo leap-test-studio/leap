@@ -36,7 +36,7 @@ export const Accordion = ({ visible = true, title, defaultOpen = false, onDelete
                   icon="Delete"
                   ariaLabel="Delete"
                   onClick={onDelete}
-                  className="text-color-0500 hover:text-cds-red-0800"
+                  className="text-color-0600 hover:text-cds-red-0800"
                   showShadow={false}
                   iconSize={14}
                 />

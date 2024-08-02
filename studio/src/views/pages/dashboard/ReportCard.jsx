@@ -2,7 +2,7 @@ export default function ReportCard({ title, icon, value, total, bgColor }) {
   const rate = +((value / total) * 100).toFixed(2);
 
   return (
-    <div className="card p-3 shadow-md rounded-md bg-white select-none border flex items-center">
+    <div className="card p-3 hover:shadow-md rounded-lg bg-white select-none border hover:bg-color-0050 hover:border-color-0300 flex items-center cursor-pointer">
       <div className="flex flex-col items-center">
         <div className={`p-3 rounded-full text-center mr-4 ${bgColor}`}>
           <i className={`w-6 ${icon}`} />

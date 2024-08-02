@@ -74,7 +74,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
             >
               <div className="relative w-screen max-w-full h-screen flex flex-col bg-white">
                 <div className="px-4 py-1 sm:px-6 flex justify-between border-b border-slate-300">
-                  <DialogTitle as="div" className="text-sm font-bold text-color-0500 py-0">
+                  <DialogTitle as="div" className="text-sm font-bold text-color-0600 py-0">
                     Configure Test Case
                     <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
                       <p className="select-none">{`Test Scenario: ${testscenario.name} - [`}</p>

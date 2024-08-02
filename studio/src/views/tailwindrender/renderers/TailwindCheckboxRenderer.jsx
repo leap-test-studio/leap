@@ -28,7 +28,7 @@ const TailwindCheckboxRenderer = React.memo((props) => {
         disabled={!enabled}
         type="checkbox"
         name={path}
-        className={`text-color-0500 ring-blue-500 rounded mx-2 ${!enabled && "bg-slate-200"}`}
+        className={`text-color-0600 ring-color-0500 rounded mx-2 ${!enabled && "bg-slate-200"}`}
         placeholder={description}
         checked={data == undefined ? schema.default : Boolean(data)}
         onChange={(ev) => handleChange(path, ev.target.checked)}

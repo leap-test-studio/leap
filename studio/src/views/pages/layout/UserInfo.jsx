@@ -18,7 +18,7 @@ export default function UserInfo({ showTitle = false }) {
     email = user?.email;
   }
   return (
-    <div className="p-1 m-0.5 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
+    <div className="p-1 m-0.5 rounded backdrop-blur-sm bg-slate-500/30 text-white items-center">
       <div className="flex-1 items-center justify-between select-none">
         {username && <p>{username}</p>}
         {role && <IconLabel label={role} icon="AccountCircle" />}

@@ -151,18 +151,26 @@ function TestScenarioManagement(props) {
         ) : (
           <>
             {filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-y-5 gap-x-5 p-2 pr-0">
-                {filtered.map((testscenario, index) => (
-                  <TestScenarioCard
-                    key={index}
-                    testscenario={testscenario}
-                    projectId={project?.id}
-                    openTestScenario={openTestScenario}
-                    setSelectedTestScenario={setSelectedTestScenario}
-                    setShowCloneDialog={setShowCloneDialog}
-                    handleDeleteTestScenario={handleDeleteTestScenario}
-                  />
-                ))}
+              <div className="relative w-full">
+                <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white px-4 py-2 rounded-lg border">
+                  <div className="col-span-3 text-center border-r">Scenario</div>
+                  <div className="col-span-5 text-center border-r">Info</div>
+                  <div className="col-span-2 text-center border-r">Status</div>
+                  <div className="col-span-2 text-center">Actions</div>
+                </div>
+                <div className="grid grid-cols-1 gap-y-3 pr-0">
+                  {filtered.map((testscenario, index) => (
+                    <TestScenarioCard
+                      key={index}
+                      testscenario={testscenario}
+                      projectId={project?.id}
+                      openTestScenario={openTestScenario}
+                      setSelectedTestScenario={setSelectedTestScenario}
+                      setShowCloneDialog={setShowCloneDialog}
+                      handleDeleteTestScenario={handleDeleteTestScenario}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <Centered>
@@ -220,8 +228,11 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
       title: "Are you sure you want to Delete Scenario?",
       text: `Scenario: ${trimmedName}`,
       icon: "question",
+      showCancelButton: true,
       confirmButtonText: "YES",
-      showDenyButton: true
+      cancelButtonText: "NO",
+      confirmButtonColor: "red",
+      cancelButtonColor: "green"
     }).then((response) => {
       if (response.isConfirmed) {
         handleDeleteTestScenario(testscenario);
@@ -229,7 +240,22 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
     });
   };
 
-  const handleToggle = () => dispatch(updateTestScenario(projectId, id, { name, status: !status }));
+  const handleToggle = () => {
+    Swal.fire({
+      title: `Are you sure you want to ${status ? "De-Activate" : "Activate"} Test Scenario?`,
+      text: `Project Id: ${id}`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "YES",
+      cancelButtonText: "NO",
+      confirmButtonColor: `${status ? "red" : "green"}`,
+      cancelButtonColor: `${status ? "green" : "red"}`
+    }).then((response) => {
+      if (response.isConfirmed) {
+        dispatch(updateTestScenario(projectId, id, { name, status: !status }));
+      }
+    });
+  };
 
   let labels = [
     {
@@ -237,11 +263,6 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
       tooltip: `Scenario ID ${id}`,
       prefix: "ID",
       element: id
-    },
-    {
-      icon: "Description",
-      prefix: "Description",
-      element: description
     }
   ];
 
@@ -265,20 +286,9 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
   return (
     <DisplayCard
       name={name}
-      cardIcon={
-        <>
-          <div
-            className="relative w-16 h-16 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium text-lg"
-            style={{ backgroundColor: ProjectColors[trimmedName.charAt(0).toLowerCase()] }}
-            onClick={editTestScenario}
-          >
-            {trimmedName.charAt(0).toUpperCase() + trimmedName.charAt(name.length - 1).toUpperCase()}
-          </div>
-          <p className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"}`}>
-            {status ? "Active" : "In-Active"}
-          </p>
-        </>
-      }
+      description={description}
+      status={status}
+      onClick={editTestScenario}
       actions={
         <div className="flex flex-row mb-0.5 items-center justify-end">
           <Tooltip
@@ -295,7 +305,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             <IconRenderer
               icon="PlayArrow"
               style={{ fontSize: 18 }}
-              className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+              className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
               onClick={run}
               tooltip="Run Test Scenario"
               description={
@@ -308,7 +318,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           <IconRenderer
             icon="FileCopy"
             style={{ fontSize: 18 }}
-            className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
             onClick={cloneTestScenario}
             tooltip="Clone Test Scenario"
             description={
@@ -320,7 +330,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           <IconRenderer
             icon="ModeEdit"
             style={{ fontSize: 18 }}
-            className="text-color-0500 hover:text-cds-blue-0500 mx-0.5 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
             onClick={editTestScenario}
             tooltip="Edit Test Scenario"
             description={
@@ -334,7 +344,7 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           <IconRenderer
             icon="Delete"
             style={{ fontSize: 18 }}
-            className="text-color-0500 hover:text-cds-red-0600 mx-0.5 cursor-pointer"
+            className="text-color-0600 hover:text-cds-red-0800 mx-0.5 cursor-pointer"
             onClick={deleteTestScenario}
             tooltip="Delete Test Scenario"
             description={

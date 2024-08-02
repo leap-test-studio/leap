@@ -171,16 +171,24 @@ const ProjectManagement = (props) => {
         ) : (
           <>
             {projects && filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-y-5 gap-x-5 p-2 pr-0">
-                {filtered.map((project, index) => (
-                  <ProjectCard
-                    key={index}
-                    {...props}
-                    project={project}
-                    handleProjectSelection={handleProjectSelection}
-                    handleAction={handleCardAction}
-                  />
-                ))}
+              <div className="relative w-full">
+                <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white px-4 py-2 rounded-lg border">
+                  <div className="col-span-3 text-center border-r">Project</div>
+                  <div className="col-span-5 text-center border-r">Info</div>
+                  <div className="col-span-2 text-center border-r">Status</div>
+                  <div className="col-span-2 text-center">Actions</div>
+                </div>
+                <div className="grid grid-cols-1 gap-y-2.5 pr-0">
+                  {filtered.map((project, index) => (
+                    <ProjectCard
+                      key={index}
+                      {...props}
+                      project={project}
+                      handleProjectSelection={handleProjectSelection}
+                      handleAction={handleCardAction}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <Centered>
@@ -207,12 +215,25 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
   const selectProject = () => handleProjectSelection(name);
 
   const handleToggle = () => {
-    dispatch(
-      updateProject(id, {
-        name,
-        status: !status
-      })
-    );
+    Swal.fire({
+      title: `Are you sure you want to ${status ? "De-Activate" : "Activate"} Project?`,
+      text: `Project Id: ${id}`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "YES",
+      cancelButtonText: "NO",
+      confirmButtonColor: `${status ? "red" : "green"}`,
+      cancelButtonColor: `${status ? "green" : "red"}`
+    }).then((response) => {
+      if (response.isConfirmed) {
+        dispatch(
+          updateProject(id, {
+            name,
+            status: !status
+          })
+        );
+      }
+    });
   };
 
   const exportProject = () => {
@@ -233,11 +254,6 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
       tooltip: `Project ID ${id}`,
       prefix: "ID",
       element: id
-    },
-    {
-      icon: "Description",
-      prefix: "Description",
-      element: description
     }
   ];
 
@@ -261,20 +277,8 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
   return (
     <DisplayCard
       name={name}
-      cardIcon={
-        <>
-          <div
-            className="relative w-16 h-16 rounded-full flex justify-center shadow-lg hover:shadow-inner items-center bg-opacity-70 text-center select-none text-white font-medium text-lg"
-            style={{ backgroundColor: ProjectColors[name.charAt(0).toLowerCase()] }}
-            onClick={selectProject}
-          >
-            {name.charAt(0).toUpperCase() + name.charAt(name.length - 1).toUpperCase()}
-          </div>
-          <div className={`text-slate-500 text-sm text-center font-bold mt-4 p-2 w-32 rounded shadow ${status ? "bg-green-200" : "bg-blue-200"}`}>
-            {status ? "Active" : "In-Active"}
-          </div>
-        </>
-      }
+      description={description}
+      status={status}
       actions={
         <div className="flex flex-row items-center justify-end pr-1">
           {status && (
@@ -302,7 +306,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               ) : (
                 <IconRenderer
                   icon="PlayArrow"
-                  className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+                  className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
                   onClick={() => {
                     Swal.fire({
                       title: "Start Project Execution?",
@@ -333,7 +337,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           </Tooltip>
           <IconRenderer
             icon="Settings"
-            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
             style={{ fontSize: 18 }}
             onClick={() =>
               handleAction({
@@ -350,7 +354,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="ModeEdit"
-            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
             onClick={selectProject}
             style={{ fontSize: 18 }}
             tooltip="Edit Project"
@@ -368,14 +372,17 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="Delete"
-            className="text-color-0500 hover:text-cds-red-0600 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-cds-red-0800 mx-1 cursor-pointer"
             onClick={() => {
               Swal.fire({
                 title: "Are you sure you want to Delete Project?",
                 text: `Project Id: ${id}`,
                 icon: "question",
+                showCancelButton: true,
                 confirmButtonText: "YES",
-                showDenyButton: true
+                cancelButtonText: "NO",
+                confirmButtonColor: "red",
+                cancelButtonColor: "green"
               }).then((response) => {
                 if (response.isConfirmed) {
                   dispatch(deleteProject(id));
@@ -392,7 +399,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="FileDownload"
-            className="text-color-0500 hover:text-cds-blue-0500 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
             style={{ fontSize: 18 }}
             onClick={exportProject}
             tooltip="Export Project"
@@ -407,6 +414,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
         </div>
       }
       records={labels}
+      onClick={selectProject}
     />
   );
 };

@@ -24,7 +24,7 @@ function NodeHeader({ id, selected, timer = 0 }) {
         <div className="flex flex-row items-center justify-end">
           <IconRenderer
             icon="FileCopy"
-            className="text-color-0500 mr-0.5 cursor-pointer"
+            className="text-color-0600 mr-0.5 cursor-pointer"
             aria-hidden="true"
             style={{ fontSize: "13" }}
             onClick={() => dispatch(sequenceEvents("nodeAction:cloneNode"))}
@@ -32,7 +32,7 @@ function NodeHeader({ id, selected, timer = 0 }) {
           />
           <IconRenderer
             icon="DeleteForever"
-            className="text-color-0500 mr-0.5 cursor-pointer"
+            className="text-color-0600 mr-0.5 cursor-pointer"
             aria-hidden="true"
             style={{ fontSize: "14" }}
             onClick={() => {
@@ -40,8 +40,11 @@ function NodeHeader({ id, selected, timer = 0 }) {
                 title: "Are you sure you want to Delete Node?",
                 text: `Node Id: ${id}`,
                 icon: "question",
+                showCancelButton: true,
                 confirmButtonText: "YES",
-                showDenyButton: true
+                cancelButtonText: "NO",
+                confirmButtonColor: "red",
+                cancelButtonColor: "green"
               }).then((response) => {
                 if (response.isConfirmed) {
                   dispatch(sequenceEvents("nodeAction:deleteNode"));

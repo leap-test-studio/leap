@@ -41,7 +41,7 @@ const TailwindInputText = React.memo((props) => {
               >
                 <IconRenderer
                   icon={passwordShow ? "VisibilityOff" : "Visibility"}
-                  className={passwordShow ? "text-cds-yellow-0500" : "text-color-0500"}
+                  className={passwordShow ? "text-cds-yellow-0500" : "text-color-0600"}
                   fontSize="small"
                 />
               </span>

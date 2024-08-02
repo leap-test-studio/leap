@@ -23,7 +23,7 @@ export const ReactSelectCustomStyles = {
       background: "#f1f1f1"
     },
     "::-webkit-scrollbar-thumb": {
-      background: "#154374"
+      background: "#6d48bf"
     },
     "::-webkit-scrollbar-thumb:hover": {
       background: "#555"
@@ -37,13 +37,13 @@ export const ReactSelectCustomStyles = {
   }),
   option: (base, { isSelected }) => ({
     ...base,
-    backgroundColor: isSelected ? "#154374" : "",
+    backgroundColor: isSelected ? "#6d48bf" : "",
     color: isSelected ? "white" : "",
     ":active": {
-      backgroundColor: "#154374"
+      backgroundColor: "#6d48bf"
     },
     ":hover": {
-      backgroundColor: "#316eaf",
+      backgroundColor: "#8b5cf6",
       color: "#fff"
     }
   }),

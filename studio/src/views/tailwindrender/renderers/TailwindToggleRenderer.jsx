@@ -20,7 +20,7 @@ const TailwindToggleRenderer = ({ data, uischema, path, handleChange, config, vi
         name={path}
         id={`${path}-toggle`}
         className={`toggle-checkbox absolute block w-4 h-4 -mt-0.5 rounded-full ${
-          enabled ? "bg-white text-color-0500 ring-color-0500" : "bg-slate-100 text-slate-400 ring-slate-400"
+          enabled ? "bg-white text-color-0600 ring-color-0600" : "bg-slate-100 text-slate-400 ring-slate-400"
         } border appearance-none cursor-pointer`}
         checked={checked}
         onChange={(ev) => {

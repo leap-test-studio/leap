@@ -203,7 +203,7 @@ function paginate(array, page_size, page_number) {
 function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handleSelect, isChecked, checkedRecords }) {
   const checkedRecord = checkedRecords?.map((r) => r.id).includes(record.id);
   return (
-    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0800"}  hover:bg-slate-100 border-b border-slate-300`}>
+    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0600"}  hover:bg-slate-100 border-b border-slate-300`}>
       {showSelect && (
         <td className="border border-r-slate-100 w-10">
           <input
@@ -212,7 +212,7 @@ function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handl
             id={record.id}
             onChange={() => handleSelect(record)}
             checked={isChecked(record)}
-            className="text-color-0800 rounded mx-2"
+            className="text-color-0600 rounded mx-2"
           />
         </td>
       )}

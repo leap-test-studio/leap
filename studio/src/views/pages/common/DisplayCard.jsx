@@ -1,29 +1,32 @@
 import { IconRenderer, Tooltip } from "../../utilities";
+import CardLayout from "./CardLayout";
 
-export default function DisplayCard({ name, cardIcon, actions, records, children }) {
+export default function DisplayCard({ name, description, status, actions, records, onClick }) {
   return (
-    <div key={name} className="bg-slate-50 border border-slate-300 rounded-md shadow-md hover:shadow-lg transition duration-300 p-4">
-      <div className="flex flex-row rounded-tr rounded-tl h-full">
-        <div className="flex flex-col w-3/12 items-center justify-center">{cardIcon}</div>
-        <div className="flex flex-col w-9/12 text-left pb-2">
-          <div className="flex flex-col w-full">{actions}</div>
-          <div className="text-color-0700 text-lg font-medium break-words pb-0.5 -mt-1">{name}</div>
-          <div className="flex flex-col text-xs">
-            {records?.map(
-              ({ icon, tooltip, prefix, element }, index) =>
-                element && (
-                  <div key={index} className="text-slate-700 break-words select-all flex flex-row items-center mt-1">
-                    <IconRenderer icon={icon} className="text-color-0600 mr-2" />
-                    <Tooltip title={tooltip} placement="bottom">
-                      {`${prefix}: ${element}`}
-                    </Tooltip>
-                  </div>
-                )
-            )}
-            {children}
-          </div>
+    <CardLayout key={name} className="grid grid-cols-12 gap-x-2">
+      <div className="col-span-3 flex flex-col text-color-label break-words border-r" onClick={onClick}>
+        <p className="text-lg font-medium">{name}</p>
+        <p className="text-sm mt-2">{description}</p>
+      </div>
+      <div className="col-span-5 flex flex-col text-xs border-r" onClick={onClick}>
+        {records?.map(
+          ({ icon, tooltip, prefix, element }, index) =>
+            element && (
+              <div key={index} className="text-slate-700 break-words select-all flex flex-row items-center mt-1">
+                <IconRenderer icon={icon} className="text-color-0600 mr-2" />
+                <Tooltip title={tooltip} placement="bottom">
+                  {`${prefix}: ${element}`}
+                </Tooltip>
+              </div>
+            )
+        )}
+      </div>
+      <div className="flex flex-col col-span-2 items-center justify-center border-r" onClick={onClick}>
+        <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${status ? "bg-green-600" : "bg-red-500"}`}>
+          {status ? "Active" : "In-Active"}
         </div>
       </div>
-    </div>
+      <div className="col-span-2 flex items-center">{actions}</div>
+    </CardLayout>
   );
 }

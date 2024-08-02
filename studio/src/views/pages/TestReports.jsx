@@ -164,7 +164,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
       </PageHeader>
       <PageBody>
         {buildSelected ? (
-          <div id="BuildReport" ref={reportRef} className="p-4">
+          <div id="BuildReport" ref={reportRef} className="p-4 rounded-lg bg-white">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
               <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}-${buildNumber}`} />
               {!isEmpty(buildDetails?.options) && (
@@ -310,7 +310,7 @@ function convertMsToHM(milliseconds = 0) {
 function BuildSummary({ data, onClick, testType }) {
   let key = Object.keys(TestTypeMapping).find((k) => TestTypeMapping[k] === testType);
   return (
-    <div className="border-t">
+    <div className="border-y pb-2 mb-3">
       <p className="font-medium text-base mt-1">Summary</p>
       <div className="grid grid-cols-8">
         {data.map((d, index) => (
@@ -324,7 +324,7 @@ function BuildSummary({ data, onClick, testType }) {
 function SummaryCard({ title, value, className, onClick, selected }) {
   return (
     <div
-      className={`card rounder-t pb-2 cursor-pointer hover:bg-slate-100 border-r ${selected ? "bg-slate-100" : ""} ${
+      className={`card rounder-t pb-2 cursor-pointer hover:bg-color-0050 border-r border-color-0100 ${selected ? "bg-color-0300" : ""} ${
         className != null ? className : ""
       }`}
       onClick={onClick}
@@ -345,21 +345,24 @@ function TestExecutionResults({ rate }) {
   );
 }
 
-const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Type", "Summary", "Steps", "Status", "Time"]);
+const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Info", "Steps", "Status", "Time"]);
 
 function ReportTable({ jobs, testType, product, changeTestScenario }) {
   return (
     <table className="table-auto w-full">
-      <thead className="text-xs text-slate-500 bg-slate-100 rounded-sm">
+      <thead className="text-xs text-white bg-color-0600 rounded-sm">
         <tr>
           {ReportTableHeader.map((header, index) => (
-            <th key={index} className="p-2 font-semibold border-x text-center">
+            <th
+              key={index}
+              className={`p-2 font-semibold border-x text-center ${index === 0 ? "rounded-tl-lg" : index === ReportTableHeader.length - 1 ? "rounded-tr-lg" : ""}`}
+            >
               {header}
             </th>
           ))}
         </tr>
       </thead>
-      <tbody className="text-xs font-medium divide-y divide-gray-100 text-slate-500">
+      <tbody className="text-xs font-medium divide-y divide-gray-100 text-color-label">
         {jobs?.map((job, index) => {
           if (testType == -1 || testType === job.result)
             return <JobDetails key={job.id + "-" + index} {...job} product={product} changeTestScenario={changeTestScenario} />;
@@ -393,25 +396,21 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
 
   return (
     <>
-      <tr className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs text-slate-700 cursor-pointer" onClick={openTestCase}>
-        <td className="p-1 border-x border-x-slate-200 font-bold text-center w-20">{TestCase?.label}</td>
-        <td className="p-1 border-x border-x-slate-200 w-52">
-          {TestCase?.TestScenario && (
-            <div className="flex-1">
-              <label className="break-all">{TestCase?.TestScenario?.name}</label>
-              {TestCase?.TestScenario?.description && (
-                <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
-              )}
-            </div>
-          )}
+      <tr className="hover:bg-color-0050 border border-color-0300 text-xs text-color-label cursor-pointer" onClick={openTestCase}>
+        <td className="border-x border-x-color-0300 w-0.10">
+          <p className="font-bold">{TestCase?.label}</p>
+          <p className="mt-2">{title}</p>
         </td>
-        <td className="p-1 border-x border-x-slate-200 text-center w-20">{title}</td>
-        <td className="p-1 border-x border-x-slate-200 flex flex-col break-words">
-          <div className="inline-flex items-center mb-2 border-b">
+        <td className="p-1 border-x border-x-color-0300 w-0.20">
+          <label>{TestCase?.TestScenario?.name}</label>
+          <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
+        </td>
+        <td className="p-1 border-x border-x-color-0300 w-0.40">
+          <div className="inline-flex items-center mb-2 border-b border-color-0300 w-full">
             <strong>GIVEN</strong>
             <NewlineText text={TestCase?.given} className="font-normal ml-2" />
           </div>
-          <div className="inline-flex items-center mb-2 border-b">
+          <div className="inline-flex items-center mb-2 border-b border-color-0300 w-full">
             <strong>WHEN</strong>
             <NewlineText text={TestCase?.when} className="font-normal ml-2" />
           </div>
@@ -420,8 +419,8 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             <NewlineText text={TestCase?.then} className="font-normal ml-2" />
           </div>
         </td>
-        <td className="p-1 border-x border-x-slate-200 text-center w-16">{result > 0 ? steps : 0}</td>
-        <td className="border-x border-x-slate-200 w-20">
+        <td className="p-1 border-x border-x-color-0300 text-center">{result > 0 ? steps : 0}</td>
+        <td className="border-x border-x-color-0300 w-16">
           <div
             className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
               status === "Running"
@@ -436,7 +435,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             {status}
           </div>
         </td>
-        <td className="p-1 border-x border-x-slate-200 flex-1 w-40">
+        <td className="p-1 border-x border-x-color-0300 w-0.20">
           {endTime && startTime && (
             <div className="flex flex-col">
               <strong>Duration</strong>
@@ -467,26 +466,26 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </td>
       </tr>
       {status !== "Pass" && !isEmpty(actualResult) && actualResult.actual && (
-        <tr className="bg-white hover:bg-slate-50 border border-slate-300 text-xs cursor-pointer" onClick={openTestCase}>
-          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border border-slate-100">
+        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer" onClick={openTestCase}>
+          <td colSpan={ReportTableHeader.length} className="p-2 text-color-label border border-color-0300">
             <p>{`Captured Result for TC${TestCase?.seqNo}`}</p>
-            <table className="table-auto w-full mb-4 border border-slate-300 rounded">
-              <thead className="text-xs text-slate-500 bg-slate-100">
+            <table className="table-auto w-full mb-4 border border-color-0300 rounded">
+              <thead className="text-xs text-color-label bg-color-0400">
                 <tr className="text-xs text-center">
-                  <th className="border-r border-slate-300">Step Number</th>
-                  <th className="border-r border-slate-300">Step Details</th>
-                  <th className="border-r border-slate-300">Result</th>
-                  <th className="border-r border-slate-300">Step Time</th>
+                  <th className="border-r border-color-0300">Step Number</th>
+                  <th className="border-r border-color-0300">Step Details</th>
+                  <th className="border-r border-color-0300">Result</th>
+                  <th className="border-r border-color-0300">Step Time</th>
                   <th>Actual Output</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-white hover:bg-slate-50 text-xs">
-                  <td className="border-r border-slate-300 text-center">{actualResult.stepNo}</td>
-                  <td className="border-r border-slate-300">
+                <tr className="bg-white hover:bg-color-0050 text-xs">
+                  <td className="border-r border-color-0300 text-center">{actualResult.stepNo}</td>
+                  <td className="border-r border-color-0300">
                     <NewlineText text={JSON.stringify(TestCase?.execSteps[actualResult.stepNo - 1], null, 2)} />
                   </td>
-                  <td className="border-r border-slate-300">
+                  <td className="border-r border-color-0300">
                     <p
                       className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
                         TestStatus[actualResult.result] === "Running"
@@ -501,7 +500,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                       {TestStatus[actualResult.result]}
                     </p>
                   </td>
-                  <td className="flex-1 border-r border-slate-300">
+                  <td className="flex-1 border-r border-color-0300">
                     <strong>Elapsed</strong>
                     <p>{actualResult.stepTime}ms</p>
                     <strong>Start Time</strong>
@@ -517,8 +516,8 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </tr>
       )}
       {!isEmpty(screenshot) && (
-        <tr className="bg-white hover:bg-slate-50 border-b border-slate-300 text-xs cursor-pointer" onClick={openTestCase}>
-          <td colSpan={ReportTableHeader.length} className="p-2 text-slate-600 border-x border-x-slate-200 flex-wrap w-full">
+        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer" onClick={openTestCase}>
+          <td colSpan={ReportTableHeader.length} className="p-2 text-color-label border-x border-x-color-0300 flex-wrap w-full">
             {screenshot.map((s, i) => (
               <div key={i}>
                 <label>{s?.stepNo === "Evidence" ? s?.stepNo : "Screenshot for Step:" + s?.stepNo + " Capture Number:" + (i + 1)}</label>
@@ -558,7 +557,7 @@ const data = [
   {
     title: "Fail",
     value: 3,
-    className: "text-cds-red-0700"
+    className: "text-cds-red-0800"
   },
   {
     title: "Skipped",

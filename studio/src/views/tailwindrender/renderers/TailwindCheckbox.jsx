@@ -10,7 +10,7 @@ const TailwindCheckbox = React.memo((props) => {
             type="checkbox"
             name={props.path}
             id={props.id}
-            className="text-color-0800 rounded mx-2"
+            className="text-color-0600 rounded mx-2"
             placeholder={props.description}
             checked={Boolean(props.data)}
             onChange={(_ev, isChecked) => props.handleChange(props.path, isChecked)}

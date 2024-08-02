@@ -38,18 +38,18 @@ function Help(props) {
   });
 
   return (
-    <div className="relative inline-flex mx-1">
+    <div className="relative inline-flex mx-2">
       <button
         ref={trigger}
-        className={`w-5 h-5 flex items-center justify-center bg-slate-200 hover:bg-slate-300 transition duration-150 rounded-full ${
-          dropdownOpen && "bg-slate-300"
-        }`}
+        className={`w-7 h-7 flex items-center justify-center ${
+          dropdownOpen ? "bg-slate-300" : "bg-slate-200"
+        } hover:bg-slate-300 transition duration-150 rounded-full border border-slate-300`}
         aria-haspopup="true"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-expanded={dropdownOpen}
       >
         <span className="sr-only">Need help?</span>
-        <IconRenderer icon="Info" className="text-color-0500 fill-color-0500" fontSize="10" />
+        <IconRenderer icon="Info" className="text-color-0600" style={{ fontSize: 20 }} />
       </button>
 
       <Transition
@@ -63,17 +63,17 @@ function Help(props) {
         leaveTo="transform opacity-0 scale-95"
       >
         <div ref={dropdown} onFocus={() => setDropdownOpen(true)} onBlur={() => setDropdownOpen(false)}>
-          <div className="text-xs font-semibold text-color-0400 uppercase pt-1.5 pb-2 px-4">Need help?</div>
+          <div className="text-xs font-semibold text-color-0600 uppercase pt-1.5 pb-2 px-4">Need help?</div>
           <ul>
             <li>
               <div
-                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3 cursor-pointer"
+                className="font-medium text-xs text-color-0600 hover:text-color-0500 flex items-center py-1 px-3 cursor-pointer"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
                   openInNewTab("/documentation");
                 }}
               >
-                <svg className="w-3 h-3 fill-current text-color-0500 shrink-0 mr-2" viewBox="0 0 12 12">
+                <svg className="w-3 h-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
                   <rect y="3" width="12" height="9" rx="1" />
                   <path d="M2 0h8v2H2z" />
                 </svg>
@@ -82,14 +82,14 @@ function Help(props) {
             </li>
             <li>
               <Link
-                className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
+                className="font-medium text-xs text-color-0600 hover:text-color-0500 flex items-center py-1 px-3"
                 to="#0"
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
                   setShowAbout(!showAbout);
                 }}
               >
-                <svg className="w-3 h-3 fill-current text-color-0500 shrink-0 mr-2" viewBox="0 0 12 12">
+                <svg className="w-3 h-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
                   <path d="M11.854.146a.5.5 0 00-.525-.116l-11 4a.5.5 0 00-.015.934l4.8 1.921 1.921 4.8A.5.5 0 007.5 12h.008a.5.5 0 00.462-.329l4-11a.5.5 0 00-.116-.525z" />
                 </svg>
                 <span>About</span>

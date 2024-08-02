@@ -16,12 +16,12 @@ export const CustomAlertDialog = ({ showDialog, level, message, errorMessage, bu
             icon={Icons[level] || "Error"}
             className={`${
               level === "info"
-                ? "text-color-0500"
+                ? "text-color-0600"
                 : level === "warn"
                   ? "text-yellow-400"
                   : level === "success"
                     ? "text-cds-green-0600"
-                    : "text-cds-red-0500"
+                    : "text-cds-red-0800"
             }`}
             style={{
               fontSize: "80"
@@ -30,7 +30,7 @@ export const CustomAlertDialog = ({ showDialog, level, message, errorMessage, bu
           <span id="confirm-message" className="mb-5 text-sm text-center">
             {message}
           </span>
-          {errorMessage && <p className="mb-5 text-xs text-center text-red-500">{errorMessage}</p>}
+          {errorMessage && <p className="mb-5 text-xs text-center text-cds-red-0800">{errorMessage}</p>}
           <div className="flex text-cds-white">
             <button
               id="confirm-ok"
