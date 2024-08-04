@@ -9,7 +9,7 @@ const Model = {
       name: {
         type: "string",
         maxLength: 25,
-        description: "Enter Suite Title"
+        description: "Enter Test Suite Title"
       },
       description: {
         type: "string",
@@ -24,7 +24,7 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/name",
-        label: "Suite Name"
+        label: "Test Suite Name"
       },
       {
         type: "Control",

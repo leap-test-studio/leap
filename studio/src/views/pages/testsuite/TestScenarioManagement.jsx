@@ -175,7 +175,7 @@ function TestScenarioManagement(props) {
               </div>
             ) : (
               <Centered>
-                <EmptyIconRenderer title="Suite Not Found" />
+                <EmptyIconRenderer title="Test Suite Not Found" />
                 <IconButton title="Refresh" icon="Refresh" onClick={fetchTestScenarios} />
               </Centered>
             )}
@@ -352,10 +352,10 @@ const TestScenarioCard = ({
             className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             style={{ fontSize: 20 }}
             onClick={settingsTestScenario}
-            tooltip="Suite Settings"
+            tooltip="Test Suite Settings"
             description={
               <p>
-                View and modify the <strong>Suite Settings</strong>.
+                View and modify the <strong>Test Suite Settings</strong>.
               </p>
             }
           />
