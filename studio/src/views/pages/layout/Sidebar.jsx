@@ -14,7 +14,7 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
     >
       <div className="border-b-[1px] border-slate-400 mx-px py-2 flex flex-row items-center justify-start my-2">
         <LogoRenderer className="mx-1 h-7 w-7" name={props?.product.name} />
-        {showSidebar && <VINASHAK_LOGO className="w-28" />}
+        {showSidebar && <VINASHAK_LOGO className="w-24" />}
       </div>
       <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen} {...props}>
         {sideBarItems.map((item, index) =>
@@ -98,7 +98,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
             <IconRenderer icon={icon} className="h-5 w-5" viewBox={`${isSmallScreen ? "0 0 30 30" : "0 0 25 25"}`} />
           </div>
         )}
-        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-xs">{title}</label>}
+        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-xs cursor-pointer">{title}</label>}
       </NavLink>
     </Tooltip>
   );

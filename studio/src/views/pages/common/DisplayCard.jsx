@@ -1,4 +1,4 @@
-import { IconRenderer, Tooltip } from "../../utilities";
+import { IconRenderer, NewlineText, Tooltip } from "../../utilities";
 import CardLayout from "./CardLayout";
 
 export default function DisplayCard({ name, description, status, actions, records, onClick }) {
@@ -6,7 +6,7 @@ export default function DisplayCard({ name, description, status, actions, record
     <CardLayout key={name} className="grid grid-cols-12 gap-x-2">
       <div className="col-span-3 flex flex-col text-color-label break-words border-r" onClick={onClick}>
         <p className="text-lg font-medium">{name}</p>
-        <p className="text-sm mt-2">{description}</p>
+        <NewlineText text={description} />
       </div>
       <div className="col-span-5 flex flex-col text-xs border-r" onClick={onClick}>
         {records?.map(
@@ -21,12 +21,12 @@ export default function DisplayCard({ name, description, status, actions, record
             )
         )}
       </div>
-      <div className="flex flex-col col-span-2 items-center justify-center border-r" onClick={onClick}>
+      <div className="flex flex-col col-span-1 items-center justify-center border-r" onClick={onClick}>
         <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${status ? "bg-green-600" : "bg-red-600"}`}>
           {status ? "Active" : "In-Active"}
         </div>
       </div>
-      <div className="col-span-2 flex items-center">{actions}</div>
+      <div className="col-span-3 flex items-center">{actions}</div>
     </CardLayout>
   );
 }

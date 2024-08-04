@@ -180,8 +180,8 @@ const ProjectManagement = (props) => {
                 <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white px-4 py-2 rounded-lg border">
                   <div className="col-span-3 text-center border-r">Project</div>
                   <div className="col-span-5 text-center border-r">Info</div>
-                  <div className="col-span-2 text-center border-r">Status</div>
-                  <div className="col-span-2 text-center">Actions</div>
+                  <div className="col-span-1 text-center border-r">Status</div>
+                  <div className="col-span-3 text-center">Actions</div>
                 </div>
                 <div className="grid grid-cols-1 gap-y-2.5 pr-0">
                   {filtered.map((project, index) => (
