@@ -4,11 +4,11 @@ import CardLayout from "./CardLayout";
 export default function DisplayCard({ name, description, status, actions, records, onClick }) {
   return (
     <CardLayout key={name} className="grid grid-cols-12 gap-x-2">
-      <div className="col-span-3 flex flex-col text-color-label break-words border-r" onClick={onClick}>
+      <div className="col-span-4 flex flex-col text-color-label break-words border-r px-2" onClick={onClick}>
         <p className="text-lg font-medium">{name}</p>
         <NewlineText text={description} />
       </div>
-      <div className="col-span-5 flex flex-col text-xs border-r" onClick={onClick}>
+      <div className="col-span-4 flex flex-col text-xs border-r" onClick={onClick}>
         {records?.map(
           ({ icon, tooltip, prefix, element }, index) =>
             element && (

@@ -11,11 +11,12 @@ module.exports = {
   stop,
   createTestCase,
   createTestScenario,
-  triggerSequence
+  triggerSequence,
 };
 
 async function triggerSequence(ProjectMasterId) {
-  const project = await global.DbStoreModel.ProjectMaster.findByPk(ProjectMasterId);
+  const project =
+    await global.DbStoreModel.ProjectMaster.findByPk(ProjectMasterId);
   if (!project || isEmpty(project.settings)) {
     return;
   }
@@ -28,29 +29,34 @@ function create(AccountId, ProjectMasterId, payload) {
       if (!AccountId) {
         const account = await global.DbStoreModel.Account.findOne({
           where: {
-            role: Role.Admin
-          }
+            role: Role.Admin,
+          },
         });
         AccountId = account.id;
       }
       const testScenarios = await global.DbStoreModel.TestScenario.findAll({
         attributes: ["id", "status"],
         where: {
-          ProjectMasterId
+          ProjectMasterId,
         },
-        order: [["createdAt", "ASC"]]
+        order: [["createdAt", "ASC"]],
       });
 
-      const scenarioIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
+      const scenarioIds = testScenarios
+        .filter((scenario) => scenario.id && scenario.status)
+        .map((scenario) => scenario.id);
       if (scenarioIds.length === 0) {
-        return reject("No Test Scenario Defined");
+        return reject("No Suite Defined");
       }
-      let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
-        where: {
-          ProjectMasterId,
-          type: RUN_TYPE.PROJECT
-        }
-      });
+      let nextBuildNumber = await global.DbStoreModel.BuildMaster.max(
+        "buildNo",
+        {
+          where: {
+            ProjectMasterId,
+            type: RUN_TYPE.PROJECT,
+          },
+        },
+      );
 
       if (nextBuildNumber == null) {
         nextBuildNumber = 0;
@@ -66,7 +72,7 @@ function create(AccountId, ProjectMasterId, payload) {
         AccountId,
         ProjectMasterId,
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
 
       await build.save();
@@ -78,11 +84,11 @@ function create(AccountId, ProjectMasterId, payload) {
               where: {
                 TestScenarioId,
                 type: {
-                  [Op.not]: TestType.Scenario
+                  [Op.not]: TestType.Scenario,
                 },
-                enabled: true
+                enabled: true,
               },
-              order: [["seqNo", "ASC"]]
+              order: [["seqNo", "ASC"]],
             });
             const totalTestCases = testCases.length;
             if (totalTestCases > 0) {
@@ -93,13 +99,13 @@ function create(AccountId, ProjectMasterId, payload) {
                     TestCaseId: testCase.id,
                     BuildMasterId: build.id,
                     steps: testCase.execSteps,
-                    createdAt: Date.now()
+                    createdAt: Date.now(),
                   });
                   await job.save();
                   acc.push(job.id);
                   return acc;
                 },
-                []
+                [],
               );
               BuildManager.emit("addJobs", jobs);
             }
@@ -109,14 +115,14 @@ function create(AccountId, ProjectMasterId, payload) {
             return total;
           }
         },
-        0
+        0,
       );
       build.total = totalTestCases;
       await build.save();
       resolve({
         totalTestCases,
         buildNumber: nextBuildNumber,
-        message: `Test Runner Started. P-${String(nextBuildNumber).padStart(4, "0")}, Total test Cases: ${totalTestCases}`
+        message: `Test Runner Started. P-${String(nextBuildNumber).padStart(4, "0")}, Total test Cases: ${totalTestCases}`,
       });
     } catch (error) {
       reject(error);
@@ -130,9 +136,9 @@ async function stop(ProjectMasterId) {
     where: {
       ProjectMasterId,
       status: {
-        [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING]
-      }
-    }
+        [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING],
+      },
+    },
   });
 
   const buildIds = list?.map((o) => o.id);
@@ -140,21 +146,21 @@ async function stop(ProjectMasterId) {
     { status: TestStatus.ABORT },
     {
       where: {
-        id: buildIds
-      }
-    }
+        id: buildIds,
+      },
+    },
   );
 
   logger.info("getJobs:", buildIds);
   const jobs = await global.DbStoreModel.Job.findAll({
     where: {
       result: {
-        [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING]
+        [Op.in]: [TestStatus.DRAFT, TestStatus.RUNNING],
       },
       BuildMasterId: {
-        [Op.in]: buildIds
-      }
-    }
+        [Op.in]: buildIds,
+      },
+    },
   });
   const jobIds = jobs?.map((o) => o.id);
   await global.DbStoreModel.Job.update(
@@ -162,10 +168,10 @@ async function stop(ProjectMasterId) {
     {
       where: {
         id: {
-          [Op.in]: jobIds
-        }
-      }
-    }
+          [Op.in]: jobIds,
+        },
+      },
+    },
   );
   logger.info("Aborting", jobIds);
   BuildManager.emit("stopJobs", jobIds);
@@ -178,28 +184,36 @@ async function createTestScenario(AccountId, ProjectMasterId, TestScenarioId) {
     attributes: ["id"],
     where: {
       TestScenarioId,
-      enabled: true
+      enabled: true,
     },
-    order: [["seqNo", "ASC"]]
+    order: [["seqNo", "ASC"]],
   });
 
   return createTestCase(
     AccountId,
     ProjectMasterId,
     RUN_TYPE.TESTSCENARIO,
-    testCases.map((t) => t.id)
+    testCases.map((t) => t.id),
   );
 }
 
-function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, payload) {
+function createTestCase(
+  AccountId,
+  ProjectMasterId,
+  type = RUN_TYPE.TESTCASE,
+  payload,
+) {
   return new Promise(async (resolve, reject) => {
     try {
-      let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
-        where: {
-          ProjectMasterId,
-          type
-        }
-      });
+      let nextBuildNumber = await global.DbStoreModel.BuildMaster.max(
+        "buildNo",
+        {
+          where: {
+            ProjectMasterId,
+            type,
+          },
+        },
+      );
 
       if (nextBuildNumber == null) {
         nextBuildNumber = 0;
@@ -209,14 +223,14 @@ function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, pa
       const testCases = await global.DbStoreModel.TestCase.findAll({
         where: {
           type: {
-            [Op.not]: TestType.Scenario
+            [Op.not]: TestType.Scenario,
           },
           enabled: true,
           id: {
-            [Op.in]: payload
-          }
+            [Op.in]: payload,
+          },
         },
-        order: [["seqNo", "ASC"]]
+        order: [["seqNo", "ASC"]],
       });
 
       const totalTestCases = testCases.length;
@@ -229,7 +243,7 @@ function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, pa
           AccountId,
           ProjectMasterId,
           createdAt: Date.now(),
-          updatedAt: Date.now()
+          updatedAt: Date.now(),
         });
         await build.save();
 
@@ -240,23 +254,23 @@ function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, pa
               TestCaseId: testCase.id,
               BuildMasterId: build.id,
               steps: testCase.execSteps,
-              createdAt: Date.now()
+              createdAt: Date.now(),
             });
             await job.save();
             acc.push(job.id);
             return acc;
           },
-          []
+          [],
         );
         BuildManager.emit("addJobs", jobs);
         resolve({
           buildNumber: nextBuildNumber,
           totalTestCases,
-          message: `Test Runner Started. ${type === RUN_TYPE.TESTCASE ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}${type !== RUN_TYPE.TESTCASE ? ", Total test cases: " + totalTestCases : ""}`
+          message: `Test Runner Started. ${type === RUN_TYPE.TESTCASE ? "TC" : "TS"}-${String(nextBuildNumber).padStart(4, "0")}${type !== RUN_TYPE.TESTCASE ? ", Total test cases: " + totalTestCases : ""}`,
         });
       } else {
         resolve({
-          message: "No test cases"
+          message: "No test cases",
         });
       }
     } catch (e) {

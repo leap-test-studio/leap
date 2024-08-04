@@ -18,7 +18,7 @@ function RecentBuilds({ recentBuildSummary }) {
                 <th className="p-2 font-semibold text-left">
                   <label>Build No.</label>
                 </th>
-                <th className="p-2 font-semibold text-center">
+                <th className="p-2 font-semibold text-left">
                   <label>Status</label>
                 </th>
                 <th className="p-2 font-semibold text-center">
@@ -77,7 +77,7 @@ function RenderRow({ project, buildNo, status, total, passed, failed, skipped, r
         <label>{String(buildNo).padStart(4, "0")}</label>
       </td>
       <td>
-        <div className={`text-center w-20 rounded text-sm font-medium px-1.5 py-0.5 select-none ${obj?.color}`}>{obj?.label}</div>
+        <div className={`w-20 rounded text-sm font-medium px-1.5 py-0.5 select-none ${obj?.color}`}>{obj?.label}</div>
       </td>
 
       <td className="px-2 py-1 text-center text-blue-500">

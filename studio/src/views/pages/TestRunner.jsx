@@ -14,7 +14,7 @@ const columns = [
     enum: [
       { const: 0, title: "Project Build" },
       { const: 1, title: "Test Case Build" },
-      { const: 2, title: "Test Scenario Build" }
+      { const: 2, title: "Suite Build" }
     ],
     sortable: true
   },

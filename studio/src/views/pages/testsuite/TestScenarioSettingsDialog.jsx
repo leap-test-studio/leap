@@ -121,7 +121,7 @@ function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) 
       }}
       title={
         <p>
-          Test Scenario Setting
+          Suite Setting
           <br /> <label className="text-xs">{`ID: ${scenario.id}`}</label>
         </p>
       }

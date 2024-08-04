@@ -384,7 +384,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
     const scenario = testscenarios.find((ts) => ts.id === TestCase?.TestScenario?.id);
     if (scenario) {
       changeTestScenario(scenario);
-      navigate(`/${product?.page.base}/test-scenario`, {
+      navigate(`/${product?.page.base}/test-suite`, {
         replace: true,
         state: {
           showUpdateDialog: true,

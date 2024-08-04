@@ -79,7 +79,7 @@ function startTestCases(req, res) {
 }
 
 function startTestScenario(req, res) {
-  logger.info("Start Test Scenario", req.params.projectId, req.params.scenarioId);
+  logger.info("Start Suite", req.params.projectId, req.params.scenarioId);
   runner
     .createTestScenario(req.auth?.id, req.params.projectId, req.params.scenarioId)
     .then((response) => res.status(status.OK).json(response))

@@ -9,7 +9,7 @@ const Model = {
       name: {
         type: "string",
         maxLength: 25,
-        description: "Enter Test Scenario Title"
+        description: "Enter Suite Title"
       },
       description: {
         type: "string",
@@ -24,12 +24,12 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/name",
-        label: "Test Scenario Name"
+        label: "Suite Name"
       },
       {
         type: "Control",
         scope: "#/properties/description",
-        label: "Test Scenario",
+        label: "Suite",
         options: {
           multi: true,
           isLarge: true
@@ -48,7 +48,7 @@ function CreateTestScenarioDialog({ showDialog, createTestScenario, onClose }) {
         setData({});
         onClose();
       }}
-      title="Create Test Scenario"
+      title="Create Suite"
       saveTitle="Create"
       onSave={() => {
         createTestScenario(data);

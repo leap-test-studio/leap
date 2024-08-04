@@ -94,8 +94,8 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false, i
           }`}
         />
         {icon && (
-          <div className="mx-1 z-10">
-            <IconRenderer icon={icon} className="h-5 w-5" viewBox={`${isSmallScreen ? "0 0 30 30" : "0 0 25 25"}`} />
+          <div className="mx-2 z-10">
+            <IconRenderer icon={icon} className="h-5 w-5" viewBox="0 0 30 30" />
           </div>
         )}
         {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-xs cursor-pointer">{title}</label>}

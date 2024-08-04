@@ -5,7 +5,7 @@ import { IconRenderer } from "../../utilities";
 const ArrayIcon = () => (
   <svg
     aria-hidden="true"
-    className="w-6 h-6 text-sky-950 cursor-pointer hover:bg-slate-200 rounded mr-2"
+    className="w-6 h-6 text-color-label cursor-pointer hover:bg-slate-200 rounded mr-2"
     fill="currentColor"
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +43,7 @@ function SelectedProject({ product, project, scenario, resetContext, changeTestS
   return (
     <div className="inline-flex w-[50rem] items-center">
       {project?.name && (
-        <div className="inline-flex items-center text-sky-950 cursor-pointer hover:bg-slate-100 rounded py-0.5 px-2">
+        <div className="inline-flex items-center text-color-label cursor-pointer hover:bg-slate-200 rounded py-0.5 px-2">
           <svg
             onClick={resetProject}
             aria-hidden="true"

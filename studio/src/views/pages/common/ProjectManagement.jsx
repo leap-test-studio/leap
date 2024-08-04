@@ -178,8 +178,8 @@ const ProjectManagement = (props) => {
             {projects && filtered.length > 0 ? (
               <div className="relative w-full">
                 <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white px-4 py-2 rounded-lg border">
-                  <div className="col-span-3 text-center border-r">Project</div>
-                  <div className="col-span-5 text-center border-r">Info</div>
+                  <div className="col-span-4 text-center border-r">Project</div>
+                  <div className="col-span-4 text-center border-r">Info</div>
                   <div className="col-span-1 text-center border-r">Status</div>
                   <div className="col-span-3 text-center">Actions</div>
                 </div>
@@ -365,7 +365,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
             tooltip="Edit Project"
             description={
               <>
-                View and modify the <strong>Project Test Scenarios</strong>.
+                View and modify the <strong>Project Suites</strong>.
                 <br />
                 <ul>
                   <li>Create/Delete/Enable/Diable Test scenario</li>

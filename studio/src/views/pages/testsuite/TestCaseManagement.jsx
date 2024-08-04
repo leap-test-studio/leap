@@ -130,7 +130,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
                 onClick={() => setShowCreateDialog(true)}
                 onClose={() => changeTestScenario(null)}
                 title="Create first TestCase"
-                details={`Test Scenario: ${scenario?.name}`}
+                details={`Suite: ${scenario?.name}`}
                 buttonTitle="Create"
                 buttonIcon="PostAdd"
               />
@@ -239,12 +239,12 @@ function RenderList({
         ) : filtered?.length === 0 ? (
           <EmptyIconRenderer title="Test Case Not Found" />
         ) : (
-          <div className="relative w-full px-2">
+          <div className="relative w-full">
             <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white p-2 rounded-lg border">
-              <div className="col-span-1 text-center">#TID</div>
-              <div className="col-span-3 text-center">Given</div>
-              <div className="col-span-3 text-center">When</div>
-              <div className="col-span-3 text-center">Then</div>
+              <div className="col-span-1 text-center border-r">#TID</div>
+              <div className="col-span-3 text-center border-r">Given</div>
+              <div className="col-span-3 text-center border-r">When</div>
+              <div className="col-span-3 text-center border-r">Then</div>
               <div className="col-span-2 text-center">Actions</div>
             </div>
             {filtered?.length > 0 && (

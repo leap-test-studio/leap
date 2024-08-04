@@ -112,7 +112,7 @@ function TestScenarioManagement(props) {
   return (
     <Page>
       <PageHeader show={!isFirstTestScenario}>
-        <PageTitle>Test Scenarios</PageTitle>
+        <PageTitle>Test Suites</PageTitle>
         <PageActions>
           <SearchComponent search={search} placeholder="Search scenario name" onChange={setSearch} onClear={() => setSearch("")} />
           <Tooltip
@@ -139,11 +139,11 @@ function TestScenarioManagement(props) {
         {isFirstTestScenario ? (
           <Centered>
             <FirstTimeCard
-              id="first-test-scenario"
+              id="first-test-suite"
               icon="Extension"
               loading={loading}
               onClick={() => setShowCreateDialog(true)}
-              title="Create first Test Scenario"
+              title="Create first Suite"
               buttonTitle="Create"
               buttonIcon="PostAdd"
             />
@@ -153,8 +153,8 @@ function TestScenarioManagement(props) {
             {filtered.length > 0 ? (
               <div className="relative w-full">
                 <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white px-4 py-2 rounded-lg border">
-                  <div className="col-span-3 text-center border-r">Scenario</div>
-                  <div className="col-span-5 text-center border-r">Info</div>
+                  <div className="col-span-4 text-center border-r">Suite</div>
+                  <div className="col-span-4 text-center border-r">Info</div>
                   <div className="col-span-2 text-center border-r">Status</div>
                   <div className="col-span-2 text-center">Actions</div>
                 </div>
@@ -175,7 +175,7 @@ function TestScenarioManagement(props) {
               </div>
             ) : (
               <Centered>
-                <EmptyIconRenderer title="Test Scenario Not Found" />
+                <EmptyIconRenderer title="Suite Not Found" />
                 <IconButton title="Refresh" icon="Refresh" onClick={fetchTestScenarios} />
               </Centered>
             )}
@@ -262,7 +262,7 @@ const TestScenarioCard = ({
 
   const handleToggle = () => {
     Swal.fire({
-      title: `Are you sure you want to ${status ? "De-Activate" : "Activate"} Test Scenario?`,
+      title: `Are you sure you want to ${status ? "De-Activate" : "Activate"} Suite?`,
       text: `Project Id: ${id}`,
       icon: "question",
       showCancelButton: true,
@@ -312,10 +312,10 @@ const TestScenarioCard = ({
       actions={
         <div className="flex flex-row mb-0.5 items-center justify-end">
           <Tooltip
-            title="Enable/Disable Test Scenario"
+            title="Enable/Disable Suite"
             content={
               <p>
-                Enable or Disable the <strong>Test Scenario</strong>
+                Enable or Disable the <strong>Suite</strong>
               </p>
             }
           >
@@ -327,10 +327,10 @@ const TestScenarioCard = ({
               style={{ fontSize: 20 }}
               className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
               onClick={run}
-              tooltip="Run Test Scenario"
+              tooltip="Run Suite"
               description={
                 <p>
-                  Execute test cases of <strong>Test Scenario</strong>
+                  Execute test cases of <strong>Suite</strong>
                 </p>
               }
             />
@@ -340,10 +340,10 @@ const TestScenarioCard = ({
             style={{ fontSize: 20 }}
             className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             onClick={cloneTestScenario}
-            tooltip="Clone Test Scenario"
+            tooltip="Clone Suite"
             description={
               <p>
-                Clone the <strong>Test Scenario</strong>
+                Clone the <strong>Suite</strong>
               </p>
             }
           />
@@ -352,10 +352,10 @@ const TestScenarioCard = ({
             className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             style={{ fontSize: 20 }}
             onClick={settingsTestScenario}
-            tooltip="Test Scenario Settings"
+            tooltip="Suite Settings"
             description={
               <p>
-                View and modify the <strong>Test Scenario Settings</strong>.
+                View and modify the <strong>Suite Settings</strong>.
               </p>
             }
           />
@@ -364,10 +364,10 @@ const TestScenarioCard = ({
             style={{ fontSize: 20 }}
             className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             onClick={editTestScenario}
-            tooltip="Edit Test Scenario"
+            tooltip="Edit Suite"
             description={
               <p>
-                View and modify the <strong>Test Scenario</strong> details.
+                View and modify the <strong>Suite</strong> details.
                 <br />
                 Create network elements, deploy, Simulate and more
               </p>
@@ -378,10 +378,10 @@ const TestScenarioCard = ({
             style={{ fontSize: 20 }}
             className="text-color-0600 hover:text-red-600 mx-1.5 cursor-pointer"
             onClick={deleteTestScenario}
-            tooltip="Delete Test Scenario"
+            tooltip="Delete Suite"
             description={
               <p>
-                Permanently purges the <strong>Test Scenario</strong> from system including all backups.
+                Permanently purges the <strong>Suite</strong> from system including all backups.
               </p>
             }
           />

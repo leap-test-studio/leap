@@ -9,11 +9,11 @@ const Model = {
       name: {
         type: "string",
         maxLength: 25,
-        description: "Enter Test Scenario Title"
+        description: "Enter Suite Title"
       },
       description: {
         type: "string",
-        description: "Test Scenario"
+        description: "Suite"
       }
     },
     required: ["name"]
@@ -24,12 +24,12 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/name",
-        label: "Test Scenario Name"
+        label: "Suite Name"
       },
       {
         type: "Control",
         scope: "#/properties/description",
-        label: "Test Scenario",
+        label: "Suite",
         options: {
           multi: true,
           isLarge: true
