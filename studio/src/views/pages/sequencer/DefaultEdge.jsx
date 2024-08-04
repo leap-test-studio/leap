@@ -74,7 +74,7 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
         <button onClick={onEdgeClick}>
-          <IconRenderer icon="DeleteForever" className="text-red-500 opacity-0 hover:opacity-100" style={{ fontSize: 16 }} />
+          <IconRenderer icon="DeleteForever" className="text-red-600 opacity-0 hover:opacity-100" style={{ fontSize: 16 }} />
         </button>
       </foreignObject>
     </>

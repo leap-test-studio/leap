@@ -128,7 +128,7 @@ export function SignInPage({ product }) {
                 {loading ? "Loading..." : "Sign In"}
               </button>
             </div>
-            <p className="mt-2 h-6 text-red-500 w-full text-center">{error}</p>
+            <p className="mt-2 h-6 text-red-600 w-full text-center">{error}</p>
           </div>
         </div>
       </div>

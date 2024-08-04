@@ -31,7 +31,7 @@ export const TailwindOneOfEnum = (props) => {
         onChange={(option) => handleSelectChange(option)}
         options={options}
         isSearchable={true}
-        className="rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md"
+        className="rounded border text-color-label placeholder-slate-500 shadow focus:shadow-md"
         styles={ReactSelectCustomStyles}
       />
     </div>

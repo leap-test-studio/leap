@@ -8,8 +8,8 @@ function AboutDialog({ showDialog, closeDialog, product }) {
     <Dialog open={showDialog} onClose={closeDialog} as="div" className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto">
       <div className="fixed inset-0 bg-black opacity-30" />
       <div className="flex flex-col pt-4 pb-4 px-4 bg-white rounded shadow-lg z-50 min-w-0.25">
-        <DialogTitle className="text-color-0500 font-medium text-lg tracking-wide">{name}</DialogTitle>
-        <Description as="div" className="text-slate-700">
+        <DialogTitle className="text-color-label font-medium text-lg tracking-wide">{name}</DialogTitle>
+        <Description as="div" className="text-color-label">
           <div className="flex justify-center">
             <LogoRenderer className="h-32 w-32" name={name} />
           </div>

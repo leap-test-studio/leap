@@ -7,10 +7,10 @@ const defaultSettings = {
   noRowsMessage: "No items",
   classPrefix: "json",
   headerClass: () => {
-    return "p-1 border-b-2 border-slate-300 bg-slate-100 text-left text-xs font-semibold text-slate-700 tracking-wider select-none";
+    return "p-1 border-b-2 border-slate-300 bg-slate-100 text-left text-xs font-semibold text-color-label tracking-wider select-none";
   },
   rowClass: (className) => {
-    return `bg-white border-b border-slate-300 text-xs select-none text-slate-700 ${className}`;
+    return `bg-white border-b border-slate-300 text-xs select-none text-color-label ${className}`;
   },
   cellClass: () => {
     return "px-1 pt-0.5 break-all text-slate-500";

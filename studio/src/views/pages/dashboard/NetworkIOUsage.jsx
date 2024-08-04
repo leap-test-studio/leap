@@ -92,7 +92,7 @@ const NetworkIOUsage = ({ timeline, networkInterfaces }) => {
   };
   return (
     <>
-      <div className="font-semibold text-slate-700 text-base text-center pt-2 select-none">Network I/O</div>
+      <div className="font-semibold text-color-label text-base text-center pt-2 select-none">Network I/O</div>
       <div className="grid grid-cols-2 gap-2">
         <TailwindSelectRenderer
           id="interface"

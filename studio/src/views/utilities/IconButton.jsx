@@ -35,7 +35,7 @@ export const IconButton = ({
       onMouseLeave={toggleShowTitle}
     >
       <IconRenderer icon={icon} className={className} style={{ fontSize: iconSize, color: color && !disabled ? color : "" }} />
-      {title !== undefined && showTitle === true && <span className="px-2 py-0.5 text-xs select-none">{title}</span>}
+      {title !== undefined && showTitle === true && <span className="pr-2 pl-1 py-0.5 text-xs select-none">{title}</span>}
     </button>
   );
 };

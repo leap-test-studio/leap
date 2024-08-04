@@ -54,10 +54,10 @@ export default RecentBuilds;
 
 const STATUS_MAP = Object.freeze([
   { color: "text-color-label bg-slate-200", label: "In-Queue" },
-  { color: "text-white animate-pulse bg-cds-green-0600", label: "Running" },
+  { color: "text-white animate-pulse bg-green-600", label: "Running" },
   { color: "text-color-0600 bg-color-0200", label: "Completed" },
-  { color: "text-white bg-cds-red-0800", label: "Failed" },
-  { color: "text-white bg-cds-red-0800", label: "Unknown" },
+  { color: "text-white bg-red-600", label: "Failed" },
+  { color: "text-white bg-red-600", label: "Unknown" },
   { color: "text-color-label bg-cds-yellow-0500", label: "Skipped" },
   { color: "text-white bg-cds-red-0600", label: "Aborted" }
 ]);
@@ -86,7 +86,7 @@ function RenderRow({ project, buildNo, status, total, passed, failed, skipped, r
       <td className="px-2 py-1 text-center text-green-500">
         <label>{passed}</label>
       </td>
-      <td className="px-2 py-1 text-center text-red-500">
+      <td className="px-2 py-1 text-center text-red-600">
         <label>{failed}</label>
       </td>
       <td className="px-2 py-1 text-center text-yellow-300">

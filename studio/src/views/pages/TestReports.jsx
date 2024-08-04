@@ -215,7 +215,7 @@ function BuildDetails({ project, status, buildInfo, buildNo }) {
                     : report === "Pass"
                       ? "bg-cds-green-0600"
                       : report === "Fail" || report === "Aborted"
-                        ? "bg-cds-red-0700"
+                        ? "bg-red-500"
                         : "bg-material-yellow-600"
                 } text-white select-none`}
               >
@@ -345,7 +345,7 @@ function TestExecutionResults({ rate }) {
   );
 }
 
-const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Info", "Steps", "Status", "Time"]);
+const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Definition", "Steps", "Status", "Time"]);
 
 function ReportTable({ jobs, testType, product, changeTestScenario }) {
   return (
@@ -397,11 +397,11 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
   return (
     <>
       <tr className="hover:bg-color-0050 border border-color-0300 text-xs text-color-label cursor-pointer" onClick={openTestCase}>
-        <td className="border-x border-x-color-0300 w-0.10">
+        <td className="border-x border-x-color-0300 w-0.10 text-center">
           <p className="font-bold">{TestCase?.label}</p>
           <p className="mt-2">{title}</p>
         </td>
-        <td className="p-1 border-x border-x-color-0300 w-0.20">
+        <td className="border-x border-x-color-0300 w-0.20 p-2">
           <label>{TestCase?.TestScenario?.name}</label>
           <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
         </td>
@@ -428,7 +428,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                 : status === "Pass"
                   ? "bg-cds-green-0600"
                   : status === "Fail" || status === "Aborted"
-                    ? "bg-cds-red-0700"
+                    ? "bg-red-500"
                     : "bg-material-yellow-600"
             } text-white select-none`}
           >
@@ -493,7 +493,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                           : TestStatus[actualResult.result] === "Pass"
                             ? "bg-cds-green-0600"
                             : TestStatus[actualResult.result] === "Fail"
-                              ? "bg-cds-red-0700"
+                              ? "bg-red-500"
                               : "bg-material-yellow-600"
                       } text-white select-none`}
                     >
@@ -557,7 +557,7 @@ const data = [
   {
     title: "Fail",
     value: 3,
-    className: "text-cds-red-0800"
+    className: "text-red-600"
   },
   {
     title: "Skipped",

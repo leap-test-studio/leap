@@ -83,7 +83,7 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
         onChange={(option) => handleChange(option.value)}
         options={options}
         isSearchable={true}
-        className="rounded text-slate-700 border placeholder-slate-500 shadow focus:shadow-md"
+        className="rounded text-color-label border placeholder-slate-500 shadow focus:shadow-md"
         styles={ReactSelectCustomStyles}
       />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />

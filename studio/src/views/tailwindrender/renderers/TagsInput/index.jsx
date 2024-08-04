@@ -336,7 +336,7 @@ export default function TagsInput(props) {
               {_getTagDisplayValue(tag)}
               {!disabled && !readonly && (
                 <button className="flex flex-row items-center p-px focus:outline-none hover:shadow-2xl" onClick={(e) => handleRemove(index)}>
-                  <IconRenderer icon="Close" className="text-slate-500 hover:text-red-500 font-extrabold" fontSize="small" />
+                  <IconRenderer icon="Close" className="text-slate-500 hover:text-red-600 font-extrabold" fontSize="small" />
                 </button>
               )}
             </span>
@@ -345,7 +345,7 @@ export default function TagsInput(props) {
           <input
             id={props.id + "-input"}
             {...other}
-            className="block caret-slate-300 py-px px-1 my-1 mx-2 rounded border text-slate-700 placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none"
+            className="block caret-slate-300 py-px px-1 my-1 mx-2 rounded border text-color-label placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none"
           />
         )}
       </div>

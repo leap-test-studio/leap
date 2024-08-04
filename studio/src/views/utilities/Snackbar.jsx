@@ -12,7 +12,7 @@ export const Snackbar = ({ message, status }) => {
       icon = "CheckCircle";
       break;
     case "danger":
-      style = "text-red-700 bg-red-100 border-red-700";
+      style = "text-red-700 bg-cds-red-0100 border-red-700";
       icon = "Warning";
       break;
     case "info":

@@ -228,7 +228,7 @@ function RenderList({
         <PageTitle>Test Cases</PageTitle>
         <PageActions>
           <SearchComponent search={search} placeholder="Search" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
-          <IconButton title="Add New" icon="AddTask" onClick={() => showAddTestCaseDialog()} />
+          <IconButton title="Add New" icon="AddCircle" onClick={() => showAddTestCaseDialog()} />
         </PageActions>
       </PageHeader>
       <PageBody>
@@ -293,24 +293,24 @@ function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, clone
         <div className="flex flex-col text-center items-center justify-between border-r">
           <label className="mt-2 text-base cursor-pointer">{record.label}</label>
           <label className="mt-2 text-xs font-normal">{tcType}</label>
-          <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-16 rounded ${record.enabled ? "bg-green-600" : "bg-red-500"}`}>
+          <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${record.enabled ? "bg-green-600" : "bg-red-600"}`}>
             {record.enabled ? "Active" : "In-Active"}
           </div>
         </div>
       </div>
       <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
         <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
-          <NewlineText text={record.given && cropString(record.given, 40 * 3).toString()} />
+          <NewlineText text={record.given && cropString(record.given, 45 * 4).toString()} />
         </Tooltip>
       </div>
       <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
         <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
-          <NewlineText text={record.when && cropString(record.when, 40 * 3).toString()} />
+          <NewlineText text={record.when && cropString(record.when, 45 * 4).toString()} />
         </Tooltip>
       </div>
       <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
         <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
-          <NewlineText text={record.then && cropString(record.then, 40 * 3).toString()} />
+          <NewlineText text={record.then && cropString(record.then, 45 * 4).toString()} />
         </Tooltip>
       </div>
       <div className="p-1 col-span-2 flex flex-col text-center justify-center">
@@ -386,7 +386,7 @@ function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, clone
           <Tooltip title="Delete Test Case">
             <IconRenderer
               icon="DeleteForever"
-              className="text-color-0600 hover:text-cds-red-0800 mr-2 cursor-pointer"
+              className="text-color-0600 hover:text-red-600 mr-2 cursor-pointer"
               style={{ fontSize: 18 }}
               onClick={() =>
                 Swal.fire({

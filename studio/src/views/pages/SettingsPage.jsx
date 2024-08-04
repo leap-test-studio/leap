@@ -96,7 +96,7 @@ class SettingsPage extends React.Component {
         <div className="container h-full p-4">
           {!isEmpty(errored) && (
             <div className="py-4">
-              <div className="px-4 py-2 rounded bg-cds-red-0700 text-cds-white flex flex-row justify-between items-center">
+              <div className="px-4 py-2 rounded bg-red-500 text-cds-white flex flex-row justify-between items-center">
                 <p className="text-cds-white font-medium">{errored}</p>
                 <button onClick={this.handleClearErrorClick} className="ml-2 bg-transparent text-xl font-semibold outline-none focus:outline-none">
                   <span>×</span>
@@ -117,7 +117,7 @@ class SettingsPage extends React.Component {
             ) : (
               <div>
                 <>
-                  <h2 className="font-medium text-slate-700"> Update Default Project </h2>
+                  <h2 className="font-medium text-color-label"> Update Default Project </h2>
                   <p className="font-light text-slate-500"> Update the default project by uploading a new package (vdusim.tar.gz).</p>
                 </>
                 <div className="flex items-center">
@@ -125,7 +125,7 @@ class SettingsPage extends React.Component {
                     <button
                       type="button"
                       onClick={() => this.handleUploadClick("create")}
-                      className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-slate-500 bg-cds-white text-xs font-medium text-slate-700 hover:bg-slate-100 focus:z-10 focus:outline-none focus:ring-0 focus:border-slate-500"
+                      className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-slate-500 bg-cds-white text-xs font-medium text-color-label hover:bg-slate-100 focus:z-10 focus:outline-none focus:ring-0 focus:border-slate-500"
                     >
                       <IconRenderer icon="UploadFile" />
                       <span className="ml-2.5">Upload</span>
@@ -134,7 +134,7 @@ class SettingsPage extends React.Component {
                       type="button"
                       href="/vdusim.tar.gz"
                       download="vdusim.tar.gz"
-                      className="inline-flex -ml-px relative items-center px-4 py-2 rounded-r-md border border-slate-500 bg-cds-white text-xs font-medium text-slate-700 hover:bg-slate-100 focus:z-10 focus:outline-none focus:ring-0 focus:border-slate-500"
+                      className="inline-flex -ml-px relative items-center px-4 py-2 rounded-r-md border border-slate-500 bg-cds-white text-xs font-medium text-color-label hover:bg-slate-100 focus:z-10 focus:outline-none focus:ring-0 focus:border-slate-500"
                     >
                       <IconRenderer icon="FileDownload" />
                       <span className="ml-2.5">Download</span>

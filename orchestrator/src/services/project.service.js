@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 
 const { getPagination, getPagingData } = require("../utils");
 const { TestStatus } = require("../constants");
+const { isEmpty } = require("lodash");
 
 module.exports = {
   list,
@@ -30,7 +31,7 @@ async function list(AccountId, page = 0, size = 10000) {
   const data = await global.DbStoreModel.ProjectMaster.findAndCountAll({
     attributes: ["id", "name", "description", "status", "createdAt", "updatedAt", "settings"],
     where: { AccountId },
-    order: [["createdAt", "DESC"]],
+    order: [["updatedAt", "DESC"]],
     limit,
     offset
   });
@@ -62,7 +63,8 @@ async function create(AccountId, payload) {
 async function update(accoutId, id, payload) {
   let prj = await get(accoutId, id);
   Object.assign(prj, payload);
-  prj.updatedAt = Date.now();
+  prj.changed("updatedAt", true);
+  prj.updatedAt = new Date();
   await prj.save();
   return await getDetails(id);
 }

@@ -90,21 +90,21 @@ const CPUUsage = React.memo(({ usage, bootTime }) => {
             <span className="sr-only">Check icon</span>
             <IconRenderer icon="DeveloperBoard" fontSize="10" />
           </div>
-          <div className="ml-2 text-slate-700 font-semibold text-xs leading-5">CPU Usage</div>
+          <div className="ml-2 text-color-label font-semibold text-xs leading-5">CPU Usage</div>
         </div>
 
         {!isNaN(usage) ? (
           <div className="mt-2 mb-2">
             <ReactEChartsCore echarts={echarts} option={options} notMerge={true} lazyUpdate={true} style={{ height: "110px" }} />
             <div className="-mt-2">
-              <div className="font-semibold text-slate-700 text-xs text-center pb-1">Uptime</div>
+              <div className="font-semibold text-color-label text-xs text-center pb-1">Uptime</div>
               <div className="font-medium text-slate-500 text-xs text-center">{dayjs(Number(bootTime) * 1000).fromNow()}</div>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center mt-4">
             <div className="bg-slate-200 animate-pulse h-20 w-20 rounded-full" />
-            <div className="font-semibold text-slate-700 text-sm text-center pb-1">Uptime</div>
+            <div className="font-semibold text-color-label text-sm text-center pb-1">Uptime</div>
             <div className="bg-slate-200 w-10/12 animate-pulse h-4 rounded-2xl" />
           </div>
         )}

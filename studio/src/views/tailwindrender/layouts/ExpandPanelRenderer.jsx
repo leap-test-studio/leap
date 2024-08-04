@@ -69,7 +69,7 @@ const ExpandPanelRenderer = React.memo((props) => {
                 icon="Delete"
                 ariaLabel="Delete Record"
                 onClick={removeItems(path, [index])}
-                className="text-color-0600 hover:text-cds-red-0800"
+                className="text-color-0600 hover:text-red-600"
                 showShadow={false}
               />
             </Tooltip>

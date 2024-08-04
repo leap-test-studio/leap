@@ -86,9 +86,9 @@ export const CustomDialog = ({
                 >
                   <div className="flex flex-col h-fit" style={contentHeight}>
                     {title != null && (
-                      <div className="text-base font-medium leading-6 text-slate-800 group flex items-start justify-between px-0.5 border-b border-solid border-slate-300 rounded-t">
-                        <div className="text-color-0700 font-medium text-lg tracking-wide select-none">{title}</div>
-                        <button type="button" onClick={onClose} className="text-cds-red-0800 hover:text-cds-red-0700 focus:outline-none">
+                      <div className="text-base font-medium leading-6 text-color-label group flex items-start justify-between px-0.5 border-b border-solid border-slate-300 rounded-t">
+                        <div className="text-color-label font-medium text-lg tracking-wide select-none">{title}</div>
+                        <button type="button" onClick={onClose} className="text-red-600 hover:text-red-500 focus:outline-none">
                           <IconRenderer icon="Close" className="h-5 w-5" />
                         </button>
                       </div>

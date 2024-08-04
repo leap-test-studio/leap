@@ -79,7 +79,7 @@ export default function TableRenderer({
           maxHeight: windowDimension.maxContentHeight - 95
         }}
       >
-        <table className="relative w-full text-[10px] text-slate-600">
+        <table className="relative w-full text-[10px] text-color-label">
           <TableHeader
             columns={columns}
             sortDirection={sortDirection}
@@ -156,14 +156,14 @@ function TableHeader({
   };
 
   return (
-    <thead>
+    <thead className="ext-xs text-white bg-color-0600 rounded-sm">
       <tr>
         {showSelect && (
-          <th className="bg-slate-200 border border-r-slate-100 w-10">
+          <th className="border border-r-color-0300 w-10">
             <input
               type="checkbox"
               id="selectAll"
-              className="rounded m-2 p-1.5 sticky top-0 select-none font-semibold  text-slate-600 text-left tracking-wider"
+              className="rounded m-2 p-1.5 sticky top-0 select-none font-semibold text-color-label text-left tracking-wider"
               checked={isCheckAll}
               onChange={handleSelectAll}
             />
@@ -174,7 +174,7 @@ function TableHeader({
             key={index}
             className={`p-1.5 sticky top-0 ${style} ${
               sortable ? "cursor-pointer" : ""
-            } select-none bg-slate-200 font-semibold text-slate-600 tracking-wider ${index < arr?.length && "border border-r-slate-300"}`}
+            } select-none font-semibold tracking-wider ${index === 0 ? "rounded-tl-lg" : index === arr.length - 1 ? "rounded-tr-lg" : ""} ${index < arr?.length && "border border-r-color-0300"}`}
             style={{ width: width + "px" }}
             onClick={sortable && !sorter ? (e) => handleSortClick(field, e) : sorter ? sorter : () => {}}
             onMouseOver={() => setIsHovering(true)}
@@ -190,7 +190,7 @@ function TableHeader({
             </div>
           </th>
         ))}
-        {actionHandler && <th className="p-1.5 sticky top-0 select-none bg-slate-200 font-semibold text-slate-600 w-20">Actions</th>}
+        {actionHandler && <th className="p-1.5 sticky top-0 select-none font-semibold w-20">Actions</th>}
       </tr>
     </thead>
   );
@@ -203,9 +203,9 @@ function paginate(array, page_size, page_number) {
 function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handleSelect, isChecked, checkedRecords }) {
   const checkedRecord = checkedRecords?.map((r) => r.id).includes(record.id);
   return (
-    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0600"}  hover:bg-slate-100 border-b border-slate-300`}>
+    <tr key={`row-${rowIndex}`} className={`${checkedRecord && "bg-blue-100 text-color-0600"} hover:bg-color-0300 border-b border-color-0300`}>
       {showSelect && (
-        <td className="border border-r-slate-100 w-10">
+        <td className="border border-r-color-0300 w-10">
           <input
             key={record.id}
             type="checkbox"
@@ -219,12 +219,12 @@ function RenderRow({ record, rowIndex, columns, actionHandler, showSelect, handl
       {columns.map((column, index) => {
         let field = record[column.field];
         return (
-          <td key={`row-${rowIndex}-${index}`} className="px-1 py-0.5 border border-r-slate-100">
+          <td key={`row-${rowIndex}-${index}`} className="px-1 py-0.5 border border-color-0200">
             {CellRenderer(column, field, record, record, columns)}
           </td>
         );
       })}
-      {actionHandler && <td className="text-center border-slate-300">{actionHandler(record)}</td>}
+      {actionHandler && <td className="text-center border-color-0300">{actionHandler(record)}</td>}
     </tr>
   );
 }
@@ -290,7 +290,7 @@ const LinkComponent = ({ value }) => {
 const JsonComponent = ({ value }) => {
   return (
     <textarea
-      className="select-all m-1 rounded-md w-full text-[10px] text-slate-600 border border-gray-300 bg-slate-100"
+      className="select-all m-1 rounded-md w-full text-[10px] text-color-label border border-gray-300 bg-color-0300"
       disabled={true}
       value={JSON.stringify(value, null, 2)}
     />
@@ -318,7 +318,7 @@ const AccordionComponent = ({ record, col }) => {
                   {Object.keys(recordData).map((item, index) => (
                     <th
                       key={index}
-                      className="p-1 px-2 border-b-2  border-slate-300 bg-slate-100 text-left text-[10px] font-semibold text-slate-700 tracking-wider select-none"
+                      className="p-1 px-2 border-b-2  border-color-0300 bg-color-0300 text-left text-[10px] font-semibold text-color-label tracking-wider select-none"
                     >
                       {item}
                     </th>
@@ -328,7 +328,7 @@ const AccordionComponent = ({ record, col }) => {
               <tbody>
                 <tr>
                   {Object.values(recordData).map((item, index) => (
-                    <td key={index} className="bg-white border-b text-center border-slate-300 text-[10px] select-none text-slate-700">
+                    <td key={index} className="bg-white border-b text-center border-color-0300 text-[10px] select-none text-color-label">
                       {item}
                     </td>
                   ))}

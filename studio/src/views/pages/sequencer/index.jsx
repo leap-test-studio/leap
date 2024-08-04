@@ -20,6 +20,7 @@ import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectAct
 import TestScenarioNode from "./TestScenarioNode";
 import { IconButton, Tooltip } from "../../utilities";
 import { RequestSchemas } from "./NodeUtils";
+import { DEFAULT_HEADER_HEIGHT } from "../../context/constants";
 
 const TestCaseSequencer = ({ project, windowDimension }) => {
   const dispatch = useDispatch();
@@ -186,7 +187,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     }
   }, [actionType]);
 
-  const minHeight = windowDimension?.maxContentHeight - 45;
+  const minHeight = windowDimension?.maxContentHeight - DEFAULT_HEADER_HEIGHT;
 
   const onUpdate = useCallback(
     (node) => {

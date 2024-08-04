@@ -31,7 +31,7 @@ const columns = [
     enum: [
       { const: 0, title: "Draft" },
       { const: 1, title: "Running", class: "bg-purple-100 text-purple-800 animate-pulse" },
-      { const: 2, title: "Pass", class: "bg-cds-green-0600 text-white" },
+      { const: 2, title: "Pass", class: "bg-green-600 text-white" },
       { const: 3, title: "Failed", class: "bg-cds-red-0600 text-white" },
       { const: 4, title: "Unknown" },
       { const: 5, title: "Skip", class: "bg-yellow-300 text-white" },

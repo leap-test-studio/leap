@@ -12,7 +12,7 @@ const SystemInfo = ({ info, noOfnetworkInterfaces }) => {
   }
   return (
     <div className="px-2 py-4">
-      <div className="font-semibold text-slate-700 text-base mb-4 select-none">System Information</div>
+      <div className="font-semibold text-color-label text-base mb-4 select-none">System Information</div>
       <div className="font-semibold text-xs mb-1">CPU</div>
       {info.numCpu !== undefined ? (
         <p className="text-slate-500 font-semibold text-xs mb-4">{info.numCpu}</p>

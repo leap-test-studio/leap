@@ -12,7 +12,7 @@ export default function DisplayCard({ name, description, status, actions, record
         {records?.map(
           ({ icon, tooltip, prefix, element }, index) =>
             element && (
-              <div key={index} className="text-slate-700 break-words select-all flex flex-row items-center mt-1">
+              <div key={index} className="text-color-label break-words select-all flex flex-row items-center mt-1">
                 <IconRenderer icon={icon} className="text-color-0600 mr-2" />
                 <Tooltip title={tooltip} placement="bottom">
                   {`${prefix}: ${element}`}
@@ -22,7 +22,7 @@ export default function DisplayCard({ name, description, status, actions, record
         )}
       </div>
       <div className="flex flex-col col-span-2 items-center justify-center border-r" onClick={onClick}>
-        <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${status ? "bg-green-600" : "bg-red-500"}`}>
+        <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${status ? "bg-green-600" : "bg-red-600"}`}>
           {status ? "Active" : "In-Active"}
         </div>
       </div>

@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 
 const { getPagination, getPagingData } = require("../utils");
+const ProjectService = require("./project.service");
 
 module.exports = {
   list,
@@ -113,8 +114,10 @@ async function clone(AccountId, ProjectMasterId, scenarioId, payload) {
 async function update(accountId, projectId, id, payload) {
   const ts = await get(accountId, projectId, id);
   Object.assign(ts, payload);
+  ts.changed("updatedAt", true);
   ts.updatedAt = Date.now();
   await ts.save();
+  ProjectService.update(accountId, projectId, {});
   return `Scenario[${ts.name}] changes saved successfully.`;
 }
 

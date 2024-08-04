@@ -82,6 +82,7 @@ async function getBuildInfo(id, include) {
 async function updateJob(id, params) {
   const job = await getJobInfo(id);
   Object.assign(job, params);
+  job.changed("updatedAt", true);
   job.updatedAt = Date.now();
   return await job.save();
 }
@@ -90,6 +91,7 @@ async function updateScreenshot(id, payload) {
   const job = await getJobInfo(id);
   if (!job.screenshot) job.screenshot = [];
   job.screenshot = [...job.screenshot, payload];
+  job.changed("updatedAt", true);
   job.updatedAt = Date.now();
   return await job.save();
 }
@@ -160,6 +162,7 @@ async function consolidate(buildId) {
 async function _updateBuildStatus(id, params) {
   const build = await getBuildInfo(id);
   Object.assign(build, params);
+  build.changed("updatedAt", true);
   build.updatedAt = Date.now();
   return await build.save();
 }

@@ -2,255 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-red-900 {
-  --tw-text-opacity: 1;
-  color: rgba(127, 29, 29, var(--tw-text-opacity));
-}
-
-.hover\:text-cds-yellow-0300:hover {
-  --tw-text-opacity: 1;
-  color: rgba(255, 218, 36, var(--tw-text-opacity));
-}
-
-.text-cds-yellow-0600 {
-  --tw-text-opacity: 1;
-  color: rgba(214, 150, 0, var(--tw-text-opacity));
-}
-
-.hover\:text-cds-blue-0300:hover {
-  --tw-text-opacity: 1;
-  color: rgba(102, 209, 255, var(--tw-text-opacity));
-}
-
-.text-cds-blue-0600 {
-  --tw-text-opacity: 1;
-  color: rgba(0, 154, 219, var(--tw-text-opacity));
-}
-
-.hover\:text-cds-green-0300:hover {
-  --tw-text-opacity: 1;
-  color: rgba(134, 233, 53, var(--tw-text-opacity));
-}
-
-.text-cds-green-0600 {
-  --tw-text-opacity: 1;
-  color: rgba(87, 170, 19, var(--tw-text-opacity));
-}
-
-.hover\:text-cds-red-0300:hover {
-  --tw-text-opacity: 1;
-  color: rgba(255, 164, 148, var(--tw-text-opacity));
-}
-
-.text-cds-red-0600 {
-  --tw-text-opacity: 1;
-  color: rgba(255, 82, 51, var(--tw-text-opacity));
-}
-
-.toggle-checkbox:checked {
-  right: 0;
-  --tw-bg-opacity: 1;
-}
-.toggle-checkbox:checked + .toggle-label {
-  --tw-bg-opacity: 1;
-  background-color: bg-cds-ice-0800;
-}
-
-.bg-cds-red-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 129, 107, var(--tw-bg-opacity));
-}
-
-.bg-cds-green-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(113, 220, 24, var(--tw-bg-opacity));
-}
-
-.bg-cds-ice-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(113, 157, 204, var(--tw-bg-opacity));
-}
-
-.bg-clr-purple-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(192, 144, 213, var(--tw-bg-opacity));
-}
-
-.bg-cds-ochre-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 207, 102, var(--tw-bg-opacity));
-}
-
-.bg-cds-lavender-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(110, 114, 216, var(--tw-bg-opacity));
-}
-
-.bg-cds-violet-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(187, 112, 219, var(--tw-bg-opacity));
-}
-
-.bg-cds-red-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 164, 148, var(--tw-bg-opacity));
-}
-
-.bg-cds-ochre-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 219, 143, var(--tw-bg-opacity));
-}
-
-.bg-cds-lavender-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(139, 141, 218, var(--tw-bg-opacity));
-}
-
-.bg-cds-azure-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(102, 176, 255, var(--tw-bg-opacity));
-}
-
-.bg-cds-azure-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(61, 155, 255, var(--tw-bg-opacity));
-}
-
-.bg-cds-aqua-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(61, 242, 255, var(--tw-bg-opacity));
-}
-
-.bg-cds-aqua-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(0, 228, 245, var(--tw-bg-opacity));
-}
-
-.bg-cds-jade-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(104, 227, 186, var(--tw-bg-opacity));
-}
-
-.bg-cds-jade-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(52, 218, 163, var(--tw-bg-opacity));
-}
-
-.bg-cds-yellow-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 218, 36, var(--tw-bg-opacity));
-}
-
-.bg-cds-yellow-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 198, 10, var(--tw-bg-opacity));
-}
-
-.bg-cds-tangerine-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 172, 112, var(--tw-bg-opacity));
-}
-
-.bg-cds-tangerine-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 142, 61, var(--tw-bg-opacity));
-}
-
-.bg-cds-magenta-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 102, 140, var(--tw-bg-opacity));
-}
-
-.bg-cds-magenta-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 56, 106, var(--tw-bg-opacity));
-}
-
-.bg-cds-pink-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(238, 119, 190, var(--tw-bg-opacity));
-}
-
-.bg-cds-pink-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(234, 83, 173, var(--tw-bg-opacity));
-}
-
-.bg-cds-slate-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(172, 173, 200, var(--tw-bg-opacity));
-}
-
-.bg-cds-slate-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(142, 143, 180, var(--tw-bg-opacity));
-}
-
-.bg-cds-ice-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(141, 177, 216, var(--tw-bg-opacity));
-}
-
-.bg-cds-tan-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(192, 180, 155, var(--tw-bg-opacity));
-}
-
-.bg-cds-construction-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(174, 184, 188, var(--tw-bg-opacity));
-}
-
-.bg-slate-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(203, 213, 225, var(--tw-bg-opacity));
-}
-
-.bg-clr-blue-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(121, 198, 230, var(--tw-bg-opacity));
-}
-
-.bg-clr-red-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(245, 158, 143, var(--tw-bg-opacity));
-}
-
-.bg-clr-yellow-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(254, 226, 114, var(--tw-bg-opacity));
-}
-
-.bg-clr-green-0300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(104, 199, 26, var(--tw-bg-opacity));
-}
-
-.bg-clr-green-0400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(94, 183, 21, var(--tw-bg-opacity));
-}
-
-.bg-common-card {
-  --tw-bg-opacity: 1;
-  background-color: #1c5a7c;
-}
-
-.bg-app-card {
-  --tw-bg-opacity: 1;
-  background-color: #106354;
-}
-
-.bg-instance-card {
-  --tw-bg-opacity: 1;
-  background-color: #54117d;
-}
-
-.bg-scenario-card {
-  --tw-bg-opacity: 1;
-  background-color: #71441b;
-}
-
 .custom-scrollbar::-webkit-scrollbar {
   width: 7px;
 }
@@ -273,7 +24,7 @@
   border: 0;
   border-radius: 0.3em;
   background: initial;
-  background-color: #00588f;
+  background-color: #6d48bf;
   color: #fff;
   font-size: 1em;
 }
@@ -360,9 +111,9 @@ input::file-selector-button {
   justify-content: center;
   border-radius: 0.5rem;
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
-  --tw-gradient-from: #00588f var(--tw-gradient-from-position);
+  --tw-gradient-from: #6d48bf var(--tw-gradient-from-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-  --tw-gradient-to: #00588f var(--tw-gradient-to-position);
+  --tw-gradient-to: #8b5cf6 var(--tw-gradient-to-position);
   padding-left: 1rem;
   padding-right: 1rem;
   --tw-text-opacity: 1;
@@ -373,13 +124,13 @@ input::file-selector-button {
 }
 
 input[type=file]::file-selector-button:hover {
-  background: #024e7e;
+  background: #8b5cf6;
 }
 
 .swal2-file {
-  color: #00588f;
+  color: #6d48bf;
   box-sizing: border-box;
-  border: 1px solid #036db0;
+  border: 1px solid #8b5cf6;
   margin: 5px;
   padding: 1rem;
   cursor: pointer;

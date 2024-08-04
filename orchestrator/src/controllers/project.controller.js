@@ -388,7 +388,7 @@ function getTestCase(req, res) {
 
 function updateTestCase(req, res) {
   testCaseService
-    .update(req.auth.id, req.params.scenarioId, req.params.testcaseId, req.body)
+    .update(req.auth.id, req.params.projectId, req.params.scenarioId, req.params.testcaseId, req.body)
     .then((o) => res.json({ message: "Test Case Modified Successfully", details: `TID: ${o.label}` }))
     .catch((err) => {
       logger.error(err);

@@ -15,7 +15,7 @@ export const SearchComponent = ({ search, onChange, onClear, placeholder = "Filt
       <IconRenderer
         id="search-component-clear"
         icon="Close"
-        className="absolute right-1 cursor-pointer text-red-500 font-extrabold"
+        className="absolute right-1 cursor-pointer text-red-600 font-extrabold"
         style={{ fontSize: 16 }}
         onClick={onClear}
       />

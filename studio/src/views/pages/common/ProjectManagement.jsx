@@ -8,7 +8,6 @@ import Swal from "sweetalert2";
 
 import FirstTimeCard from "./FirstTimeCard";
 import DisplayCard from "./DisplayCard";
-import { ProjectColors } from "./Constants";
 import CreateProjectDialog from "./CreateProjectDialog";
 import ProjectSettingsDialog from "./ProjectSettingsDialog";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./PageLayoutComponents";
@@ -131,7 +130,13 @@ const ProjectManagement = (props) => {
             </div>
           )}
           <Tooltip title="Refresh Projects">
-            <RoundedIconButton id="refresh-projects" color="bg-color-0900" size="18" icon="Refresh" handleClick={fetchProjectList} />
+            <RoundedIconButton
+              id="refresh-projects"
+              color="bg-color-0600 hover:bg-color-0500"
+              size="18"
+              icon="Refresh"
+              handleClick={fetchProjectList}
+            />
           </Tooltip>
           <SearchComponent search={search} placeholder="Search project name" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
           <Tooltip
@@ -148,7 +153,7 @@ const ProjectManagement = (props) => {
             <IconButton
               id="project-create-btn"
               title="Create"
-              icon="DashboardCustomize"
+              icon="AddCircle"
               disabled={projects?.length > MAX_ALLOWED_PROJECTS}
               onClick={() => setShowCreateDialog(true)}
             />
@@ -286,7 +291,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               {builds >= 1 ? (
                 <IconRenderer
                   icon="Stop"
-                  className="text-red-500 hover:text-red-600 mx-1 cursor-pointer animate-pulse"
+                  className="text-red-600 hover:text-red-500 mx-1.5 cursor-pointer animate-pulse"
                   onClick={() => {
                     Swal.fire({
                       title: "Stop Project Execution?",
@@ -300,13 +305,13 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                       }
                     });
                   }}
-                  style={{ fontSize: 18 }}
+                  style={{ fontSize: 20 }}
                   tooltip="Stop All Running Builds"
                 />
               ) : (
                 <IconRenderer
                   icon="PlayArrow"
-                  className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
+                  className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
                   onClick={() => {
                     Swal.fire({
                       title: "Start Project Execution?",
@@ -320,7 +325,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                       }
                     });
                   }}
-                  style={{ fontSize: 18 }}
+                  style={{ fontSize: 20 }}
                   tooltip="Start Automation Build"
                 />
               )}
@@ -337,8 +342,8 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           </Tooltip>
           <IconRenderer
             icon="Settings"
-            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
-            style={{ fontSize: 18 }}
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
+            style={{ fontSize: 20 }}
             onClick={() =>
               handleAction({
                 project,
@@ -354,9 +359,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="ModeEdit"
-            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             onClick={selectProject}
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 20 }}
             tooltip="Edit Project"
             description={
               <>
@@ -372,7 +377,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="Delete"
-            className="text-color-0600 hover:text-cds-red-0800 mx-1 cursor-pointer"
+            className="text-color-0600 hover:text-red-600 mx-1.5 cursor-pointer"
             onClick={() => {
               Swal.fire({
                 title: "Are you sure you want to Delete Project?",
@@ -389,7 +394,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
                 }
               });
             }}
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 20 }}
             tooltip="Delete Project"
             description={
               <p>
@@ -399,8 +404,8 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           />
           <IconRenderer
             icon="FileDownload"
-            className="text-color-0600 hover:text-color-0500 mx-1 cursor-pointer"
-            style={{ fontSize: 18 }}
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
+            style={{ fontSize: 20 }}
             onClick={exportProject}
             tooltip="Export Project"
             description={

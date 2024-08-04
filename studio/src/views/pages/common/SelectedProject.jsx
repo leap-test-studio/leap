@@ -22,10 +22,10 @@ const SelectedCard = ({ label, onClose }) => (
   <div className="inline-flex items-center mx-2">
     <ArrayIcon />
     <div className="inline-flex items-center hover:shadow-md rounded-full bg-slate-100 border p-1 cursor-pointer">
-      <div className="h-7 w-7 rounded-full text-center bg-blue-100 border items-center justify-center">
-        <i className="fad fa-xs fa-solid fa-folder-tree text-indigo-700" />
+      <div className="h-7 w-7 rounded-full text-center bg-color-0200 border items-center justify-center">
+        <i className="fad fa-xs fa-solid fa-folder-tree text-color-0800" />
       </div>
-      <span className="mx-2 inline-flex tracking-wide items-center text-color-1000 font-semibold select-all">{label}</span>
+      <span className="mx-2 inline-flex tracking-wide items-center text-color-label font-semibold select-all">{label}</span>
       <button onClick={onClose} className="focus:outline-none mx-2 font-extrabold text-red-600 cursor-pointer">
         <IconRenderer icon="Close" className="h-5 w-5" />
       </button>

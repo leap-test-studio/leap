@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-
+const ProjectService = require("./project.service");
 const { getPagination, getPagingData } = require("../utils");
 const fs = require("fs");
 const Types = ["Definition", "REST API", "Web", "SSH"];
@@ -117,11 +117,13 @@ async function clone(AccountId, TestScenarioId, id) {
   return tcClone;
 }
 
-async function update(accountId, scenarioId, id, payload) {
+async function update(accountId, projectId, scenarioId, id, payload) {
   const tc = await get(accountId, scenarioId, id);
   Object.assign(tc, payload);
+  tc.changed("updatedAt", true);
   tc.updatedAt = Date.now();
   await tc.save();
+  ProjectService.update(accountId, projectId, {});
   return tc;
 }
 

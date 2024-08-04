@@ -17,12 +17,12 @@ import {
   runTestScenario
 } from "../../../redux/actions/TestScenarioActions";
 import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
-import { ProjectColors } from "../common/Constants";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import DisplayCard from "../common/DisplayCard";
 import Swal from "sweetalert2";
+import TestScenarioSettingsDialog from "./TestScenarioSettingsDialog";
 
 dayjs.extend(relativeTime);
 
@@ -34,6 +34,7 @@ function TestScenarioManagement(props) {
   const [selectedTestScenario, setSelectedTestScenario] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
+  const [showSettingsDialog, setSettingsDialog] = useState(false);
 
   const { testscenarios, isFirstTestScenario, showMessage, details, message, loading } = useSelector((state) => state.testscenario);
   const { project, scenario, changeTestScenario } = props;
@@ -124,11 +125,10 @@ function TestScenarioManagement(props) {
                 "Create new test scenario"
               )
             }
-            placement="bottom"
           >
             <IconButton
               title="Create"
-              icon="DashboardCustomize"
+              icon="AddCircle"
               disabled={testscenarios?.length > MAX_ALLOWED_TEST_SCENARIOS}
               onClick={() => setShowCreateDialog(true)}
             />
@@ -167,6 +167,7 @@ function TestScenarioManagement(props) {
                       openTestScenario={openTestScenario}
                       setSelectedTestScenario={setSelectedTestScenario}
                       setShowCloneDialog={setShowCloneDialog}
+                      setSettingsDialog={setSettingsDialog}
                       handleDeleteTestScenario={handleDeleteTestScenario}
                     />
                   ))}
@@ -189,6 +190,12 @@ function TestScenarioManagement(props) {
             cloneTestScenario={handleCloneTestScenario}
           />
         )}
+        <TestScenarioSettingsDialog
+          showDialog={showSettingsDialog}
+          onClose={() => setSettingsDialog(false)}
+          project={project}
+          scenario={selectedTestScenario}
+        />
       </PageBody>
     </Page>
   );
@@ -196,7 +203,15 @@ function TestScenarioManagement(props) {
 
 export default TestScenarioManagement;
 
-const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelectedTestScenario, setShowCloneDialog, handleDeleteTestScenario }) => {
+const TestScenarioCard = ({
+  projectId,
+  testscenario,
+  openTestScenario,
+  setSelectedTestScenario,
+  setShowCloneDialog,
+  setSettingsDialog,
+  handleDeleteTestScenario
+}) => {
   const dispatch = useDispatch();
 
   const { id, name, status, description, createdAt, updatedAt } = testscenario;
@@ -221,6 +236,11 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
   const cloneTestScenario = () => {
     setSelectedTestScenario(testscenario);
     setShowCloneDialog(true);
+  };
+
+  const settingsTestScenario = () => {
+    setSelectedTestScenario(testscenario);
+    setSettingsDialog(true);
   };
 
   const deleteTestScenario = () => {
@@ -304,8 +324,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           {status && (
             <IconRenderer
               icon="PlayArrow"
-              style={{ fontSize: 18 }}
-              className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
+              style={{ fontSize: 20 }}
+              className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
               onClick={run}
               tooltip="Run Test Scenario"
               description={
@@ -317,8 +337,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           )}
           <IconRenderer
             icon="FileCopy"
-            style={{ fontSize: 18 }}
-            className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
+            style={{ fontSize: 20 }}
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             onClick={cloneTestScenario}
             tooltip="Clone Test Scenario"
             description={
@@ -328,9 +348,21 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
             }
           />
           <IconRenderer
+            icon="Settings"
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
+            style={{ fontSize: 20 }}
+            onClick={settingsTestScenario}
+            tooltip="Test Scenario Settings"
+            description={
+              <p>
+                View and modify the <strong>Test Scenario Settings</strong>.
+              </p>
+            }
+          />
+          <IconRenderer
             icon="ModeEdit"
-            style={{ fontSize: 18 }}
-            className="text-color-0600 hover:text-color-0500 mx-0.5 cursor-pointer"
+            style={{ fontSize: 20 }}
+            className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
             onClick={editTestScenario}
             tooltip="Edit Test Scenario"
             description={
@@ -343,8 +375,8 @@ const TestScenarioCard = ({ projectId, testscenario, openTestScenario, setSelect
           />
           <IconRenderer
             icon="Delete"
-            style={{ fontSize: 18 }}
-            className="text-color-0600 hover:text-cds-red-0800 mx-0.5 cursor-pointer"
+            style={{ fontSize: 20 }}
+            className="text-color-0600 hover:text-red-600 mx-1.5 cursor-pointer"
             onClick={deleteTestScenario}
             tooltip="Delete Test Scenario"
             description={

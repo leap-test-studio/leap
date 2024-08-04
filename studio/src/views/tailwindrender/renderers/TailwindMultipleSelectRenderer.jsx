@@ -29,7 +29,7 @@ const TailwindMultipleSelectRenderer = React.memo(
         <button
           id="dropdownBgHoverButton"
           data-dropdown-toggle="dropdownBgHover"
-          className="bg-white drop-shadow-sm w-full border text-slate-700 rounded-sm text-xs px-2 py-1 text-center inline-flex items-center"
+          className="bg-white drop-shadow-sm w-full border text-color-label rounded-sm text-xs px-2 py-1 text-center inline-flex items-center"
           type="button"
           onClick={() => openDropDown()}
         >

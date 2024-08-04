@@ -132,7 +132,7 @@ const NonEmptyRow = React.memo(
                 icon="Delete"
                 ariaLabel="Delete"
                 onClick={() => openDeleteDialog(childPath, rowIndex)}
-                className="text-color-0600 hover:text-cds-red-0800"
+                className="text-color-0600 hover:text-red-600"
                 showShadow={false}
               />
             )}
