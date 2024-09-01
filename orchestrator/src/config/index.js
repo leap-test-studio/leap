@@ -11,6 +11,7 @@ const envVarsSchema = Joi.object()
     TIMEZONE: Joi.string().description("Time zone").default("+05:30"),
     EXPRESSJS_SECRET: Joi.string().description("Express Session Secret").default("S3cret"),
     DATABASE_NAME: Joi.string().description("Database name").default("automation"),
+    DATABASE_SCHEMA_NAME: Joi.string().description("Database Schema name").default("public"),
     DATABASE_HOST: Joi.string().description("Database server host address").default("localhost"),
     DATABASE_PORT: Joi.number().description("Database server port number").default(3306),
     DATABASE_USERNAME: Joi.string().description("Database username").default("automation"),
@@ -49,7 +50,7 @@ if (noProxy != null) {
   noProxy = noProxy.replace(/;/g, ",");
 }
 const databaseConfig = {};
-if (envVars.DATABASE_DIALECT === "mysql") {
+if (["mysql", "mariadb", "postgres"].includes(envVars.DATABASE_DIALECT)) {
   databaseConfig.port = envVars.DATABASE_PORT;
   databaseConfig.logging = envVars.DATABASE_LOGGING;
   databaseConfig.pool = {
@@ -123,6 +124,7 @@ module.exports = {
     username: envVars.DATABASE_USERNAME,
     password: envVars.DATABASE_PASSWORD,
     database: envVars.DATABASE_NAME,
+    schemaName: envVars.DATABASE_SCHEMA_NAME,
     dialect: envVars.DATABASE_DIALECT,
     ...databaseConfig
   },

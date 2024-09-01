@@ -4,17 +4,16 @@ const authorize = require("../_middleware/authorize");
 const dashboardService = require("../services/dashboard.service");
 const status = require("http-status");
 
-const csrf = require("../_middleware/checkCSRF");
-const Role = require("../_helpers/role");
+const AuthRoles = require("../_helpers/role");
 
 // Report routes
-router.get("/build/recent", csrf, authorize([Role.Admin, Role.Manager]), getRecentBuildSummary);
-router.get("/build/total", csrf, authorize([Role.Admin, Role.Manager]), getTotalStats);
-router.get("/build/trend/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getBuildTrend);
+router.get("/build/recent", authorize(AuthRoles.All), getRecentBuildSummary);
+router.get("/build/total", authorize(AuthRoles.All), getTotalStats);
+router.get("/build/trend/:projectId", authorize(AuthRoles.All), getBuildTrend);
 
-router.get("/build/reports/:projectId", csrf, authorize([Role.Admin, Role.Manager]), getBuildReports);
+router.get("/build/reports/:projectId", authorize(AuthRoles.All), getBuildReports);
 
-router.get("/build/details/:projectId/bno/:buildNo", csrf, authorize([Role.Admin, Role.Manager]), getBuildDetails);
+router.get("/build/details/:projectId/bno/:buildNo", authorize(AuthRoles.All), getBuildDetails);
 
 module.exports = router;
 

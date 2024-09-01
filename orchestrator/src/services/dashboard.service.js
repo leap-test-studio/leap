@@ -1,4 +1,5 @@
 const { Op, fn, col } = require("sequelize");
+const { accountMap } = require("../utils/account_name");
 
 module.exports = {
   getRecentBuildSummary,
@@ -36,7 +37,7 @@ async function getRecentBuildSummary(AccountId) {
 }
 
 async function getTotalStats(AccountId) {
-  const scenarios = await global.DbStoreModel.TestScenario.findAll({
+  const suites = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
       AccountId
@@ -57,7 +58,7 @@ async function getTotalStats(AccountId) {
     return s;
   });
 
-  const scenarioIds = scenarios.map((s) => {
+  const suiteIds = suites.map((s) => {
     return s.id;
   });
 
@@ -65,14 +66,14 @@ async function getTotalStats(AccountId) {
     where: {
       AccountId,
       TestScenarioId: {
-        [Op.in]: scenarioIds
+        [Op.in]: suiteIds
       }
     }
   });
 
   return {
     projects: projects.length,
-    scenarios: scenarios.length,
+    suites: suites.length,
     cases,
     builds
   };
@@ -103,6 +104,8 @@ async function getBuildDetails(id, input) {
   const type = Number(arr[0]);
   const buildNo = Number(arr[1]);
 
+  const accMap = await accountMap();
+
   const BuildMasters = await global.DbStoreModel.BuildMaster.findAll({
     where: {
       type,
@@ -117,12 +120,13 @@ async function getBuildDetails(id, input) {
     skipped = 0,
     steps = 0,
     running = 0,
-    scenarios = {},
+    suites = {},
     jobs = [],
     options = null,
     status = 0,
     startTime,
-    endTime;
+    endTime,
+    triggeredBy;
 
   const buildIds = [];
   BuildMasters.forEach((row) => {
@@ -141,6 +145,7 @@ async function getBuildDetails(id, input) {
         }
       }
     }
+    triggeredBy = accMap.get(row.AccountId);
 
     total += Number(row.total);
     passed += Number(row.passed);
@@ -158,7 +163,7 @@ async function getBuildDetails(id, input) {
   const jobRecords = await global.DbStoreModel.Job.findAll({
     attributes: ["id", "result", "steps", "startTime", "endTime", "screenshot", "actual"],
     include: {
-      attributes: ["id", "type", "label", "given", "when", "then", "seqNo", "execSteps"],
+      attributes: ["id", "type", "label", "title", "given", "when", "then", "seqNo", "execSteps", "tags"],
       model: global.DbStoreModel.TestCase,
       include: {
         attributes: ["id", "name", "description"],
@@ -182,7 +187,7 @@ async function getBuildDetails(id, input) {
         ...job,
         steps: stepsExecuted.length
       });
-      if (job?.TestCase?.TestScenario?.id) scenarios[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
+      if (job?.TestCase?.TestScenario?.id) suites[job?.TestCase?.TestScenario?.id] = job?.TestCase?.TestScenario;
     });
   const executed = passed + failed + skipped;
 
@@ -191,13 +196,14 @@ async function getBuildDetails(id, input) {
   }
 
   return {
+    triggeredBy,
     completion: (executed / total) * 100,
     successRate: (passed / total) * 100,
     total,
     passed,
     failed,
     skipped,
-    scenarios: Object.keys(scenarios),
+    suites: Object.keys(suites),
     steps,
     running,
     jobs,

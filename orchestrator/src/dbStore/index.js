@@ -15,9 +15,7 @@ module.exports = {
 
         const sequelize = new Sequelize(config.database, config.username, config.password, config);
         await sequelize.authenticate();
-        if (logger.isTraceEnabled()) {
-          logger.trace("Connection has been established successfully.");
-        }
+        logger.trace("Connection has been established successfully.");
 
         fs.readdirSync(dbDir)
           .filter((file) => {
@@ -28,9 +26,7 @@ module.exports = {
               return;
             }
             const filepath = path.join(dbDir, file);
-            if (logger.isTraceEnabled()) {
-              logger.trace("Importing model file: " + filepath);
-            }
+            logger.trace("Importing model file: " + filepath);
             const model = require(filepath)(sequelize, Sequelize.DataTypes);
             global.DbStoreModel[model.name] = model;
           });
@@ -45,12 +41,10 @@ module.exports = {
         await global.DbStoreModel.sequelize.sync();
         const result = await global.DbStoreModel.sequelize.query("SELECT 1");
 
-        if (logger.isInfoEnabled()) {
-          logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
-        }
+        logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
         resolve(result);
       } catch (e) {
-        logger.error("Failed to sync DbStore", e);
+        console.error("Failed to sync DbStore", e);
         resolve(null);
       }
     });

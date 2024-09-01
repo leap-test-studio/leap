@@ -1,5 +1,5 @@
 const TestCaseTask = require("./case_task");
-const TestScenarioTask = require("./scenario_task");
+const TestScenarioTask = require("./suite_task");
 const StartTask = require("./start_task");
 const StopTask = require("./stop_task");
 const TimerTask = require("./timer_task");

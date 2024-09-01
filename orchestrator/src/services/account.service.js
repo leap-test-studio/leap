@@ -9,7 +9,9 @@ const timeParser = require("parse-duration");
 const RedisMan = require("whiteboard-pubsub").RedisMan;
 
 const sendEmail = require("../_helpers/send-email");
-const Role = require("../_helpers/role");
+const AuthRoles = require("../_helpers/role");
+const Role = require("../_helpers/role").Role;
+
 const { getPagination, getPagingData } = require("../utils");
 
 const API_URL = process.env.PUBLIC_URL + "/api/v1";
@@ -43,17 +45,23 @@ function getTotalAccounts() {
   return global.DbStoreModel.Account.count();
 }
 
-async function getAllAccounts(custID = null) {
-  const accounts = await global.DbStoreModel.Account.findAll({
+async function getAllAccounts(custID = null, page = 0, size = 10000) {
+  const { limit, offset } = getPagination(page, size);
+  const data = await global.DbStoreModel.Account.findAndCountAll({
+    include: global.DbStoreModel.Tenant,
     where: { managerId: custID },
-    order: [["created", "DESC"]]
+    order: [["created", "DESC"]],
+    limit,
+    offset
   });
-
-  return accounts.map((x) => accountBasicDetails(x));
+  if (data.rows) {
+    data.rows = data.rows.map((x) => accountBasicDetails(x));
+  }
+  return getPagingData(data, page, limit);
 }
 
 function accountBasicDetails(account) {
-  const { id, name, email, role, created, updated, isVerified, managerId } = account;
+  const { id, name, email, role, created, updated, isVerified, managerId, Tenant } = account;
 
   return {
     id,
@@ -63,16 +71,18 @@ function accountBasicDetails(account) {
     created,
     updated,
     isVerified,
-    managerId
+    managerId,
+    tenant: Tenant
   };
 }
 
-async function getAllAccountsByRole({ page, size, token, role }) {
+async function getAllAccountsByRole({ page, size, token, role, tenantById }) {
   if (token == null) token = "";
   let { limit, offset } = getPagination(page, size);
   let accounts, data;
-  if ([Role.Manager].includes(role)) {
+  if ([AuthRoles.Manager].includes(role)) {
     data = await global.DbStoreModel.Account.findAndCountAll({
+      include: global.DbStoreModel.Tenant,
       where: {
         [Op.or]: [
           {
@@ -82,7 +92,8 @@ async function getAllAccountsByRole({ page, size, token, role }) {
             email: { [Op.like]: `%${token}%` }
           }
         ],
-        role
+        role,
+        tenantById
       },
       limit,
       offset
@@ -95,13 +106,24 @@ async function getAllAccountsByRole({ page, size, token, role }) {
   return accounts;
 }
 
+async function get(id) {
+  const account = await global.DbStoreModel.Account.findOne({
+    include: global.DbStoreModel.Tenant,
+    where: {
+      id
+    }
+  });
+  return account;
+}
+
 async function getAccountById(id) {
-  const account = await global.DbStoreModel.Account.findByPk(id);
+  const account = await get(id);
   return accountBasicDetails(account);
 }
 
 async function authenticate({ email, password, ipAddress, userAgent }) {
   const account = await global.DbStoreModel.Account.scope("withHash").findOne({
+    include: global.DbStoreModel.Tenant,
     where: { email }
   });
   if (!account || !(await bcrypt.compare(password, account.passwordHash))) {
@@ -137,8 +159,14 @@ async function authenticate({ email, password, ipAddress, userAgent }) {
 }
 
 async function refreshToken({ token, ipAddress }) {
-  const rt = await global.DbStoreModel.RefreshToken.findOne({ where: { token } });
-  const account = await rt.getAccount();
+  const rt = await global.DbStoreModel.RefreshToken.findOne({
+    include: {
+      model: global.DbStoreModel.Account,
+      include: global.DbStoreModel.Tenant
+    },
+    where: { token }
+  });
+  const account = rt.Account;
   // replace old refresh token with a new one and save
   const newRefreshToken = generateRefreshToken(account, ipAddress);
   rt.revoked = Date.now();
@@ -190,10 +218,10 @@ function register(params) {
     // first registered account is an admin
     const isFirstAccount = (await getTotalAccounts()) === 0;
     if (isFirstAccount) {
-      account.role = Role.Admin;
+      account.role = AuthRoles.Admin;
       account.verificationToken = randomTokenString();
     } else {
-      account.role = Role.Engineer;
+      account.role = AuthRoles.Engineer;
       account.verificationToken = generateOTP();
     }
     console.log(account.verificationToken);
@@ -275,6 +303,7 @@ function forgotPassword({ email }) {
 
 async function validateResetToken({ token, email }) {
   const account = await global.DbStoreModel.Account.findOne({
+    include: global.DbStoreModel.Tenant,
     where: {
       email: email,
       resetToken: token,
@@ -326,11 +355,11 @@ async function create(params, userID = null) {
     throw new Error('Email "' + params.email + '" is already registered');
   }
 
-  if (params.role === Role.Admin) {
+  if (params.role === AuthRoles.Admin) {
     Object.assign(params, { addedbyId: userID });
   }
 
-  if (params.role === Role.Engineer) {
+  if (params.role === AuthRoles.Engineer) {
     Object.assign(params, { managerId: userID });
   }
 
@@ -355,10 +384,10 @@ async function getAccountByEmail(email) {
 }
 
 async function update(id, params, userID, userRole) {
-  const account = await getAccountById(id);
+  const account = await get(id);
 
-  if (userRole === "Customer" && account.managerId !== userID) {
-    throw new Error("The staff does not belong to your Organization");
+  if (userRole === Role.Engineer && account.managerId !== userID) {
+    throw new Error("User does not belong to your Organization");
   }
 
   // validate (if email was changed)
@@ -421,7 +450,7 @@ async function sendOnboardEmail(account, password) {
   try {
     return await sendEmail(
       account.email,
-      [Role.Manager, Role.Lead, Role.Engineer].includes(account.role) ? "welcome-manager.html" : "welcome-admin.html",
+      [AuthRoles.Manager, AuthRoles.Lead, AuthRoles.Engineer].includes(account.role) ? "welcome-manager.html" : "welcome-admin.html",
       {
         activationLink: API_URL + "/accounts/verify-otp",
         name: account.name,
@@ -437,12 +466,12 @@ async function sendOnboardEmail(account, password) {
 
 async function sendVerificationEmail(account) {
   const verifyUrl =
-    account.role === Role.Admin ? `${API_URL}/accounts/verify-email?token=${account.verificationToken}` : `${account.verificationToken}`;
+    account.role === AuthRoles.Admin ? `${API_URL}/accounts/verify-email?token=${account.verificationToken}` : `${account.verificationToken}`;
   const activationLinkValidity = 3;
 
   return await sendEmail(
     account.email,
-    account.role === Role.Admin ? "welcome.html" : "verification-code.html",
+    account.role === AuthRoles.Admin ? "welcome.html" : "verification-code.html",
     {
       activationLink: verifyUrl,
       name: account.name,

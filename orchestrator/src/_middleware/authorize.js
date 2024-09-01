@@ -20,7 +20,6 @@ function authorize(roles = []) {
     // authorize based on user role
     async (req, res, next) => {
       const account = await global.DbStoreModel.Account.findByPk(req.auth.id);
-
       if (!account || (roles.length && !roles.includes(account.role))) {
         // account no longer exists or role not authorized
         return res.status(status.UNAUTHORIZED).send({ message: status[`${status.UNAUTHORIZED}_MESSAGE`] });
@@ -29,6 +28,7 @@ function authorize(roles = []) {
       // authentication and authorization successful
       req.auth.role = account.role;
       req.auth.managerId = account.managerId;
+      req.tenantId = account.TenantId;
       const refreshTokens = await account.getRefreshTokens();
       req.auth.ownsToken = (token) => !!refreshTokens.find((x) => x.token === token);
       next();

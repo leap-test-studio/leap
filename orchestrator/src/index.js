@@ -17,7 +17,7 @@ require("dotenv").config();
 const RedisStore = require("connect-redis").default;
 const session = require("express-session");
 const status = require("http-status");
-const { setStartTime, setTxnId } = require("./_middleware/transaction");
+const { setStartTime, setTxnId, setTenantId } = require("./_middleware/transaction");
 const logger = require("./logger");
 
 const limiter = rateLimit({
@@ -28,7 +28,7 @@ const limiter = rateLimit({
 const app = express();
 app.use(setStartTime);
 app.use(setTxnId);
-app.use(setTxnId);
+app.use(setTenantId);
 
 app.use(
   session({
@@ -89,14 +89,15 @@ const corsOptionsDelegate = (req, callback) => {
 
 app.use(cors(corsOptionsDelegate));
 
-app.get("/healthcheck", (_req, res, _next) => {
-  res.status(200).send({ message: "OK" });
+app.get("/ping", (_req, res, _next) => {
+  res.status(200).send("PONG");
 });
 
 app.use("/api/v1", require("./controllers"));
 
 // global error handler
 app.use((req, res) => {
+  console.log(req);
   res.status(status.NOT_FOUND).send({ message: status[`${status.NOT_FOUND}_MESSAGE`] });
 });
 

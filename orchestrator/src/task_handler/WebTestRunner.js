@@ -37,7 +37,8 @@ class TestRunner extends Task {
       "--ignore-ssl-errors",
       "--ignore-certificate-errors-spki-list",
       "--proxy-bypass-list=127.0.0.1,localhost,10.*",
-      "--tls1.2"
+      "--tls1.2",
+      "--disable-infobars"
     ];
 
     if (global.config.proxy) {
@@ -79,15 +80,15 @@ class TestRunner extends Task {
   }
 
   async stepExecutor(accumulator, event) {
-    let stepOutcome = {
-      stepNo: accumulator.length + 1,
-      result: TestStatus.RUNNING,
-      startTime: Date.now(),
-      type: event.actionType,
-      event
-    };
-
+    let stepOutcome;
     if (event.enabled && this.shouldTaskContinue()) {
+      stepOutcome = {
+        stepNo: accumulator.length + 1,
+        result: TestStatus.RUNNING,
+        startTime: Date.now(),
+        type: event.actionType,
+        event
+      };
       try {
         if (ActionsTypes.includes(event.actionType)) {
           if (this.sleepTimingType === SleepTimingType.Before || this.sleepTimingType === SleepTimingType.BeforeAndAfter) {
@@ -125,30 +126,29 @@ class TestRunner extends Task {
         stepOutcome.actual = e.message;
       }
       if (stepOutcome.result === TestStatus.FAIL) {
-        await this.captureScreenshot(stepOutcome.stepNo);
+        await this.captureScreenshot(stepOutcome.stepNo, event.value);
       }
-    } else {
-      stepOutcome.actual = "Test step is skipped";
-      stepOutcome.result = TestStatus.SKIP;
+      stepOutcome.endTime = Date.now();
+      stepOutcome.stepTime = stepOutcome.endTime - stepOutcome.startTime;
+      this.addStep(stepOutcome);
     }
-    stepOutcome.endTime = Date.now();
-    stepOutcome.stepTime = stepOutcome.endTime - stepOutcome.startTime;
-    this.addStep(stepOutcome);
     return accumulator.concat(stepOutcome);
   }
 
   async execute() {
     this.steps = await BPromise.reduce(this.execSteps, this.stepExecutor, []);
-    const outcome = this.steps.find((s) => s.result === TestStatus.FAIL) || { result: TestStatus.PASS };
+    const outcome = this.steps.filter((s) => s != null).find((s) => s.result === TestStatus.FAIL) || { result: TestStatus.PASS };
+
+    logger.info("WebTestRunner: Executed All Steps:", outcome);
     this.actual = { actualResult: outcome };
     this.result = outcome?.result;
     if (this.result === TestStatus.PASS) {
-      await this.captureScreenshot("Evidence");
+      await this.captureScreenshot("Evidence", "Test Execution Completed");
     }
     return Promise.resolve(true);
   }
 
-  async captureScreenshot(stepNo) {
+  async captureScreenshot(stepNo, title) {
     if (this._interruptTask) {
       return Promise.resolve(false);
     }
@@ -160,6 +160,7 @@ class TestRunner extends Task {
       this.emit("CAPTURE_SCREENSHOT", {
         taskId: this._taskId,
         stepNo,
+        title,
         buffer
       });
     } catch (e) {
@@ -194,14 +195,12 @@ class TestRunner extends Task {
     const getElement = (by, ele, UntilType = "elementLocated") => this.WebDriver.wait(until[UntilType](By[by](ele)), 10000);
 
     const Handlers = {
-      captureScreenshot: async () => {
-        await this.captureScreenshot("Capture");
+      captureScreenshot: async ({ value }) => {
+        await this.captureScreenshot("Capture", value);
       },
-      navigateToURL: async ({ value, interval = 5000 }) => {
+      navigateToURL: async ({ value }) => {
         await this.WebDriver.get(value);
-        if (interval > 0) {
-          await this.WebDriver.sleep(interval);
-        }
+        await this.WebDriver.sleep(5000);
         return {
           result: TestStatus.PASS
         };
@@ -298,6 +297,12 @@ class TestRunner extends Task {
         const droppableElement = await getElement(by, to);
         return {
           actual: await this.WebDriver.executeScript(DragAndDrop, draggableElement, droppableElement, { dropOffset: [x, y] }),
+          result: TestStatus.PASS
+        };
+      },
+      scrollBy: async ({ value }) => {
+        return {
+          actual: await this.WebDriver.executeScript(`window.scrollBy(0,${isNaN(value) ? 300 : Number(value)})`, ""),
           result: TestStatus.PASS
         };
       },

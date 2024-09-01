@@ -18,7 +18,7 @@ router.post(
   },
   startProjectBuilds
 );
-router.post("/:projectId/runTestScenario/:scenarioId", csrf, authorize(), startTestScenario);
+router.post("/:projectId/runTestScenario/:suiteId", csrf, authorize(), startTestScenario);
 router.post("/:projectId/runTestCases", csrf, authorize(), startTestCases);
 
 router.post("/:projectId/trigger", startProjectBuilds);
@@ -68,7 +68,7 @@ function stopProjectBuilds(req, res) {
 }
 
 function startTestCases(req, res) {
-  logger.info("StartTestCases", req.params.projectId, req.body);
+  logger.info("Start Test Case", req.params.projectId, req.body);
   runner
     .createTestCase(req.auth?.id, req.params.projectId, RUN_TYPE.TESTCASE, req.body)
     .then((response) => res.status(status.OK).json(response))
@@ -79,9 +79,9 @@ function startTestCases(req, res) {
 }
 
 function startTestScenario(req, res) {
-  logger.info("Start Suite", req.params.projectId, req.params.scenarioId);
+  logger.info("Start Test Suite", req.params.projectId, req.params.suiteId);
   runner
-    .createTestScenario(req.auth?.id, req.params.projectId, req.params.scenarioId)
+    .createTestScenario(req.auth?.id, req.params.projectId, req.params.suiteId)
     .then((response) => res.status(status.OK).json(response))
     .catch((err) => {
       logger.error(err);

@@ -20,11 +20,17 @@ module.exports = (sequelize, DataTypes) => {
           return this.setDataValue("status", Number(value));
         }
       },
-      remark: { type: DataTypes.TEXT },
+      remark: { type: DataTypes.JSON },
       settings: { type: DataTypes.JSON },
-      ProjectMasterId: { type: DataTypes.UUID, unique: "comp" }
+      updatedBy: {
+        type: DataTypes.UUID
+      },
+      ProjectMasterId: { type: DataTypes.UUID, unique: "comp" },
+      AccountId: { type: DataTypes.UUID },
+      TenantId: { type: DataTypes.UUID }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       paranoid: false,
       timestamps: true,
       tableName: "automation_suites"
@@ -34,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     TestScenario.hasMany(models.TestCase);
     TestScenario.belongsTo(models.Account, { onDelete: "cascade" });
     TestScenario.belongsTo(models.ProjectMaster, { onDelete: "cascade" });
+    TestScenario.belongsTo(models.Tenant, { onDelete: "SET NULL" });
   };
   return TestScenario;
 };

@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       // disable default timestamp fields (createdAt and updatedAt)
       timestamps: false,
       tableName: "auth_accounts",
@@ -72,6 +73,8 @@ module.exports = (sequelize, DataTypes) => {
     Account.hasMany(models.TestScenario, { onDelete: "cascade" });
     Account.hasMany(models.TestCase, { onDelete: "cascade" });
     Account.hasMany(models.ScheduleJob, { onDelete: "cascade" });
+    Account.hasMany(models.TestPlan);
+    Account.belongsTo(models.Tenant, { onDelete: "SET NULL" });
   };
   return Account;
 };

@@ -1,8 +1,6 @@
 const { Op } = require("sequelize");
-
-const { getPagination, getPagingData } = require("../utils");
+const { getPagination, getPagingData, getAccountName } = require("../utils");
 const { TestStatus } = require("../constants");
-const { isEmpty } = require("lodash");
 
 module.exports = {
   list,
@@ -26,11 +24,11 @@ async function _export(id) {
   return prj.toJSON();
 }
 
-async function list(AccountId, page = 0, size = 10000) {
+async function list(TenantId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);
   const data = await global.DbStoreModel.ProjectMaster.findAndCountAll({
-    attributes: ["id", "name", "description", "status", "createdAt", "updatedAt", "settings"],
-    where: { AccountId },
+    attributes: ["id", "name", "description", "status", "createdAt", "updatedAt", "updatedBy", "AccountId", "settings"],
+    where: { TenantId },
     order: [["updatedAt", "DESC"]],
     limit,
     offset
@@ -42,46 +40,89 @@ async function list(AccountId, page = 0, size = 10000) {
     p.builds = builds[p.id] || 0;
     data.rows[i] = p;
   }
-  return getPagingData(data, page, limit);
+  const response = getPagingData(JSON.parse(JSON.stringify(data)), page, limit);
+  await getAccountName(response.items, ["updatedBy", "AccountId"]);
+  return response;
 }
 
-async function create(AccountId, payload) {
-  if (await global.DbStoreModel.ProjectMaster.findOne({ where: { name: payload.name } })) {
-    throw new Error(`Project by name '${payload.name}' is already registered`);
+async function create(TenantId, AccountId, { name, description, settings, TestScenarios }) {
+  if (await global.DbStoreModel.ProjectMaster.findOne({ where: { name } })) {
+    throw new Error(`Project by name '${name}' is already registered`);
   }
-  const prj = new global.DbStoreModel.ProjectMaster({
-    ...payload,
-    status: 1,
-    AccountId
+  return await global.DbStoreModel.sequelize.transaction(async (transaction) => {
+    const now = new Date();
+
+    const newProject = await global.DbStoreModel.ProjectMaster.create(
+      {
+        name,
+        description,
+        settings,
+        status: 1,
+        TenantId,
+        AccountId,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        transaction
+      }
+    );
+
+    TestScenarios?.forEach(async (ts) => {
+      const suiteData = {
+        ...ts,
+        TenantId,
+        AccountId,
+        ProjectMasterId: newProject.id,
+        createdAt: now,
+        updatedAt: now
+      };
+      delete suiteData.id;
+      const suite = new global.DbStoreModel.TestScenario(suiteData);
+      await suite.save();
+
+      ts.TestCases?.forEach(async (tc) => {
+        const caseData = {
+          ...tc,
+          TenantId,
+          AccountId,
+          TestScenarioId: suite.id,
+          createdAt: now,
+          updatedAt: now
+        };
+        delete caseData.id;
+        const tcase = new global.DbStoreModel.TestCase(caseData);
+        await tcase.save();
+      });
+    });
+
+    return newProject;
   });
-  prj.createdAt = Date.now();
-  prj.updatedAt = Date.now();
-  await prj.save();
-  return prj;
 }
 
-async function update(accoutId, id, payload) {
-  let prj = await get(accoutId, id);
+async function update(tenantId, updatedBy, id, payload) {
+  let prj = await get(tenantId, id);
   Object.assign(prj, payload);
   prj.changed("updatedAt", true);
   prj.updatedAt = new Date();
+  prj.updatedBy = updatedBy;
   await prj.save();
   return await getDetails(id);
 }
 
-async function _delete(accoutId, id) {
-  const prj = await get(accoutId, id);
+async function _delete(tenantId, id) {
+  const prj = await get(tenantId, id);
   return await prj.destroy({ force: true });
 }
 
 // helper functions
 
-async function get(AccountId, id) {
+async function get(TenantId, id) {
   let prj;
-  if (AccountId) {
+  if (TenantId) {
     prj = await global.DbStoreModel.ProjectMaster.findOne({
       include: global.DbStoreModel.Account,
-      where: { id, AccountId }
+      where: { id, TenantId }
     });
   } else {
     prj = await global.DbStoreModel.ProjectMaster.findByPk(id);

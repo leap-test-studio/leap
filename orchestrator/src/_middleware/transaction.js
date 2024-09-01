@@ -53,8 +53,21 @@ const setTxnId = (req, res, next) => {
   next();
 };
 
+const setTenantId = (req, res, next) => {
+  try {
+    if (req.headers["tenant-id"]) {
+      req.tenantId = req.headers["tenant-id"];
+      res.header("tenant-id", req.tenantId);
+    }
+  } catch (error) {
+    //ignore
+  }
+  next();
+};
+
 module.exports = {
   getUniqueTxnId,
   setStartTime,
-  setTxnId
+  setTxnId,
+  setTenantId
 };

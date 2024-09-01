@@ -2,7 +2,10 @@ const request = require("request");
 
 exports.httpRequest = (req) => {
   let diagnostics = {
-    statusCode: 999
+    statusCode: 999,
+    statusMessage: "-",
+    response: {},
+    headers: {}
   };
   return new Promise((resolve) => {
     req.withCredentials = false;
@@ -36,9 +39,18 @@ exports.httpRequest = (req) => {
           diagnostics.timings = response.timings;
           diagnostics.statusCode = response.statusCode;
           diagnostics.statusMessage = response.statusMessage;
-          diagnostics.body = body;
+          diagnostics.response = typeof body === "string" ? JSON.parse(body) : body;
           diagnostics.headers = response.headers;
         }
+        diagnostics.print = function () {
+          return {
+            request: req,
+            response: this.response,
+            statusCode: this.statusCode,
+            statusMessage: this.statusMessage,
+            headers: this.headers
+          };
+        };
         resolve(diagnostics);
       }
     });

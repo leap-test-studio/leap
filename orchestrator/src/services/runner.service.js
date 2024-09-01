@@ -41,8 +41,8 @@ function create(AccountId, ProjectMasterId, payload) {
         order: [["createdAt", "ASC"]]
       });
 
-      const scenarioIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
-      if (scenarioIds.length === 0) {
+      const suiteIds = testScenarios.filter((scenario) => scenario.id && scenario.status).map((scenario) => scenario.id);
+      if (suiteIds.length === 0) {
         return reject("No Test Suite Defined");
       }
       let nextBuildNumber = await global.DbStoreModel.BuildMaster.max("buildNo", {
@@ -71,7 +71,7 @@ function create(AccountId, ProjectMasterId, payload) {
 
       await build.save();
       const totalTestCases = await BPromise.reduce(
-        scenarioIds,
+        suiteIds,
         async function (total, TestScenarioId) {
           try {
             const testCases = await global.DbStoreModel.TestCase.findAll({
@@ -80,7 +80,7 @@ function create(AccountId, ProjectMasterId, payload) {
                 type: {
                   [Op.not]: TestType.Scenario
                 },
-                enabled: true
+                enabled: 1
               },
               order: [["seqNo", "ASC"]]
             });
@@ -178,7 +178,7 @@ async function createTestScenario(AccountId, ProjectMasterId, TestScenarioId) {
     attributes: ["id"],
     where: {
       TestScenarioId,
-      enabled: true
+      enabled: 1
     },
     order: [["seqNo", "ASC"]]
   });
@@ -211,7 +211,7 @@ function createTestCase(AccountId, ProjectMasterId, type = RUN_TYPE.TESTCASE, pa
           type: {
             [Op.not]: TestType.Scenario
           },
-          enabled: true,
+          enabled: 1,
           id: {
             [Op.in]: payload
           }

@@ -36,16 +36,22 @@ module.exports = (sequelize) => {
         }
       },
       type: { type: DataTypes.INTEGER, defaultValue: 0 },
+      title: { type: DataTypes.STRING },
       given: { type: DataTypes.TEXT("medium") },
       when: { type: DataTypes.TEXT("medium") },
       then: { type: DataTypes.TEXT("medium") },
       execSteps: { type: DataTypes.JSON },
       settings: { type: DataTypes.JSON },
       tags: { type: DataTypes.JSON },
+      updatedBy: {
+        type: DataTypes.UUID
+      },
       AccountId: { type: DataTypes.UUID, unique: "comp" },
-      TestScenarioId: { type: DataTypes.UUID, unique: "comp" }
+      TestScenarioId: { type: DataTypes.UUID, unique: "comp" },
+      TenantId: { type: DataTypes.UUID }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       paranoid: true,
       timestamps: true,
       tableName: "automation_cases"
@@ -55,6 +61,7 @@ module.exports = (sequelize) => {
     TestCase.hasMany(models.Job);
     TestCase.belongsTo(models.Account, { onDelete: "cascade" });
     TestCase.belongsTo(models.TestScenario, { onDelete: "cascade" });
+    TestCase.belongsTo(models.Tenant, { onDelete: "SET NULL" });
   };
   return TestCase;
 };

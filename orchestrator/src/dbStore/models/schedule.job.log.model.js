@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       result: { type: DataTypes.JSON }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       paranoid: false,
       timestamps: false,
       tableName: "automation_schedule_job_log"

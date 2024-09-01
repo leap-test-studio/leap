@@ -83,7 +83,7 @@ async function updateJob(id, params) {
   const job = await getJobInfo(id);
   Object.assign(job, params);
   job.changed("updatedAt", true);
-  job.updatedAt = Date.now();
+  job.updatedAt = new Date();
   return await job.save();
 }
 
@@ -92,12 +92,13 @@ async function updateScreenshot(id, payload) {
   if (!job.screenshot) job.screenshot = [];
   job.screenshot = [...job.screenshot, payload];
   job.changed("updatedAt", true);
-  job.updatedAt = Date.now();
+  job.updatedAt = new Date();
   return await job.save();
 }
 
 async function consolidate(buildId) {
   try {
+    logger.info("Consolidate results for", buildId);
     const minmax = await global.DbStoreModel.Job.findAll({
       attributes: [
         [sequelize.fn("MIN", sequelize.col("startTime")), "MIN"],
@@ -133,8 +134,8 @@ async function consolidate(buildId) {
       rmap = {};
 
     results.forEach((r) => {
-      rmap[r.result] = (rmap[r.result] || 0) + r.Count;
-      total += r.Count;
+      rmap[r.result] = Number(rmap[r.result] || 0) + Number(r.Count);
+      total += Number(r.Count);
     });
 
     const draft = rmap[TestStatus.DRAFT] || 0,
@@ -142,7 +143,7 @@ async function consolidate(buildId) {
       failed = rmap[TestStatus.FAIL] || 0,
       skipped = rmap[TestStatus.SKIP] || 0,
       running = rmap[TestStatus.RUNNING] || 0;
-
+    logger.trace("rmap", rmap);
     const sum = passed + failed + skipped + running;
 
     if (running > 0 || draft > 0) {
@@ -160,6 +161,7 @@ async function consolidate(buildId) {
 }
 
 async function _updateBuildStatus(id, params) {
+  logger.trace("Update Build Status", id, params);
   const build = await getBuildInfo(id);
   Object.assign(build, params);
   build.changed("updatedAt", true);

@@ -29,7 +29,7 @@ class Task extends EventEmitter {
   }
 
   shouldTaskContinue() {
-    return !this._interruptTask || !this._skipSteps;
+    return !this._interruptTask || !this._skipSteps || this.steps.filter((s) => s.result === TestStatus.FAIL).length === 0;
   }
 
   addStep(step) {

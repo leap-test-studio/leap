@@ -3,7 +3,8 @@ const router = express.Router();
 const Joi = require("joi");
 const validateRequest = require("../_middleware/validate-request");
 const authorize = require("../_middleware/authorize");
-const Role = require("../_helpers/role");
+const AuthRoles = require("../_helpers/role");
+const Role = require("../_helpers/role").Role;
 const service = require("../services/account.service");
 const moment = require("moment");
 const NAME_REGEX = /^[a-zA-Z0-9_ ]{4,25}$/;
@@ -33,12 +34,12 @@ router.post("/forgot-password", forgotPasswordSchema, forgotPassword);
 router.post("/validate-reset-token", validateResetTokenSchema, validateResetToken);
 
 router.post("/reset-password", resetPasswordSchema, resetPassword);
-router.get("/role/:role", checkCSRF, authorize(Role.Admin), getAllAccountsByRole);
-router.get("/", checkCSRF, authorize(Role.Admin), getAllAccounts);
+router.get("/:tenantId/role/:role", checkCSRF, authorize(AuthRoles.Admins), getAllAccountsByRole);
+router.get("/", checkCSRF, authorize(AuthRoles.Admins), getAllAccounts);
 
 router.get("/:id", authorize(), getById);
-router.post("/", authorize([Role.Admin]), createSchema, create);
-router.post("/:id/update", authorize(), updateSchema, update);
+router.post("/", authorize(AuthRoles.Admins), accountSchema, create);
+router.put("/:id", authorize(AuthRoles.Admins), updateAccountSchema, update);
 
 module.exports = router;
 
@@ -62,12 +63,7 @@ function authenticate(req, res) {
     })
     .then(({ refreshToken, ...account }) => {
       return res.json({
-        id: account.id,
-        name: account.name,
-        email: account.email,
-        role: account.role,
-        isVerified: account.isVerified,
-        jwtToken: account.jwtToken,
+        ...account,
         refreshToken,
         csrfToken: req.session.csrfToken
       });
@@ -101,6 +97,7 @@ function refreshTokenMW(req, res) {
         isVerified: account.isVerified,
         jwtToken: account.jwtToken,
         refreshToken,
+        tenant: account.tenant,
         csrfToken: req.session.csrfToken
       });
     })
@@ -354,19 +351,29 @@ function getById(req, res) {
     });
 }
 
-function createSchema(req, res, next) {
+function accountSchema(req, res, next) {
   validateRequest(req, next, {
     name: Joi.string().min(4).regex(NAME_REGEX).rule(NAME_RULE),
     email: Joi.string().email().required(),
-    contact: Joi.string(),
-    country: Joi.string(),
+    TenantId: Joi.string().allow(null, "").optional(),
     password: Joi.string().min(8).regex(PASSWORD_REGEX).rule(PASSWORD_RULE),
     confirmPassword: Joi.any()
       .equal(Joi.ref("password"))
       .required()
       .label("Confirm password")
       .messages({ "any.only": "Confirm Password does not match" }),
-    role: Joi.string().valid(Role.Admin, Role.Manager, Role.Lead).required()
+    role: Joi.string()
+      .valid(...AuthRoles.All)
+      .required()
+  });
+}
+function updateAccountSchema(req, res, next) {
+  validateRequest(req, next, {
+    name: Joi.string().min(4).regex(NAME_REGEX).rule(NAME_RULE),
+    TenantId: Joi.string().allow(null, "").optional(),
+    role: Joi.string()
+      .valid(...AuthRoles.All)
+      .required()
   });
 }
 
@@ -382,29 +389,6 @@ function create(req, res) {
         message: status[`${status.INTERNAL_SERVER_ERROR}_MESSAGE`]
       });
     });
-}
-
-function updateSchema(req, res, next) {
-  const schemaRules = {
-    name: Joi.string().min(4).regex(NAME_REGEX).rule(NAME_RULE),
-    email: Joi.string().email().required(),
-    contact: Joi.string(),
-    country: Joi.string(),
-    password: Joi.string().min(8).regex(PASSWORD_REGEX).rule(PASSWORD_RULE),
-    confirmPassword: Joi.any()
-      .equal(Joi.ref("password"))
-      .required()
-      .label("Confirm password")
-      .messages({ "any.only": "Confirm Password does not match" })
-  };
-
-  // only admins can update role
-  if (req.auth.role === Role.Admin || req.auth.role === Role.Lead) {
-    schemaRules.role = Joi.string().valid(Role.Admin, Role.Lead, Role.Engineer).empty("");
-  }
-
-  const schema = Joi.object(schemaRules).with("password", "confirmPassword");
-  validateRequest(req, next, schema);
 }
 
 function update(req, res) {

@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       // disable default timestamp fields (createdAt and updatedAt)
       timestamps: false,
       tableName: "auth_tokens"

@@ -1,8 +1,8 @@
 const { Op } = require("sequelize");
 const ProjectService = require("./project.service");
-const { getPagination, getPagingData } = require("../utils");
+const { getPagination, getPagingData, TestCaseTypes, getAccountName } = require("../utils");
 const fs = require("fs");
-const Types = ["Definition", "REST API", "Web", "SSH"];
+const { isEmpty } = require("lodash");
 
 module.exports = {
   list,
@@ -11,46 +11,50 @@ module.exports = {
   get,
   update,
   delete: _delete,
-  import: _import
+  import: _import,
+  swap
 };
 
-async function _import(accountId, scenarioId, testcaseId, file) {
+async function _import(tenantId, accountId, projectId, suiteId, testcaseId, file) {
   try {
     const rawdata = fs.readFileSync(file);
     const tc = JSON.parse(rawdata);
-    delete tc.seqNo;
-    delete tc.given;
-    delete tc.when;
-    delete tc.then;
-    tc.type = Types.findIndex((t) => t == tc.type);
-    return await update(accountId, scenarioId, testcaseId, tc);
+    return await update(tenantId, accountId, projectId, suiteId, testcaseId, {
+      execSteps: tc.execSteps,
+      type: TestCaseTypes.findIndex((t) => t == tc.type),
+      settings: tc.settings,
+      tags: tc.tags
+    });
   } catch (e) {
     logger.error(e);
     return Promise.reject(e);
   }
 }
 
-async function list(AccountId, TestScenarioId, page = 0, size = 10000) {
+async function list(TenantId, TestScenarioId, page = 0, size = 10000) {
   const { limit, offset } = getPagination(page, size);
   const data = await global.DbStoreModel.TestCase.findAndCountAll({
     where: {
-      AccountId,
+      TenantId,
       TestScenarioId
     },
     order: [["seqNo", "ASC"]],
     limit,
     offset
   });
-  return getPagingData(data, page, limit);
+  const response = getPagingData(JSON.parse(JSON.stringify(data)), page, limit);
+  await getAccountName(response.items, ["updatedBy", "AccountId"]);
+  return response;
 }
 
-async function create(AccountId, TestScenarioId, payload) {
+async function create(TenantId, AccountId, TestScenarioId, payload) {
   const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
   const testScenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
-      ProjectMasterId: ts.ProjectMasterId
+      ProjectMasterId: ts.ProjectMasterId,
+      TenantId
     }
   });
 
@@ -58,7 +62,8 @@ async function create(AccountId, TestScenarioId, payload) {
     where: {
       TestScenarioId: {
         [Op.in]: testScenarios.map((scenario) => scenario.id)
-      }
+      },
+      TenantId
     }
   });
   if (nextSeqNo == null) {
@@ -68,7 +73,8 @@ async function create(AccountId, TestScenarioId, payload) {
 
   const tc = global.DbStoreModel.TestCase.build({
     ...payload,
-    enabled: true,
+    enabled: 1,
+    TenantId,
     AccountId,
     TestScenarioId,
     seqNo: nextSeqNo,
@@ -79,17 +85,18 @@ async function create(AccountId, TestScenarioId, payload) {
   return tc;
 }
 
-async function clone(AccountId, TestScenarioId, id) {
+async function clone(TenantId, AccountId, TestScenarioId, id) {
   const ts = await global.DbStoreModel.TestScenario.findByPk(TestScenarioId);
 
   const testScenarios = await global.DbStoreModel.TestScenario.findAll({
     attributes: ["id"],
     where: {
-      ProjectMasterId: ts.ProjectMasterId
+      ProjectMasterId: ts.ProjectMasterId,
+      TenantId
     }
   });
 
-  let tc = await get(AccountId, TestScenarioId, id);
+  let tc = await get(TenantId, TestScenarioId, id);
   tc = tc.toJSON();
   delete tc.id;
   delete tc.seqNo;
@@ -107,6 +114,7 @@ async function clone(AccountId, TestScenarioId, id) {
 
   const tcClone = global.DbStoreModel.TestCase.build({
     ...tc,
+    TenantId,
     AccountId,
     TestScenarioId,
     seqNo: nextSeqNo,
@@ -117,32 +125,56 @@ async function clone(AccountId, TestScenarioId, id) {
   return tcClone;
 }
 
-async function update(accountId, projectId, scenarioId, id, payload) {
-  const tc = await get(accountId, scenarioId, id);
-  Object.assign(tc, payload);
+async function swap(tenantId, accountId, projectId, suiteId, source, target) {
+  const sourceTc = await get(tenantId, suiteId, source);
+  const sourceSeqNo = sourceTc.seqNo;
+  sourceTc.seqNo = 99999;
+  await sourceTc.save();
+
+  const targetTc = await get(tenantId, suiteId, target);
+  const targetSeqNo = targetTc.seqNo;
+  targetTc.seqNo = sourceSeqNo;
+  targetTc.changed("updatedAt", true);
+  targetTc.updatedAt = Date.now();
+  await targetTc.save();
+
+  sourceTc.seqNo = targetSeqNo;
+  sourceTc.changed("updatedAt", true);
+  sourceTc.updatedAt = Date.now();
+  await sourceTc.save();
+  ProjectService.update(tenantId, accountId, projectId, {});
+  return sourceTc;
+}
+
+async function update(tenantId, accountId, projectId, suiteId, id, payload) {
+  const tc = await get(tenantId, suiteId, id);
+  if (!isEmpty(payload)) {
+    Object.assign(tc, payload);
+  }
   tc.changed("updatedAt", true);
+  tc.updatedBy = accountId;
   tc.updatedAt = Date.now();
   await tc.save();
-  ProjectService.update(accountId, projectId, {});
+  ProjectService.update(tenantId, accountId, projectId, {});
   return tc;
 }
 
-async function _delete(accountId, scenarioId, id) {
-  const tc = await get(accountId, scenarioId, id);
+async function _delete(tenantId, suiteId, id) {
+  const tc = await get(tenantId, suiteId, id);
   await tc.destroy({ force: true });
   return tc;
 }
 
 // helper functions
 
-async function get(AccountId, TestScenarioId, id) {
+async function get(TenantId, TestScenarioId, id) {
   let tc;
-  if (AccountId) {
+  if (TenantId) {
     tc = await global.DbStoreModel.TestCase.findOne({
       include: global.DbStoreModel.TestScenario,
       where: {
         id,
-        AccountId,
+        TenantId,
         TestScenarioId
       }
     });
@@ -150,6 +182,6 @@ async function get(AccountId, TestScenarioId, id) {
     tc = await global.DbStoreModel.TestCase.findByPk(id);
   }
 
-  if (!tc) throw new Error("Test case not found");
+  if (!tc) throw new Error("Test Case Not Found");
   return tc;
 }

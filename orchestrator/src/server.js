@@ -17,7 +17,7 @@ DbStore.init()
   .then(async (result) => {
     if (result) {
       logger.info("Database Initialized");
-      await DbStore.seedUsers();
+      //await DbStore.seedUsers();
       await JobScheduler.load();
       await BuildManager.load();
       require("./index");

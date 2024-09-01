@@ -1,5 +1,6 @@
 const isEqual = require("lodash/isEqual");
 const isEmpty = require("lodash/isEmpty");
+const vm = require("vm");
 
 const Task = require("./Task");
 const { TestStatus } = require("../constants");
@@ -20,22 +21,38 @@ class TestRunner extends Task {
 
     try {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-      stepOutcome.actual = await httpRequest({
-        method: this.settings.method,
-        baseUrl: this.settings.baseURL,
-        uri: this.settings.url,
-        timeout: this.settings.timeout,
-        headers: this.settings.headers,
-        json: !isEmpty(this.execSteps?.reqbody) ? JSON.parse(this.execSteps?.reqbody) : null
+      const headers = {};
+      this.settings.header?.forEach((header) => {
+        headers[header.key] = header.value;
       });
+      let outcome = await httpRequest({
+        method: this.settings.method,
+        baseUrl: this.settings.host,
+        uri: this.settings.path,
+        timeout: this.settings.timeout,
+        headers,
+        json: !isEmpty(this.execSteps?.reqBody) ? JSON.parse(this.execSteps?.reqBody) : null
+      });
+      stepOutcome.actual = outcome.print();
       logger.info("API Response:", stepOutcome.actual);
-      logger.info("Expected:", this.execSteps?.resBody);
-      let result = this.execSteps?.statusCode === stepOutcome.actual.statusCode;
-      if (result && !isEmpty(this.execSteps?.resBody)) {
-        result = isEqual(JSON.parse(this.execSteps?.resBody), stepOutcome.actual.body);
+      logger.info("Expected StatusCode:", this.execSteps?.statusCode, ", Actual StatusCode:", outcome.statusCode);
+      logger.info("Expected ResponsePayload:", this.execSteps?.resBody, ", Actual ResponsePayload:", outcome.body);
+      logger.info("Expression:", this.execSteps?.condition);
+
+      let result = this.execSteps?.statusCode === outcome.statusCode;
+      if (result && !isEmpty(this.execSteps?.condition)) {
+        try {
+          const context = vm.createContext({ ...outcome, print: null });
+          new vm.Script("finalExpr=" + this.execSteps?.condition).runInContext(context);
+          result = context.finalExpr;
+        } catch (e) {
+          logger.error(e);
+        }
+      } else if (result && !isEmpty(this.execSteps?.resBody)) {
+        result = isEqual(JSON.parse(this.execSteps?.resBody), outcome.response);
       }
-      logger.info("Actual:", stepOutcome.actual);
       stepOutcome.result = result ? TestStatus.PASS : TestStatus.FAIL;
+      logger.info("Test Result:", result ? "Pass" : "Fail");
     } catch (e) {
       logger.error("API Request Errored", e);
       stepOutcome.result = TestStatus.FAIL;

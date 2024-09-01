@@ -1,0 +1,22 @@
+{
+  "definitions": {
+    "example.HelloRequest": {
+      "title": "HelloRequest",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "example.HelloResponse": {
+      "title": "HelloResponse",
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

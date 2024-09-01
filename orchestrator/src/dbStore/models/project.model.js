@@ -21,15 +21,20 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       settings: { type: DataTypes.JSON },
+      updatedBy: {
+        type: DataTypes.UUID
+      },
       isActivated: {
         type: DataTypes.VIRTUAL,
         get() {
           return this.status === 1;
         }
       },
-      AccountId: { type: DataTypes.UUID, unique: "comp" }
+      AccountId: { type: DataTypes.UUID },
+      TenantId: { type: DataTypes.UUID, unique: "comp" }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       paranoid: true,
       timestamps: true,
       tableName: "automation_projects"
@@ -38,7 +43,9 @@ module.exports = (sequelize, DataTypes) => {
   ProjectMaster.associate = function (models) {
     ProjectMaster.hasMany(models.TestScenario);
     ProjectMaster.hasMany(models.BuildMaster);
+    ProjectMaster.hasMany(models.TestPlan);
     ProjectMaster.belongsTo(models.Account, { onDelete: "cascade" });
+    ProjectMaster.belongsTo(models.Tenant, { onDelete: "SET NULL" });
   };
   return ProjectMaster;
 };

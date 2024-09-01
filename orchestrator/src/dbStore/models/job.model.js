@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       endTime: { type: DataTypes.DATE }
     },
     {
+      schema: global.config.DBstore.schemaName || "public",
       paranoid: false,
       timestamps: true,
       tableName: "automation_jobs"
