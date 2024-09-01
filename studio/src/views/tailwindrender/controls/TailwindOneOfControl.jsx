@@ -85,6 +85,9 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
         isSearchable={true}
         className="rounded text-color-label border placeholder-slate-500 shadow focus:shadow-md"
         styles={ReactSelectCustomStyles}
+        menuPosition="absolute"
+        menuPlacement="auto"
+        menuPortalTarget={document.body}
       />
       <JsonFormsDispatch schema={selectedSchema} uischema={selectedUiSchema} path={path} renderers={renderers} cells={cells} />
     </Card>

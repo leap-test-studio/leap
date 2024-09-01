@@ -63,27 +63,25 @@ const ExpandPanelRenderer = React.memo((props) => {
       <div className="flex flex-row">
         {!readonly && (
           <div className="flex flex-col items-center justify-center">
-            <Tooltip title={`Delete this ${appliedUiSchemaOptions.rowTitle || "Record"} ?`}>
-              <IconButton
-                id={`${path}-delete-row-${index}`}
-                icon="Delete"
-                ariaLabel="Delete Record"
-                onClick={removeItems(path, [index])}
-                className="text-color-0600 hover:text-red-600"
-                showShadow={false}
-              />
-            </Tooltip>
+            <IconButton
+              id={`${path}-delete-row-${index}`}
+              icon="Delete"
+              ariaLabel="Delete Record"
+              onClick={removeItems(path, [index])}
+              className="text-color-0600 hover:text-cds-red-0800"
+              showShadow={false}
+              tooltip={`Delete this ${appliedUiSchemaOptions.rowTitle || "Record"} ?`}
+            />
             {showAddItem && (
-              <Tooltip title={`Clone and add ${appliedUiSchemaOptions.rowTitle || "Record"}`}>
-                <IconButton
-                  id={`clone-add-${index}`}
-                  className="text-color-0600 hover:text-color-0500"
-                  icon="FileCopy"
-                  ariaLabel="Add Record"
-                  onClick={addItem(path, [index])}
-                  showShadow={false}
-                />
-              </Tooltip>
+              <IconButton
+                id={`clone-add-${index}`}
+                className="text-color-0600 hover:text-color-0500"
+                icon="FileCopy"
+                ariaLabel="Add Record"
+                onClick={addItem(path, [index])}
+                showShadow={false}
+                tooltip={`Clone and add ${appliedUiSchemaOptions.rowTitle || "Record"}`}
+              />
             )}
           </div>
         )}
@@ -97,6 +95,7 @@ const ExpandPanelRenderer = React.memo((props) => {
                 ariaLabel="Move up"
                 onClick={moveUp(path, index)}
                 bg=""
+                tooltip="Move Item Up"
               />
             )}
             {enableMoveDown && (
@@ -107,6 +106,7 @@ const ExpandPanelRenderer = React.memo((props) => {
                 ariaLabel="Move down"
                 onClick={moveDown(path, index)}
                 bg=""
+                tooltip="Move Item Down"
               />
             )}
           </div>

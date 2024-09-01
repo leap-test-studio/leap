@@ -24,7 +24,7 @@ const TailwindMultipleSelectRenderer = React.memo(
 
     return (
       <div className={`grow mb-1 mx-1 relative ${disabled ? "opacity-50 select-none cursor-not-allowed" : ""}`}>
-        <LabelRenderer path="" label={label} />
+        <LabelRenderer label={label} />
 
         <button
           id="dropdownBgHoverButton"

@@ -2,9 +2,9 @@ import React from "react";
 
 import { IconRenderer } from "../../../utilities";
 
-const LabelRenderer = React.memo(({ path, label, fontSize, description, ...props }) => {
+const LabelRenderer = React.memo(({ path = "", label, fontSize, description, ...props }) => {
   return (
-    <div htmlFor={path} className="flex items-center text-[10px] font-medium text-color-label select-none mr-2">
+    <div htmlFor={path} className="flex items-center text-xs font-medium text-color-label select-none mt-1">
       <div className="flex">
         <label style={{ fontSize: fontSize !== undefined ? fontSize : "10px" }}>{label}</label>
         {showAsRequired(props) && <label className="text-red-600 items-center">*</label>}

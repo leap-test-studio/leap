@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect } from "react";
 import isEmpty from "lodash/isEmpty";
 
-import { EmptyIconRenderer, Pagination, IconRenderer } from "../utilities";
+import { EmptyIconRenderer, Pagination, IconRenderer, Centered } from ".";
 import WebContext from "../context/WebContext";
 
-export default function TableRenderer({
+export function TableRenderer({
   columns = [],
   data = [],
   pageSizes,
@@ -15,7 +15,12 @@ export default function TableRenderer({
   showSelect,
   getData
 }) {
-  if (isEmpty(data)) return <EmptyIconRenderer title="No data found" fill="#1e5194" />;
+  if (isEmpty(data))
+    return (
+      <Centered>
+        <EmptyIconRenderer title="No Data" />
+      </Centered>
+    );
 
   const defaultPage = pageSizes?.find((p) => p.default)?.value || 50;
   const [pageSize, setPageSize] = useState(defaultPage);
@@ -156,14 +161,14 @@ function TableHeader({
   };
 
   return (
-    <thead className="ext-xs text-white bg-color-0600 rounded-sm">
+    <thead className="text-xs text-color-label bg-color-0100 border border-color-0300 rounded-sm sticky top-0">
       <tr>
         {showSelect && (
           <th className="border border-r-color-0300 w-10">
             <input
               type="checkbox"
               id="selectAll"
-              className="rounded m-2 p-1.5 sticky top-0 select-none font-semibold text-color-label text-left tracking-wider"
+              className="rounded m-2 p-1.5 select-none font-semibold text-color-label text-left tracking-wider"
               checked={isCheckAll}
               onChange={handleSelectAll}
             />
@@ -172,7 +177,7 @@ function TableHeader({
         {columns.map(({ title, field, sortable, width, style = "text-left", sorter }, index, arr) => (
           <th
             key={index}
-            className={`p-1.5 sticky top-0 ${style} ${
+            className={`p-1.5 ${style} ${
               sortable ? "cursor-pointer" : ""
             } select-none font-semibold tracking-wider ${index === 0 ? "rounded-tl-lg" : index === arr.length - 1 ? "rounded-tr-lg" : ""} ${index < arr?.length && "border border-r-color-0300"}`}
             style={{ width: width + "px" }}

@@ -4,7 +4,7 @@ import TagsInput from "./TagsInput";
 export default function TailwindTagsRenderer(props) {
   if (!props.visible) return null;
   return (
-    <div className="grow mb-1 mx-1">
+    <div className="flex flex-col p-2 border rounded m-2">
       {props.label?.length > 0 && <LabelRenderer {...props} />}
       <TagsInput
         id={props.id}

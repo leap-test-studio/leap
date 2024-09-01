@@ -8,7 +8,7 @@ export const TailwindPrimitiveArrayControlRenderer = (props) => {
   const { id, visible, ctx, path, schema, label, addItem, removeItems, description, handleChange } = props;
   if (!visible) return null;
   return (
-    <div className="grow mb-1 mx-1">
+    <div className="flex flex-col p-2 border rounded m-2">
       {label?.length > 0 && <LabelRenderer {...props} />}
       <TagsInput
         id={id}

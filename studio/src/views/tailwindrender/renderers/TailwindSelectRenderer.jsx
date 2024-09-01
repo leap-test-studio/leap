@@ -57,7 +57,6 @@ const TailwindSelectRenderer = React.memo(
         <ReactSelect
           id={`select-${id}`}
           classNamePrefix={`twr-select-${id}`}
-          className="caret-slate-300 block rounded border text-color-0600 placeholder-color-0400 shadow focus:shadow-md"
           placeholder={!isEmpty(label) ? label : "Select..."}
           styles={ReactSelectCustomStyles}
           isSearchable={enableFilter}
@@ -67,6 +66,7 @@ const TailwindSelectRenderer = React.memo(
           isDisabled={!enabled}
           menuPortalTarget={document.body}
           menuPosition="absolute"
+          menuPlacement="auto"
           required={props?.required}
         />
         {appliedUiSchemaOptions.returnIndex != null && <ErrorMessage id={id} path={path} errors={errors} />}

@@ -710,11 +710,9 @@ const SvgComponent = (props) => (
   </svg>
 );
 
-export const EmptyIconRenderer = ({ title, fill = "#1e5194", showIcon = true }) => (
-  <Centered>
+export const EmptyIconRenderer = ({ title, fill = "#ad8bfa", showIcon = true }) => (
+  <div className={`flex flex-col items-center justify-center py-5 px-10 ${showIcon ? "h-56 bg-white rounded border mt-10 mb-5" : "h-20"}`}>
     {showIcon && <SvgComponent className="h-48" fill={fill} />}
-    <h6 style={{ color: fill }} className="select-none">
-      {title}
-    </h6>
-  </Centered>
+    <label className="select-none text-color-0600">{title}</label>
+  </div>
 );

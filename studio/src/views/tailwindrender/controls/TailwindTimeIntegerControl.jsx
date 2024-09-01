@@ -5,8 +5,7 @@ import { convertMsToHM } from "../util/converter";
 
 function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
   if (!visible) return null;
-
-  const { hours, minutes, seconds } = convertMsToHM(data || 0);
+  const { hours, minutes, seconds } = convertMsToHM(data || props.schema?.default || 0);
   return (
     <div className="grid grid-cols-4 gap-2 items-center px-2">
       <LabelRenderer fontSize="14px" path={path} {...props} />
@@ -19,7 +18,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Hours"}
           onWheel={(ev) => ev.target.blur()}
           autoComplete="off"
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none w-full ${
             !props.enabled && "bg-slate-200"
           }`}
           value={hours}
@@ -43,7 +42,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Minutes"}
           onWheel={(ev) => ev.target.blur()}
           autoComplete="off"
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none w-full ${
             !props.enabled && "bg-slate-200"
           }`}
           value={minutes}
@@ -67,7 +66,7 @@ function TailwindTimeInteger({ visible, path, data, handleChange, ...props }) {
           id={path + ":Seconds"}
           autoComplete="off"
           onWheel={(ev) => ev.target.blur()}
-          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:outline-none w-full ${
+          className={`text-xs caret-slate-300 block px-1.5 py-0.5 rounded border placeholder-slate-500 shadow focus:shadow-md focus:border-color-0600 border-slate-300 focus:ring-color-0500 focus:outline-none w-full ${
             !props.enabled && "bg-slate-200"
           }`}
           value={seconds}

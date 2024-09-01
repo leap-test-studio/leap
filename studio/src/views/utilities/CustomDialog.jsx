@@ -84,24 +84,24 @@ export const CustomDialog = ({
                     largeScreen ? "w-[60vw]" : "w-[28vw]"
                   } ${customWidth} ${customHeight}`}
                 >
-                  <div className="flex flex-col h-fit" style={contentHeight}>
+                  <div className="flex flex-col" style={contentHeight}>
                     {title != null && (
-                      <div className="text-base font-medium leading-6 text-color-label group flex items-start justify-between px-0.5 border-b border-solid border-slate-300 rounded-t">
+                      <div className="text-base font-medium leading-6 text-color-label group flex items-start justify-between p-1 border-b border-solid border-slate-300 rounded-t">
                         <div className="text-color-label font-medium text-lg tracking-wide select-none">{title}</div>
                         <button type="button" onClick={onClose} className="text-red-600 hover:text-red-500 focus:outline-none">
                           <IconRenderer icon="Close" className="h-5 w-5" />
                         </button>
                       </div>
                     )}
-                    <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar">{children}</div>
+                    <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar px-2 py-1">
+                      {children}
+                    </div>
                     {onSave && (
                       <div
-                        className={`flex border-t border-solid border-slate-300 ${
-                          additionalInfo ? "justify-between" : "justify-end"
-                        } w-full mt-1.5 pt-1`}
+                        className={`flex flex-row items-center border-t border-solid border-slate-300 ${additionalInfo ? "justify-between" : "justify-end"} w-full mt-2`}
                       >
                         {additionalInfo}
-                        <div className="flex">
+                        <div className="flex flex-row items-center justify-end pt-2">
                           <CloseButton onClose={onClose} />
                           <IconButton
                             id="form-submit-btn"

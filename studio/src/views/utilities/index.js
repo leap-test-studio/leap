@@ -18,3 +18,4 @@ export * from "./Spinner";
 export * from "./tooltip";
 export * from "./pagination";
 export * from "./iconrenderer";
+export * from "./TableRenderer";

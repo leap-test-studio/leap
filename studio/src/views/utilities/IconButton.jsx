@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { IconRenderer } from "./iconrenderer";
+import { Tooltip } from "./tooltip";
 
 export const IconButton = ({
   id,
@@ -14,7 +15,8 @@ export const IconButton = ({
   iconSize = "16",
   showShadow = true,
   defaultShowTitle = true,
-  color
+  color,
+  tooltip
 }) => {
   const [showTitle, setShowTitle] = useState(defaultShowTitle);
   const toggleShowTitle = () => {
@@ -23,13 +25,13 @@ export const IconButton = ({
     }
   };
 
-  return (
+  const Button = () => (
     <button
       id={id}
       disabled={disabled}
       className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded text-white ${
         title !== undefined ? "px-1" : ""
-      } mx-2 ${showShadow ? "shadow hover:shadow-xl" : ""} inline-flex items-center justify-center`}
+      } mr-2 ${showShadow ? "shadow hover:shadow-xl" : ""} inline-flex items-center justify-center`}
       onClick={onClick}
       onMouseEnter={toggleShowTitle}
       onMouseLeave={toggleShowTitle}
@@ -38,4 +40,12 @@ export const IconButton = ({
       {title !== undefined && showTitle === true && <span className="pr-2 pl-1 py-0.5 text-xs select-none">{title}</span>}
     </button>
   );
+
+  if (tooltip)
+    return (
+      <Tooltip title={tooltip}>
+        <Button />
+      </Tooltip>
+    );
+  return <Button />;
 };

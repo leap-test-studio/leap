@@ -8,7 +8,7 @@ import range from "lodash/range";
 
 import ListWithDetailMasterItem from "./ListWithDetailMasterItem";
 import TableToolbar from "../renderers/Table/TableToolbar";
-import { EmptyIconRenderer } from "../../utilities";
+import { Centered, EmptyIconRenderer } from "../../utilities";
 import { withJsonFormsArrayProps } from "../common/JsonFormsArrayProps";
 
 const TailwindListWithDetailRenderer = ({
@@ -80,7 +80,9 @@ const TailwindListWithDetailRenderer = ({
                 />
               ))
             ) : (
-              <EmptyIconRenderer title="No items found" fill="#90b6e8" showIcon={false} />
+              <Centered>
+                <EmptyIconRenderer title="No items found" showIcon={false} />
+              </Centered>
             )}
           </List>
         </div>

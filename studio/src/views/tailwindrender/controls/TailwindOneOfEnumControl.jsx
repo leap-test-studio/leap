@@ -33,6 +33,9 @@ export const TailwindOneOfEnum = (props) => {
         isSearchable={true}
         className="rounded border text-color-label placeholder-slate-500 shadow focus:shadow-md"
         styles={ReactSelectCustomStyles}
+        menuPosition="absolute"
+        menuPlacement="auto"
+        menuPortalTarget={document.body}
       />
     </div>
   );

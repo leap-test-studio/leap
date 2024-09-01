@@ -5,9 +5,11 @@ export const ReactSelectCustomStyles = {
     padding: 0,
     minHeight: 26,
     height: 26,
-    border: "1px solid #CBD5E1",
+    outline: "none",
+    cursor: "pointer",
+    border: "1.5px solid #CBD5E1",
     "&:hover": {
-      border: "1px solid #CBD5E1 !important"
+      border: "1.8px solid #6d48bf !important"
     }
   }),
   menuPortal: (base) => ({ ...base, zIndex: 100000 }),

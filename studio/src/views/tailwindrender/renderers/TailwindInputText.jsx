@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import merge from "lodash/merge";
-
+import { usePopper } from "react-popper";
 import LabelRenderer from "./common/LabelRenderer";
 import ErrorMessage from "./common/ErrorMessage";
 import { IconRenderer } from "../../utilities";
+import OverlayKeys from "./common/OverlayKeys";
 
 /**
  * Default renderer for a string.
@@ -12,22 +13,44 @@ import { IconRenderer } from "../../utilities";
 const TailwindInputText = React.memo((props) => {
   const { id, visible, enabled, uischema, path, errors, schema, label, description = "", handleChange, data, trim = false, config } = props;
   const [passwordShow, setPasswordShow] = useState(schema?.format !== "password");
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [referenceElement, setReferenceElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: "bottom-start"
+  });
 
   if (!visible) return null;
 
   const isError = !isEmpty(errors);
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
-  const temp = data || "";
-  const value = schema?.format === "bytes" ? atob(temp) : temp;
+  const value = data || "";
 
-  const onChange = (ev) => {
-    ev.preventDefault();
-    handleChange(path, schema?.format === "bytes" ? btoa(ev.target.value) : ev.target.value);
+  const shouldSuggest = () => {
+    if (appliedUiSchemaOptions.suggest) {
+      const textBeforeCursor = value.slice(-2);
+      setShowOverlay(textBeforeCursor.endsWith("${"));
+    }
+  };
+
+  const onChange = (e) => {
+    e.preventDefault();
+    if (appliedUiSchemaOptions.suggest) {
+      const cursorPosition = e.target.selectionStart;
+      const textBeforeCursor = e.target.value.slice(0, cursorPosition);
+      setShowOverlay(textBeforeCursor.endsWith("${"));
+    }
+    handleChange(path, e.target.value);
+  };
+
+  const onBlur = (e) => {
+    e.preventDefault();
+    setTimeout(() => setShowOverlay(false), 100);
   };
 
   return (
-    <div className="grow mb-1 mx-1 select-none">
+    <div className="grow mb-1 mx-1 select-none" onBlur={onBlur}>
       {label?.length > 0 && <LabelRenderer {...props} />}
       <div>
         {schema?.format === "password" && (
@@ -48,15 +71,16 @@ const TailwindInputText = React.memo((props) => {
             </div>
           </div>
         )}
-        <>
+        <div className="relative">
           <form>
             {appliedUiSchemaOptions?.multi ? (
               <textarea
                 disabled={!enabled}
                 name={path}
                 id={id}
+                ref={setReferenceElement}
                 autoComplete="off"
-                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-36" : "h-16"} ${
+                className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-24" : "h-16"} ${
                   trim ? "text-[11px]" : "text-xs px-1.5 py-1"
                 } rounded border placeholder-gray-300 shadow focus:shadow-md ${
                   isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300 focus:ring-color-0500"
@@ -64,6 +88,7 @@ const TailwindInputText = React.memo((props) => {
                 placeholder={description}
                 value={value}
                 onChange={onChange}
+                onFocus={shouldSuggest}
               />
             ) : (
               <input
@@ -71,6 +96,7 @@ const TailwindInputText = React.memo((props) => {
                 type={passwordShow ? "text" : "password"}
                 name={path}
                 id={id}
+                ref={setReferenceElement}
                 className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${
                   trim ? "text-[11px] py-px px-1" : "text-xs px-1.5 py-1"
                 } rounded border text-color-label placeholder-gray-300 shadow focus:shadow-md ${
@@ -81,10 +107,22 @@ const TailwindInputText = React.memo((props) => {
                 placeholder={description}
                 value={value}
                 onChange={onChange}
+                onFocus={shouldSuggest}
               />
             )}
           </form>
-        </>
+          {appliedUiSchemaOptions.suggest && showOverlay && (
+            <div ref={setPopperElement} style={{ ...styles.popper, zIndex: Number.MAX_SAFE_INTEGER }} {...attributes.popper}>
+              <OverlayKeys
+                suggest={appliedUiSchemaOptions.suggest}
+                onSelect={(selected) => {
+                  setShowOverlay(false);
+                  handleChange(path, value + selected.key + "}");
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
       <ErrorMessage id={id} path={path} errors={errors} />
     </div>

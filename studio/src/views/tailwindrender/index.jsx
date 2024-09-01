@@ -9,10 +9,11 @@ import { tailwindIntegerCellTester, TailwindIntegerCell } from "./cells/Tailwind
 import { tailwindNumberCellTester, TailwindNumberCell } from "./cells/TailwindNumberCell";
 import { tailwindNumberFormatCellTester, TailwindNumberFormatCell } from "./cells/TailwindNumberFormatCell";
 import { tailwindOneOfEnumCellTester, TailwindOneOfEnumCell } from "./cells/TailwindOneOfEnumCell";
-import { tailwindTextCellTester, TailwindTextCell } from "./cells/TailwindTextCell";
+import { tailwindTextCellTester, TailwindTextCell, tailwindCronCellTester, TailwindCronCell } from "./cells/TailwindTextCell";
 import { tailwindTimeCellTester, TailwindTimeCell } from "./cells/TailwindTimeCell";
 
-import { tailwindTextControlTester, TailwindTextControl } from "./controls/TailwindTextControl";
+import { tailwindJsonControlTester, TailwindJsonControl } from "./controls/TailwindJsonControl";
+import { tailwindTextControlTester, TailwindTextControl, tailwindCronControlTester, TailwindCronControl } from "./controls/TailwindTextControl";
 import { tailwindNumberControlTester, TailwindNumberControl } from "./controls/TailwindNumberControl";
 import { tailwindTimeIntegerControlTester, TailwindTimeIntegerControl } from "./controls/TailwindTimeIntegerControl";
 import { tailwindIntegerControlTester, TailwindIntegerControl } from "./controls/TailwindIntegerControl";
@@ -98,6 +99,7 @@ const Cells = [
   { tester: tailwindNumberCellTester, cell: TailwindNumberCell },
   { tester: tailwindNumberFormatCellTester, cell: TailwindNumberFormatCell },
   { tester: tailwindOneOfEnumCellTester, cell: TailwindOneOfEnumCell },
+  { tester: tailwindCronCellTester, cell: TailwindCronCell },
   { tester: tailwindTextCellTester, cell: TailwindTextCell },
   { tester: tailwindTimeCellTester, cell: TailwindTimeCell }
 ];
@@ -113,7 +115,9 @@ const Renderers = [
   { tester: tailwindTimeIntegerControlTester, renderer: TailwindTimeIntegerControl },
   { tester: tailwindIntegerControlTester, renderer: TailwindIntegerControl },
   { tester: tailwindNumberControlTester, renderer: TailwindNumberControl },
+  { tester: tailwindJsonControlTester, renderer: TailwindJsonControl },
   { tester: tailwindTextControlTester, renderer: TailwindTextControl },
+  { tester: tailwindCronControlTester, renderer: TailwindCronControl },
   { tester: tailwindDateTimeControlTester, renderer: TailwindDateTimeControl },
   { tester: tailwindDateControlTester, renderer: TailwindDateControl },
   { tester: tailwindTimeControlTester, renderer: TailwindTimeControl },

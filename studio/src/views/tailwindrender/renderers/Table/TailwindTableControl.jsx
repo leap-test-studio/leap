@@ -8,7 +8,8 @@ import range from "lodash/range";
 import union from "lodash/union";
 
 import TableToolbar from "./TableToolbar";
-import { IconButton, Tooltip, EmptyIconRenderer } from "../../../utilities";
+import { IconButton, Tooltip, EmptyIconRenderer, Centered } from "../../../utilities";
+import { CardHeader } from "../../common/CardRenderer";
 
 const generateCells = (Cell, schema, uischema, rowPath, enabled, cells) => {
   if (schema?.type === "object") {
@@ -124,19 +125,19 @@ const NonEmptyRow = React.memo(
     return (
       <div key={childPath} className="w-full flex flex-row justify-between items-center text-xs bg-white my-1.5 shadow rounded">
         <div className="w-full flex flex-col">
-          <div className="flex flex-row justify-between items-center bg-color-0100 text-left text-xs font-medium text-color-primary px-2 py-1 rounded-t">
-            <span>{`${rowTitle || "Record"} #${rowIndex + 1}`}</span>
+          <CardHeader>
+            <span className="w-20">{`${rowTitle || "Record"} #${rowIndex + 1}`}</span>
             {!readonly && (
               <IconButton
                 id={`delete-item-${childPath}`}
                 icon="Delete"
                 ariaLabel="Delete"
                 onClick={() => openDeleteDialog(childPath, rowIndex)}
-                className="text-color-0600 hover:text-red-600"
+                className="text-color-0600 hover:text-cds-red-0800"
                 showShadow={false}
               />
             )}
-          </div>
+          </CardHeader>
           <div className="p-1">{generateCells(NonEmptyCell, schema, uischema, childPath, enabled, cells)}</div>
         </div>
         {enabled && showSortButtons && (
@@ -179,7 +180,11 @@ const TableRows = ({ data, path, schema, openDeleteDialog, moveUp, moveDown, uis
   const isExpanded = (index) => expanded === composePaths(path, `${index}`);
 
   if (data === 0) {
-    return <EmptyIconRenderer title="No records found" fill="#90b6e8" showIcon={false} />;
+    return (
+      <Centered>
+        <EmptyIconRenderer title="No records found" showIcon={false} />
+      </Centered>
+    );
   }
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   return (

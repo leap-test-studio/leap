@@ -6,7 +6,7 @@ import range from "lodash/range";
 
 import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import TableToolbar from "../renderers/Table/TableToolbar";
-import { IconButton, Tooltip, EmptyIconRenderer } from "../../utilities";
+import { IconButton, Tooltip, EmptyIconRenderer, Centered } from "../../utilities";
 
 export const TailwindArrayLayout = React.memo((props) => {
   const [expanded, setExpanded] = useState(false);
@@ -26,7 +26,7 @@ export const TailwindArrayLayout = React.memo((props) => {
     showAddItem = data < Number(appliedUiSchemaOptions.maximum);
   }
   return (
-    <div className="my-px">
+    <div className="my-px border rounded">
       <TableToolbar
         label={computeLabel(label, required, appliedUiSchemaOptions.hideRequiredAsterisk)}
         labelEnd={
@@ -43,7 +43,7 @@ export const TailwindArrayLayout = React.memo((props) => {
         schema={schema}
         readonly={readonly}
       />
-      <div className="bg-slate-50 rounded-b border mb-px">
+      <div className="bg-slate-50 mb-px">
         {data > 0 ? (
           map(range(data), (index) => {
             return (
@@ -68,7 +68,9 @@ export const TailwindArrayLayout = React.memo((props) => {
             );
           })
         ) : (
-          <EmptyIconRenderer title="No data found" fill="#90b6e8" showIcon={false} />
+          <Centered>
+            <EmptyIconRenderer title={`No ${label}`} showIcon={false} />
+          </Centered>
         )}
         {showAddItem && data !== 0 && (
           <div className="w-full flex flex-row justify-end text-color-0600 select-none mt-1">

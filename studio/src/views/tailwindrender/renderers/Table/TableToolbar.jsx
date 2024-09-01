@@ -2,11 +2,12 @@ import React from "react";
 import { createDefaultValue } from "@jsonforms/core";
 
 import { Tooltip, IconButton } from "../../../utilities";
+import { CardHeader } from "../../common/CardRenderer";
 //import ValidationIcon from "./ValidationIcon";
 
 const TableToolbar = React.memo(({ /*errors,*/ label, labelEnd, path, addItem, schema, enabled, createDefault, readonly = false }) => {
   return (
-    <div className="w-full flex flex-row justify-between items-center bg-color-0100 text-left text-xs font-medium text-color-primary px-2 py-1 rounded-t">
+    <CardHeader>
       <div className="w-full flex flex-row items-center justify-between">
         <label className="text-xs tracking-wide select-none">{label}</label>
         {labelEnd}
@@ -25,7 +26,7 @@ const TableToolbar = React.memo(({ /*errors,*/ label, labelEnd, path, addItem, s
           />
         </Tooltip>
       )}
-    </div>
+    </CardHeader>
   );
 });
 
