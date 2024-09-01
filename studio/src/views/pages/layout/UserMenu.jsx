@@ -35,7 +35,7 @@ export default function UserMenu({ product }) {
     return () => document.removeEventListener("keydown", keyHandler);
   });
   const { resetContext } = useContext(WebContext);
-  const user = LocalStorageService.getItem("auth_user");
+  const AuthUser = LocalStorageService.getItem("auth_user");
   return (
     <div className="relative inline-flex">
       <button
@@ -47,7 +47,7 @@ export default function UserMenu({ product }) {
         aria-expanded={dropdownOpen}
       >
         <div className="inline-flex justify-center items-center group text-color-0200 text-xs font-medium group">
-          <span className="ml-2">{user?.name}</span>
+          <span className="ml-2">{AuthUser?.name}</span>
           <IconRenderer icon={dropdownOpen ? "ArrowDropUp" : "ArrowDropDown"} />
         </div>
       </button>
@@ -64,8 +64,8 @@ export default function UserMenu({ product }) {
       >
         <div ref={dropdown} onFocus={() => setDropdownOpen(true)} onBlur={() => setDropdownOpen(false)}>
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-300 w-40">
-            <div className="text-xs font-medium break-words">{user.email}</div>
-            <div className="text-xs text-slate-500 italic">{user.role}</div>
+            <div className="text-xs font-medium break-words">{AuthUser.email}</div>
+            <div className="text-xs text-slate-500 italic">{AuthUser.role}</div>
           </div>
           <ul>
             <li>

@@ -1,4 +1,4 @@
-import { IconButton, Spinner, IconRenderer } from "../../utilities";
+import { IconButton, Spinner, IconRenderer, CloseButton } from "../../utilities";
 
 export default function FirstTimeCard({ id, loading, title, details, icon, buttonTitle, buttonIcon, onClick, onClose }) {
   return (
@@ -14,14 +14,7 @@ export default function FirstTimeCard({ id, loading, title, details, icon, butto
           {details && <label className="my-2 text-center text-color-label text-base select-none">{details}</label>}
           <div className="flex flex-row items-center justify-center select-none">
             <IconButton id={`${id}-btn`} title={buttonTitle} icon={buttonIcon} onClick={onClick} />
-            {onClose && (
-              <button
-                className="text-xs items-center px-4 py-1 text-white rounded focus:outline-none shadow-sm hover:shadow-2xl bg-red-300 hover:bg-red-200 mx-1"
-                onClick={onClose}
-              >
-                Close
-              </button>
-            )}
+            {onClose && <CloseButton onClose={onClose} />}
           </div>
         </div>
       )}

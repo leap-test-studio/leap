@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { IconButton, Tooltip } from "../utilities";
+import { IconButton, TableRenderer } from "../utilities";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
 import { fetchProjectBuilds, startProjectBuilds } from "../../redux/actions/ProjectActions";
-import TableRenderer from "../tablerenderer";
 
 const columns = [
   { title: "Build #", field: "buildNo", formatter: (field) => String(field).padStart(4, "0"), sortable: true, center: true },
@@ -53,7 +52,7 @@ const columns = [
 ];
 
 let interval;
-export default function TestRunner({ project }) {
+export default function TestRunner({ project, pageTitle }) {
   const dispatch = useDispatch();
 
   const fetchBuilds = () => {
@@ -75,11 +74,9 @@ export default function TestRunner({ project }) {
   return (
     <Page>
       <PageHeader>
-        <PageTitle>Test Runner</PageTitle>
+        <PageTitle>{pageTitle}</PageTitle>
         <PageActions>
-          <Tooltip title="Start Automation Builds">
-            <IconButton title="Trigger" icon="PlayArrow" onClick={() => dispatch(startProjectBuilds(project?.id))} />
-          </Tooltip>
+          <IconButton title="Trigger" icon="PlayArrow" onClick={() => dispatch(startProjectBuilds(project?.id))} tooltip="Start Automation Builds" />
         </PageActions>
       </PageHeader>
       <PageBody scrollable={false}>

@@ -1,4 +1,5 @@
 import { IconRenderer } from "../../utilities";
+import { BuildTypes } from "../utils";
 
 function RecentBuilds({ recentBuildSummary }) {
   return (
@@ -54,15 +55,15 @@ export default RecentBuilds;
 
 const STATUS_MAP = Object.freeze([
   { color: "text-color-label bg-slate-200", label: "In-Queue" },
-  { color: "text-white animate-pulse bg-green-600", label: "Running" },
-  { color: "text-color-0600 bg-color-0200", label: "Completed" },
-  { color: "text-white bg-red-600", label: "Failed" },
-  { color: "text-white bg-red-600", label: "Unknown" },
+  { color: "animate-pulse bg-green-600", label: "Running" },
+  { color: "text-color-0600 bg-green-600", label: "Pass" },
+  { color: "bg-red-600", label: "Failed" },
+  { color: "bg-red-600", label: "Unknown" },
   { color: "text-color-label bg-cds-yellow-0500", label: "Skipped" },
-  { color: "text-white bg-cds-red-0600", label: "Aborted" }
+  { color: "bg-cds-red-0600", label: "Aborted" }
 ]);
 
-function RenderRow({ project, buildNo, status, total, passed, failed, skipped, running }) {
+function RenderRow({ project, buildNo, status, total, passed, failed, skipped, running, type }) {
   let obj = STATUS_MAP[status];
   if (status === 1 && running === 0) {
     obj = STATUS_MAP[0];
@@ -74,12 +75,11 @@ function RenderRow({ project, buildNo, status, total, passed, failed, skipped, r
         <label>{project?.name}</label>
       </td>
       <td className="px-2 py-1 text-left text-slate-500">
-        <label>{String(buildNo).padStart(4, "0")}</label>
+        <label>{`${BuildTypes[type]}-${String(buildNo).padStart(4, "0")}`}</label>
       </td>
-      <td>
-        <div className={`w-20 rounded text-sm font-medium px-1.5 py-0.5 select-none ${obj?.color}`}>{obj?.label}</div>
+      <td className="px-2 text-center">
+        <div className={`text-white text-xs text-center font-bold px-2 py-1 w-20 rounded ${obj?.color}`}>{obj?.label}</div>
       </td>
-
       <td className="px-2 py-1 text-center text-blue-500">
         <label>{total}</label>
       </td>

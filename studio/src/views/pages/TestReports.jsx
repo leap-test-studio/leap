@@ -5,14 +5,16 @@ import { useReactToPrint } from "react-to-print";
 import isEmpty from "lodash/isEmpty";
 
 import TailwindSelectRenderer from "../tailwindrender/renderers/TailwindSelectRenderer";
-import { IconButton, Tooltip, NewlineText, EmptyIconRenderer } from "../utilities";
+import { IconButton, Tooltip, NewlineText, EmptyIconRenderer, Centered } from "../utilities";
 import { getBuildReports, getBuildDetails } from "../../redux/actions/DashboardActions";
 import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
 import { fetchTestScenarioList } from "../../redux/actions/TestScenarioActions";
-
-const BuildTypes = ["P", "TC", "TS"];
+import { BuildTypes, TestCaseTypes } from "./utils";
+import TailwindToggleRenderer from "../tailwindrender/renderers/TailwindToggleRenderer";
+import JsonView from "@uiw/react-json-view";
+import { lightTheme } from "@uiw/react-json-view/light";
 
 const TestStatus = Object.freeze({
   0: "Draft",
@@ -32,8 +34,6 @@ const TestTypeMapping = Object.freeze({
   7: 1
 });
 
-const Types = ["Definition", "REST API", "Web", "SSH"];
-
 let interval;
 export default function TestReports({ project: selectedPrject, product, changeTestScenario }) {
   const { buildReports, buildDetails } = useSelector((state) => state.dashboard);
@@ -43,6 +43,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
   const reportRef = useRef(null);
 
   const [buildNo, setBuildNo] = useState(null);
+  const [detailedReport, setDetailedReport] = useState(false);
   const [testType, setTestType] = useState(-1);
   const [project, setProject] = useState(selectedPrject);
 
@@ -64,7 +65,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
 
   const exportReport2PDF = useReactToPrint({
     content: () => reportRef.current,
-    documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}${buildNumber}`
+    documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}-${buildNumber}`
   });
 
   const [windowDimenion, detectHW] = useState({
@@ -105,7 +106,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
   const buildInfo = buildReports.find((item) => item.type === buildType && item.buildNo === Number(buildNumber));
   if (buildDetails) {
     data[0].value = completionRate + "%";
-    data[1].value = buildDetails.scenarios?.length;
+    data[1].value = buildDetails.suites?.length;
     data[2].value = buildDetails.total;
     data[3].value = buildDetails.steps;
     data[4].value = buildDetails.passed;
@@ -121,7 +122,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
   const buildList = buildReports
     .map((item) => {
       const buildNo = String(item.buildNo).padStart(4, "0");
-      return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + "-" + buildNo };
+      return { type: item.type, value: item.type + "-" + buildNo, label: BuildTypes[item.type] + buildNo };
     })
     .sort((a, b) => a.label.localeCompare(b.type) && b.label.localeCompare(a.label));
 
@@ -140,7 +141,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
         <PageActions>
           {isEmpty(selectedPrject) && (
             <div className="inline-flex px-2">
-              <LabelRenderer path="" label="Project" />
+              <LabelRenderer label="Project" />
               <TailwindSelectRenderer
                 options={projects.map((item) => {
                   return { value: item.id, label: item.name };
@@ -151,22 +152,35 @@ export default function TestReports({ project: selectedPrject, product, changeTe
             </div>
           )}
           <div className="inline-flex px-2">
-            <LabelRenderer path="" label="Build No." />
+            <LabelRenderer label="Build No." />
             <div className="w-32">
               <TailwindSelectRenderer options={buildList} data={buildNo} handleChange={handleBuildChange} enabled={project != null} />
             </div>
           </div>
-
-          <Tooltip title="Download PDF format">
-            <IconButton title="PDF Export" icon="PictureAsPdf" onClick={exportReport2PDF} disabled={!buildSelected} />
+          <LabelRenderer label="Detailed Report" />
+          <Tooltip title="Enable Detailed Report" placement="bottom">
+            <TailwindToggleRenderer
+              path="show-detailed-report"
+              visible={true}
+              enabled={true}
+              data={detailedReport}
+              handleChange={(_, ev) => setDetailedReport(ev)}
+            />
           </Tooltip>
+          <IconButton
+            title="PDF Export"
+            icon="PictureAsPdf"
+            onClick={exportReport2PDF}
+            disabled={!buildSelected}
+            tooltip="Export the Test Report to PDF file"
+          />
         </PageActions>
       </PageHeader>
       <PageBody>
         {buildSelected ? (
           <div id="BuildReport" ref={reportRef} className="p-4 rounded-lg bg-white">
             <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}-${buildNumber}`} />
+              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}${buildNumber}`} />
               {!isEmpty(buildDetails?.options) && (
                 <div className="col-span-2">
                   <BuildEnvironmentVariables options={buildDetails.options} />
@@ -175,10 +189,18 @@ export default function TestReports({ project: selectedPrject, product, changeTe
               {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
             </div>
             <BuildSummary data={data} onClick={handleFilter} testType={testType} />
-            <ReportTable {...buildDetails} testType={testType} product={product} changeTestScenario={changeTestScenario} />
+            <ReportTable
+              {...buildDetails}
+              testType={testType}
+              product={product}
+              changeTestScenario={changeTestScenario}
+              showDetails={detailedReport}
+            />
           </div>
         ) : (
-          <EmptyIconRenderer title="Report Not Found" />
+          <Centered>
+            <EmptyIconRenderer title="Report Not Found" />
+          </Centered>
         )}
       </PageBody>
     </Page>
@@ -189,7 +211,7 @@ function toNumber(num) {
   return Math.trunc(+num);
 }
 
-function BuildDetails({ project, status, buildInfo, buildNo }) {
+function BuildDetails({ project, status, buildInfo, buildNo, triggeredBy }) {
   const isRunning = TestStatus[status] === "Running";
   const report = TestStatus[status];
   return (
@@ -200,6 +222,16 @@ function BuildDetails({ project, status, buildInfo, buildNo }) {
           <tr>
             <td>Project Name</td>
             <td>{project?.name}</td>
+          </tr>
+          {project?.description && (
+            <tr>
+              <td>Project Description</td>
+              <td>{project.description}</td>
+            </tr>
+          )}
+          <tr>
+            <td>Triggered By</td>
+            <td>{triggeredBy}</td>
           </tr>
           <tr>
             <td>Build No</td>
@@ -345,18 +377,15 @@ function TestExecutionResults({ rate }) {
   );
 }
 
-const ReportTableHeader = Object.freeze(["TC Key", "Scenario", "Definition", "Steps", "Status", "Time"]);
+const ReportTableHeader = Object.freeze(["Test Case", "Test Suite", "Test Definition", "Steps", "Status", "Time"]);
 
-function ReportTable({ jobs, testType, product, changeTestScenario }) {
+function ReportTable({ jobs, testType, product, changeTestScenario, showDetails }) {
   return (
     <table className="table-auto w-full">
-      <thead className="text-xs text-white bg-color-0600 rounded-sm">
+      <thead className="text-xs bg-color-0100 text-color-label font-semibold">
         <tr>
           {ReportTableHeader.map((header, index) => (
-            <th
-              key={index}
-              className={`p-2 font-semibold border-x text-center ${index === 0 ? "rounded-tl-lg" : index === ReportTableHeader.length - 1 ? "rounded-tr-lg" : ""}`}
-            >
+            <th key={index} className="p-2 border border-color-0300 text-center">
               {header}
             </th>
           ))}
@@ -365,7 +394,9 @@ function ReportTable({ jobs, testType, product, changeTestScenario }) {
       <tbody className="text-xs font-medium divide-y divide-gray-100 text-color-label">
         {jobs?.map((job, index) => {
           if (testType == -1 || testType === job.result)
-            return <JobDetails key={job.id + "-" + index} {...job} product={product} changeTestScenario={changeTestScenario} />;
+            return (
+              <JobDetails key={job.id + "-" + index} {...job} product={product} changeTestScenario={changeTestScenario} showDetails={showDetails} />
+            );
           return null;
         })}
       </tbody>
@@ -373,15 +404,14 @@ function ReportTable({ jobs, testType, product, changeTestScenario }) {
   );
 }
 
-function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, actual, product, changeTestScenario }) {
+function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, actual, product, changeTestScenario, showDetails }) {
   const status = TestStatus[result];
-  const title = TestCase?.type ? Types[TestCase?.type] : "";
-  const actualResult = actual?.actualResult;
+  const title = TestCase?.type ? TestCaseTypes[TestCase?.type] : "";
+  const outcome = actual?.actualResult;
   const navigate = useNavigate();
-  const { testscenarios } = useSelector((state) => state.testscenario);
-
+  const { testsuites } = useSelector((state) => state.testsuite);
   const openTestCase = () => {
-    const scenario = testscenarios.find((ts) => ts.id === TestCase?.TestScenario?.id);
+    const scenario = testsuites.find((ts) => ts.id === TestCase?.TestScenario?.id);
     if (scenario) {
       changeTestScenario(scenario);
       navigate(`/${product?.page.base}/test-suite`, {
@@ -394,33 +424,70 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
     }
   };
 
+  let execSteps = {};
+  try {
+    if (TestCase?.type === 1) {
+      execSteps = {
+        expected: {
+          statusCode: TestCase?.execSteps.statusCode,
+          condition: TestCase?.execSteps.condition,
+          payload: TestCase?.execSteps.resBody
+        }
+      };
+    } else {
+      execSteps = TestCase?.execSteps[outcome.stepNo - 1];
+    }
+  } catch (error) {}
+
   return (
     <>
-      <tr className="hover:bg-color-0050 border border-color-0300 text-xs text-color-label cursor-pointer" onClick={openTestCase}>
-        <td className="border-x border-x-color-0300 w-0.10 text-center">
+      <tr className="hover:bg-color-0050 text-xs text-color-label cursor-pointer" onDoubleClick={openTestCase}>
+        <td className="border border-color-0300 w-[6%] text-center">
           <p className="font-bold">{TestCase?.label}</p>
           <p className="mt-2">{title}</p>
         </td>
-        <td className="border-x border-x-color-0300 w-0.20 p-2">
-          <label>{TestCase?.TestScenario?.name}</label>
-          <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />
+        <td className="border border-color-0300 w-[15%] p-2">
+          <Tooltip title={<NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />}>
+            <label>{TestCase?.TestScenario?.name}</label>
+          </Tooltip>
+          {showDetails && <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />}
         </td>
-        <td className="p-1 border-x border-x-color-0300 w-0.40">
-          <div className="inline-flex items-center mb-2 border-b border-color-0300 w-full">
-            <strong>GIVEN</strong>
-            <NewlineText text={TestCase?.given} className="font-normal ml-2" />
+        <td className="px-3 border border-color-0300 w-[59%] justify-start">
+          <div className="inline-flex items-center w-full border-b border-color-0300 py-2">
+            <strong>Title</strong>
+            <NewlineText text={TestCase?.title} className="font-normal ml-2" />
           </div>
-          <div className="inline-flex items-center mb-2 border-b border-color-0300 w-full">
-            <strong>WHEN</strong>
-            <NewlineText text={TestCase?.when} className="font-normal ml-2" />
-          </div>
-          <div className="inline-flex items-center mb-2">
-            <strong>THEN</strong>
-            <NewlineText text={TestCase?.then} className="font-normal ml-2" />
-          </div>
+          {TestCase?.tags?.length > 0 && (
+            <div className="inline-flex items-center w-full py-2">
+              <strong className="mr-3">Tag</strong>
+              {TestCase?.tags.map((tag, i) => (
+                <p key={tag + i} className="mr-1.5">
+                  #{tag}
+                </p>
+              ))}
+            </div>
+          )}
+          {showDetails && !isEmpty(TestCase?.given) && (
+            <div className="inline-flex items-center py-2 border-y border-color-0300 w-full">
+              <strong>GIVEN</strong>
+              <NewlineText text={TestCase?.given} className="font-normal ml-2" />
+            </div>
+          )}
+          {showDetails && !isEmpty(TestCase?.when) && (
+            <div className="inline-flex items-center py-2 border-b border-color-0300 w-full">
+              <strong>WHEN</strong>
+              <NewlineText text={TestCase?.when} className="font-normal ml-2" />
+            </div>
+          )}
+          {showDetails && !isEmpty(TestCase?.then) && (
+            <div className="inline-flex items-center py-2">
+              <strong>THEN</strong>
+              <NewlineText text={TestCase?.then} className="font-normal ml-2" />
+            </div>
+          )}
         </td>
-        <td className="p-1 border-x border-x-color-0300 text-center">{result > 0 ? steps : 0}</td>
-        <td className="border-x border-x-color-0300 w-16">
+        <td className="p-1 border border-color-0300 text-center w-[5%]">{result > 0 ? steps : 0}</td>
+        <td className="border border-color-0300 w-[5%]">
           <div
             className={`rounded text-xs text-center font-medium mx-2 p-0.5 ${
               status === "Running"
@@ -435,7 +502,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             {status}
           </div>
         </td>
-        <td className="p-1 border-x border-x-color-0300 w-0.20">
+        <td className="p-1 border border-color-0300 w-[10%]">
           {endTime && startTime && (
             <div className="flex flex-col">
               <strong>Duration</strong>
@@ -465,12 +532,12 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
           )}
         </td>
       </tr>
-      {status !== "Pass" && !isEmpty(actualResult) && actualResult.actual && (
-        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer" onClick={openTestCase}>
+      {showDetails && !isEmpty(outcome) && outcome.actual && (
+        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer" onDoubleClick={openTestCase}>
           <td colSpan={ReportTableHeader.length} className="p-2 text-color-label border border-color-0300">
-            <p>{`Captured Result for TC${TestCase?.seqNo}`}</p>
+            <p>{`Captured Result for ${TestCase?.label}`}</p>
             <table className="table-auto w-full mb-4 border border-color-0300 rounded">
-              <thead className="text-xs text-color-label bg-color-0400">
+              <thead className="text-xs text-color-label bg-color-0200">
                 <tr className="text-xs text-center">
                   <th className="border-r border-color-0300">Step Number</th>
                   <th className="border-r border-color-0300">Step Details</th>
@@ -481,34 +548,50 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
               </thead>
               <tbody>
                 <tr className="bg-white hover:bg-color-0050 text-xs">
-                  <td className="border-r border-color-0300 text-center">{actualResult.stepNo}</td>
-                  <td className="border-r border-color-0300">
-                    <NewlineText text={JSON.stringify(TestCase?.execSteps[actualResult.stepNo - 1], null, 2)} />
+                  <td className="border-r border-color-0300 text-center w-16 justify-items-start">{outcome.stepNo}</td>
+                  <td className="border-r border-color-0300 w-40">
+                    <JsonView
+                      value={typeof execSteps === "string" ? JSON.parse(execSteps) : execSteps}
+                      style={lightTheme}
+                      displayDataTypes={false}
+                      collapsed={3}
+                    />
                   </td>
-                  <td className="border-r border-color-0300">
+                  <td className="border-r border-color-0300 w-18">
                     <p
                       className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
-                        TestStatus[actualResult.result] === "Running"
+                        TestStatus[outcome.result] === "Running"
                           ? "bg-cds-blue-0600 animate-pulse"
-                          : TestStatus[actualResult.result] === "Pass"
+                          : TestStatus[outcome.result] === "Pass"
                             ? "bg-cds-green-0600"
-                            : TestStatus[actualResult.result] === "Fail"
+                            : TestStatus[outcome.result] === "Fail"
                               ? "bg-red-500"
                               : "bg-material-yellow-600"
                       } text-white select-none`}
                     >
-                      {TestStatus[actualResult.result]}
+                      {TestStatus[outcome.result]}
                     </p>
                   </td>
-                  <td className="flex-1 border-r border-color-0300">
+                  <td className="flex-1 border-r border-color-0300 w-40">
                     <strong>Elapsed</strong>
-                    <p>{actualResult.stepTime}ms</p>
+                    <p>{outcome.stepTime}ms</p>
                     <strong>Start Time</strong>
-                    <p>{!isNaN(actualResult.startTime) && new Date(Number(actualResult.startTime)).toISOString()}</p>
+                    <p>{!isNaN(outcome.startTime) && new Date(Number(outcome.startTime)).toISOString()}</p>
                     <strong>End Time</strong>
-                    <p>{!isNaN(actualResult.endTime) && new Date(Number(actualResult.endTime)).toISOString()}</p>
+                    <p>{!isNaN(outcome.endTime) && new Date(Number(outcome.endTime)).toISOString()}</p>
                   </td>
-                  <td className="select-all w-96">{JSON.stringify(actualResult.actual, null, 2)}</td>
+                  <td className="select-all max-w-[500px] break-all">
+                    {TestCase.type === 1 ? (
+                      <JsonView
+                        value={typeof outcome.actual === "string" ? JSON.parse(outcome.actual) : outcome.actual}
+                        style={lightTheme}
+                        displayDataTypes={false}
+                        collapsed={3}
+                      />
+                    ) : (
+                      <NewlineText text={outcome.actual} className="font-medium px-2" />
+                    )}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -516,11 +599,13 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
         </tr>
       )}
       {!isEmpty(screenshot) && (
-        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer" onClick={openTestCase}>
+        <tr className="hover:bg-color-0050 border border-color-0300 text-xs cursor-pointer">
           <td colSpan={ReportTableHeader.length} className="p-2 text-color-label border-x border-x-color-0300 flex-wrap w-full">
             {screenshot.map((s, i) => (
-              <div key={i}>
-                <label>{s?.stepNo === "Evidence" ? s?.stepNo : "Screenshot for Step:" + s?.stepNo + " Capture Number:" + (i + 1)}</label>
+              <div key={i} className="mb-2">
+                <label className="font-semibold text-sm">
+                  {`${s?.title ? "Title: " + s?.title + ", " : ""} Step Number: ${s?.stepNo === "Evidence" ? s?.stepNo : s?.stepNo + ", Capture Number: " + (i + 1)}`}
+                </label>
                 <img src={`data:image/*;base64,${s.buffer}`} className="rounded border border-slate-500" alt="" style={{ height: "400px" }} />
               </div>
             ))}

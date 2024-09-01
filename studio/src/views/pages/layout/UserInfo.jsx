@@ -2,7 +2,7 @@ import LocalStorageService from "../../../redux/actions/LocalStorageService";
 import { IconRenderer } from "../../utilities";
 
 const IconLabel = ({ icon, label }) => (
-  <p className="text-xs flex items-center">
+  <p className="text-xs flex items-center break-all">
     <IconRenderer icon={icon} className="mr-1" style={{ width: "12px" }} />
     {label}
   </p>

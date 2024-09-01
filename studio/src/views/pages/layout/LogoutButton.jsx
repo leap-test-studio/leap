@@ -10,13 +10,13 @@ export default function LogoutButton({ resetContext }) {
     <Tooltip title="Logout" placement="bottom">
       <div
         id="logout-button"
-        className="h-6 w-7 flex cursor-pointer rounded justify-center items-center bg-slate-200 hover:bg-red-600 mx-1 mr-2"
+        className="group h-6 w-7 flex cursor-pointer rounded justify-center items-center bg-slate-200 hover:bg-red-600 mx-1 mr-2"
         onClick={() => {
           dispatch(logoutUser());
           resetContext();
         }}
       >
-        <IconRenderer icon="PowerSettingsNewTwoTone" className="text-color-label" fontSize="20px" />
+        <IconRenderer icon="PowerSettingsNewTwoTone" className="text-color-label group-hover:text-white" fontSize="20px" />
       </div>
     </Tooltip>
   );

@@ -1,5 +1,6 @@
 import isEmpty from "lodash/isEmpty";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 export function cashFormat(n) {
   do {
@@ -98,3 +99,9 @@ export const useConstructor = (callBack = () => {}) => {
   callBack();
   setHasBeenCalled(true);
 };
+
+export const BuildTypes = ["P", "TC", "TS"];
+
+export const TestCaseTypes = ["Definition", "REST API", "Web", "SSH"];
+
+export const TestCaseTypesOneOf = TestCaseTypes.map((type, index) => ({ const: index, title: type }));

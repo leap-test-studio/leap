@@ -25,7 +25,7 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
 
   return (
     <div className="sticky top-0 w-[10%]">
-      <div className="p-1 shadow h-full flex flex-col items-center justify-center text-color-0600 bg-slate-100 rounded">
+      <div className="p-1 shadow h-full flex flex-col items-center justify-center text-slate-600 bg-slate-100 rounded">
         <div className="w-full flex flex-row items-center justify-center p-[0.1rem] border-b">
           <Tooltip title={`Drag and Drop ${title}`} content="Drag the item from the list and drop onto the canvas." placement="left">
             <span className="text-xs select-none font-bold">{title}</span>
@@ -112,7 +112,7 @@ const RenderElement = React.memo(({ id, type, value, label, description, showIco
       onDragStart={(ev) => onDragStart(ev, id, type, value)}
       draggable
     >
-      {showIcon && icon && <IconRenderer icon={icon} className="my-0.5" />}
+      {showIcon && icon && typeof icon === "string" ? <IconRenderer icon={icon} className="my-0.5" /> : icon}
       <div className="inline-flex items-center justify-center">
         <span className={`text-xs text-center ${showIcon ? "" : "p-2"} break-all font-medium mx-0.5`}>{label}</span>
         {description && <IconRenderer icon="HelpOutlined" fontSize="8px" className="pb-0.5 ml-1" tooltip={label} description={description} />}

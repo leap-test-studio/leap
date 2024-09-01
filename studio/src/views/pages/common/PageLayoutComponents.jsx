@@ -34,7 +34,7 @@ export function PageBody({ className = "", scrollable = true, children, fullScre
   const padding = fullScreen ? 15 : BODY_PADDING;
   return (
     <div
-      className={`w-full p-1.5 ${scrollable ? "overflow-y-scroll custom-scrollbar" : "overflow-hidden"} ${className}`}
+      className={`w-full px-2 rounded-t-lg ${scrollable ? "overflow-y-scroll custom-scrollbar" : "overflow-hidden"} ${className}`}
       style={{ minHeight: windowDimension?.maxContentHeight - padding, maxHeight: windowDimension?.maxContentHeight - padding }}
     >
       {children}

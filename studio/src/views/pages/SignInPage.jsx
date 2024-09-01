@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmpty from "lodash/isEmpty";
 
-import LogoRenderer, { VINASHAK_LOGO } from "./layout/LogoRenderer";
+import LogoRenderer, { LOGO } from "./layout/LogoRenderer";
 import * as actionTypes from "../../redux/actions";
 import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
@@ -35,7 +35,7 @@ export function SignInPage({ product }) {
     }
   }, [success, error, navigate]);
 
-  const [formdata, setformdata] = useState({ email: "admin@example.com", password: "Admin@123" });
+  const [formdata, setformdata] = useState({ email: "", password: "" });
 
   const { email, password } = formdata;
   const [show, setshow] = useState(false);
@@ -60,10 +60,9 @@ export function SignInPage({ product }) {
             <LogoRenderer className="h-40 w-40" />
             <div className="flex flex-row space-x-5 items-center">
               <div className="flex flex-col space-y-2 items-center">
-                <VINASHAK_LOGO className="w-56" />
-                <div className="cursor-pointer text-sm text-slate-400 tracking-tighter font-semibold">
-                  {description} v{version}
-                </div>
+                <LOGO className="w-60" />
+                <div className="cursor-pointer text-color-0300 font-semibold">{description}</div>
+                <label className="text-slate-500 text-[10px]">Version: v{version}</label>
               </div>
             </div>
           </div>
