@@ -17,7 +17,7 @@ export const resetTestScenarioFlags = (options) => (dispatch) => {
 };
 
 export const fetchTestScenarioList = (pid) => (dispatch) => {
-  axios.get(`/api/v1/project/${pid}/scenario`).then((res) => {
+  axios.get(`/api/v1/project/${pid}/suite`).then((res) => {
     if (res?.data)
       dispatch({
         type: actionTypes.GET_TEST_SCENARIO_LIST,
@@ -29,7 +29,7 @@ export const fetchTestScenarioList = (pid) => (dispatch) => {
 export const createTestScenario = (pid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${pid}/scenario`, data)
+    .post(`/api/v1/project/${pid}/suite`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -61,7 +61,7 @@ export const createTestScenario = (pid, data) => (dispatch) => {
 export const updateTestScenario = (pid, sid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .put(`/api/v1/project/${pid}/scenario/${sid}`, data)
+    .put(`/api/v1/project/${pid}/suite/${sid}`, data)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -92,7 +92,7 @@ export const updateTestScenario = (pid, sid, data) => (dispatch) => {
 export const deleteTestScenario = (pid, sid) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .delete(`/api/v1/project/${pid}/scenario/${sid}`)
+    .delete(`/api/v1/project/${pid}/suite/${sid}`)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -123,7 +123,7 @@ export const deleteTestScenario = (pid, sid) => (dispatch) => {
 export const cloneTestScenario = (pid, sid, data) => (dispatch) => {
   resetTestScenarioFlags({ loading: true });
   axios
-    .post(`/api/v1/project/${pid}/scenario/${sid}/clone`, data)
+    .post(`/api/v1/project/${pid}/suite/${sid}/clone`, data)
     .then((res) => {
       if (res?.data)
         dispatch({

@@ -19,26 +19,26 @@ export const sequenceEvents = (type, opts) => (dispatch) => {
   });
 };
 
-export const updateSequence = (projectId, settings) => (dispatch) => {
+export const updateSequence = (pid, payload) => (dispatch) => {
   dispatch({
     type: actionTypes.TEST_SEQUENCER,
     payload: {
+      savingChanges: true,
       showMessage: false,
       message: null
     }
   });
   axios
-    .put(`/api/v1/project/${projectId}`, {
-      settings
-    })
+    .put(`/api/v1/test-plan/${pid}`, payload)
     .then((res) => {
       if (res?.data)
         dispatch({
           type: actionTypes.TEST_SEQUENCER,
           payload: {
+            savingChanges: false,
             settings: res.data,
             isError: false,
-            message: "Project Updated Successfully",
+            message: "Plan Updated Successfully",
             showMessage: true
           }
         });
@@ -49,6 +49,7 @@ export const updateSequence = (projectId, settings) => (dispatch) => {
         payload: {
           ...e.response.data,
           isError: true,
+          savingChanges: false,
           message: "Failed to Update Project",
           showMessage: true
         }

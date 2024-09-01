@@ -1,11 +1,11 @@
 {
-  "name": "Vinashak",
-  "description": "Automation Tool Suite",
-  "version": "1.0.0",
+  "name": "LEAP",
+  "description": "Lean Enterprise Automation Platform",
+  "version": "2.0.0",
   "page": {
-    "base": "vinashak",
+    "base": "leap",
     "landingPage": "dashboard",
-    "projectsListPage": "my-projects"
+    "projectsListPage": "projects"
   },
   "build": {
     "id": "20220805050750",

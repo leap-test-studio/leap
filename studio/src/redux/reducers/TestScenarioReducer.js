@@ -2,7 +2,8 @@
 import * as actionTypes from "../actions";
 
 const initialState = {
-  testscenarios: [],
+  totalItems: 0,
+  testsuites: [],
   testcases: {},
   loading: false,
   showMessage: false,
@@ -24,8 +25,9 @@ const TestScenarioReducer = function (state = initialState, { payload, type }) {
 
       return {
         ...state,
-        isFirstTestScenario: Array.isArray(payload.items) && payload.items.length === 0,
-        testscenarios: payload.items
+        isFirstTestScenario: payload.totalItems === 0,
+        totalItems: payload.totalItems,
+        testsuites: payload.items
       };
     }
     case actionTypes.UPDATE_TEST_SCENARIO:

@@ -10,7 +10,7 @@ import { getRecentBuildSummary, getTotalStats } from "../../redux/actions/Dashbo
 const INTERVAL = 10 * 1000;
 
 let timer = null;
-function DashboardPage(props) {
+function DashboardPage({ pageTitle, ...props }) {
   const dispatch = useDispatch();
   const { totalStats, recentBuildSummary } = useSelector((state) => state.dashboard);
 
@@ -31,7 +31,7 @@ function DashboardPage(props) {
   return (
     <Page>
       <PageHeader>
-        <PageTitle>Dashboard</PageTitle>
+        <PageTitle>{pageTitle}</PageTitle>
       </PageHeader>
       <PageBody>
         <TotalCards totalStats={totalStats} {...props} />

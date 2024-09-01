@@ -2,6 +2,7 @@
 import * as actionTypes from "../actions";
 
 const initialState = {
+  savingChanges: false,
   loading: false,
   message: null,
   showMessage: false,

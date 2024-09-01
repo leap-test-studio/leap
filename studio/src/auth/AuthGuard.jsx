@@ -1,10 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 import * as actionTypes from "../redux/actions";
+import WebContext from "../views/context/WebContext";
 
 axios.defaults.withCredentials = true;
 
@@ -16,6 +17,7 @@ function AuthGuard({ product, children }) {
   const navigate = useNavigate();
 
   const { jwtToken: token } = useSelector((state) => state.login);
+  const { project, scenario } = useContext(WebContext);
 
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -37,6 +39,12 @@ function AuthGuard({ product, children }) {
         if (token) {
           config.headers["Authorization"] = "Bearer " + token;
           config.headers["X-CSRF-Token"] = localStorage.getItem("csrfToken");
+          if (project?.id) {
+            config.headers["project-id"] = project?.id;
+          }
+          if (scenario?.id) {
+            config.headers["scenario-id"] = scenario?.id;
+          }
         }
         return config;
       },
@@ -80,7 +88,7 @@ function AuthGuard({ product, children }) {
             return cancelRequest(originalRequest);
           }
           // Prevent infinite loops
-          if (error.response && error.response.status === 401 && originalRequest.url === "/api/v1/accounts/refresh-token") {
+          if (error.response && error.response.status === 401 && originalRequest.url.startsWith("/api/v1/accounts")) {
             //alert("Your Session Has Expired, Please Login again");
             console.log("Refresh token not available.");
             redirectToLogin();
@@ -88,7 +96,7 @@ function AuthGuard({ product, children }) {
           }
 
           const refreshToken = localStorage.getItem("refreshToken");
-          if (refreshToken && error.response?.status === 401) {
+          if (refreshToken && error.response?.status === 401 && error.response?.data?.error?.includes("jwt expired")) {
             console.log("Calling Refresh token:", refreshToken);
             return axios
               .post(
@@ -110,7 +118,8 @@ function AuthGuard({ product, children }) {
                   if (!tokens[refreshToken]) {
                     tokens[refreshToken] = {
                       ...response.data,
-                      ...jwtDecode(response.data.jwtToken)
+                      ...jwtDecode(response.data.jwtToken),
+                      dt: new Date()
                     };
                   }
 

@@ -8,6 +8,7 @@ import ReactComponentLoader from "./views/pages/ReactComponentLoader";
 import AuthGuard from "./auth/AuthGuard";
 import WebContext from "./views/context/WebContext";
 import { authRoles } from "./auth/authRoles";
+import Product from "./product.json";
 
 const InititialRoutes = [
   {
@@ -20,32 +21,56 @@ const InititialRoutes = [
     title: "Dashboard",
     icon: "Speed",
     path: "dashboard",
-    page: "DashboardPage.jsx",
-    access: authRoles.All
+    page: "DashboardPage.jsx"
   },
   {
     sideBar: true,
-    title: "My Projects",
+    title: "Projects",
     icon: "FolderSpecial",
-    path: "my-projects",
-    page: "common/ProjectManagement.jsx",
-    projectSelectionRequired: false,
-    access: authRoles.All
+    path: Product.page.projectsListPage,
+    page: "project_management/ProjectManagement.jsx",
+    projectSelectionRequired: false
   },
   {
     sideBar: true,
-    title: "Test Suite",
+    title: "Accounts",
+    icon: "GroupAdd",
+    path: "account-management",
+    page: "account_management/AccountManagement.jsx",
+    projectSelectionRequired: false,
+    access: authRoles.manager
+  },
+  {
+    sideBar: true,
+    title: "Tenants",
+    icon: "CorporateFare",
+    path: "tenant-management",
+    page: "tenant_management/TenantManagement.jsx",
+    projectSelectionRequired: false,
+    access: authRoles.admin
+  },
+  {
+    sideBar: true,
+    title: "Test Suites",
     icon: "NextWeek",
     path: "test-suite",
-    page: "testsuite/TestScenarioManagement.jsx",
+    page: "testsuite/TestSuiteManagement.jsx",
     projectSelectionRequired: true
   },
   {
     sideBar: true,
-    title: "Test Runner",
-    icon: "ElectricBoltTwoTone",
-    path: "test-runner",
+    title: "Test Runs",
+    icon: "CodeTwoTone",
+    path: "test-runs",
     page: "TestRunner.jsx",
+    projectSelectionRequired: true
+  },
+  {
+    sideBar: true,
+    title: "Test Plans",
+    icon: "LibraryBooksTwoTone",
+    path: "test-plan",
+    page: "testplan_management/TestPlanManagement.jsx",
     projectSelectionRequired: true
   },
   {
@@ -54,19 +79,6 @@ const InititialRoutes = [
     icon: "QueryStatsTwoTone",
     path: "test-reports",
     page: "TestReports.jsx",
-    projectSelectionRequired: true
-  },
-  {
-    title: "Extentions",
-    divider: true,
-    projectSelectionRequired: true
-  },
-  {
-    sideBar: true,
-    title: "Test Sequencer",
-    icon: "AccountTreeTwoTone",
-    path: "test-sequencer",
-    page: "sequencer/index.jsx",
     projectSelectionRequired: true
   }
 ];
@@ -78,6 +90,7 @@ export default function App(props) {
   const [routes, setRoutes] = useState(InititialRoutes);
 
   useEffect(() => {
+    document.title = product.name + "-" + product.description;
     setRoutes(InititialRoutes.filter((r) => r.projectSelectionRequired == null || isProjectSelected === r.projectSelectionRequired));
   }, [isProjectSelected]);
 
@@ -99,9 +112,17 @@ export default function App(props) {
                     {...context}
                   >
                     {typeof route.page === "string" ? (
-                      <ReactComponentLoader key={`page-${index}`} page={route.page} {...props} {...context} extras={route.extras} />
+                      <ReactComponentLoader
+                        key={`page-${index}`}
+                        page={route.page}
+                        pageTitle={route.title}
+                        {...props}
+                        {...context}
+                        extras={route.extras}
+                        access={route.access}
+                      />
                     ) : (
-                      <route.page key={`page-${index}`} {...props} {...context} />
+                      <route.page key={`page-${index}`} pageTitle={route.title} {...props} {...context} access={route.access} />
                     )}
                   </Layout>
                 ) : null

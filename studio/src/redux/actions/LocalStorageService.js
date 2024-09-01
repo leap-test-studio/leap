@@ -9,6 +9,7 @@ class LocalStorageService {
   }
 
   clear() {
+    console.log("Clear All Local Storage");
     this.cache = {};
     localStorage.clear();
   }
@@ -16,7 +17,8 @@ class LocalStorageService {
     if (this.cache[key]) return this.cache[key];
     const value = localStorage.getItem(key);
     try {
-      return JSON.parse(value);
+      this.cache[key] = JSON.parse(value);
+      return this.cache[key];
     } catch (e) {
       return value;
     }

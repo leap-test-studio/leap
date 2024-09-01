@@ -8,7 +8,7 @@ const initialState = {
   buildStats: {},
   totalStats: {
     projects: 0,
-    scenarios: 0,
+    suites: 0,
     cases: 0,
     builds: 0
   }

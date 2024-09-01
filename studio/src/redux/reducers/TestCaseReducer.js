@@ -3,6 +3,7 @@ import * as actionTypes from "../actions";
 
 const initialState = {
   testcases: [],
+  totalItems: 0,
   loading: false,
   case: null,
   isTestCaseCreated: false,
@@ -23,8 +24,9 @@ const TestCaseReducer = function (state = initialState, { payload, type }) {
       return {
         ...state,
         loading: false,
-        isFirstTestCase: payload.totalPages === 0,
-        testcases: payload.items
+        isFirstTestCase: payload.totalItems === 0,
+        testcases: payload.items,
+        totalItems: payload.totalItems
       };
     }
     case actionTypes.RESET_TESTCASE:
