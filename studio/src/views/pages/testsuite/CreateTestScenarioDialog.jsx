@@ -13,7 +13,7 @@ const Model = {
       },
       description: {
         type: "string",
-        description: "Scenario Details"
+        description: "Suite Description"
       }
     },
     required: ["name"]
@@ -24,12 +24,12 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/name",
-        label: "Test Suite Name"
+        label: "Suite Name"
       },
       {
         type: "Control",
         scope: "#/properties/description",
-        label: "Suite",
+        label: "Suite Description",
         options: {
           multi: true,
           isLarge: true
@@ -48,7 +48,7 @@ function CreateTestScenarioDialog({ showDialog, createTestScenario, onClose }) {
         setData({});
         onClose();
       }}
-      title="Create Suite"
+      title="Create Test Suite"
       saveTitle="Create"
       onSave={() => {
         createTestScenario(data);

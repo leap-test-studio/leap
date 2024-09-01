@@ -11,8 +11,8 @@ const ConnectionLine = ({ fromX, fromY, fromPosition, toX, toY, toPosition }) =>
   });
   return (
     <g>
-      <path fill="none" stroke="#01579b" strokeWidth={2.0} className="animated" d={edgePath} />
-      <circle cx={toX} cy={toY} fill="#fff" r={4.5} stroke="#01579b" strokeWidth={1.5} />
+      <path fill="none" stroke="#6d48bf" strokeWidth={2.0} className="animated" d={edgePath} />
+      <circle cx={toX} cy={toY} fill="#fff" r={4.5} stroke="#6d48bf" strokeWidth={1.5} />
     </g>
   );
 };

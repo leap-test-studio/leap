@@ -1,6 +1,16 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ReactFlow, { Controls, addEdge, useNodesState, useEdgesState, Background, MarkerType } from "reactflow";
+import ReactFlow, {
+  Controls,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  Background,
+  MarkerType,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges
+} from "reactflow";
 import "reactflow/dist/style.css";
 import "reactflow/dist/base.css";
 import isEmpty from "lodash/isEmpty";
@@ -18,19 +28,33 @@ import { PageHeader, Page, PageActions, PageTitle } from "../common/PageLayoutCo
 import { sequenceEvents, updateSequence } from "../../../redux/actions/TestSequencerActions";
 import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectActions";
 import TestScenarioNode from "./TestScenarioNode";
-import { IconButton, Tooltip } from "../../utilities";
+import { CloseButton, IconButton, Tooltip } from "../../utilities";
 import { RequestSchemas } from "./NodeUtils";
 import { DEFAULT_HEADER_HEIGHT } from "../../context/constants";
+import { fetchTestPlan } from "../../../redux/actions/TestPlanActions";
+import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
+import ProgressIndicator from "../common/ProgressIndicator";
 
-const TestCaseSequencer = ({ project, windowDimension }) => {
+const nodeTypes = Object.freeze({
+  [NodeTypes.START_TASK]: StartNode,
+  [NodeTypes.CASE_TASK]: TestCaseNode,
+  [NodeTypes.SCENARIO_TASK]: TestScenarioNode,
+  [NodeTypes.TIMER_TASK]: TimerNode
+});
+
+const edgeTypes = Object.freeze({ default: DefaultEdge });
+
+const TestCaseSequencer = ({ testPlan, windowDimension, pageTitle, onClose, project }) => {
   const dispatch = useDispatch();
   const reactFlowWrapper = useRef();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [showConfigDialog, setShowConfigDialog] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [isAutoSave, setAutoSave] = useState(true);
 
-  const { testcases, draggableItems, settings } = useSelector((state) => state.project);
-  const { simulationData } = useSelector((state) => state.sequencer);
+  const { testcases, draggableItems } = useSelector((state) => state.project);
+  const { plan: settings } = useSelector((state) => state.testplan);
+  const { simulationData, savingChanges } = useSelector((state) => state.sequencer);
   const [nodes, setNodes, onNodesChange] = useNodesState(settings.nodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(settings.edges || []);
 
@@ -38,12 +62,13 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
   const eid = simulationData?.opts;
 
   useEffect(() => {
-    if (project?.id) {
-      fetchTestScenarios();
-    }
-  }, []);
+    loadPlanner(testPlan?.id);
+  }, [testPlan?.id]);
 
   useEffect(() => {
+    if (settings?.nodes?.length == 0 && settings?.edges?.length == 0) {
+      return resetCanvas();
+    }
     if (settings?.nodes?.length >= 0) {
       setNodes(settings.nodes);
     }
@@ -52,36 +77,27 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     }
   }, [testcases, draggableItems, settings]);
 
-  const fetchTestScenarios = () => project?.id && dispatch(fetchProject(project.id));
+  const loadPlanner = (id) => {
+    id && dispatch(fetchTestPlan(id));
+    project?.id && dispatch(fetchProject(project?.id));
+  };
 
   const handleDialogClose = useCallback(() => {
     setShowConfigDialog(false);
     dispatch(sequenceEvents("nodeAction:reset"));
   }, [dispatch]);
 
-  const nodeTypes = useMemo(
-    () => ({
-      [NodeTypes.START_TASK]: StartNode,
-      [NodeTypes.CASE_TASK]: TestCaseNode,
-      [NodeTypes.SCENARIO_TASK]: TestScenarioNode,
-      [NodeTypes.TIMER_TASK]: TimerNode
-    }),
-    []
-  );
-
-  const edgeTypes = useMemo(() => ({ default: DefaultEdge }), []);
-
-  const saveTemplate = useCallback(
+  const saveChanges = useCallback(
     (ns = [], es = []) => {
       dispatch(
-        updateSequence(project?.id, {
-          ...project.settings,
+        updateSequence(testPlan?.id, {
+          ProjectMasterId: settings.ProjectMasterId,
           nodes: isEmpty(ns) ? [] : ns,
           edges: isEmpty(es) ? [] : es
         })
       );
     },
-    [project]
+    [testPlan]
   );
 
   const onNodeClick = useCallback((_, node) => setSelectedNode(node), [setSelectedNode]);
@@ -109,7 +125,6 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
           error;
         }
 
-        const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect();
         let clientX = isNaN(ev?.clientX) ? 300 : +ev?.clientX;
         let clientY = isNaN(ev?.clientX) ? 300 : +ev?.clientY;
         if (clientX < 0) clientX = 300;
@@ -121,17 +136,17 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             id: nanoid(10),
             type,
             data,
-            position: reactFlowInstance.project({
-              x: clientX - reactFlowBounds.left - 40,
-              y: clientY - reactFlowBounds.top - 40
+            position: reactFlowInstance.screenToFlowPosition({
+              x: clientX - 30,
+              y: clientY - 30
             })
           }
         ];
         setNodes(changes);
-        saveTemplate(changes, edges);
+        isAutoSave && saveChanges(changes, edges);
       }
     },
-    [edges, nodes, reactFlowInstance, saveTemplate, setNodes]
+    [edges, nodes, reactFlowInstance, saveChanges, setNodes]
   );
 
   const onDragStop = useCallback(
@@ -141,11 +156,11 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         if (i > -1) {
           nodes[i] = node;
           setNodes(nodes);
-          saveTemplate(nodes, edges);
+          isAutoSave && saveChanges(nodes, edges);
         }
       }
     },
-    [edges, nodes, saveTemplate, setNodes]
+    [edges, nodes, saveChanges, setNodes]
   );
 
   const onConnect = useCallback(
@@ -163,7 +178,7 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
         edges
       );
       setEdges(changes);
-      saveTemplate(nodes, changes);
+      isAutoSave && saveChanges(nodes, changes);
     },
     [edges, nodes, setEdges]
   );
@@ -189,6 +204,31 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
 
   const minHeight = windowDimension?.maxContentHeight - DEFAULT_HEADER_HEIGHT;
 
+  const onNodesDelete = useCallback(
+    (deleted) => {
+      setEdges(
+        deleted.reduce((acc, node) => {
+          const incomers = getIncomers(node, nodes, edges);
+          const outgoers = getOutgoers(node, nodes, edges);
+          const connectedEdges = getConnectedEdges([node], edges);
+
+          const remainingEdges = acc.filter((edge) => !connectedEdges.includes(edge));
+
+          const createdEdges = incomers.flatMap(({ id: source }) =>
+            outgoers.map(({ id: target }) => ({
+              id: `${source}->${target}`,
+              source,
+              target
+            }))
+          );
+
+          return [...remainingEdges, ...createdEdges];
+        }, edges)
+      );
+    },
+    [nodes, edges]
+  );
+
   const onUpdate = useCallback(
     (node) => {
       if (selectedNode) {
@@ -199,12 +239,12 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             ...node
           };
           setNodes(nodes);
-          saveTemplate(nodes, edges);
+          isAutoSave && saveChanges(nodes, edges);
         }
       }
       handleDialogClose();
     },
-    [edges, handleDialogClose, nodes, saveTemplate, selectedNode, setNodes]
+    [edges, handleDialogClose, nodes, saveChanges, selectedNode, setNodes]
   );
 
   const deleteNode = useCallback(() => {
@@ -212,13 +252,29 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     const changes = [...nodes];
     if (selectedNode) {
       const index = nodes.findIndex((node) => node.id === selectedNode.id);
-      index > -1 && changes.splice(index, 1);
-      const e = edges.filter((edge) => edge.source != selectedNode.id && edge.target != selectedNode.id);
-      setNodes(changes);
-      setEdges(e);
-      saveTemplate(changes, e);
+      if (index > -1) {
+        const node = nodes[index];
+        const incomers = getIncomers(node, nodes, edges);
+        const outgoers = getOutgoers(node, nodes, edges);
+        const connectedEdges = getConnectedEdges([node], edges);
+        const remainingEdges = edges.filter((edge) => !connectedEdges.includes(edge));
+        const createdEdges = incomers.flatMap(({ id: source }) =>
+          outgoers.map(({ id: target }) => ({
+            id: `${source}->${target}`,
+            source,
+            target,
+            animated: true
+          }))
+        );
+        changes.splice(index, 1);
+
+        const e = [...remainingEdges, ...createdEdges];
+        setNodes(changes);
+        setEdges(e);
+        isAutoSave && saveChanges(changes, e);
+      }
     }
-  }, [edges, handleDialogClose, nodes, saveTemplate, selectedNode, setNodes]);
+  }, [edges, handleDialogClose, nodes, saveChanges, selectedNode, setNodes]);
 
   const deleteEdge = useCallback(() => {
     if (eid) {
@@ -238,10 +294,32 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
       });
       setEdges(edgeChanges);
       setNodes(nodeChanges);
-      saveTemplate(nodeChanges, edgeChanges);
+      isAutoSave && saveChanges(nodeChanges, edgeChanges);
     }
     handleDialogClose();
-  }, [edges, eid, handleDialogClose, nodes, saveTemplate, setEdges, setNodes]);
+  }, [edges, eid, handleDialogClose, nodes, saveChanges, setEdges, setNodes]);
+
+  const isValidConnection = useCallback(
+    (connection) => {
+      // we are using getNodes and getEdges helpers here
+      // to make sure we create isValidConnection function only once
+      const target = nodes.find((node) => node.id === connection.target);
+      const hasCycle = (node, visited = new Set()) => {
+        if (visited.has(node.id)) return false;
+
+        visited.add(node.id);
+
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+
+      if (target.id === connection.source) return false;
+      return !hasCycle(target);
+    },
+    [nodes, edges]
+  );
 
   const resetCanvas = () => {
     const ns = [
@@ -254,20 +332,30 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
     ];
     setEdges([]);
     setNodes(ns);
-    saveTemplate(ns, []);
+    saveChanges(ns, []);
   };
 
   return (
     <Page>
       <PageHeader>
-        <PageTitle>Test Sequencer</PageTitle>
+        <PageTitle>{pageTitle}</PageTitle>
         <PageActions>
-          <Tooltip title="Clear all nodes">
-            <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} />
+          <ProgressIndicator title="Saving" show={isAutoSave && savingChanges} />
+          <Tooltip title="Enable Auto Save changes">
+            <div className="inline-flex items-center">
+              <label>Auto-Save</label>
+              <TailwindToggleRenderer path="auto-save" visible={true} enabled={true} data={isAutoSave} handleChange={(_, ev) => setAutoSave(ev)} />
+            </div>
           </Tooltip>
-          <Tooltip title="Start Automation Builds">
-            <IconButton title="Trigger" icon="PlayArrow" onClick={() => dispatch(triggerSequence(project?.id))} />
-          </Tooltip>
+          <IconButton title="Reset" icon="ClearAll" onClick={resetCanvas} tooltip="Clear the Canvas" />
+          <IconButton
+            title="Trigger"
+            icon="PlayArrow"
+            onClick={() => dispatch(triggerSequence(testPlan?.id))}
+            tooltip="Trigger the execution of Test Plan"
+          />
+
+          <CloseButton onClose={onClose} />
         </PageActions>
       </PageHeader>
       <div
@@ -277,7 +365,14 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
           maxHeight: minHeight
         }}
       >
-        <div className="w-full reactflow-wrapper" ref={reactFlowWrapper}>
+        <div
+          className="h-full w-full reactflow-wrapper"
+          ref={reactFlowWrapper}
+          style={{
+            minHeight,
+            maxHeight: minHeight
+          }}
+        >
           <ReactFlow
             id="testsequencer-canvas"
             nodes={nodes}
@@ -294,9 +389,11 @@ const TestCaseSequencer = ({ project, windowDimension }) => {
             onDragOver={onDragOver}
             connectionLineComponent={ConnectionLine}
             onNodesChange={onNodesChange}
+            onNodesDelete={onNodesDelete}
             onEdgesChange={onEdgesChange}
             onNodeDragStop={onDragStop}
             onConnect={onConnect}
+            isValidConnection={isValidConnection}
             onInit={setReactFlowInstance}
             style={{ background: "white" }}
             proOptions={{

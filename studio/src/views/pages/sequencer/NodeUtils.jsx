@@ -122,8 +122,7 @@ export const RequestUISchemas = {
         }
       }
     ],
-    label: "Timer Event",
-    type: "CustomGroup"
+    type: "VerticalLayout"
   },
   [NodeTypes.CASE_TASK]: conditionsUiSchema,
   [NodeTypes.SCENARIO_TASK]: conditionsUiSchema

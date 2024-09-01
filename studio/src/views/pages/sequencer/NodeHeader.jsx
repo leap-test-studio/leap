@@ -9,10 +9,10 @@ function NodeHeader({ id, selected, timer = 0 }) {
   const dispatch = useDispatch();
 
   return (
-    <div className="relative h-6 w-24">
+    <div className="absolute -top-5 h-6 w-24">
       {timer > 0 && (
         <span
-          className="absolute -top-1 -right-5 py-0.5 font-medium leading-none transform rounded-full"
+          className="absolute -top-2 -right-5 py-0.5 font-medium leading-none transform rounded-full"
           style={{
             fontSize: 9
           }}
@@ -24,17 +24,17 @@ function NodeHeader({ id, selected, timer = 0 }) {
         <div className="flex flex-row items-center justify-end">
           <IconRenderer
             icon="FileCopy"
-            className="text-color-0600 mr-0.5 cursor-pointer"
+            className="text-slate-500 hover:text-color-0500 mr-1 cursor-pointer"
             aria-hidden="true"
-            style={{ fontSize: "13" }}
+            style={{ fontSize: 13 }}
             onClick={() => dispatch(sequenceEvents("nodeAction:cloneNode"))}
             tooltip="Clone this Node?"
           />
           <IconRenderer
             icon="DeleteForever"
-            className="text-color-0600 mr-0.5 cursor-pointer"
+            className="text-slate-600 hover:text-cds-red-0800 mr-1 cursor-pointer"
             aria-hidden="true"
-            style={{ fontSize: "14" }}
+            style={{ fontSize: 14 }}
             onClick={() => {
               Swal.fire({
                 title: "Are you sure you want to Delete Node?",

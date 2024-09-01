@@ -3,12 +3,12 @@ import { Handle, Position } from "reactflow";
 
 import NodeHeader from "./NodeHeader";
 import NodeFooter from "./NodeFooter";
-import ProgressIcon from "./ProgressIcon";
+import { useSelector } from "react-redux";
 
 const handleStyleTarget = {
   backgroundColor: "white",
-  width: 8,
-  height: 16,
+  width: 6,
+  height: 12,
   borderRadius: 90,
   border: "1.5px solid green",
   marginTop: 0
@@ -16,23 +16,39 @@ const handleStyleTarget = {
 
 const handleStyleSource = {
   backgroundColor: "white",
-  width: 10,
-  height: 10,
+  width: 8,
+  height: 8,
   borderRadius: 90,
-  border: "1.5px solid #01579b",
+  border: "1.5px solid #6d48bf",
   marginTop: 0
 };
 
-const TestCaseNode = ({ id, data, type, selected }) => (
-  <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
-    <NodeHeader id={id} selected={selected} />
-    <div className={`relative ${selected ? "shadow-lg" : "shadow"} bg-slate-100 border-2 border-slate-300 rounded cursor-pointer`}>
+const TestCaseNode = ({ id, data, type, selected }) => {
+  const { testcases } = useSelector((state) => state.project);
+  const nodeData = testcases[data.id];
+  if (!nodeData) return null;
+  return (
+    <div id={"tc-node-" + id} className="flex flex-col text-center items-center justify-center cursor-pointer">
       <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />
-      <ProgressIcon icon="ElectricBolt" progress={data?.progress || 0} status={data?.status} size={50} />
       <Handle id={`source:${type}`} type="source" position={Position.Right} style={handleStyleSource} />
+      <NodeHeader id={id} selected={selected} />
+      <img
+        src={`/assets/img/${nodeData.type === 2 ? "chrome-logo.svg" : "rest-api-icon.svg"}`}
+        alt={nodeData.label}
+        width={50}
+        height={50}
+        style={{ margin: "10px" }}
+      />
+      <NodeFooter
+        id={id}
+        type={type}
+        label={nodeData?.label}
+        status={nodeData?.enabled ? "ACTIVE" : "INACTIVE"}
+        tags={nodeData.tags}
+        tooltip={nodeData.title}
+      />
     </div>
-    <NodeFooter id={id} type={type} label={data?.label} status={data?.enabled ? "ACTIVE" : "INACTIVE"} />
-  </div>
-);
+  );
+};
 
 export default TestCaseNode;

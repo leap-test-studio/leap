@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import isEmpty from "lodash/isEmpty";
+import isEqual from "lodash/isEqual";
 
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
 import { updateTestScenario } from "../../../redux/actions/TestScenarioActions";
+import { useHandleClose } from "../hooks";
 
 const Model = {
   schema: {
@@ -21,6 +23,14 @@ const Model = {
       status: {
         type: "boolean",
         default: true
+      },
+      remark: {
+        description: "Tags",
+        items: {
+          type: "string"
+        },
+        title: "Tags",
+        type: "array"
       },
       settings: {
         type: "object",
@@ -66,6 +76,11 @@ const Model = {
       },
       {
         type: "Control",
+        label: "Tags",
+        scope: "#/properties/remark"
+      },
+      {
+        type: "Control",
         scope: "#/properties/settings/properties/env",
         label: "Environmental Variables",
         options: {
@@ -87,11 +102,10 @@ const Model = {
 function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) {
   const dispatch = useDispatch();
   const [data, setData] = React.useState();
+  const [setIsChange, handleOnClose] = useHandleClose(onClose);
 
   useEffect(() => {
-    if (isEmpty(data)) {
-      setData(scenario);
-    }
+    setData(scenario);
     return () => setData();
   }, [showDialog, scenario]);
 
@@ -101,6 +115,7 @@ function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) 
         name: data.name,
         description: data.description,
         status: data.status,
+        remark: data.remark,
         settings: {
           ...project.settings,
           ...data.settings
@@ -110,15 +125,19 @@ function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) 
     onClose();
   };
 
+  const handleOnChange = ({ data: newdata }) => {
+    if (!isEqual(data, newdata)) {
+      setIsChange(true);
+      setData(newdata);
+    }
+  };
+
   if (!showDialog || isEmpty(data)) return <></>;
 
   return (
     <CustomDialog
       open={showDialog}
-      onClose={() => {
-        setData({});
-        onClose();
-      }}
+      onClose={handleOnClose}
       title={
         <p>
           Test Suite Setting
@@ -130,7 +149,7 @@ function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) 
       customWidth="w-[50vw]"
       customHeight="w-[50vh]"
     >
-      <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />
+      <TailwindRenderer {...Model} data={data} onChange={handleOnChange} />
     </CustomDialog>
   );
 }

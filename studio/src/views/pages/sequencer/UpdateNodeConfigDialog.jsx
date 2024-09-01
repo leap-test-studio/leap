@@ -20,14 +20,14 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
   const [disableSave, setDisableSave] = useState(false);
   const schema = RequestSchemas[selectedNode?.type];
   const uischema = RequestUISchemas[selectedNode?.type];
+  const { testcases } = useSelector((state) => state.project);
 
   if (schema.properties?.conditions?.items?.properties?.fallback) {
-    const {
-      settings: { edges, nodes }
-    } = useSelector((state) => state.project);
-    const nextNodes = edges && nodes ? edges.filter((e) => e.source === selectedNode?.id).map((e) => nodes.find((n) => n.id == e.target)) : [];
-    if (nextNodes?.length > 0)
-      schema.properties.conditions.items.properties.fallback.oneOf = nextNodes.map((n) => ({ const: n.id, title: n.data.label || n.data.name }));
+    if (!isEmpty(testcases))
+      schema.properties.conditions.items.properties.fallback.oneOf = Object.values(testcases).map((n) => ({
+        const: n.id,
+        title: n.label || n.data.name
+      }));
   }
 
   return (
@@ -35,13 +35,13 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
       open={isOpen}
       onClose={onClose}
       title={
-        <div className="text-sm font-bold text-color-0500 py-0">
+        <div className="text-sm font-bold text-color-label py-0">
           Setting
-          <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
+          <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-2">
             <span className="select-none">{selectedNode?.type} #ID:</span>
             <span className="inline-flex">
               <p className="select-none">[</p>
-              <p className="select-all px-2">{selectedNode?.id}</p>
+              <p className="select-all px-1">{selectedNode?.id}</p>
               <p className="select-none">]</p>
             </span>
           </div>
@@ -55,7 +55,8 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
           data: nodeData
         })
       }
-      largeScreen={true}
+      customWidth="w-[40vw]"
+      customHeight="h-[20vh]"
     >
       <TailwindRenderer
         schema={schema}

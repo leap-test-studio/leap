@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { Fragment, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getBezierPath } from "reactflow";
 
@@ -73,8 +73,8 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, t
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
-        <button onClick={onEdgeClick}>
-          <IconRenderer icon="DeleteForever" className="text-red-600 opacity-0 hover:opacity-100" style={{ fontSize: 16 }} />
+        <button onClick={onEdgeClick} className="group h-7 w-7 rounded-full hover:bg-white flex flex-row items-center justify-center text-center">
+          <IconRenderer icon="Cancel" className="text-red-600 opacity-0 group-hover:opacity-100" style={{ fontSize: 16 }} />
         </button>
       </foreignObject>
     </>

@@ -6,7 +6,7 @@ import * as actionTypes from "../../../redux/actions";
 
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
-import { cropString } from "../utils";
+import { cropString, TestCaseTypes } from "../utils";
 import { Centered, IconButton, Spinner, Tooltip, NewlineText, EmptyIconRenderer, SearchComponent, IconRenderer, UploadFile } from "../../utilities";
 import {
   fetchTestCaseList,
@@ -16,17 +16,18 @@ import {
   updateTestCase,
   fetchTestCase,
   cloneTestCase,
-  runTestCases
+  runTestCases,
+  swapTestCase
 } from "../../../redux/actions/TestCaseActions";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import Swal from "sweetalert2";
 import CardLayout from "../common/CardLayout";
+import LabelRenderer from "../../tailwindrender/renderers/common/LabelRenderer";
+import { ActionButton, CardHeaders, MoreActionsDropDowns } from "../common/DisplayCard";
 
-const TC_TYPES = ["Definition", "REST-API", "Web", "SSH"];
-
-function TestCaseManagement({ project, scenario, changeTestScenario, windowDimension }) {
+function TestCaseManagement({ project, scenario, changeTestScenario, windowDimension, pageTitle, runCompleteTestSuite }) {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [selectedTestCase, setSelectedTestCase] = useState(state?.selectedTestCase);
@@ -34,7 +35,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
   const [showUpdateDialog, setShowUpdateDialog] = useState(state?.showUpdateDialog);
   const [progress, setProgress] = useState(0);
 
-  const { isFirstTestCase, loading, testcases, details, message, showMessage } = useSelector((state) => state.testcase);
+  const { isFirstTestCase, loading, testcases, totalItems, details, message, showMessage } = useSelector((state) => state.testcase);
 
   useEffect(() => {
     fetchTestCases();
@@ -84,7 +85,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
         formData.append("upload-file", file);
         const response = await UploadFile(
           "POST",
-          `/api/v1/project/${project?.id}/scenario/${scenario?.id}/testcase/${tc?.id}/import`,
+          `/api/v1/project/${project?.id}/suite/${scenario?.id}/testcase/${tc?.id}/import`,
           formData,
           (percent) => setProgress(Math.floor(percent))
         );
@@ -119,7 +120,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
       {isFirstTestCase ? (
         <Page>
           <PageHeader>
-            <PageTitle>Test Cases</PageTitle>
+            <PageTitle>{pageTitle}</PageTitle>
           </PageHeader>
           <PageBody>
             <Centered>
@@ -129,8 +130,8 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
                 loading={loading}
                 onClick={() => setShowCreateDialog(true)}
                 onClose={() => changeTestScenario(null)}
-                title="Create first TestCase"
-                details={`Suite: ${scenario?.name}`}
+                title="Create first Test Case"
+                details={`Test Suite: ${scenario?.name}`}
                 buttonTitle="Create"
                 buttonIcon="PostAdd"
               />
@@ -139,7 +140,9 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
         </Page>
       ) : (
         <RenderList
+          pageTitle="Test Cases"
           testcases={testcases}
+          totalItems={totalItems}
           showAddTestCaseDialog={() => setShowCreateDialog(true)}
           loading={loading}
           editTestCase={(selectedTestCase) => {
@@ -147,7 +150,8 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
             setShowUpdateDialog(true);
             dispatch(fetchTestCase(project?.id, scenario?.id, selectedTestCase.id));
           }}
-          updateTestCase={(t) => dispatch(updateTestCase(project?.id, scenario?.id, t.id, t))}
+          updateTestCase={(id, t) => dispatch(updateTestCase(project?.id, scenario?.id, id, t))}
+          swapTestCase={(s, t) => dispatch(swapTestCase(project?.id, scenario?.id, s, t))}
           deleteTestCase={(selectedTestCase) => {
             dispatch(deleteTestCase(project?.id, scenario?.id, selectedTestCase?.id));
           }}
@@ -162,6 +166,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
             setSelectedTestCase(selectedTestCase);
             importTestCase(selectedTestCase);
           }}
+          runCompleteTestSuite={() => runCompleteTestSuite(scenario?.id)}
         />
       )}
       {showCreateDialog && (
@@ -181,10 +186,11 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           isOpen={showUpdateDialog}
           onClose={resetState}
           onUpdate={(t) => {
-            dispatch(updateTestCase(project?.id, scenario?.id, t.id, t));
+            dispatch(updateTestCase(project?.id, scenario?.id, selectedTestCase.id, t));
             resetState();
           }}
           windowDimension={windowDimension}
+          project={project}
         />
       )}
     </>
@@ -194,16 +200,20 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
 export default TestCaseManagement;
 
 function RenderList({
+  pageTitle,
   testcases = [],
   showAddTestCaseDialog,
   loading,
   editTestCase,
   deleteTestCase,
   updateTestCase,
+  swapTestCase,
   cloneTestCase,
   runTestCases,
-  importTestCase
+  importTestCase,
+  runCompleteTestSuite
 }) {
+  const [detailedView, setDetailedView] = useState(false);
   const [search, setSearch] = useState("");
 
   let filtered = [];
@@ -213,22 +223,33 @@ function RenderList({
     const searchText = search.toLowerCase();
     filtered = testcases?.filter(
       (tc) =>
-        String("TCID-" + tc.seqNo)
-          .toLowerCase()
-          .includes(searchText) ||
+        tc.label.toLowerCase().includes(searchText) ||
+        tc.title.toLowerCase().includes(searchText) ||
         tc.given?.toLowerCase().includes(searchText) ||
         tc.when?.toLowerCase().includes(searchText) ||
-        tc.then?.toLowerCase().includes(searchText)
+        tc.then?.toLowerCase().includes(searchText) ||
+        tc.tags?.find((tag) => tag.toLowerCase().includes(searchText))
     );
   }
 
   return (
     <Page>
       <PageHeader>
-        <PageTitle>Test Cases</PageTitle>
+        <PageTitle>{`${pageTitle} (${testcases.length})`}</PageTitle>
         <PageActions>
-          <SearchComponent search={search} placeholder="Search" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
-          <IconButton title="Add New" icon="AddCircle" onClick={() => showAddTestCaseDialog()} />
+          <SearchComponent search={search} placeholder="Search for Test Case" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <LabelRenderer label="Show Details" />
+          <Tooltip title="Enable To View Test Case Details">
+            <TailwindToggleRenderer
+              path="show-details"
+              visible={true}
+              enabled={true}
+              data={detailedView}
+              handleChange={(_, ev) => setDetailedView(ev)}
+            />
+          </Tooltip>
+          <IconButton title="Run" icon="PlayCircleFilled" onClick={runCompleteTestSuite} tooltip="Execute Test Suite" />
+          <IconButton title="Create" icon="AddCircle" onClick={showAddTestCaseDialog} tooltip="Create New Test Case" />
         </PageActions>
       </PageHeader>
       <PageBody>
@@ -237,33 +258,36 @@ function RenderList({
             <Spinner>Loading</Spinner>
           </Centered>
         ) : filtered?.length === 0 ? (
-          <EmptyIconRenderer title="Test Case Not Found" />
+          <Centered>
+            <EmptyIconRenderer title="Test Case Not Found" />
+          </Centered>
         ) : (
           <div className="relative w-full">
-            <div className="absoulte sticky top-0 grid grid-cols-12 w-full gap-x-2 bg-white p-2 rounded-lg border">
-              <div className="col-span-1 text-center border-r">#TID</div>
-              <div className="col-span-3 text-center border-r">Given</div>
-              <div className="col-span-3 text-center border-r">When</div>
-              <div className="col-span-3 text-center border-r">Then</div>
-              <div className="col-span-2 text-center">Actions</div>
+            <CardHeaders
+              items={[
+                { colSpan: 1, label: "#TID" },
+                { colSpan: 9, label: "Test Description" },
+                { colSpan: 2, label: "Actions" }
+              ]}
+            />
+            <div className="grid grid-cols-1 gap-y-2.5 pr-0">
+              {filtered.map((s, index) => (
+                <DisplayTestCase
+                  key={index}
+                  rowIndex={index}
+                  editTestCase={editTestCase}
+                  record={s}
+                  records={filtered}
+                  swapTestCase={swapTestCase}
+                  updateTestCase={updateTestCase}
+                  deleteTestCase={deleteTestCase}
+                  cloneTestCase={cloneTestCase}
+                  runTestCases={runTestCases}
+                  importTestCase={importTestCase}
+                  detailedView={detailedView}
+                />
+              ))}
             </div>
-            {filtered?.length > 0 && (
-              <div className="flex flex-col w-full">
-                {filtered.map((s, index) => (
-                  <DisplayTestCase
-                    key={index}
-                    rowIndex={index}
-                    editTestCase={editTestCase}
-                    record={s}
-                    updateTestCase={updateTestCase}
-                    deleteTestCase={deleteTestCase}
-                    cloneTestCase={cloneTestCase}
-                    runTestCases={runTestCases}
-                    importTestCase={importTestCase}
-                  />
-                ))}
-              </div>
-            )}
           </div>
         )}
       </PageBody>
@@ -271,14 +295,26 @@ function RenderList({
   );
 }
 
-function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, cloneTestCase, updateTestCase, runTestCases, importTestCase }) {
-  const tcType = TC_TYPES[record.type] || "Unknown";
+function DisplayTestCase({
+  rowIndex,
+  record,
+  records,
+  editTestCase,
+  swapTestCase,
+  deleteTestCase,
+  cloneTestCase,
+  updateTestCase,
+  runTestCases,
+  importTestCase,
+  detailedView
+}) {
+  const tcType = TestCaseTypes[record.type] || "Unknown";
 
-  const exportTestCase = () => {
+  const handleExportTestCase = () => {
     const copy = {
       type: tcType
     };
-    ["seqNo", "enabled", "given", "when", "then", "execSteps", "settings", "tags"].forEach(function (key) {
+    ["seqNo", "enabled", "title", "given", "when", "then", "execSteps", "settings", "tags"].forEach(function (key) {
       copy[key] = record[key];
     });
     const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(copy, null, 2));
@@ -287,37 +323,176 @@ function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, clone
     linkElement.setAttribute("download", `testcase_TCID-${record.seqNo}.json`);
     linkElement.click();
   };
+
+  const handleImportTestCase = () => importTestCase(record);
+
+  const handleEditTestCase = () => editTestCase(record);
+
+  const handleMoveUp = () => swapTestCase(record.id, records[rowIndex - 1].id);
+
+  const handleMoveDown = () => swapTestCase(record.id, records[rowIndex + 1].id);
+
+  const handleDeleteProject = () =>
+    Swal.fire({
+      title: "Are you sure you want to Delete the Test Case?",
+      text: `TID: #${record.label}`,
+      icon: "question",
+      confirmButtonText: "YES",
+      confirmButtonColor: `${record.enabled ? "red" : "green"}`,
+      showCancelButton: true,
+      cancelButtonText: "NO",
+      cancelButtonColor: `${record.enabled ? "green" : "red"}`
+    }).then((response) => {
+      if (response.isConfirmed) {
+        deleteTestCase(record);
+      }
+    });
+
+  const handleCloneTestCase = () =>
+    Swal.fire({
+      title: "Are you sure you want to Clone the Test Case?",
+      text: `TID: #${record.label}`,
+      icon: "question",
+      confirmButtonText: "YES",
+      confirmButtonColor: "green",
+      showCancelButton: true,
+      cancelButtonText: "NO",
+      cancelButtonColor: "red"
+    }).then((response) => {
+      if (response.isConfirmed) {
+        cloneTestCase(record);
+      }
+    });
+
+  const handleRunTestCase = () => runTestCases(record);
+
+  const more = [
+    {
+      icon: "FileCopy",
+      label: "Clone",
+      onClick: handleCloneTestCase,
+      tooltip: "Clone Complete Test Case",
+      description: (
+        <p>
+          Clone the <strong>Test Case {record.label}</strong>.
+        </p>
+      )
+    },
+    {
+      icon: "Delete",
+      label: "Delete",
+      onClick: handleDeleteProject,
+      tooltip: "Delete Test Case",
+      description: (
+        <p>
+          Permanently purges the <strong>Test Case</strong> from system including all backups.
+        </p>
+      )
+    },
+    {
+      icon: "FileDownload",
+      label: "Export",
+      onClick: handleExportTestCase,
+      tooltip: "Export Test Case",
+      description: (
+        <p>
+          Export the <strong>Test Case</strong> in JSON format.
+          <br />
+          Filename: {`testcase_TCID-${record.seqNo}.json`}
+        </p>
+      )
+    },
+    {
+      icon: "FileUpload",
+      label: "Import",
+      onClick: handleImportTestCase,
+      tooltip: (
+        <p>
+          Import the <strong>Test Case</strong>.
+        </p>
+      )
+    }
+  ];
+
+  if (rowIndex > 0) {
+    more.push({
+      icon: "KeyboardDoubleArrowUp",
+      label: "Move Up",
+      onClick: handleMoveUp
+    });
+  }
+  if (rowIndex < records.length - 1) {
+    more.push({
+      icon: "KeyboardDoubleArrowDown",
+      label: "Move Down",
+      onClick: handleMoveDown
+    });
+  }
   return (
-    <CardLayout key={"row-" + rowIndex} className="grid grid-cols-12">
-      <div className="col-span-1 flex flex-col text-center justify-center cursor-pointer" onClick={() => editTestCase(record)}>
-        <div className="flex flex-col text-center items-center justify-between border-r">
-          <label className="mt-2 text-base cursor-pointer">{record.label}</label>
+    <CardLayout key={"row-" + rowIndex} className="grid grid-cols-12 mb-1" onDoubleClick={handleEditTestCase}>
+      <div className="col-span-1 flex flex-col text-center justify-center cursor-pointer">
+        <div className="flex flex-col break-all text-center items-center justify-between border-r">
+          <label className="mt-2 text-sm cursor-pointer">{record.label}</label>
           <label className="mt-2 text-xs font-normal">{tcType}</label>
-          <div className={`text-white text-xs text-center font-bold mt-2 px-2 py-1 w-18 rounded ${record.enabled ? "bg-green-600" : "bg-red-600"}`}>
+          <div className={`text-white text-xs text-center font-bold mt-2 px-1 py-0.5 w-16 rounded ${record.enabled ? "bg-green-600" : "bg-red-600"}`}>
             {record.enabled ? "Active" : "In-Active"}
           </div>
+          {detailedView &&
+            record?.tags?.length > 0 &&
+            record.tags.map((tag, i) => (
+              <p key={tag + i} className="mr-0.5 text-[9px] text-color-0800">
+                #{tag}
+              </p>
+            ))}
         </div>
       </div>
-      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
-        <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
-          <NewlineText text={record.given && cropString(record.given, 45 * 4).toString()} />
-        </Tooltip>
+      <div className="flex flex-col col-span-9 px-2 cursor-pointer border-r justify-center">
+        {record.id && (
+          <div className="text-color-label break-words select-all flex flex-row items-center mb-3">
+            <IconRenderer icon="Fingerprint" className="text-color-0600 mr-2" style={{ fontSize: 15 }} />
+            <Tooltip title="Unique Identifier">
+              <label className="text-xs">{record.id}</label>
+            </Tooltip>
+          </div>
+        )}
+        <div className="text-color-label break-words select-all flex flex-row items-center">
+          <IconRenderer icon="Title" className="text-color-0600 mr-2" style={{ fontSize: 15 }} />
+          <Tooltip title={record.label} content={<NewlineText text={record.title} />} placement="bottom">
+            <NewlineText text={record.title} />
+          </Tooltip>
+        </div>
+        {detailedView && (record.given != "" || record.when != "" || record.then != "") && (
+          <>
+            <div className="grid grid-cols-9 gap-x-2 text-center font-medium border-t-2 mt-2 py-1">
+              <div className="col-span-3 border-r">Given</div>
+              <div className="col-span-3 border-r">When</div>
+              <div className="col-span-3">Then</div>
+            </div>
+            <div className="grid grid-cols-9 gap-x-2">
+              <div className="px-2 break-words col-span-3 cursor-pointer border-r">
+                <Tooltip title={record.label} content={<NewlineText text={record.given} />} placement="bottom">
+                  <NewlineText text={record.given && cropString(record.given, 45 * 3).toString()} />
+                </Tooltip>
+              </div>
+              <div className="px-2 break-words col-span-3 cursor-pointer border-r">
+                <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
+                  <NewlineText text={record.when && cropString(record.when, 45 * 3).toString()} />
+                </Tooltip>
+              </div>
+              <div className="px-2 break-words col-span-3 cursor-pointer">
+                <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
+                  <NewlineText text={record.then && cropString(record.then, 45 * 3).toString()} />
+                </Tooltip>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
-        <Tooltip title={record.label} content={<NewlineText text={record.when} />} placement="bottom">
-          <NewlineText text={record.when && cropString(record.when, 45 * 4).toString()} />
-        </Tooltip>
-      </div>
-      <div className="p-1 pl-2 break-words col-span-3 cursor-pointer border-r" onClick={() => editTestCase(record)}>
-        <Tooltip title={record.label} content={<NewlineText text={record.then} />} placement="bottom">
-          <NewlineText text={record.then && cropString(record.then, 45 * 4).toString()} />
-        </Tooltip>
-      </div>
-      <div className="p-1 col-span-2 flex flex-col text-center justify-center">
-        <div className="flex flex-row justify-center">
+      <div className="flex flex-row col-span-2 items-center min-w-[100px] w-full justify-end">
+        <div className="flex flex-row items-center justify-end pr-1">
           <Tooltip title="Enable/Disable test case" placement="bottom">
             <TailwindToggleRenderer
-              path={rowIndex}
+              path={"tc-" + rowIndex}
               visible={true}
               enabled={true}
               data={record.enabled}
@@ -333,8 +508,7 @@ function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, clone
                   cancelButtonColor: `${record.enabled ? "green" : "red"}`
                 }).then((response) => {
                   if (response.isConfirmed) {
-                    updateTestCase({
-                      id: record.id,
+                    updateTestCase(record.id, {
                       enabled: ev
                     });
                   }
@@ -343,86 +517,20 @@ function DisplayTestCase({ rowIndex, record, editTestCase, deleteTestCase, clone
             />
           </Tooltip>
           {record.type > 0 && (
-            <Tooltip title="Run Test Case">
-              <IconRenderer
-                icon="PlayArrow"
-                className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
-                style={{ fontSize: 18 }}
-                onClick={() => runTestCases(record)}
-              />
-            </Tooltip>
+            <ActionButton
+              icon="PlayArrow"
+              onClick={handleRunTestCase}
+              tooltip="Run Test Case"
+              description={
+                <p>
+                  Start the execution of Test Case <strong>{record.label}</strong>
+                </p>
+              }
+            />
           )}
-          <Tooltip title="Clone Test Case">
-            <IconRenderer
-              icon="FileCopy"
-              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() =>
-                Swal.fire({
-                  title: "Are you sure you want to Clone the Test Case?",
-                  text: `TID: #${record.label}`,
-                  icon: "question",
-                  confirmButtonText: "YES",
-                  confirmButtonColor: "green",
-                  showCancelButton: true,
-                  cancelButtonText: "NO",
-                  cancelButtonColor: "red"
-                }).then((response) => {
-                  if (response.isConfirmed) {
-                    cloneTestCase(record);
-                  }
-                })
-              }
-            />
-          </Tooltip>
-          <Tooltip title="Modify Steps">
-            <IconRenderer
-              icon="Edit"
-              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() => editTestCase(record)}
-            />
-          </Tooltip>
-          <Tooltip title="Delete Test Case">
-            <IconRenderer
-              icon="DeleteForever"
-              className="text-color-0600 hover:text-red-600 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() =>
-                Swal.fire({
-                  title: "Are you sure you want to Delete the Test Case?",
-                  text: `TID: #${record.label}`,
-                  icon: "question",
-                  confirmButtonText: "YES",
-                  confirmButtonColor: `${record.enabled ? "red" : "green"}`,
-                  showCancelButton: true,
-                  cancelButtonText: "NO",
-                  cancelButtonColor: `${record.enabled ? "green" : "red"}`
-                }).then((response) => {
-                  if (response.isConfirmed) {
-                    deleteTestCase(record);
-                  }
-                })
-              }
-            />
-          </Tooltip>
-          <Tooltip title="Export Test Case to JSON file">
-            <IconRenderer
-              icon="FileDownload"
-              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={exportTestCase}
-            />
-          </Tooltip>
-          <Tooltip title="Import Test Case from JSON file">
-            <IconRenderer
-              icon="FileUpload"
-              className="text-color-0600 hover:text-color-0500 mr-2 cursor-pointer"
-              style={{ fontSize: 18 }}
-              onClick={() => importTestCase(record)}
-            />
-          </Tooltip>
+          <ActionButton tooltip="Modify Steps" icon="Edit" onClick={handleEditTestCase} />
         </div>
+        <MoreActionsDropDowns id={record.id} elements={more} />
       </div>
     </CardLayout>
   );

@@ -13,7 +13,7 @@ const Model = {
       },
       description: {
         type: "string",
-        description: "Suite"
+        description: "Test Suite Details"
       }
     },
     required: ["name"]
@@ -29,7 +29,7 @@ const Model = {
       {
         type: "Control",
         scope: "#/properties/description",
-        label: "Suite",
+        label: "Test Suite Details",
         options: {
           multi: true,
           isLarge: true
@@ -48,7 +48,7 @@ function CloneTestScenarioDialog({ showDialog, cloneTestScenario, onClose, tests
         setData({});
         onClose();
       }}
-      title={`Clone Test scenario from ${testscenario?.name}`}
+      title={`Clone Test Suite from ${testscenario?.name}`}
       saveTitle="Clone"
       onSave={() => {
         cloneTestScenario(data);

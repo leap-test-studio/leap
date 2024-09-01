@@ -1,14 +1,17 @@
-import { Fragment, useState } from "react";
-import { Dialog, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
+import { useEffect, useState } from "react";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
 import TailwindRenderer from "../../tailwindrender";
-import { IconButton, IconRenderer } from "../../utilities";
+import { CustomDialog } from "../../utilities";
 
 import WebSchema from "./schema/web_schema.json";
 import SSHSchema from "./schema/ssh_schema.json";
 import APISchema from "./schema/api_schema.json";
+import { TestCaseTypesOneOf } from "../utils";
+import { useHandleClose } from "../hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProject } from "../../../redux/actions/ProjectActions";
 
 const defaults = [
   {},
@@ -39,198 +42,198 @@ const defaults = [
 ];
 const Schemas = Object.freeze([{}, APISchema, WebSchema, SSHSchema]);
 
-function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdate, windowDimension }) {
+function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdate, project }) {
+  const dispatch = useDispatch();
+  const [setIsChange, handleOnClose] = useHandleClose(onClose);
   const { settings, execSteps, ...rest } = testcase;
   const [nodeData, setNodeData] = useState(rest);
   const [payload, setPayoad] = useState({ settings, execSteps });
   if (isEmpty(testcase) || isEmpty(testcase?.id)) return null;
 
+  useEffect(() => {
+    const { settings, execSteps, ...rest } = testcase;
+    setPayoad({ settings, execSteps });
+    setNodeData(rest);
+  }, [testcase]);
+
+  const loadProject = (id) => id && dispatch(fetchProject(id));
+
+  useEffect(() => {
+    loadProject(project?.id);
+  }, [project?.id]);
+
   const payloadSchema = Schemas[nodeData.type] || {};
 
+  const { projectData } = useSelector((state) => state.project);
+
+  const suggest = projectData?.settings?.env;
+  try {
+    const usch = JSON.stringify(payloadSchema.uischema);
+    payloadSchema.uischema = JSON.parse(usch.replaceAll('"$AUTOCOMPLETE$"', JSON.stringify(suggest)));
+  } catch (_) {}
+
   return (
-    <Transition show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 overflow-hidden z-[10000]" onClose={() => null}>
-        <div className="absolute inset-0 overflow-hidden">
-          <TransitionChild
-            as={Fragment}
-            enter="ease-in-out duration-600"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in-out duration-600"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="absolute inset-0 bg-slate-400 bg-opacity-40" />
-          </TransitionChild>
-          <div className="fixed inset-y-0 right-0 max-w-full flex">
-            <TransitionChild
-              as={Fragment}
-              enter="transform transition ease-in-out duration-600 sm:duration-700"
-              enterFrom="translate-x-full"
-              enterTo="translate-x-0"
-              leave="transform transition ease-in-out duration-600 sm:duration-700"
-              leaveFrom="translate-x-0"
-              leaveTo="translate-x-full"
-            >
-              <div className="relative w-screen max-w-full h-screen flex flex-col bg-white">
-                <div className="px-4 py-1 sm:px-6 flex justify-between border-b border-slate-300">
-                  <DialogTitle as="div" className="text-sm font-bold text-color-label py-0">
-                    Configure Test Case
-                    <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
-                      <p className="select-none">{`Suite: ${testscenario.name} - [`}</p>
-                      <p className="select-all px-2">TCID-{testcase?.seqNo}</p>
-                      <p className="select-none">]</p>
-                    </div>
-                  </DialogTitle>
-                  <button
-                    type="button"
-                    className="rounded-md text-slate-300 hover:text-white focus:outline-none focus:ring-1"
-                    onClick={() => onClose()}
-                  >
-                    <span className="sr-only">Close panel</span>
-                    <IconRenderer icon="Close" className="h-5 w-5 text-red-600" aria-hidden="true" />
-                  </button>
-                </div>
-                <div
-                  className="w-full overflow-y-scroll custom-scrollbar"
-                  style={{
-                    minHeight: windowDimension?.maxContentHeight - 30,
-                    maxHeight: windowDimension?.maxContentHeight - 30
-                  }}
-                >
-                  <TailwindRenderer
-                    schema={schema}
-                    uischema={uischema}
-                    data={nodeData}
-                    onChange={({ data }) => {
-                      if (!isEqual(nodeData, data)) {
-                        setNodeData(data);
-                        if (nodeData.type !== data.type) {
-                          setPayoad(defaults[data.type]);
-                        }
-                      }
-                    }}
-                  />
-                  <TailwindRenderer
-                    {...payloadSchema}
-                    data={payload}
-                    onChange={({ data }) => {
-                      if (!isEqual(payload, data)) {
-                        setPayoad(data);
-                      }
-                    }}
-                  />
-                </div>
-                <div className="flex justify-end text-white p-3 mr-5 w-full border-t border-slate-300">
-                  <button
-                    type="button"
-                    className="px-3 rounded focus:outline-none shadow-sm bg-slate-200 hover:bg-slate-100 text-color-label"
-                    onClick={onClose}
-                  >
-                    Close
-                  </button>
-                  <IconButton
-                    title="Save"
-                    icon="Save"
-                    onClick={() =>
-                      onUpdate({
-                        ...nodeData,
-                        ...payload
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </TransitionChild>
+    <CustomDialog
+      open={isOpen}
+      onClose={handleOnClose}
+      title={
+        <div className="text-sm font-bold text-color-label py-0">
+          Edit Test Case
+          <div className="inline-flex text-xs text-slate-400 justify-start items-center mx-4">
+            <p>{`Test Suite: ${testscenario.name}, Test Case ID: `}</p>
+            <p className="select-all pl-2">{testcase?.label}</p>
           </div>
         </div>
-      </Dialog>
-    </Transition>
+      }
+      saveTitle="Save"
+      onSave={() =>
+        onUpdate({
+          type: nodeData.type,
+          title: nodeData.title,
+          given: nodeData.given,
+          when: nodeData.when,
+          then: nodeData.then,
+          tags: nodeData.tags,
+          execSteps: payload.execSteps,
+          settings: payload.settings
+        })
+      }
+      customHeight="h-[90vh]"
+      customWidth="w-[90vw]"
+    >
+      <TailwindRenderer
+        {...getSchema(suggest)}
+        data={nodeData}
+        onChange={({ data }) => {
+          if (!isEqual(nodeData, data)) {
+            setIsChange(true);
+            setNodeData(data);
+            if (nodeData.type !== data.type) {
+              setPayoad(defaults[data.type]);
+            }
+          }
+        }}
+      />
+      <TailwindRenderer
+        {...payloadSchema}
+        data={payload}
+        onChange={({ data }) => {
+          if (!isEqual(payload, data)) {
+            setIsChange(true);
+            setPayoad(data);
+          }
+        }}
+      />
+    </CustomDialog>
   );
 }
 
 export default UpdateTestCaseDialog;
 
-const schema = {
-  properties: {
-    enabled: {
-      type: "boolean",
-      default: true
-    },
-    given: {
-      type: "string",
-      description: "Define initial state."
-    },
-    when: {
-      type: "string",
-      description: "Define actions takes place."
-    },
-    then: {
-      type: "string",
-      description: "Define expected outcome."
-    },
-    type: {
-      type: "integer",
-      oneOf: [
-        { const: 0, title: "Definition" },
-        { const: 1, title: "REST-API" },
-        { const: 2, title: "Web" },
-        { const: 3, title: "SSH" }
-      ]
-    }
-  },
-  required: ["given", "when", "then"]
-};
-
-const uischema = {
-  type: "VerticalLayout",
-  elements: [
-    {
-      type: "Control",
-      scope: "#/properties/type",
-      options: {
-        format: "radio"
+const getSchema = (suggest) => {
+  const schema = {
+    properties: {
+      title: {
+        type: "string",
+        title: "Test Title",
+        description: "Describe Test Case Title."
+      },
+      given: {
+        type: "string",
+        title: "Given",
+        description:
+          "The `given` part describes the state of the world before you begin the behavior you're specifying in this scenario. You can think of it as the pre-conditions to the test."
+      },
+      when: {
+        type: "string",
+        title: "When",
+        description: "The `when` section is that behavior that you're specifying."
+      },
+      then: {
+        type: "string",
+        title: "Then",
+        description: "Finally the `then` section describes the changes you expect due to the specified behavior."
+      },
+      type: {
+        type: "integer",
+        oneOf: TestCaseTypesOneOf,
+        title: "Test Type",
+        description: "Type of Test Case. Some options: Web Automation, REST-API Automation, SSH Commands etc,."
+      },
+      tags: {
+        description: "Tags",
+        items: {
+          type: "string"
+        },
+        title: "Tags",
+        type: "array"
       }
     },
-    {
-      type: "HorizontalLayout",
-      elements: [
-        {
-          type: "Control",
-          scope: "#/properties/enabled",
-          label: "Enable Test Case?",
-          options: {
-            toggle: true
+    required: ["title"]
+  };
+
+  const uischema = {
+    label: "Test Case Settings",
+    type: "CustomGroup",
+    elements: [
+      {
+        type: "HorizontalLayout",
+        elements: [
+          {
+            type: "Control",
+            scope: "#/properties/title",
+            options: {
+              multi: true
+            }
+          },
+          {
+            type: "Control",
+            scope: "#/properties/given",
+            label: "Given",
+            options: {
+              multi: true,
+              suggest
+            }
+          },
+          {
+            type: "Control",
+            scope: "#/properties/when",
+            label: "When",
+            options: {
+              multi: true,
+              suggest
+            }
+          },
+          {
+            type: "Control",
+            scope: "#/properties/then",
+            label: "Then",
+            options: {
+              multi: true,
+              suggest
+            }
           }
-        },
-        {
-          type: "Control",
-          scope: "#/properties/given",
-          label: "Given",
-          options: {
-            multi: true,
-            isLarge: true
+        ]
+      },
+      {
+        type: "HorizontalLayout",
+        elements: [
+          {
+            type: "Control",
+            scope: "#/properties/type",
+            options: {
+              format: "radio"
+            }
+          },
+          {
+            type: "Control",
+            label: "Tags",
+            scope: "#/properties/tags"
           }
-        },
-        {
-          type: "Control",
-          scope: "#/properties/when",
-          label: "When",
-          options: {
-            multi: true,
-            isLarge: true
-          }
-        },
-        {
-          type: "Control",
-          scope: "#/properties/then",
-          label: "Then",
-          options: {
-            multi: true,
-            isLarge: true
-          }
-        }
-      ]
-    }
-  ]
+        ]
+      }
+    ]
+  };
+
+  return { uischema, schema };
 };

@@ -1,6 +1,6 @@
 import { IconRenderer } from "../../utilities";
 
-const ProgressIcon = ({ progress = 0, status, size = 70, icon }) => {
+const ProgressIcon = ({ progress = 0, status, size = 50, icon }) => {
   const running = status === "ACTIVE" || (progress > 0 && progress < 100);
   const strokeColor = status === "ERRORED" ? "#DC2626" : running ? "#059669" : "#ffffff";
   const total = 100;
@@ -23,6 +23,8 @@ const ProgressIcon = ({ progress = 0, status, size = 70, icon }) => {
     },
     { values: [], total: 0 }
   );
+
+  if (!running) return <IconRenderer className="text-slate-600 mx-5" icon={icon} style={{ fontSize: 50 }} />;
 
   return (
     <div className={`${running ? "animate-pulse" : ""}`}>
@@ -50,7 +52,7 @@ const ProgressIcon = ({ progress = 0, status, size = 70, icon }) => {
           height={!running ? 25 : 20}
           x={!running ? 8 : 10}
           y={!running ? 5 : 10}
-          style={{ color: "#125687" }}
+          style={{ color: "#6d48bf" }}
         />
       </svg>
     </div>

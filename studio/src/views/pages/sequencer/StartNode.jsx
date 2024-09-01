@@ -1,12 +1,13 @@
 import { useSelector } from "react-redux";
 import { Handle, Position } from "reactflow";
+import { IconRenderer } from "../../utilities";
 
 const handleStyleSource = {
   backgroundColor: "white",
   width: 8,
   height: 8,
   borderRadius: 90,
-  border: "2px solid #01579b"
+  border: "2px solid #6d48bf"
 };
 
 const StartNode = ({ id }) => {
@@ -15,17 +16,15 @@ const StartNode = ({ id }) => {
   const nodeStatus = node?.status || "READY";
 
   return (
-    <div id={`node-${id}`} className="cursor-pointer flex flex-col items-center justify-center">
-      <div className="flex flex-row items-center">
-        <svg width="70" height="70" fill="none" viewBox="0 0 110 169">
-          <path
-            fill={nodeStatus === "COMPLETED" ? "#059669" : "#009ADB"}
-            d="M15.888 168.714A15.885 15.885 0 010 152.826V15.893c0-5.68 3.027-10.924 7.944-13.76a15.86 15.86 0 0115.888 0l95.33 68.463a15.885 15.885 0 017.944 13.76c0 5.68-3.026 10.923-7.944 13.759l-95.33 68.47a15.868 15.868 0 01-7.944 2.129"
-          />
-        </svg>
-        <Handle id="start-node" type="source" position={Position.Right} style={handleStyleSource} />
-      </div>
-      <div className="absolute text-xs text-slate-50 font-medium">Start</div>
+    <div id={`node-${id}`} className="cursor-pointer flex flex-col items-center">
+      <svg width="60" height="60" fill="none" viewBox="0 0 16 16">
+        <path
+          fill={nodeStatus === "COMPLETED" ? "#059669" : "#009ADB"}
+          d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.249 1.249 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429Zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006a.036.036 0 0 0-.004-.009l-.006-.006-.008-.001c-.003 0-.006.002-.009.004Z"
+        />
+      </svg>
+      <div className="text-xs text-color-label font-bold">Start Trigger</div>
+      <Handle id="start-node" type="source" position={Position.Right} style={handleStyleSource} />
     </div>
   );
 };

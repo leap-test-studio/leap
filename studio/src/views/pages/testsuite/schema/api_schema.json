@@ -6,23 +6,41 @@
         "properties": {
           "method": {
             "type": "string",
-            "enum": ["get", "post", "put", "patch"]
+            "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
           },
-          "baseURL": {
+          "host": {
             "type": "string"
           },
-          "url": {
+          "path": {
             "type": "string"
           },
           "timeout": {
             "type": "integer"
+          },
+          "header": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "title": "",
+                  "description": "Key"
+                },
+                "value": {
+                  "type": "string",
+                  "title": "",
+                  "description": "Value"
+                }
+              }
+            }
           }
         }
       },
       "execSteps": {
         "type": "object",
         "properties": {
-          "reqbody": {
+          "reqBody": {
             "type": "string"
           },
           "statusCode": {
@@ -30,6 +48,9 @@
             "enum": [200, 201]
           },
           "resBody": {
+            "type": "string"
+          },
+          "condition": {
             "type": "string"
           }
         }
@@ -49,48 +70,48 @@
           },
           {
             "type": "Control",
-            "label": "Base URL",
-            "scope": "#/properties/settings/properties/baseURL"
+            "label": "Host",
+            "scope": "#/properties/settings/properties/host",
+            "options": {
+              "suggest": "$AUTOCOMPLETE$"
+            }
           },
           {
             "type": "Control",
-            "label": "URL",
-            "scope": "#/properties/settings/properties/url"
+            "label": "Path",
+            "scope": "#/properties/settings/properties/path",
+            "options": {
+              "suggest": "$AUTOCOMPLETE$"
+            }
           },
           {
             "type": "Control",
-            "label": "Timeout in ms",
+            "label": "Request Timeout in ms",
             "scope": "#/properties/settings/properties/timeout"
           }
         ]
       },
       {
         "type": "Control",
-        "label": "Body",
-        "scope": "#/properties/execSteps/properties/reqbody",
+        "label": "Headers",
+        "scope": "#/properties/settings/properties/header",
         "options": {
-          "multi": true,
-          "isLarge": true
-        },
-        "rule": {
-          "effect": "SHOW",
-          "condition": {
-            "type": "OR",
-            "conditions": [
+          "disableExpand": true,
+          "showSortButtons": false,
+          "rowTitle": "Header",
+          "detail": {
+            "type": "HorizontalLayout",
+            "elements": [
               {
-                "type": "LEAF",
-                "scope": "#/properties/settings/properties/method",
-                "expectedValue": "post"
+                "type": "Control",
+                "scope": "#/properties/key"
               },
               {
-                "type": "LEAF",
-                "scope": "#/properties/settings/properties/method",
-                "expectedValue": "put"
-              },
-              {
-                "type": "LEAF",
-                "scope": "#/properties/settings/properties/method",
-                "expectedValue": "patch"
+                "type": "Control",
+                "scope": "#/properties/value",
+                "options": {
+                  "suggest": "$AUTOCOMPLETE$"
+                }
               }
             ]
           }
@@ -98,17 +119,39 @@
       },
       {
         "type": "Control",
-        "label": "Response Status Code",
-        "scope": "#/properties/execSteps/properties/statusCode"
+        "label": "Request Body",
+        "scope": "#/properties/execSteps/properties/reqBody",
+        "options": {
+          "format": "json",
+          "suggest": "$AUTOCOMPLETE$"
+        }
       },
       {
-        "type": "Control",
-        "label": "Expected Body",
-        "scope": "#/properties/execSteps/properties/resBody",
-        "options": {
-          "multi": true,
-          "isLarge": true
-        }
+        "label": "Expected Result",
+        "type": "CustomGroup",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "Response Status Code",
+            "scope": "#/properties/execSteps/properties/statusCode"
+          },
+          {
+            "type": "Control",
+            "label": "Condition",
+            "scope": "#/properties/execSteps/properties/condition",
+            "options": {
+              "suggest": "$AUTOCOMPLETE$"
+            }
+          },
+          {
+            "type": "Control",
+            "label": "Expected Reponse Body",
+            "scope": "#/properties/execSteps/properties/resBody",
+            "options": {
+              "format": "json"
+            }
+          }
+        ]
       }
     ]
   }

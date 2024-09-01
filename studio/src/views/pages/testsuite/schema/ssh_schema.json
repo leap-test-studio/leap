@@ -82,7 +82,10 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/settings/properties/host"
+                "scope": "#/properties/settings/properties/host",
+                "options": {
+                  "suggest": "$AUTOCOMPLETE$"
+                }
               },
               {
                 "type": "Control",
@@ -90,11 +93,17 @@
               },
               {
                 "type": "Control",
-                "scope": "#/properties/settings/properties/username"
+                "scope": "#/properties/settings/properties/username",
+                "options": {
+                  "suggest": "$AUTOCOMPLETE$"
+                }
               },
               {
                 "type": "Control",
-                "scope": "#/properties/settings/properties/password"
+                "scope": "#/properties/settings/properties/password",
+                "options": {
+                  "suggest": "$AUTOCOMPLETE$"
+                }
               },
               {
                 "type": "Control",
@@ -131,7 +140,8 @@
                     "scope": "#/properties/commandText",
                     "label": "Command String",
                     "options": {
-                      "multi": true
+                      "multi": true,
+                      "suggest": "$AUTOCOMPLETE$"
                     }
                   },
                   {
@@ -139,7 +149,8 @@
                     "scope": "#/properties/expectedText",
                     "label": "Expected Output String",
                     "options": {
-                      "multi": true
+                      "multi": true,
+                      "suggest": "$AUTOCOMPLETE$"
                     }
                   }
                 ]

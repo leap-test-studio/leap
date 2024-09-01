@@ -8,8 +8,8 @@ import ProgressIcon from "./ProgressIcon";
 
 const handleStyleTarget = {
   backgroundColor: "white",
-  width: 8,
-  height: 16,
+  width: 6,
+  height: 12,
   borderRadius: 90,
   border: "1.5px solid green",
   marginTop: 0
@@ -17,30 +17,24 @@ const handleStyleTarget = {
 
 const handleStyleSource = {
   backgroundColor: "white",
-  width: 10,
-  height: 10,
+  width: 8,
+  height: 8,
   borderRadius: 90,
-  border: "1.5px solid #01579b",
+  border: "1.5px solid #6d48bf",
   marginTop: 0
 };
 
-const TestScenarioNode = ({ id, type, selected }) => {
-  const {
-    testscenarios,
-    settings: { nodes }
-  } = useSelector((state) => state.project);
-  const node = nodes?.find((n) => n.id === id);
-  if (node) node.data = testscenarios[node.data.id];
-
+const TestScenarioNode = ({ id, data, type, selected }) => {
+  const { testsuites } = useSelector((state) => state.project);
+  const nodeData = testsuites[data.id];
+  if (!nodeData) return null;
   return (
-    <div id={"node-" + id} className="flex flex-col text-center items-center justify-center">
+    <div id={"node-" + id} className="relative flex flex-col text-center items-center justify-center mx-2">
       <NodeHeader id={id} selected={selected} />
-      <div className={`relative ${selected ? "shadow-lg" : "shadow"} bg-slate-100 border-2 border-slate-300 rounded cursor-pointer`}>
-        <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />
-        <ProgressIcon icon="DynamicForm" progress={node?.data?.progress || 0} status={node?.data?.status} size={50} />
-        <Handle id={`source:${type}`} type="source" position={Position.Right} style={handleStyleSource} />
-      </div>
-      <NodeFooter id={id} type={type} label={node?.data?.name} status={node?.data?.status ? "ACTIVE" : "INACTIVE"} />
+      <Handle id={`target:${type}`} type="target" position={Position.Left} style={handleStyleTarget} />
+      <ProgressIcon icon="NextWeekRounded" progress={nodeData.progress || 0} status={nodeData.status} size={50} />
+      <Handle id={`source:${type}`} type="source" position={Position.Right} style={handleStyleSource} />
+      <NodeFooter id={id} type={type} label={nodeData.name} status={nodeData.status ? "ACTIVE" : "INACTIVE"} tags={nodeData.remark} />
     </div>
   );
 };

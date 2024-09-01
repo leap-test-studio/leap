@@ -51,7 +51,7 @@
               },
               {
                 "const": 4,
-                "title": "Always"
+                "title": "All Steps"
               }
             ]
           }
@@ -130,6 +130,10 @@
                 {
                   "label": "React-Select DropDown",
                   "value": "reactSelectDropDown"
+                },
+                {
+                  "label": "ScrollBy",
+                  "value": "scrollBy"
                 },
                 {
                   "label": "Drag and Drop",
@@ -230,7 +234,7 @@
                 "by": {
                   "type": "string",
                   "enum": ["id", "xpath", "css", "className", "name", "linkText"],
-                  "default": "xpath"
+                  "default": "id"
                 },
                 "element": {
                   "type": "string"
@@ -242,7 +246,8 @@
                   "type": "string"
                 },
                 "interval": {
-                  "type": "integer"
+                  "type": "integer",
+                  "defailt": 5000
                 },
                 "from": {
                   "type": "string"
@@ -273,7 +278,7 @@
     "type": "VerticalLayout",
     "elements": [
       {
-        "label": "Step Execution Settings",
+        "label": "Test Step Additional Settings",
         "type": "CustomGroup",
         "scope": "#/properties/settings",
         "elements": [
@@ -282,7 +287,7 @@
             "elements": [
               {
                 "type": "Control",
-                "label": "Capture Screenshot",
+                "label": "Capture Screenshots",
                 "scope": "#/properties/settings/properties/screenshot",
                 "options": {
                   "format": "radio"
@@ -326,8 +331,9 @@
           }
         ]
       },
+
       {
-        "label": "Actions",
+        "label": "Test Steps",
         "type": "Control",
         "scope": "#/properties/execSteps",
         "options": {
@@ -359,6 +365,11 @@
                   "condition": {
                     "type": "OR",
                     "conditions": [
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "scrollBy"
+                      },
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
@@ -405,6 +416,11 @@
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
+                        "expectedValue": "scrollBy"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
                         "expectedValue": "navigateToURL"
                       },
                       {
@@ -434,6 +450,9 @@
                       }
                     ]
                   }
+                },
+                "options": {
+                  "suggest": "$AUTOCOMPLETE$"
                 }
               },
               {
@@ -486,7 +505,17 @@
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",
+                        "expectedValue": "captureScreenshot"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
                         "expectedValue": "setEditorText"
+                      },
+                      {
+                        "type": "LEAF",
+                        "scope": "#/properties/actionType",
+                        "expectedValue": "scrollBy"
                       },
                       {
                         "type": "LEAF",
@@ -532,7 +561,8 @@
                   }
                 },
                 "options": {
-                  "multi": true
+                  "multi": true,
+                  "suggest": "$AUTOCOMPLETE$"
                 }
               },
               {
@@ -547,11 +577,6 @@
                   "condition": {
                     "type": "OR",
                     "conditions": [
-                      {
-                        "type": "LEAF",
-                        "scope": "#/properties/actionType",
-                        "expectedValue": "navigateToURL"
-                      },
                       {
                         "type": "LEAF",
                         "scope": "#/properties/actionType",

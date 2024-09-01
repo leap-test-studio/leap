@@ -2,57 +2,39 @@ import React from "react";
 
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
+import { TestCaseTypesOneOf } from "../utils";
 
 const Model = {
   schema: {
     properties: {
-      given: {
+      title: {
         type: "string",
-        description: "Define initial state."
-      },
-      when: {
-        type: "string",
-        description: "Define actions takes place."
-      },
-      then: {
-        type: "string",
-        description: "Define expected outcome."
+        title: "Test Title",
+        description: "Describe Test Case Title."
       },
       type: {
         type: "integer",
-        oneOf: [
-          { const: 0, title: "Definition" },
-          { const: 1, title: "REST-API" },
-          { const: 2, title: "Web" },
-          { const: 3, title: "SSH" }
-        ]
+        oneOf: TestCaseTypesOneOf,
+        title: "Test Type",
+        description: "Type of Test Case. Some options: Web Automation, REST-API Automation, SSH Commands etc,."
+      },
+      tags: {
+        description: "Tags",
+        items: {
+          type: "string"
+        },
+        title: "Tags",
+        type: "array"
       }
     },
-    required: ["given", "when", "then"]
+    required: ["title"]
   },
   uischema: {
     type: "VerticalLayout",
     elements: [
       {
         type: "Control",
-        scope: "#/properties/given",
-        label: "Given",
-        options: {
-          multi: true
-        }
-      },
-      {
-        type: "Control",
-        scope: "#/properties/when",
-        label: "When",
-        options: {
-          multi: true
-        }
-      },
-      {
-        type: "Control",
-        scope: "#/properties/then",
-        label: "Then",
+        scope: "#/properties/title",
         options: {
           multi: true
         }
@@ -63,6 +45,11 @@ const Model = {
         options: {
           format: "radio"
         }
+      },
+      {
+        type: "Control",
+        label: "Tags",
+        scope: "#/properties/tags"
       }
     ]
   }
@@ -87,12 +74,11 @@ function CreateTestCaseDialog({ showDialog, createTestCase, onClose }) {
       }}
       title="Create Test Case"
       saveTitle="Create"
-      className="max-w-lg"
       onSave={() => {
         createTestCase(data);
         setData({});
       }}
-      largeScreen={true}
+      customWidth="w-[50vw]"
     >
       <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />
     </CustomDialog>
