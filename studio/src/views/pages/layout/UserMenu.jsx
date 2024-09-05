@@ -71,7 +71,7 @@ export default function UserMenu({ product }) {
             <li>
               <Link
                 className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
-                to={`/${product.page?.base}/settings`}
+                to={`${product.page.urlPrefix}/settings`}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Settings
@@ -80,7 +80,7 @@ export default function UserMenu({ product }) {
             <li>
               <Link
                 className="font-medium text-xs text-color-0500 hover:text-color-0700 flex items-center py-1 px-3"
-                to={`/${product.page?.base}/login`}
+                to={`${product.page.urlPrefix}/login`}
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
                   dispatch(logoutUser());

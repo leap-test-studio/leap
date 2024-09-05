@@ -30,8 +30,8 @@ export function SignInPage({ product }) {
         5000
       );
     } else if (success) {
-      navigate(`/${page?.base}/${page?.landingPage}`, { replace: true });
-      console.log(`Login Succeeded: redirecting to ${page?.base}${page?.landingPage}`);
+      navigate(`${page.urlPrefix}/${page?.landingPage}`, { replace: true });
+      console.log(`Login Succeeded: redirecting to ${page.urlPrefix}${page.landingPage}`);
     }
   }, [success, error, navigate]);
 

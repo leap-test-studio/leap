@@ -3,17 +3,16 @@
   "description": "Lean Enterprise Automation Platform",
   "version": "2.0.0",
   "page": {
-    "base": "leap",
-    "landingPage": "dashboard",
-    "projectsListPage": "projects"
+    "urlPrefix": "",
+    "landingPage": "/dashboard",
+    "projectsListPage": "/projects"
   },
   "build": {
-    "id": "20220805050750",
-    "date": "2022-08-05 05:07:50",
-    "host": "127.0.0.1",
-    "user": "SIM"
+    "id": "0",
+    "date": "2024-09-05 00:00:00",
+    "host": "127.0.0.1"
   },
-  "copyrightYear": 2022,
+  "copyrightYear": 2024,
   "organization": {
     "name": "Automation",
     "address": ""

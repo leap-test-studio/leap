@@ -29,7 +29,7 @@ function AuthGuard({ product, children }) {
 
   const redirectToLogin = () => {
     localStorage.clear();
-    navigate(`/${product?.page.base}/login`, { replace: true });
+    navigate(`${product.page.urlPrefix}/login`, { replace: true });
   };
 
   const updateRequestInterceptor = () => {

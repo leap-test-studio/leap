@@ -60,7 +60,7 @@ const ProjectManagement = (props) => {
   useEffect(() => {
     if (project) {
       setTimeout(() => {
-        navigate(`/${product.page.base}/${product.page.landingPage}`, { replace: true });
+        navigate(`${product.page.urlPrefix}${product.page.landingPage}`, { replace: true });
       }, 30);
     }
   }, [project, navigate]);

@@ -37,7 +37,7 @@ function SelectedProject({ product, project, scenario, resetContext, changeTestS
 
   const resetProject = () => {
     resetContext();
-    navigate(`/${product?.page.base}/${product?.page.projectsListPage}`, { replace: true });
+    navigate(`${product.page.urlPrefix}${product.page.projectsListPage}`, { replace: true });
   };
 
   return (

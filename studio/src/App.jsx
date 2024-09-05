@@ -101,12 +101,12 @@ export default function App(props) {
           {routes.map((route, index) => (
             <Route
               key={index}
-              path={`/${product?.page.base}/${route.path}`}
+              path={`${product.page.urlPrefix}/${route.path}`}
               element={
                 route.page !== undefined ? (
                   <Layout
                     disableLayout={route.disableLayout}
-                    base={`/${product?.page.base}`}
+                    base={`${product.page.urlPrefix}`}
                     sideBarItems={routes.filter((r) => r.sideBar === true || r.divider === true)}
                     {...props}
                     {...context}
@@ -129,7 +129,7 @@ export default function App(props) {
               }
             />
           ))}
-          <Route exact path="/" element={<Navigate to={`/${product?.page.base}/login`} />} />
+          <Route exact path="/" element={<Navigate to={`${product.page.urlPrefix}/login`} />} />
         </Routes>
       </AuthGuard>
     </Router>
