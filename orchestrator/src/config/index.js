@@ -7,7 +7,7 @@ dotenv.config({ path: path.join(__dirname, "../../.env") });
 const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid("production", "development", "test").default("production"),
-    PORT: Joi.number().default(8080),
+    PORT: Joi.number().default(9000),
     TIMEZONE: Joi.string().description("Time zone").default("+05:30"),
     EXPRESSJS_SECRET: Joi.string().description("Express Session Secret").default("S3cret"),
     DATABASE_NAME: Joi.string().description("Database name").default("automation"),
@@ -20,6 +20,7 @@ const envVarsSchema = Joi.object()
     DATABASE_MIN_CONNECTIONS: Joi.number().description("Database Minimum Connections").default(1),
     DATABASE_MAX_CONNECTIONS: Joi.number().description("Database Maximum Connections").default(9),
     DATABASE_LOGGING: Joi.boolean().description("Enable logging").default(false),
+    AWS_DB_SECRET_ID: Joi.string().description("The ARN or name of the secret to retrieve").default(null),
     LOG_DIR: Joi.string().description("Log directory").default("/tmp"),
     LOG_LEVEL: Joi.string().valid("all", "trace", "debug", "info", "warn", "error", "fatal").default("all"),
     SMTP_ENABLED: Joi.boolean().description("SMTP enabled?").default(false),

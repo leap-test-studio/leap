@@ -1,4 +1,5 @@
 global.config = require("./config");
+require("./config/aws_secrets");
 global.config.env = process.env.NODE_ENV === "production" ? "production" : "development";
 
 const fs = require("fs");

@@ -16,9 +16,9 @@ const Jobs = [];
 const BuildMasterId = uuid.v4();
 global.config = {};
 
-ProjectMaster.TestScenarios?.forEach((scenario) => {
-  if (scenario.status) {
-    scenario.TestCases.forEach((tc) => {
+ProjectMaster.TestScenarios?.forEach((suite) => {
+  if (suite.status) {
+    suite.TestCases.forEach((tc) => {
       Jobs.push({
         ...tc,
         BuildMasterId,

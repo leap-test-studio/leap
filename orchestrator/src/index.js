@@ -121,10 +121,10 @@ if (process.env.NODE_ENV === "production") {
   const privateKey = fs.readFileSync(path.join(__dirname, "privkey.pem"), "utf8");
   const certificate = fs.readFileSync(path.join(__dirname, "fullchain.pem"), "utf8");
   server = https.createServer({ key: privateKey, cert: certificate }, app);
-  port = process.env.PORT || 443;
+  port = global.config.PORT || 443;
 } else {
   server = http.createServer(app);
-  port = process.env.PORT || 80;
+  port = global.config.PORT || 9000;
 }
 server.listen(port, () => console.log("Server listening on port " + port));
 
