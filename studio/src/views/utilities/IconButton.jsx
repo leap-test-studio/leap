@@ -29,7 +29,7 @@ export const IconButton = ({
     <button
       id={id}
       disabled={disabled}
-      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200" : bg) : ""} rounded text-white ${
+      className={`${ariaLabel === undefined ? (disabled ? "bg-slate-300 hover:bg-slate-200 cursor-not-allowed" : bg) : ""} rounded text-white ${
         title !== undefined ? "px-1" : ""
       } mr-2 ${showShadow ? "shadow hover:shadow-xl" : ""} inline-flex items-center justify-center`}
       onClick={onClick}
