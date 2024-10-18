@@ -1,6 +1,5 @@
 import isEmpty from "lodash/isEmpty";
 import { useState } from "react";
-import Swal from "sweetalert2";
 
 export function cashFormat(n) {
   do {
@@ -105,3 +104,10 @@ export const BuildTypes = ["P", "TC", "TS"];
 export const TestCaseTypes = ["Definition", "REST API", "Web", "SSH"];
 
 export const TestCaseTypesOneOf = TestCaseTypes.map((type, index) => ({ const: index, title: type }));
+
+export const mask = (string, mask) => {
+  mask = mask || "*";
+  let maskLength = string.length;
+  let maskStart = 0;
+  return string.substr(0, maskStart) + _.repeat(mask, maskLength) + string.substr(maskStart + maskLength, length);
+};

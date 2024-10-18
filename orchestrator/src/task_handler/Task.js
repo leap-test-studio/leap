@@ -46,7 +46,9 @@ class Task extends EventEmitter {
 
   beforeHook() {
     return new Promise((resolve, reject) => {
+      logger.info(`TC:${this._taskId} Validate Properties`);
       if (isEmpty(this.execSteps) || this.type === TestStatus.DRAFT) {
+        logger.error(`TC:${this._taskId} TestCase is invalid`);
         this._notifyJob(TestStatus.INVALID_TESTCASE);
         return reject({
           actual: this.execSteps,
@@ -54,9 +56,9 @@ class Task extends EventEmitter {
           result: TestStatus.INVALID_TESTCASE
         });
       } else {
-        resolve();
+        this._notifyJob(TestStatus.RUNNING);
+        return resolve();
       }
-      this._notifyJob(TestStatus.RUNNING);
     });
   }
 
@@ -87,6 +89,7 @@ class Task extends EventEmitter {
     logger.info(this.toString("Execute Before Hook"));
     try {
       await this.beforeHook();
+      logger.info(`TC:${this._taskId} TestCase is Valid`);
       await this.before();
       logger.info(this.toString("Execute Test Case"));
       await this.execute();

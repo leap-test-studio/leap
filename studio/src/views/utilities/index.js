@@ -15,7 +15,7 @@ export * from "./RoundedIconButton";
 export * from "./SearchComponent";
 export * from "./Snackbar";
 export * from "./Spinner";
-export * from "./tooltip";
+export * from "./Tooltip";
 export * from "./pagination";
 export * from "./iconrenderer";
 export * from "./TableRenderer";

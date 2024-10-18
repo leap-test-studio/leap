@@ -1,35 +1,48 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import FirstTimeCard from "../common/FirstTimeCard";
-import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
-import CreateTestPlanDialog from "./CreateTestPlanDialog";
-import TestPlanSettingsDialog from "./TestPlanSettingsDialog";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
-
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "../../utilities";
 import { createTestPlan, fetchTestPlanList, deleteTestPlan, resetTestPlanFlags, updateTestPlan } from "../../../redux/actions/TestPlanActions";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
+import CreateTestPlanDialog from "./CreateTestPlanDialog";
+import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
+import FirstTimeCard from "../common/FirstTimeCard";
 import LocalStorageService from "../../../redux/actions/LocalStorageService";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, IconRenderer } from "../../utilities";
+import ProgressIndicator from "../common/ProgressIndicator";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import TestCaseSequencer from "../sequencer";
-import ProgressIndicator from "../common/ProgressIndicator";
+import TestPlanSettingsDialog from "./TestPlanSettingsDialog";
+import WebContext from "../../context/WebContext";
 
 dayjs.extend(relativeTime);
 
 let intervalId;
 const TestPlanManagement = (props) => {
-  const AuthUser = LocalStorageService.getItem("auth_user");
   const dispatch = useDispatch();
+  const UserInfo = LocalStorageService.getUserInfo();
   const { project, pageTitle } = props;
-  const { showMessage, message, details, isFirstTestPlan, loading, testplans } = useSelector((state) => state.testplan);
+  const { showMessage, message, details, isFirstTestPlan, loading, testplans, listLoading } = useSelector((state) => state.testplan);
   const [search, setSearch] = useState("");
   const [selectedTestPlan, setSelectedTestPlan] = useState();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setSettingsDialog] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [filtered, setFiltered] = useState([]);
+  const { getRole } = useContext(WebContext);
+  const role = getRole();
+  console.log(isFirstTestPlan, loading, testplans, listLoading);
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(isEmpty(searchText) ? testplans : testplans.filter((s) => s.name.toLowerCase().includes(searchText)));
+  }, [search, testplans]);
+
+  const fetchList = useCallback(() => {
+    if (!listLoading && !showEditor) dispatch(fetchTestPlanList(project?.id));
+  }, [listLoading, showEditor, project]);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -54,8 +67,6 @@ const TestPlanManagement = (props) => {
     }
   }, [showMessage]);
 
-  const fetchList = useCallback(() => !showEditor && dispatch(fetchTestPlanList(project?.id)), [showEditor, project]);
-
   const handleCreateTestPlan = (payload) => {
     setShowCreateDialog(!showCreateDialog);
     dispatch(createTestPlan(project?.id, payload));
@@ -71,12 +82,6 @@ const TestPlanManagement = (props) => {
     setSettingsDialog(true);
   };
 
-  const filtered = useMemo(() => {
-    if (!search) return testplans;
-    const searchText = search.toLowerCase();
-    return testplans.filter((s) => s.name.toLowerCase().includes(searchText));
-  }, [testplans, search]);
-
   if (showEditor)
     return (
       <TestCaseSequencer
@@ -90,7 +95,9 @@ const TestPlanManagement = (props) => {
   return (
     <Page>
       <PageHeader show={!isFirstTestPlan}>
-        <PageTitle>{`${pageTitle} (${testplans.length})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={testplans.length} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
           <ProgressIndicator title="Creating Test Plan" show={loading} />
           <RoundedIconButton
@@ -101,13 +108,14 @@ const TestPlanManagement = (props) => {
             icon="Refresh"
             onClick={fetchList}
           />
-          <SearchComponent search={search} placeholder="Search for Test Plan" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <SearchComponent placeholder="Search for Test Plan" onChange={setSearch} />
           <IconButton
             id="testplan-create-btn"
             title="Create"
             icon="AddCircle"
             onClick={() => setShowCreateDialog(true)}
             tooltip="Create New Test Plan"
+            disabled={!role.isLeads}
           />
         </PageActions>
       </PageHeader>
@@ -124,42 +132,49 @@ const TestPlanManagement = (props) => {
               buttonIcon="PostAdd"
             />
           </Centered>
-        ) : (
-          <>
-            {testplans && filtered.length > 0 ? (
-              <div className="relative w-full">
-                <CardHeaders
-                  items={[
-                    { colSpan: 5, label: "Test Plan" },
-                    { colSpan: 4, label: "Info" },
-                    { colSpan: 1, label: "Status" },
-                    { colSpan: 2, label: "Actions" }
-                  ]}
+        ) : listLoading && testplans.length == 0 ? (
+          <Centered>
+            <Spinner>Loading</Spinner>
+          </Centered>
+        ) : testplans && filtered.length > 0 ? (
+          <div className="relative w-full">
+            <CardHeaders
+              items={[
+                { colSpan: 5, label: "Test Plan" },
+                { colSpan: 4, label: "Info" },
+                { colSpan: 1, label: "Status" },
+                { colSpan: 2, label: "Actions" }
+              ]}
+            />
+            <div className="grid grid-cols-1 gap-y-2.5 pr-0">
+              {filtered.map((testplan, index) => (
+                <TestPlanCard
+                  {...props}
+                  role={role}
+                  key={index}
+                  testplan={testplan}
+                  openPlanner={openPlanner}
+                  openSettings={openSettings}
+                  activeUser={UserInfo}
                 />
-                <div className="grid grid-cols-1 gap-y-2.5 pr-0">
-                  {filtered.map((testplan, index) => (
-                    <TestPlanCard
-                      key={index}
-                      {...props}
-                      testplan={testplan}
-                      openPlanner={openPlanner}
-                      openSettings={openSettings}
-                      activeUser={AuthUser}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Centered>
-                <EmptyIconRenderer title="Test Plan Not Found" />
-                <IconButton id="testplan-refresh-btn" title="Refresh" icon="Refresh" onClick={fetchList} tooltip="Fetch Test Plans" />
-              </Centered>
-            )}
-          </>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <Centered>
+            <EmptyIconRenderer title="Test Plan Not Found" />
+            <IconButton id="testplan-refresh-btn" title="Refresh" icon="Refresh" onClick={fetchList} tooltip="Fetch Test Plans" />
+          </Centered>
         )}
 
         <CreateTestPlanDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createTestPlan={handleCreateTestPlan} />
-        <TestPlanSettingsDialog {...props} showDialog={showSettingsDialog} onClose={() => setSettingsDialog(false)} testplan={selectedTestPlan} />
+        <TestPlanSettingsDialog
+          {...props}
+          role={role}
+          showDialog={showSettingsDialog}
+          onClose={() => setSettingsDialog(false)}
+          testplan={selectedTestPlan}
+        />
       </PageBody>
     </Page>
   );
@@ -167,7 +182,7 @@ const TestPlanManagement = (props) => {
 
 export default TestPlanManagement;
 
-const TestPlanCard = ({ testplan, activeUser, openPlanner, openSettings }) => {
+const TestPlanCard = ({ testplan, activeUser, openPlanner, openSettings, role: { isLeads } = { isLeads: false } }) => {
   const dispatch = useDispatch();
   const { id, name, description, createdAt, updatedAt } = testplan;
   const status = true;
@@ -280,6 +295,7 @@ const TestPlanCard = ({ testplan, activeUser, openPlanner, openSettings }) => {
               className="hover:text-cds-red-0800"
               onClick={handleDeletePlan}
               tooltip="Delete Test Planner"
+              disabled={!isLeads}
               description={
                 <p>
                   Permanently purges the <strong>Test Plan</strong> from system.

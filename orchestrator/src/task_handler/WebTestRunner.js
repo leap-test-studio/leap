@@ -14,17 +14,19 @@ const ActionsTypes = Object.keys(WebActionTypes);
 class TestRunner extends Task {
   constructor(taskInfo) {
     super(taskInfo);
+    logger.info(`TC:${this._taskId} Constructor WebTestRunner`);
     this.settings.capability = this.settings.capability || "chrome";
     this.sleepTimingType = this.settings.sleep?.timeType;
     this.sleepInterval = this.settings.sleep?.interval;
     this.Builder = new Builder();
+
+    logger.info(`TC:${this._taskId} WebTestRunner, GRID: ${global.config.SELENIUM_GRID_URL}`);
 
     if (global.config.SELENIUM_GRID_URL) {
       this.Builder.usingServer(global.config.SELENIUM_GRID_URL);
     }
 
     const chromeCapabilities = Capabilities.chrome();
-    chromeCapabilities.setBrowserVersion("114.0");
     chromeCapabilities.setAcceptInsecureCerts(true);
 
     const args = [
@@ -70,12 +72,13 @@ class TestRunner extends Task {
   }
 
   async before() {
+    logger.info(`TC:${this._taskId} Start WebTestRunner`);
     const manage = this.WebDriver.manage();
     manage.setTimeouts({ implicit: 300000, pageLoad: 30000 });
     await manage.window().maximize();
     const winSize = await manage.window().getSize();
     this.setBuildProperties("seleniumSession", await this.WebDriver.getSession());
-    logger.info("WebTestRunner WINSIZE:", winSize);
+    logger.info(`TC:${this._taskId} Start WebTestRunner, WINSIZE:${JSON.stringify(winSize)}`);
     return BPromise.resolve(true);
   }
 
@@ -101,7 +104,7 @@ class TestRunner extends Task {
             await this.WebDriver.sleep(this.sleepInterval);
           }
 
-          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Executing:", event.actionType, ", Payload:", event.data);
+          logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Executing:", event.actionType, ", Payload:", JSON.stringify(event.data));
           const hanndlerOutput = await this.getActionHandler(event.actionType, event.data);
           logger.info("WebTestRunner: Step[" + stepOutcome.stepNo + "] Outcome:", event.actionType, ", Outcome:", JSON.stringify(hanndlerOutput));
           stepOutcome = merge({}, stepOutcome, hanndlerOutput);
@@ -139,7 +142,7 @@ class TestRunner extends Task {
     this.steps = await BPromise.reduce(this.execSteps, this.stepExecutor, []);
     const outcome = this.steps.filter((s) => s != null).find((s) => s.result === TestStatus.FAIL) || { result: TestStatus.PASS };
 
-    logger.info("WebTestRunner: Executed All Steps:", outcome);
+    logger.info("WebTestRunner: Executed All Steps:", JSON.stringify(outcome));
     this.actual = { actualResult: outcome };
     this.result = outcome?.result;
     if (this.result === TestStatus.PASS) {
@@ -170,24 +173,30 @@ class TestRunner extends Task {
   }
 
   async after() {
-    await this.WebDriver.close();
+    try {
+      await this.WebDriver.close();
+      this.WebDriver = null;
+    } catch (error) {
+      logger.error("WebTestRunner, Failed to cleanup", error);
+    }
     return Promise.resolve(true);
   }
 
   async stop() {
     try {
-      await this.WebDriver.quit();
+      if (!this.WebDriver) return;
+      await this.WebDriver.close();
+      const seleniumSession = this.getBuildProperties("seleniumSession");
+
+      if (global.config.SELENIUM_GRID_URL && seleniumSession) {
+        await httpRequest({
+          method: "DELETE",
+          baseUrl: global.config.SELENIUM_GRID_URL,
+          uri: `/session/${seleniumSession.getId()}`
+        });
+      }
     } catch (error) {
       logger.error("WebTestRunner, Failed to cleanup", error);
-    }
-    const seleniumSession = this.getBuildProperties("seleniumSession");
-
-    if (global.config.SELENIUM_GRID_URL && seleniumSession) {
-      await httpRequest({
-        method: "DELETE",
-        baseUrl: global.config.SELENIUM_GRID_URL,
-        uri: `/session/${seleniumSession.getId()}`
-      });
     }
   }
 
@@ -311,7 +320,7 @@ class TestRunner extends Task {
         const text = await webElement.getText();
         return {
           actual: text,
-          result: text === value ? TestStatus.PASS : TestStatus.FAIL
+          result: text?.includes(value) ? TestStatus.PASS : TestStatus.FAIL
         };
       },
       verifyElementVisible: async ({ by, element }) => {

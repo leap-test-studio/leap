@@ -1,5 +1,4 @@
 global.config = require("./config");
-require("./config/aws_secrets");
 global.config.env = process.env.NODE_ENV === "production" ? "production" : "development";
 
 const fs = require("fs");
@@ -18,7 +17,7 @@ DbStore.init()
   .then(async (result) => {
     if (result) {
       logger.info("Database Initialized");
-      //await DbStore.seedUsers();
+      await DbStore.seedUsers();
       await JobScheduler.load();
       await BuildManager.load();
       require("./index");

@@ -7,7 +7,7 @@ import TailwindToggleRenderer from "../renderers/TailwindToggleRenderer";
 const TailwindBooleanToggle = (props) => {
   if (!props.visible) return null;
   return (
-    <div className="flex flex-row items-center rounded bg-white hover:bg-color-0050 shadow border border-slate-300 grow m-1 px-2 py-1">
+    <div className="flex flex-row items-center rounded bg-white hover:bg-color-0050 hover:border grow px-2 py-1">
       <div className="px-2">
         <TailwindToggleRenderer {...props} />
       </div>

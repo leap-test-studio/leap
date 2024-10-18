@@ -12,15 +12,16 @@ module.exports = merge(common, {
   devtool: false,
   output: {
     path: paths.build,
-    publicPath: "/",
+    publicPath: "https://leap.dataplatform-np.rr-it.com/",
+    //publicPath: "http://localhost:5000/",
     filename: "js/[name].bundle.js"
   },
   plugins: [
     // Extracts CSS into separate files
     // Note: style-loader is for development, MiniCssExtractPlugin is for production
     new MiniCssExtractPlugin({
-      filename: "styles/[name].css",
-      chunkFilename: "[id].css"
+      filename: "assets/styles/[name].css",
+      chunkFilename: "assets/styles/[id].css"
     })
   ],
   module: {

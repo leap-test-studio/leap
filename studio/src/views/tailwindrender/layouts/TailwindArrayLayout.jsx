@@ -21,7 +21,7 @@ export const TailwindArrayLayout = React.memo((props) => {
 
   const { data, path, schema, uischema, errors, addItem, renderers, cells, label, required, rootSchema, config, uischemas, readonly } = props;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
-  let showAddItem = true;
+  let showAddItem = appliedUiSchemaOptions.showAddItem != null ? appliedUiSchemaOptions.showAddItem : true;
   if (!isNaN(appliedUiSchemaOptions.maximum)) {
     showAddItem = data < Number(appliedUiSchemaOptions.maximum);
   }
@@ -76,7 +76,7 @@ export const TailwindArrayLayout = React.memo((props) => {
           <div className="w-full flex flex-row justify-end text-color-0600 select-none mt-1">
             {!readonly && (
               <>
-                <label className="text-[10px] text-center mt-0.5">Add a {uischema?.options?.rowTitle || "Record"}</label>
+                <label className="text-[10px] text-center mt-0.5 mr-2">Add a {uischema?.options?.rowTitle || "Record"}</label>
                 <Tooltip id="tooltip-add" title={`Add to ${label}`} placement="left">
                   <IconButton
                     id={`add-item-${path}`}

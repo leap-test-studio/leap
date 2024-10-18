@@ -1,4 +1,5 @@
 const paths = require("./paths");
+const path = require("path");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -12,13 +13,13 @@ module.exports = {
   },
 
   // Where webpack looks to start building the bundle
-  entry: [paths.src + "/index.jsx"],
+  entry: [paths.srcEntryFile],
 
   // Where webpack outputs the assets and bundles
   output: {
     path: paths.build,
     filename: "[name].bundle.js",
-    publicPath: "/"
+    publicPath: "http://localhost:5000/"
   },
 
   // Customize the webpack build process
@@ -35,10 +36,10 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: paths.src + "/assets",
+          from: paths.srcAssets,
           to: "assets",
           globOptions: {
-            ignore: ["*.DS_Store", paths.src + "/assets/css/*.css"]
+            ignore: ["*.DS_Store", path.join(paths.src, "index.css"), path.join(paths.src, "tailwind.css")]
           }
         }
       ]
@@ -47,7 +48,7 @@ module.exports = {
     // Generates an HTML file from a template
     // Generates deprecation warning: https://github.com/jantimon/html-webpack-plugin/issues/1501
     new HtmlWebpackPlugin({
-      favicon: paths.src + "/assets/favicon.svg",
+      favicon: paths.public + "/favicon.svg",
       template: paths.public + "/index.html", // template file
       filename: "index.html" // output file
     })

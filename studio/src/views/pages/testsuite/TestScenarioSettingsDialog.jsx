@@ -99,7 +99,7 @@ const Model = {
   }
 };
 
-function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) {
+function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose, role: { isLeads } = { isLeads: false } }) {
   const dispatch = useDispatch();
   const [data, setData] = React.useState();
   const [setIsChange, handleOnClose] = useHandleClose(onClose);
@@ -148,6 +148,7 @@ function TestScenarioSettingsDialog({ showDialog, project, scenario, onClose }) 
       onSave={saveProject}
       customWidth="w-[50vw]"
       customHeight="w-[50vh]"
+      buttonDisabled={!isLeads}
     >
       <TailwindRenderer {...Model} data={data} onChange={handleOnChange} />
     </CustomDialog>

@@ -1,6 +1,7 @@
 // action - state management
+import { ACCESS_TOKEN_STORAGE_KEY, CSRF_TOKEN_STORAGE_KEY, PROFILE_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "../../Constants";
 import * as actionTypes from "../actions";
-import LocalStorageService from "../actions/LocalStorageService";
+import LocalStorageService, { setStoreItem } from "../actions/LocalStorageService";
 
 const initialState = {
   success: false,
@@ -12,11 +13,12 @@ const initialState = {
   changepwdSuccess: null,
   jwtToken: null,
   refreshToken: null,
-  user: null
+  user: null,
+  loadingOktaInfo: false
 };
 
 const LoginReducer = function (state = initialState, { payload, type }) {
-  state.jwtToken = localStorage.getItem("jwt_token");
+  state.jwtToken = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
   switch (type) {
     case actionTypes.LOGIN_LOADING: {
       return {
@@ -30,14 +32,15 @@ const LoginReducer = function (state = initialState, { payload, type }) {
       };
     }
     case actionTypes.LOGIN_SUCCESS: {
-      LocalStorageService.setItem("auth_user", payload);
-      localStorage.setItem("jwt_token", payload.jwtToken);
-      localStorage.setItem("refreshToken", payload.refreshToken);
-      localStorage.setItem("csrfToken", payload.csrfToken);
+      LocalStorageService.setItem(PROFILE_STORAGE_KEY, payload);
+      setStoreItem(ACCESS_TOKEN_STORAGE_KEY, payload.jwtToken);
+      setStoreItem(REFRESH_TOKEN_STORAGE_KEY, payload.refreshToken);
+      setStoreItem(CSRF_TOKEN_STORAGE_KEY, payload.csrfToken);
       return {
         ...state,
         success: true,
         loading: false,
+        user: payload,
         ...payload
       };
     }
@@ -109,9 +112,10 @@ const LoginReducer = function (state = initialState, { payload, type }) {
       return {
         success: false,
         loading: false,
-        error: payload
+        ...payload
       };
     }
+    case actionTypes.RESET_LOGIN:
     case actionTypes.LOGIN_TOKEN: {
       return {
         ...state,

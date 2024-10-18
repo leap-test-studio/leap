@@ -34,10 +34,10 @@ class TestRunner extends Task {
         json: !isEmpty(this.execSteps?.reqBody) ? JSON.parse(this.execSteps?.reqBody) : null
       });
       stepOutcome.actual = outcome.print();
-      logger.info("API Response:", stepOutcome.actual);
+      logger.info("API Response:", JSON.stringify(stepOutcome.actual));
       logger.info("Expected StatusCode:", this.execSteps?.statusCode, ", Actual StatusCode:", outcome.statusCode);
-      logger.info("Expected ResponsePayload:", this.execSteps?.resBody, ", Actual ResponsePayload:", outcome.body);
-      logger.info("Expression:", this.execSteps?.condition);
+      logger.info("Expected ResponsePayload:", this.execSteps?.resBody, ", Actual ResponsePayload:", JSON.stringify(outcome.body));
+      logger.info("Expression:", JSON.stringify(this.execSteps?.condition));
 
       let result = this.execSteps?.statusCode === outcome.statusCode;
       if (result && !isEmpty(this.execSteps?.condition)) {

@@ -47,7 +47,7 @@ export const updateSequence = (pid, payload) => (dispatch) => {
       dispatch({
         type: actionTypes.TEST_SEQUENCER,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           isError: true,
           savingChanges: false,
           message: "Failed to Update Project",

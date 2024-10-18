@@ -8,83 +8,100 @@ import ReactComponentLoader from "./views/pages/ReactComponentLoader";
 import AuthGuard from "./auth/AuthGuard";
 import WebContext from "./views/context/WebContext";
 import { authRoles } from "./auth/authRoles";
-import Product from "./product.json";
-
-const InititialRoutes = [
-  {
-    path: "login",
-    page: SignInPage,
-    disableLayout: true
-  },
-  {
-    sideBar: true,
-    title: "Dashboard",
-    icon: "Speed",
-    path: "dashboard",
-    page: "DashboardPage.jsx"
-  },
-  {
-    sideBar: true,
-    title: "Projects",
-    icon: "FolderSpecial",
-    path: Product.page.projectsListPage,
-    page: "project_management/ProjectManagement.jsx",
-    projectSelectionRequired: false
-  },
-  {
-    sideBar: true,
-    title: "Accounts",
-    icon: "GroupAdd",
-    path: "account-management",
-    page: "account_management/AccountManagement.jsx",
-    projectSelectionRequired: false,
-    access: authRoles.manager
-  },
-  {
-    sideBar: true,
-    title: "Tenants",
-    icon: "CorporateFare",
-    path: "tenant-management",
-    page: "tenant_management/TenantManagement.jsx",
-    projectSelectionRequired: false,
-    access: authRoles.admin
-  },
-  {
-    sideBar: true,
-    title: "Test Suites",
-    icon: "NextWeek",
-    path: "test-suite",
-    page: "testsuite/TestSuiteManagement.jsx",
-    projectSelectionRequired: true
-  },
-  {
-    sideBar: true,
-    title: "Test Runs",
-    icon: "CodeTwoTone",
-    path: "test-runs",
-    page: "TestRunner.jsx",
-    projectSelectionRequired: true
-  },
-  {
-    sideBar: true,
-    title: "Test Plans",
-    icon: "LibraryBooksTwoTone",
-    path: "test-plan",
-    page: "testplan_management/TestPlanManagement.jsx",
-    projectSelectionRequired: true
-  },
-  {
-    sideBar: true,
-    title: "Test Reports",
-    icon: "QueryStatsTwoTone",
-    path: "test-reports",
-    page: "TestReports.jsx",
-    projectSelectionRequired: true
-  }
-];
+import { LoginCallback } from "@okta/okta-react";
+import { Centered, Spinner } from "./views/utilities";
+import PageNotFound from "./views/pages/common/PageNotFound";
+import DashboardPage from "./views/pages/DashboardPage";
+import ProjectManagement from "./views/pages/project_management/ProjectManagement";
+import AccountManagement from "./views/pages/account_management/AccountManagement";
+import TenantManagement from "./views/pages/tenant_management/TenantManagement";
+import TestSuiteManagement from "./views/pages/testsuite/TestSuiteManagement";
+import TestRunner from "./views/pages/TestRunner";
+import TestPlanManagement from "./views/pages/testplan_management/TestPlanManagement";
+import TestReports from "./views/pages/TestReports";
+import SeleniumGridView from "./views/pages/SeleniumGridView";
 
 export default function App(props) {
   const { product } = props;
+  const InititialRoutes = [
+    {
+      path: "login",
+      page: SignInPage,
+      disableLayout: true
+    },
+    {
+      sideBar: true,
+      title: "Dashboard",
+      icon: "Speed",
+      path: "dashboard",
+      page: DashboardPage
+    },
+    {
+      sideBar: true,
+      title: "Projects",
+      icon: "FolderSpecial",
+      path: product.page.projectsListPage.replace("/", ""),
+      page: ProjectManagement,
+      projectSelectionRequired: false
+    },
+    {
+      sideBar: true,
+      title: "Accounts",
+      icon: "GroupAdd",
+      path: "account-management",
+      page: AccountManagement,
+      projectSelectionRequired: false,
+      access: authRoles.manager
+    },
+    {
+      sideBar: true,
+      title: "Tenants",
+      icon: "CorporateFare",
+      path: "tenant-management",
+      page: TenantManagement,
+      projectSelectionRequired: false,
+      access: authRoles.admin
+    },
+    {
+      sideBar: true,
+      title: "Test Suites",
+      icon: "NextWeek",
+      path: "test-suite",
+      page: TestSuiteManagement,
+      projectSelectionRequired: true
+    },
+    {
+      sideBar: true,
+      title: "Test Runs",
+      icon: "CodeTwoTone",
+      path: "test-runs",
+      page: TestRunner,
+      projectSelectionRequired: true
+    },
+    {
+      sideBar: true,
+      title: "Test Plans",
+      icon: "LibraryBooksTwoTone",
+      path: "test-plans",
+      page: TestPlanManagement,
+      projectSelectionRequired: true
+    },
+    {
+      sideBar: true,
+      title: "Test Reports",
+      icon: "QueryStatsTwoTone",
+      path: "test-reports",
+      page: TestReports,
+      projectSelectionRequired: true
+    },
+    {
+      sideBar: true,
+      title: "Selenium Grid",
+      icon: "GridOnTwoTone",
+      path: "selenium-grid",
+      page: SeleniumGridView
+    }
+  ];
   const context = useContext(WebContext);
   const { isProjectSelected } = context;
   const [routes, setRoutes] = useState(InititialRoutes);
@@ -96,7 +113,7 @@ export default function App(props) {
 
   return (
     <Router basename="/" history={history}>
-      <AuthGuard product={product} routes={routes}>
+      <AuthGuard product={product}>
         <Routes>
           {routes.map((route, index) => (
             <Route
@@ -106,8 +123,8 @@ export default function App(props) {
                 route.page !== undefined ? (
                   <Layout
                     disableLayout={route.disableLayout}
-                    base={`${product.page.urlPrefix}`}
                     sideBarItems={routes.filter((r) => r.sideBar === true || r.divider === true)}
+                    base={product.page.urlPrefix}
                     {...props}
                     {...context}
                   >
@@ -129,7 +146,20 @@ export default function App(props) {
               }
             />
           ))}
+          <Route
+            path={`${product.page.urlPrefix}/callback`}
+            element={
+              <LoginCallback
+                loadingElement={
+                  <Centered>
+                    <Spinner />
+                  </Centered>
+                }
+              />
+            }
+          />
           <Route exact path="/" element={<Navigate to={`${product.page.urlPrefix}/login`} />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </AuthGuard>
     </Router>

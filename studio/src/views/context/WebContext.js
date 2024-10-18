@@ -1,7 +1,8 @@
 import React from "react";
-import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT } from "./constants";
+import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT } from "../../Constants";
 
 const WebContext = React.createContext({
+  userProfile: null,
   isProjectSelected: false,
   project: null,
   scenario: null,
@@ -14,9 +15,18 @@ const WebContext = React.createContext({
     winWidth: window.innerWidth,
     winHeight: window.innerHeight
   },
+  setUserProfile: null,
+  setUserRole: null,
   changeTestScenario: null,
   changeProject: null,
-  resetContext: null
+  resetContext: null,
+  getRole: null,
+  role: {
+    isAdmins: false,
+    isManagers: false,
+    isLeads: false,
+    isEngineer: false
+  }
 });
 
 export default WebContext;

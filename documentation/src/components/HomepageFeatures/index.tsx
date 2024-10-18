@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 
 const FeatureList = [
   {
-    title: "Author",
+    title: "Visual Test Creation",
     description: "Create a project and Suites, Write test cases, Enable/Disable suite."
   },
   {

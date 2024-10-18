@@ -8,6 +8,7 @@ export const resetTenantFlags =
     dispatch({
       type: actionTypes.RESET_TENANT,
       payload: {
+        listLoading: false,
         loading: false,
         message: null,
         showMessage: false,
@@ -17,13 +18,28 @@ export const resetTenantFlags =
   };
 
 export const fetchTenantList = () => (dispatch) => {
-  axios.get("/api/v1/tenants").then((res) => {
-    if (res?.data)
+  dispatch(
+    resetTenantFlags({
+      listLoading: true
+    })
+  );
+  axios
+    .get("/api/v1/tenants")
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_TENANT_LIST,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
       dispatch({
-        type: actionTypes.GET_TENANT_LIST,
-        payload: res.data
+        type: actionTypes.RESET_TENANT,
+        payload: {
+          listLoading: false
+        }
       });
-  });
+    });
 };
 
 export const fetchTenant = (tid) => (dispatch) => {
@@ -63,7 +79,7 @@ export const createTenant =
             loading: false,
             message: "Failed to Create Tenant",
             showMessage: "error",
-            details: e.response.data.error
+            details: e.response?.data?.error
           }
         });
       });
@@ -89,7 +105,7 @@ export const updateTenant = (tid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_TENANT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Update Tenant",
           details: `Tenant Id: ${tid}`
@@ -118,7 +134,7 @@ export const deleteTenant = (tid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_TENANT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Delete Tenant",
           showMessage: "error",
           details: `Tenant Id: ${tid}`

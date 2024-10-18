@@ -3,6 +3,7 @@ import * as actionTypes from "../actions";
 
 const initialState = {
   testplans: [],
+  listLoading: false,
   loading: false,
   isError: false,
   showMessage: false,
@@ -18,6 +19,7 @@ const TestPlanReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_TEST_PLAN_LIST: {
       return {
         ...state,
+        listLoading: false,
         isFirstTestPlan: Array.isArray(payload?.items) && payload.items.length === 0,
         testplans: payload?.items || []
       };

@@ -1,16 +1,20 @@
 ---
-title: Welcome to Vinashak!
+title: Welcome to LEAP!
 sidebar_label: Overview
 sidebar_position: 1
 ---
 
 <head>
-  <title>Welcome to Vinashak!</title>
-  <meta name="description" content="Multi Channel Automation Tool" />
+  <title>Welcome to LEAP!</title>
+  <meta name="description" content="LEAN ENTERPRISE AUTOMATION PLATFORM" />
   <link rel="canonical" href="/documentation" />
   <link rel="alternate" href="/documentation" hreflang="x-default" />
   <link rel="alternate" href="/documentation" hreflang="en" /> <meta property="og:url" content="/documentation" />
 </head>
+
+## LEAP - Acronym
+
+- LEAN ENTERPRISE AUTOMATION PLATFORM
 
 ## What is Test Automation?
 

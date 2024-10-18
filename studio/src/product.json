@@ -1,20 +1,23 @@
 {
   "name": "LEAP",
-  "description": "Lean Enterprise Automation Platform",
-  "version": "2.0.0",
+  "description": "LEAN ENTERPRISE AUTOMATION PLATFORM",
+  "version": "1.0.0",
   "page": {
-    "urlPrefix": "",
+    "urlPrefix": "/studio",
     "landingPage": "/dashboard",
     "projectsListPage": "/projects"
   },
+  "isOktaEnabled": true,
   "build": {
     "id": "0",
-    "date": "2024-09-05 00:00:00",
+    "date": "Fri, 11 Oct 2024 12:14:14 GMT",
     "host": "127.0.0.1"
   },
   "copyrightYear": 2024,
   "organization": {
-    "name": "Automation",
+    "name": "Rakuten Rewards",
     "address": ""
-  }
+  },
+  "website": "https://leap.dataplatform-np.rr-it.com",
+  "docBaseURL": "/documentation"
 }

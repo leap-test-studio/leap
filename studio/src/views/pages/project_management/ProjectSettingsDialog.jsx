@@ -86,7 +86,7 @@ const Model = {
   }
 };
 
-function ProjectSettingsDialog({ showDialog, project, onClose }) {
+function ProjectSettingsDialog({ showDialog, project, onClose, role: { isLeads } = { isLeads: false } }) {
   const dispatch = useDispatch();
   const [data, setData] = useState();
   const [setIsChange, handleOnClose] = useHandleClose(onClose);
@@ -134,6 +134,7 @@ function ProjectSettingsDialog({ showDialog, project, onClose }) {
       onSave={saveProject}
       customWidth="w-[50vw]"
       customHeight="w-[50vh]"
+      buttonDisabled={!isLeads}
     >
       <TailwindRenderer {...Model} data={data} onChange={handleOnChange} />
     </CustomDialog>

@@ -4,6 +4,10 @@ module.exports = {
   // Source files
   src: path.resolve(__dirname, "../src"),
 
+  srcEntryFile: path.resolve(__dirname, "../src", "index.jsx"),
+
+  srcAssets: path.resolve(__dirname, "../src", "assets"),
+
   // Production build files
   build: path.resolve(__dirname, "../build"),
 

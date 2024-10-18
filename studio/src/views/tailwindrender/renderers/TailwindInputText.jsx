@@ -82,8 +82,10 @@ const TailwindInputText = React.memo((props) => {
                 autoComplete="off"
                 className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${appliedUiSchemaOptions?.isLarge ? "h-24" : "h-16"} ${
                   trim ? "text-[11px]" : "text-xs px-1.5 py-1"
-                } rounded border placeholder-gray-300 shadow focus:shadow-md ${
-                  isError ? "focus:border-red-500 border-red-600" : "focus:border-color-0600 border-slate-300 focus:ring-color-0500"
+                } rounded border placeholder-gray-300 ${
+                  isError
+                    ? "focus:border-red-500 border-red-600"
+                    : "focus:border-color-0600 border-slate-300 hover:ring-color-0500 focus:ring-color-0500"
                 } focus:outline-none w-full text-color-label`}
                 placeholder={description}
                 value={value}
@@ -99,10 +101,10 @@ const TailwindInputText = React.memo((props) => {
                 ref={setReferenceElement}
                 className={`block caret-slate-300 ${enabled ? "bg-white" : "bg-slate-100"} ${
                   trim ? "text-[11px] py-px px-1" : "text-xs px-1.5 py-1"
-                } rounded border text-color-label placeholder-gray-300 shadow focus:shadow-md ${
+                } rounded border text-color-label placeholder-gray-300 ${
                   isError
                     ? "focus:border-red-500 border-red-600 focus:ring-red-600"
-                    : "focus:border-color-0600 border-slate-300 focus:ring-color-0500"
+                    : "focus:border-color-0600 border-slate-300 hover:ring-color-0500 focus:ring-color-0500"
                 } focus:outline-none w-full`}
                 placeholder={description}
                 value={value}

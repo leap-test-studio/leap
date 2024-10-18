@@ -6,24 +6,35 @@ import WebContext from "./WebContext";
 import { CustomAlertDialog } from "../utilities";
 import LocalStorageService from "../../redux/actions/LocalStorageService";
 import { openProject } from "../../redux/actions/ProjectActions";
-import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT } from "./constants";
+import { authRoles } from "../../auth/authRoles";
+import { resetTestScenarioFlags } from "../../redux/actions/TestScenarioActions";
+import { resetTestCaseFlags } from "../../redux/actions/TestCaseActions";
+import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT, PROJECT_STORAGE_KEY, SUITE_STORAGE_KEY } from "../../Constants";
 
 const initialState = {
   project: null,
   scenario: null,
   open: false,
-  online: true
+  online: true,
+  role: {
+    isAdmins: false,
+    isManagers: false,
+    isLeads: false,
+    isEngineer: false
+  }
 };
 
 function ContextProvider({ children }) {
   const dispatch = useDispatch();
 
   const { projects } = useSelector((state) => state.project);
+  const { user } = useSelector((state) => state.login);
   const [state, setState] = useState({
     ...initialState,
-    project: LocalStorageService.getItem("project"),
-    scenario: LocalStorageService.getItem("scenario")
+    project: LocalStorageService.getItem(PROJECT_STORAGE_KEY),
+    scenario: LocalStorageService.getItem(SUITE_STORAGE_KEY)
   });
+
   const [windowDimension, detectHW] = useState({
     headerHeight: DEFAULT_HEADER_HEIGHT,
     footerHeight: DEFAULT_FOOTER_HEIGHT,
@@ -43,8 +54,8 @@ function ContextProvider({ children }) {
   };
 
   const resetContext = () => {
-    LocalStorageService.removeItem("project");
-    LocalStorageService.removeItem("scenario");
+    LocalStorageService.removeItem(PROJECT_STORAGE_KEY);
+    LocalStorageService.removeItem(SUITE_STORAGE_KEY);
     setState(initialState);
     dispatch(openProject(null));
   };
@@ -60,8 +71,18 @@ function ContextProvider({ children }) {
       ...state,
       project
     });
-    LocalStorageService.setItem("project", project);
+    LocalStorageService.setItem(PROJECT_STORAGE_KEY, project);
     dispatch(openProject(null));
+    dispatch(
+      resetTestScenarioFlags({
+        testsuites: []
+      })
+    );
+    dispatch(
+      resetTestCaseFlags({
+        testcases: []
+      })
+    );
   };
 
   const changeTestScenario = (scenario) => {
@@ -69,9 +90,49 @@ function ContextProvider({ children }) {
       ...state,
       scenario
     });
-    if (scenario) LocalStorageService.setItem("scenario", scenario);
-    else LocalStorageService.removeItem("scenario");
+    if (scenario) LocalStorageService.setItem(SUITE_STORAGE_KEY, scenario);
+    else LocalStorageService.removeItem(SUITE_STORAGE_KEY);
+    dispatch(
+      resetTestCaseFlags({
+        testcases: []
+      })
+    );
   };
+
+  const setUserProfile = (userProfile) => {
+    setState({
+      ...state,
+      userProfile
+    });
+  };
+
+  const setUserRole = (role) => {
+    setState({
+      ...state,
+      role: {
+        isAdmins: authRoles.admin.includes(role),
+        isManagers: authRoles.manager.includes(role),
+        isLeads: authRoles.lead.includes(role),
+        isEngineer: role === "Engineer"
+      }
+    });
+  };
+
+  const getRole = () => {
+    const UserInfo = LocalStorageService.getUserInfo();
+    const role = UserInfo?.role;
+    return {
+      isAdmins: authRoles.admin.includes(role),
+      isManagers: authRoles.manager.includes(role),
+      isLeads: authRoles.lead.includes(role),
+      isEngineer: role === "Engineer"
+    };
+  };
+  useEffect(() => {
+    if (user?.role) {
+      setUserRole(user?.role);
+    }
+  }, [user]);
 
   return (
     <WebContext.Provider
@@ -82,6 +143,9 @@ function ContextProvider({ children }) {
         changeProject,
         changeTestScenario,
         resetContext,
+        setUserProfile,
+        setUserRole,
+        getRole,
         windowDimension
       }}
     >

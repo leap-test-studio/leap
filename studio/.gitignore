@@ -104,7 +104,7 @@ dist
 .tern-port
 data
 *.sqlite
-src/assets/css/index.css
+src/index.css
 build
 *.out
 *.swp

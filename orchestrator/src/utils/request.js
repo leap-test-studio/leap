@@ -39,7 +39,7 @@ exports.httpRequest = (req) => {
           diagnostics.timings = response.timings;
           diagnostics.statusCode = response.statusCode;
           diagnostics.statusMessage = response.statusMessage;
-          diagnostics.response = typeof body === "string" ? JSON.parse(body) : body;
+          diagnostics.response = typeof body === "string" && !body.includes("<html") ? JSON.parse(body) : body;
           diagnostics.headers = response.headers;
         }
         diagnostics.print = function () {

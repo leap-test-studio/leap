@@ -1,5 +1,6 @@
 import loadable from "react-loadable";
-import { Tooltip } from "../tooltip";
+import { Tooltip } from "../Tooltip";
+import MuiIcons from "./MuiIcons";
 
 const HourGlass = ({ className }) => (
   <svg width="16" height="16" className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -7,7 +8,7 @@ const HourGlass = ({ className }) => (
   </svg>
 );
 
-const MuiIcons = loadable({
+const MuiIconsLazy = loadable({
   loader: () => {
     return import("./MuiIcons");
   },

@@ -59,7 +59,7 @@ Morgan.token("transactionId", function (req, res) {
 const morgan = Morgan(loggerConfig.cdrFormat, { stream: accessLogStream });
 
 log4js.configure(loggerConfig.log4js);
-logger = log4js.getLogger("project");
+logger = log4js.getLogger("leap-log");
 
 logger.level = global.config.LOG_LEVEL;
 

@@ -9,7 +9,7 @@ class TestCaseTask extends Task {
 
   run() {
     return new Promise(async (resolve) => {
-      const testcase = await getSettingsByTestId(this._data.id);
+      const testcase = await getSettingsByTestId(this._instanceId, this._data.id);
       this._data = {
         BuildMasterId: this._instanceId,
         ...this._data,

@@ -1,7 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-import { IconRenderer, NewlineText, Tooltip } from "../../utilities";
+import { IconRenderer, NewlineText, Toast, Tooltip } from "../../utilities";
 import CardLayout from "./CardLayout";
+import copy from "copy-to-clipboard";
 
 export default function DisplayCard({ id, name, description, status, actions, moreOptions, records, onClick }) {
   return (
@@ -12,7 +13,18 @@ export default function DisplayCard({ id, name, description, status, actions, mo
           <div className="text-color-label break-words select-all flex flex-row items-center mb-3">
             <IconRenderer icon="Fingerprint" className="text-color-0600" style={{ fontSize: 15 }} />
             <Tooltip title="Unique Identifier">
-              <label className="text-xs">{id}</label>
+              <label
+                className="text-xs"
+                onClick={() => {
+                  copy(id);
+                  Toast.fire({
+                    icon: "success",
+                    title: `Copied UUID: ${id}`
+                  });
+                }}
+              >
+                {id}
+              </label>
             </Tooltip>
           </div>
         )}
@@ -52,12 +64,12 @@ export const MoreActionsDropDowns = ({ id, elements = [] }) => {
       <Menu>
         <MenuButton>
           {({ active }) => (
-            <button
+            <div
               id={id}
               className={`inline-flex text-sm font-medium text-color-0600 hover:text-color-0500 items-center transition duration-150 hover:bg-white ${active ? "bg-white border shadow" : ""} p-1 rounded-md`}
             >
               <IconRenderer icon="MoreVert" />
-            </button>
+            </div>
           )}
         </MenuButton>
         <MenuItems
@@ -65,17 +77,18 @@ export const MoreActionsDropDowns = ({ id, elements = [] }) => {
           transition
           className="min-w-56 transition duration-200 ease-out bg-white border border-slate-300 py-1.5 rounded shadow-lg overflow-hidden"
         >
-          {elements.map(({ icon, label, onClick, tooltip, description }, index) => (
+          {elements.map(({ icon, label, onClick, tooltip, description, disabled }, index) => (
             <MenuItem
               as="div"
               key={index}
-              className="hover:bg-slate-100 font-medium text-base text-slate-600 hover:text-slate-700 flex flex-row items-center p-1.5 px-2 cursor-pointer mx-1.5 rounded"
+              className={`hover:bg-slate-100 font-medium text-base text-slate-600 hover:text-slate-700 flex flex-row items-center p-1.5 px-2 cursor-pointer mx-1.5 rounded ${disabled ? "bg-slate-100 cursor-not-allowed" : ""}`}
               onClick={onClick}
+              disabled={disabled}
             >
               {icon && (
                 <IconRenderer
                   icon={icon}
-                  className="text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer"
+                  className={`text-color-0600 hover:text-color-0500 mx-1.5 cursor-pointer ${disabled ? "text-slate-500" : ""}`}
                   style={{ fontSize: 20 }}
                   tooltip={tooltip}
                   description={description}
@@ -90,10 +103,16 @@ export const MoreActionsDropDowns = ({ id, elements = [] }) => {
   );
 };
 
-export const ActionButton = ({ tooltip, description, icon, onClick, className = "" }) => (
+export const ActionButton = ({ tooltip, description, icon, onClick, disabled, className = "" }) => (
   <Tooltip title={tooltip} content={description}>
-    <div className={`text-color-0600 hover:text-color-0500 cursor-pointer hover:bg-white p-1.5 rounded-md ${className}`}>
-      <IconRenderer icon={icon} style={{ fontSize: 20 }} onClick={onClick} />
+    <div className="cursor-pointer hover:bg-white p-1.5 rounded-md">
+      <IconRenderer
+        icon={icon}
+        style={{ fontSize: 20 }}
+        onClick={onClick}
+        disabled={disabled}
+        className={`text-color-0600 hover:text-color-0500 ${className} ${disabled ? "text-slate-500 hover:text-slate-400 cursor-not-allowed" : ""}`}
+      />
     </div>
   </Tooltip>
 );

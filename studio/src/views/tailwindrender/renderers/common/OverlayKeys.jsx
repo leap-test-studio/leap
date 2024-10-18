@@ -1,12 +1,15 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 const OverlayKeys = ({ suggest, onSelect }) => {
+  if (suggest == null || !Array.isArray(suggest)) return <></>;
   const [selected, setSelected] = useState(suggest && suggest[0]);
-
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    setList(suggest);
+  }, [suggest]);
   return (
     <div className="grid grid-cols-2 rounded shadow-lg bg-slate-100 p-1 border w-96 min-h-52 max-h-52 overflow-hidden">
       <div className="flex flex-col overflow-y-auto custom-scrollbar overflow-x-hidden mx-1 bg-white max-h-52 ">
-        {suggest?.map((s, index) => (
+        {list.map((s, index) => (
           <div
             key={index}
             className="border-b hover:shadow p-1 text-xs text-color-0600 cursor-pointer inline-flex items-center"

@@ -1,59 +1,70 @@
 FROM --platform=linux/amd64 node:18 as studio
 RUN apt-get update
 
-WORKDIR /app/studio
-RUN rm -rf /app/studio/build
+WORKDIR /app/studio/
+COPY pre_build.js .
+RUN rm -rf /app/studio/build ~/.npmrc
+COPY .npmrc ~/.npmrc
 COPY studio/package.json .
-RUN npm config set strict-ssl false
-RUN npm config set fetch-retry-maxtimeout 120000
-RUN npm config set fetch-timeout 120000
-RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true --force
-RUN npm install --unsafe-perm=true --force
+RUN npm i -g npm@latest
+RUN npm install --omit=dev --unsafe-perm=true --force --silent
+RUN npm install --unsafe-perm=true --force --silent
 COPY studio/. .
+RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
-
+RUN rm -rf ./pre_build.js
 
 FROM --platform=linux/amd64 node:18 as documentation
 RUN apt-get update
 
 WORKDIR /app/documentation
-RUN rm -rf /app/documentation/build
+COPY pre_build.js .
+RUN rm -rf /app/documentation/build ~/.npmrc
 COPY documentation/package.json .
-RUN npm config set strict-ssl false
-RUN npm config set fetch-retry-maxtimeout 120000
-
-RUN npm config set fetch-timeout 120000
-RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true --force
-RUN npm install --unsafe-perm=true --force
+COPY .npmrc ~/.npmrc
+RUN npm i -g npm@latest
+RUN npm install --omit=dev --unsafe-perm=true --force --silent
+RUN npm install --unsafe-perm=true --force --silent
 COPY documentation/. .
+RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
+RUN rm -rf ./pre_build.js
 
-FROM --platform=linux/amd64 node:18 as orchestrator
+# Use an official Node.js runtime as a parent image
+FROM --platform=linux/amd64 node:18
+
+# Install Nginx
 RUN apt-get update
-WORKDIR /app/orchestrator
-COPY orchestrator/package.json .
-RUN npm config set strict-ssl false
-RUN npm config set fetch-retry-maxtimeout 120000
-RUN npm config set fetch-timeout 120000
-RUN npm config set fetch-retries 10
-RUN npm install --omit=dev --unsafe-perm=true --force
-RUN npm install --unsafe-perm=true --force
-COPY orchestrator/. .
-EXPOSE 80
-CMD npm start;
-
-FROM --platform=linux/amd64 nginx
-RUN apt-get update && apt-get install procps nodejs -y && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app/orchestrator /app/studio /app/documentation
-
-RUN rm -rf /usr/share/nginx
+RUN apt-get install procps nginx supervisor -y
+RUN mkdir -p /app/studio /app/documentation /app/logs
+RUN rm -rf ~/.npmrc
 COPY --from=studio /app/studio/build /app/studio
-COPY --from=documentation /app/documentation/build /app/documentation
-RUN rm -rf /etc/nginx/conf.d/default.conf
-COPY nginx-prod.conf /etc/nginx/conf.d/app.conf
-COPY --from=orchestrator /app/orchestrator /app/orchestrator
+COPY --from=documentation /app/documentation/. /app/documentation
+
+# Create app directory
+WORKDIR /app
+COPY orchestrator/package.json .
+COPY .npmrc ~/.npmrc
+RUN npm i -g npm@latest serve@latest
+RUN npm install --omit=dev --unsafe-perm=true --force --silent
+RUN npm install --unsafe-perm=true --force --silent
+COPY orchestrator/. .
+
+# Copy Nginx configuration file
+COPY config/nginx-prod.conf /etc/nginx/nginx.conf
+
+# Copy supervisord configuration file
+COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy AWS certificate file
+COPY config/SM_cacert.pem /app/SM_cacert.pem
+
+# Set Environment Variables
+ENV LOG_DIR /app/logs
+
+ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
+# Expose ports
 EXPOSE 80
 
-CMD nginx -g 'daemon off;' & node /app/orchestrator/src/server.js
+# Start supervisord
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

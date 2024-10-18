@@ -1,29 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import FirstTimeCard from "../common/FirstTimeCard";
-import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
-import CreateTenantDialog from "./CreateTenantDialog";
-import TenantSettingsDialog from "./TenantSettingsDialog";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
-
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "../../utilities";
 import { createTenant, fetchTenantList, deleteTenant, resetTenantFlags, updateTenant } from "../../../redux/actions/TenantActions";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
+import CreateTenantDialog from "./CreateTenantDialog";
+import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
+import FirstTimeCard from "../common/FirstTimeCard";
 import LocalStorageService from "../../../redux/actions/LocalStorageService";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, IconRenderer } from "../../utilities";
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import ProgressIndicator from "../common/ProgressIndicator";
+import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
+import TenantSettingsDialog from "./TenantSettingsDialog";
 
 dayjs.extend(relativeTime);
 
 let intervalId;
 const TenantManagement = (props) => {
-  const AuthUser = LocalStorageService.getItem("auth_user");
   const dispatch = useDispatch();
+  const UserInfo = LocalStorageService.getUserInfo();
   const { pageTitle } = props;
-  const { showMessage, message, details, isFirstTenant, loading, tenants } = useSelector((state) => state.tenant);
+  const { showMessage, message, details, isFirstTenant, loading, tenants, listLoading } = useSelector((state) => state.tenant);
 
   const [search, setSearch] = useState("");
   const [selectedTenant, setSelectedTenant] = useState();
@@ -31,6 +31,27 @@ const TenantManagement = (props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [showSettingsDialog, setSettingsDialog] = useState(false);
+  const [filtered, setFiltered] = useState([]);
+
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(
+      isEmpty(searchText)
+        ? tenants
+        : tenants.filter(
+            (s) =>
+              s.id.toLowerCase().includes(searchText) ||
+              s.name.toLowerCase().includes(searchText) ||
+              s.description?.toLowerCase().includes(searchText)
+          )
+    );
+  }, [search, tenants]);
+
+  const fetchList = useCallback(() => {
+    if (!listLoading) {
+      dispatch(fetchTenantList());
+    }
+  }, [listLoading]);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -55,8 +76,6 @@ const TenantManagement = (props) => {
     }
   }, [showMessage]);
 
-  const fetchList = () => dispatch(fetchTenantList());
-
   const handleCreateTenant = (payload) => {
     setShowCreateDialog(!showCreateDialog);
     dispatch(createTenant(payload));
@@ -78,29 +97,32 @@ const TenantManagement = (props) => {
     }
   };
 
-  const searchText = search.toLowerCase();
-  const filtered = tenants.filter((s) => s.name.toLowerCase().includes(searchText) || s.email.toLowerCase().includes(searchText));
-
   return (
     <Page>
       <PageHeader show={!isFirstTenant}>
-        <PageTitle>{`${pageTitle} (${tenants.length})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={tenants.length} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
           <ProgressIndicator title="Creating Tenant" show={loading} />
           <RoundedIconButton
             id="refresh-tenants"
             tooltip="Refresh Tenants"
-            color="bg-color-0600 hover:bg-color-0500"
+            color="bg-color-0600 hover:bg-color-500"
             size="18"
             icon="Refresh"
             onClick={fetchList}
           />
-          <SearchComponent search={search} placeholder="Search for Tenant" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <SearchComponent placeholder="Search for Tenant" onChange={setSearch} />
           <IconButton id="tenant-create-btn" title="Create" icon="AddCircle" onClick={() => setShowCreateDialog(true)} tooltip="Create New Tenant" />
         </PageActions>
       </PageHeader>
       <PageBody>
-        {isFirstTenant ? (
+        {tenants.length == 0 && listLoading ? (
+          <Centered>
+            <Spinner>Loading</Spinner>
+          </Centered>
+        ) : isFirstTenant ? (
           <Centered>
             <FirstTimeCard
               id="first-time-project"
@@ -126,7 +148,7 @@ const TenantManagement = (props) => {
                 />
                 <div className="grid grid-cols-1 gap-y-2.5 pr-0">
                   {filtered.map((tenant, index) => (
-                    <TenantCard key={index} {...props} tenant={tenant} handleAction={handleCardAction} activeUser={AuthUser} />
+                    <TenantCard key={index} {...props} tenant={tenant} handleAction={handleCardAction} activeUser={UserInfo} />
                   ))}
                 </div>
               </div>

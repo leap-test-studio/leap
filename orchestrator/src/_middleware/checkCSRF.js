@@ -1,6 +1,9 @@
 const status = require("http-status");
 
 module.exports = function (req, res, next) {
+  if (global.config.OKTA_ENABLED) {
+    return next();
+  }
   const csrfToken = req.get("X-CSRF-Token");
   if (!csrfToken) {
     return res.status(status.UNAUTHORIZED).send({

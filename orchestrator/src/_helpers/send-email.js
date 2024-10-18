@@ -8,8 +8,8 @@ const templates = new EmailTemplates({
 module.exports = sendMailTemplate;
 
 function sendMailTemplate(to, templateName, context, subject) {
-  context.client = process.env.CLIENT_NAME || "Automation Suite";
-  context.PUBLIC_URL = process.env.PUBLIC_URL || "https://github.com/yuviSomavamshi";
+  context.client = process.env.CLIENT_NAME || "LEAP";
+  context.PUBLIC_URL = global.config.PUBLIC_URL;
   let mailOptions;
   return new Promise(function (resolve, reject) {
     if (!global.config.SMTP_ENABLED) {

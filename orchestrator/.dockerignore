@@ -2,7 +2,6 @@ node_modules/
 build/
 *.sqlite
 *.log
-.env*
 .git*
 *docker*
 Dockerfile

@@ -4,8 +4,9 @@ import * as actionTypes from "../actions";
 
 export const resetTestScenarioFlags = (options) => (dispatch) => {
   dispatch({
-    type: actionTypes.CREATE_TEST_SCENARIO,
+    type: actionTypes.RESET_TEST_SCENARIO,
     payload: {
+      listLoading: false,
       loading: false,
       isError: false,
       showMessage: false,
@@ -17,13 +18,24 @@ export const resetTestScenarioFlags = (options) => (dispatch) => {
 };
 
 export const fetchTestScenarioList = (pid) => (dispatch) => {
-  axios.get(`/api/v1/project/${pid}/suite`).then((res) => {
-    if (res?.data)
+  resetTestScenarioFlags({ listLoading: true });
+  axios
+    .get(`/api/v1/project/${pid}/suite`)
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_TEST_SCENARIO_LIST,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
       dispatch({
-        type: actionTypes.GET_TEST_SCENARIO_LIST,
-        payload: res.data
+        type: actionTypes.RESET_TEST_SCENARIO,
+        payload: {
+          listLoading: false
+        }
       });
-  });
+    });
 };
 
 export const createTestScenario = (pid, data) => (dispatch) => {
@@ -48,10 +60,10 @@ export const createTestScenario = (pid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.CREATE_TEST_SCENARIO,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Create Scenario",
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -79,10 +91,10 @@ export const updateTestScenario = (pid, sid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_TEST_SCENARIO,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Update Scenario",
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -110,10 +122,10 @@ export const deleteTestScenario = (pid, sid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_TEST_SCENARIO,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Delete Scenario",
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -142,10 +154,10 @@ export const cloneTestScenario = (pid, sid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.CLONE_TEST_SCENARIO,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Clone Scenario",
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -171,9 +183,9 @@ export const runTestScenario = (pid, sid) => (dispatch) => {
       dispatch({
         type: actionTypes.RUN_TEST_SCENARIO,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });

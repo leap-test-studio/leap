@@ -1,31 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import FirstTimeCard from "../common/FirstTimeCard";
-import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
-import CreateAccountDialog from "./CreateAccountDialog";
-import AccountSettingsDialog from "./AccountSettingsDialog";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
-
-import { createAccount, fetchAccountList, deleteAccount, resetAccountFlags, updateAccount } from "../../../redux/actions/AccountActions";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, IconRenderer } from "../../utilities";
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import { fetchTenantList } from "../../../redux/actions/TenantActions";
 import { authRoles } from "../../../auth/authRoles";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "../../utilities";
+import { createAccount, fetchAccountList, deleteAccount, resetAccountFlags, updateAccount } from "../../../redux/actions/AccountActions";
+import { fetchTenantList } from "../../../redux/actions/TenantActions";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
+import AccountSettingsDialog from "./AccountSettingsDialog";
+import CreateAccountDialog from "./CreateAccountDialog";
+import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
+import FirstTimeCard from "../common/FirstTimeCard";
+import LocalStorageService from "../../../redux/actions/LocalStorageService";
 import ProgressIndicator from "../common/ProgressIndicator";
+import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 dayjs.extend(relativeTime);
 
 let intervalId;
 const AccountManagement = (props) => {
-  const AuthUser = LocalStorageService.getItem("auth_user");
+  const UserInfo = LocalStorageService.getUserInfo();
   const dispatch = useDispatch();
   const { pageTitle } = props;
-  const { showMessage, message, details, isFirstAccount, loading, accounts } = useSelector((state) => state.account);
+  const { showMessage, message, details, isFirstAccount, loading, accounts, listLoading } = useSelector((state) => state.account);
 
   const [search, setSearch] = useState("");
   const [selectedAccount, setSelectedAccount] = useState();
@@ -33,6 +33,21 @@ const AccountManagement = (props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [showSettingsDialog, setSettingsDialog] = useState(false);
+  const [filtered, setFiltered] = useState([]);
+
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(
+      isEmpty(searchText) ? accounts : accounts.filter((s) => s.name.toLowerCase().includes(searchText) || s.email.toLowerCase().includes(searchText))
+    );
+  }, [search, accounts]);
+
+  const fetchList = useCallback(() => {
+    if (!listLoading) {
+      dispatch(fetchAccountList());
+      dispatch(fetchTenantList());
+    }
+  }, [listLoading]);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -57,11 +72,6 @@ const AccountManagement = (props) => {
     }
   }, [showMessage]);
 
-  const fetchList = () => {
-    dispatch(fetchAccountList());
-    dispatch(fetchTenantList());
-  };
-
   const handleCreateAccount = (payload) => {
     setShowCreateDialog(!showCreateDialog);
     dispatch(createAccount(payload));
@@ -83,13 +93,12 @@ const AccountManagement = (props) => {
     }
   };
 
-  const searchText = search.toLowerCase();
-  const filtered = accounts.filter((s) => s.name.toLowerCase().includes(searchText) || s.email.toLowerCase().includes(searchText));
-
   return (
     <Page>
       <PageHeader show={!isFirstAccount}>
-        <PageTitle>{`${pageTitle} (${accounts.length})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={accounts.length} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
           <ProgressIndicator title="Creating Account" show={loading} />
           <RoundedIconButton
@@ -100,7 +109,7 @@ const AccountManagement = (props) => {
             icon="Refresh"
             onClick={fetchList}
           />
-          <SearchComponent search={search} placeholder="Search for Account" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <SearchComponent placeholder="Search for Account" onChange={setSearch} />
           <IconButton
             id="account-create-btn"
             title="Create"
@@ -111,7 +120,11 @@ const AccountManagement = (props) => {
         </PageActions>
       </PageHeader>
       <PageBody>
-        {isFirstAccount ? (
+        {listLoading && accounts.length == 0 ? (
+          <Centered>
+            <Spinner>Loading</Spinner>
+          </Centered>
+        ) : isFirstAccount ? (
           <Centered>
             <FirstTimeCard
               id="first-time-project"
@@ -137,7 +150,7 @@ const AccountManagement = (props) => {
                 />
                 <div className="grid grid-cols-1 gap-y-2.5 pr-0">
                   {filtered.map((account, index) => (
-                    <AccountCard key={index} {...props} account={account} handleAction={handleCardAction} activeUser={AuthUser} />
+                    <AccountCard key={index} {...props} account={account} handleAction={handleCardAction} activeUser={UserInfo} />
                   ))}
                 </div>
               </div>
@@ -259,42 +272,45 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
       status={status}
       actions={
         <>
-          {id !== activeUser?.id && role != authRoles.admin && (
-            <Tooltip
-              title={
-                <p>
-                  Enable or Disable the <strong>Account</strong>
-                </p>
-              }
-            >
-              <TailwindToggleRenderer small={true} path={"status-" + id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
-            </Tooltip>
-          )}
-          {role != authRoles.admin && (
-            <ActionButton
-              icon="Settings"
-              onClick={handleSettings}
-              tooltip="Account Settings"
-              description={
-                <p>
-                  View and modify the <strong>Account Settings</strong>.
-                </p>
-              }
+          <Tooltip
+            title={
+              <p>
+                Enable or Disable the <strong>Account</strong>
+              </p>
+            }
+          >
+            <TailwindToggleRenderer
+              small={true}
+              path={"status-" + id}
+              visible={true}
+              enabled={id !== activeUser?.id}
+              data={status}
+              handleChange={handleToggle}
             />
-          )}
-          {id !== activeUser?.id && role != authRoles.admin && (
-            <ActionButton
-              icon="Delete"
-              className="text-red-600 hover:text-red-500"
-              onClick={handleAccountDelete}
-              tooltip="Delete Account"
-              description={
-                <p>
-                  Permanently purges the <strong>Account</strong> from system.
-                </p>
-              }
-            />
-          )}
+          </Tooltip>
+          <ActionButton
+            icon="Settings"
+            disabled={id === activeUser?.id && !authRoles.admin.includes(role)}
+            onClick={handleSettings}
+            tooltip="Account Settings"
+            description={
+              <p>
+                View and modify the <strong>Account Settings</strong>.
+              </p>
+            }
+          />
+          <ActionButton
+            icon="Delete"
+            disabled={id === activeUser?.id}
+            className="text-red-600 hover:text-red-500"
+            onClick={handleAccountDelete}
+            tooltip="Delete Account"
+            description={
+              <p>
+                Permanently purges the <strong>Account</strong> from system.
+              </p>
+            }
+          />
         </>
       }
       records={labels}

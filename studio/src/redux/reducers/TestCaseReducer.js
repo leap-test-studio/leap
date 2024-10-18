@@ -4,6 +4,7 @@ import * as actionTypes from "../actions";
 const initialState = {
   testcases: [],
   totalItems: 0,
+  listLoading: false,
   loading: false,
   case: null,
   isTestCaseCreated: false,
@@ -23,7 +24,7 @@ const TestCaseReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_TESTCASE_LIST: {
       return {
         ...state,
-        loading: false,
+        listLoading: false,
         isFirstTestCase: payload.totalItems === 0,
         testcases: payload.items,
         totalItems: payload.totalItems

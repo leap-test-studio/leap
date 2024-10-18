@@ -1,8 +1,7 @@
 import { useContext } from "react";
 
 import WebContext from "../../context/WebContext";
-
-const BODY_PADDING = 50;
+import { DEFAULT_BODY_PADDING } from "../../../Constants";
 
 export function PageHeader({ show = true, children }) {
   if (!show) return null;
@@ -11,6 +10,15 @@ export function PageHeader({ show = true, children }) {
 
 export function PageTitle({ children }) {
   return <div className="text-color-label text-base font-medium select-none ml-2 grow inline-flex items-center">{children}</div>;
+}
+
+export function PageListCount({ pageTitle, count, listLoading }) {
+  return (
+    <div className="inline-flex items-center">
+      <label className="mr-1">{pageTitle}</label>
+      <label className={listLoading ? "animate-pulse" : ""}>{`(${listLoading && count == 0 ? "loading" : count})`}</label>
+    </div>
+  );
 }
 
 export function PageActions({ children }) {
@@ -31,7 +39,7 @@ export function Page({ children, className = "" }) {
 
 export function PageBody({ className = "", scrollable = true, children, fullScreen = false }) {
   const { windowDimension } = useContext(WebContext);
-  const padding = fullScreen ? 15 : BODY_PADDING;
+  const padding = fullScreen ? 15 : DEFAULT_BODY_PADDING;
   return (
     <div
       className={`w-full px-2 rounded-t-lg ${scrollable ? "overflow-y-scroll custom-scrollbar" : "overflow-hidden"} ${className}`}

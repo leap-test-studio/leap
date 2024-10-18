@@ -9,6 +9,7 @@ export const resetTestCaseFlags =
       type: actionTypes.RESET_TESTCASE,
       payload: {
         loading: false,
+        listLoading: false,
         message: null,
         showMessage: false,
         details: false,
@@ -18,16 +19,27 @@ export const resetTestCaseFlags =
   };
 
 export const fetchTestCaseList = (pid, sid) => (dispatch) => {
-  axios.get(`/api/v1/project/${pid}/suite/${sid}/testcases`).then((res) => {
-    dispatch({
-      type: actionTypes.GET_TESTCASE_LIST,
-      payload: res?.data
+  dispatch(resetTestCaseFlags({ listLoading: true }));
+  axios
+    .get(`/api/v1/project/${pid}/suite/${sid}/testcases`)
+    .then((res) => {
+      dispatch({
+        type: actionTypes.GET_TESTCASE_LIST,
+        payload: res?.data
+      });
+    })
+    .catch((e) => {
+      dispatch({
+        type: actionTypes.RESET_TESTCASE,
+        payload: {
+          listLoading: false
+        }
+      });
     });
-  });
 };
 
 export const createTestCase = (pid, sid, data) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .post(`/api/v1/project/${pid}/suite/${sid}/testcase`, data)
     .then((res) => {
@@ -46,17 +58,17 @@ export const createTestCase = (pid, sid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.CREATE_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           loading: false,
-          details: e.response.data.error
+          details: e.response?.data?.error
         }
       });
     });
 };
 
 export const cloneTestCase = (pid, sid, id) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .post(`/api/v1/project/${pid}/suite/${sid}/testcase/${id}/clone`)
     .then((res) => {
@@ -75,17 +87,17 @@ export const cloneTestCase = (pid, sid, id) => (dispatch) => {
       dispatch({
         type: actionTypes.CLONE_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           loading: false,
-          details: e.response.data.error
+          details: e.response?.data?.error
         }
       });
     });
 };
 
 export const runTestCases = (pid, payload) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .post(`/api/v1/runner/${pid}/runTestCases`, payload)
     .then((res) => {
@@ -103,9 +115,9 @@ export const runTestCases = (pid, payload) => (dispatch) => {
       dispatch({
         type: actionTypes.RUN_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -113,7 +125,7 @@ export const runTestCases = (pid, payload) => (dispatch) => {
 };
 
 export const swapTestCase = (pid, sid, tid, target) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .put(`/api/v1/project/${pid}/suite/${sid}/testcase/${tid}/swap`, {
       target
@@ -133,9 +145,9 @@ export const swapTestCase = (pid, sid, tid, target) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -143,7 +155,7 @@ export const swapTestCase = (pid, sid, tid, target) => (dispatch) => {
 };
 
 export const updateTestCase = (pid, sid, tid, data) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .put(`/api/v1/project/${pid}/suite/${sid}/testcase/${tid}`, data)
     .then((res) => {
@@ -161,9 +173,9 @@ export const updateTestCase = (pid, sid, tid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -171,7 +183,7 @@ export const updateTestCase = (pid, sid, tid, data) => (dispatch) => {
 };
 
 export const deleteTestCase = (pid, sid, tid) => (dispatch) => {
-  resetTestCaseFlags({ loading: true });
+  dispatch(resetTestCaseFlags({ loading: true }));
   axios
     .delete(`/api/v1/project/${pid}/suite/${sid}/testcase/${tid}`)
     .then((res) => {
@@ -189,9 +201,9 @@ export const deleteTestCase = (pid, sid, tid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
-          details: e.response.data.error,
+          details: e.response?.data?.error,
           loading: false
         }
       });
@@ -220,7 +232,7 @@ export const fetchTestCase = (pid, sid, tid) => (dispatch) => {
       dispatch({
         type: actionTypes.GET_TESTCASE,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           case: null
         }
       });

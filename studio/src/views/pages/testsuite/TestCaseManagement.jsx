@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
@@ -7,7 +7,18 @@ import * as actionTypes from "../../../redux/actions";
 import CreateTestCaseDialog from "./CreateTestCaseDialog";
 import UpdateTestCaseDialog from "./UpdateTestCaseDialog";
 import { cropString, TestCaseTypes } from "../utils";
-import { Centered, IconButton, Spinner, Tooltip, NewlineText, EmptyIconRenderer, SearchComponent, IconRenderer, UploadFile } from "../../utilities";
+import {
+  Centered,
+  IconButton,
+  Spinner,
+  Tooltip,
+  NewlineText,
+  EmptyIconRenderer,
+  SearchComponent,
+  IconRenderer,
+  UploadFile,
+  Toast
+} from "../../utilities";
 import {
   fetchTestCaseList,
   createTestCase,
@@ -19,13 +30,14 @@ import {
   runTestCases,
   swapTestCase
 } from "../../../redux/actions/TestCaseActions";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import Swal from "sweetalert2";
 import CardLayout from "../common/CardLayout";
 import LabelRenderer from "../../tailwindrender/renderers/common/LabelRenderer";
 import { ActionButton, CardHeaders, MoreActionsDropDowns } from "../common/DisplayCard";
+import copy from "copy-to-clipboard";
 
 function TestCaseManagement({ project, scenario, changeTestScenario, windowDimension, pageTitle, runCompleteTestSuite }) {
   const dispatch = useDispatch();
@@ -35,7 +47,13 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
   const [showUpdateDialog, setShowUpdateDialog] = useState(state?.showUpdateDialog);
   const [progress, setProgress] = useState(0);
 
-  const { isFirstTestCase, loading, testcases, totalItems, details, message, showMessage } = useSelector((state) => state.testcase);
+  const { isFirstTestCase, loading, testcases, totalItems, details, message, showMessage, listLoading } = useSelector((state) => state.testcase);
+
+  const fetchTestCases = useCallback(() => {
+    if (!listLoading && project?.id && scenario?.id) {
+      dispatch(fetchTestCaseList(project?.id, scenario?.id));
+    }
+  }, [listLoading, project, scenario]);
 
   useEffect(() => {
     fetchTestCases();
@@ -57,12 +75,6 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
       });
     }
   }, [showMessage]);
-
-  const fetchTestCases = () => {
-    if (project?.id && scenario?.id) {
-      dispatch(fetchTestCaseList(project?.id, scenario?.id));
-    }
-  };
 
   const resetState = () => {
     setSelectedTestCase(null);
@@ -145,6 +157,7 @@ function TestCaseManagement({ project, scenario, changeTestScenario, windowDimen
           totalItems={totalItems}
           showAddTestCaseDialog={() => setShowCreateDialog(true)}
           loading={loading}
+          listLoading={listLoading}
           editTestCase={(selectedTestCase) => {
             setSelectedTestCase(selectedTestCase);
             setShowUpdateDialog(true);
@@ -204,6 +217,7 @@ function RenderList({
   testcases = [],
   showAddTestCaseDialog,
   loading,
+  listLoading,
   editTestCase,
   deleteTestCase,
   updateTestCase,
@@ -215,29 +229,32 @@ function RenderList({
 }) {
   const [detailedView, setDetailedView] = useState(false);
   const [search, setSearch] = useState("");
-
-  let filtered = [];
-  if (isEmpty(search)) {
-    filtered = testcases;
-  } else {
-    const searchText = search.toLowerCase();
-    filtered = testcases?.filter(
-      (tc) =>
-        tc.label.toLowerCase().includes(searchText) ||
-        tc.title.toLowerCase().includes(searchText) ||
-        tc.given?.toLowerCase().includes(searchText) ||
-        tc.when?.toLowerCase().includes(searchText) ||
-        tc.then?.toLowerCase().includes(searchText) ||
-        tc.tags?.find((tag) => tag.toLowerCase().includes(searchText))
+  const [filtered, setFiltered] = useState([]);
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(
+      isEmpty(searchText)
+        ? testcases
+        : testcases.filter(
+            (tc) =>
+              tc.label.toLowerCase().includes(searchText) ||
+              tc.title.toLowerCase().includes(searchText) ||
+              tc.given?.toLowerCase().includes(searchText) ||
+              tc.when?.toLowerCase().includes(searchText) ||
+              tc.then?.toLowerCase().includes(searchText) ||
+              tc.tags?.find((tag) => tag.toLowerCase().includes(searchText))
+          )
     );
-  }
+  }, [search, testcases]);
 
   return (
     <Page>
       <PageHeader>
-        <PageTitle>{`${pageTitle} (${testcases.length})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={testcases.length} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
-          <SearchComponent search={search} placeholder="Search for Test Case" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <SearchComponent placeholder="Search for Test Case" onChange={setSearch} />
           <LabelRenderer label="Show Details" />
           <Tooltip title="Enable To View Test Case Details">
             <TailwindToggleRenderer
@@ -432,7 +449,18 @@ function DisplayTestCase({
     <CardLayout key={"row-" + rowIndex} className="grid grid-cols-12 mb-1" onDoubleClick={handleEditTestCase}>
       <div className="col-span-1 flex flex-col text-center justify-center cursor-pointer">
         <div className="flex flex-col break-all text-center items-center justify-between border-r">
-          <label className="mt-2 text-sm cursor-pointer">{record.label}</label>
+          <label
+            className="mt-2 text-sm cursor-pointer select-all"
+            onClick={() => {
+              copy(record.label);
+              Toast.fire({
+                icon: "success",
+                title: `Copied TID: ${record.label}`
+              });
+            }}
+          >
+            {record.label}
+          </label>
           <label className="mt-2 text-xs font-normal">{tcType}</label>
           <div className={`text-white text-xs text-center font-bold mt-2 px-1 py-0.5 w-16 rounded ${record.enabled ? "bg-green-600" : "bg-red-600"}`}>
             {record.enabled ? "Active" : "In-Active"}
@@ -451,7 +479,18 @@ function DisplayTestCase({
           <div className="text-color-label break-words select-all flex flex-row items-center mb-3">
             <IconRenderer icon="Fingerprint" className="text-color-0600 mr-2" style={{ fontSize: 15 }} />
             <Tooltip title="Unique Identifier">
-              <label className="text-xs">{record.id}</label>
+              <label
+                className="text-xs"
+                onClick={() => {
+                  copy(record.id);
+                  Toast.fire({
+                    icon: "success",
+                    title: `Copied UUID: ${record.id}`
+                  });
+                }}
+              >
+                {record.id}
+              </label>
             </Tooltip>
           </div>
         )}

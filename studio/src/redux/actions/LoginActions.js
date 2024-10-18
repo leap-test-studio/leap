@@ -2,12 +2,20 @@ import axios, { CanceledError } from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 import { jwtDecode } from "jwt-decode";
+import { ACCESS_TOKEN_STORAGE_KEY, CSRF_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "../../Constants";
 
 const Roles = ["Admin", "Manager", "Lead", "Engineer"];
 
+export const setOktaLoading = (loadingOktaInfo) => (dispatch) => {
+  dispatch({
+    type: actionTypes.RESET_LOGIN,
+    payload: { loadingOktaInfo }
+  });
+};
+
 export const logoutUser = () => async (dispatch) => {
-  const refreshToken = localStorage.getItem("refreshToken");
-  const jwTToken = localStorage.getItem("jwt_token");
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
+  const jwTToken = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
 
   try {
     await axios.post(
@@ -18,7 +26,7 @@ export const logoutUser = () => async (dispatch) => {
       {
         withCredentials: true,
         headers: {
-          "X-CSRF-Token": localStorage.getItem("csrfToken"),
+          "X-CSRF-Token": localStorage.getItem(CSRF_TOKEN_STORAGE_KEY),
           Authorization: "Bearer " + jwTToken
         }
       }
@@ -91,7 +99,9 @@ export const loginWithEmailAndPassword =
       .catch((e) =>
         dispatch({
           type: actionTypes.LOGIN_ERROR,
-          payload: e.message
+          payload: {
+            ...e.response?.data
+          }
         })
       );
   };
@@ -141,6 +151,26 @@ export function resetPassword(body) {
           type: actionTypes.RESETNEW_PASSWORD_ERROR,
           payload: error.response.data
         });
+      });
+  };
+}
+
+export function registerOktaUser(userProfile) {
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.LOGIN_LOADING
+    });
+    axios
+      .post("/api/v1/accounts/register-okta-user", userProfile)
+      .then((res) => {
+        if (res?.data)
+          dispatch({
+            type: actionTypes.LOGIN_SUCCESS,
+            payload: res.data
+          });
+      })
+      .catch((error) => {
+        error;
       });
   };
 }

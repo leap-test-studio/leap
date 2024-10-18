@@ -10,12 +10,12 @@ const IconLabel = ({ icon, label }) => (
 
 export default function UserInfo({ showTitle = false }) {
   if (!showTitle) return null;
-  const user = LocalStorageService.getItem("auth_user");
+  const UserInfo = LocalStorageService.getUserInfo();
   let username, role, email;
-  if (user) {
-    username = user?.name;
-    role = user?.role;
-    email = user?.email;
+  if (UserInfo) {
+    username = UserInfo?.name;
+    role = UserInfo?.role;
+    email = UserInfo?.email;
   }
   return (
     <div className="p-1 m-0.5 rounded backdrop-blur-sm bg-slate-500/30 text-white items-center">

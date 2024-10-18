@@ -11,7 +11,7 @@ const config = {
   title: Product.name,
   tagline: Product.description,
   url: Product.website,
-  baseUrl: "/documentation/",
+  baseUrl: Product.docBaseURL,
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "icons/favicon.png",

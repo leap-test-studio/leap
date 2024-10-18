@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import merge from "lodash/merge";
+import isEmpty from "lodash/isEmpty";
 import { usePopper } from "react-popper";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/theme-tomorrow";
@@ -51,7 +52,21 @@ const TailwindInputJson = React.memo((props) => {
 
   return (
     <div className="grow mb-1 mx-1 select-none" onBlur={onBlur}>
-      {label?.length > 0 && <LabelRenderer {...props} />}
+      {label?.length > 0 && (
+        <LabelRenderer
+          {...props}
+          onActionClick={() => {
+            try {
+              if (!isEmpty(data)) {
+                const obj = JSON.parse(data);
+                handleChange(path, JSON.stringify(obj, null, 2));
+              }
+            } catch (_) {}
+          }}
+          actionIcon="DataObject"
+          actionTooltip="Prettify JSON"
+        />
+      )}
       <form>
         <AceEditor
           ref={setReferenceElement}
@@ -66,16 +81,11 @@ const TailwindInputJson = React.memo((props) => {
           showPrintMargin={true}
           showGutter={true}
           highlightActiveLine={true}
-          enableSnippets={true}
           placeholder={description}
           onSelectionChange={onSelectionChange}
           className="border border-gray-300 rounded"
           setOptions={{
-            enableBasicAutocompletion: false,
-            enableLiveAutocompletion: false,
-            enableSnippets: false,
             showLineNumbers: true,
-            spellcheck: true,
             tabSize: 2
           }}
           wrapEnabled={true}

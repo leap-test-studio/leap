@@ -5,6 +5,7 @@ import * as actionTypes from "../actions";
 const initialState = {
   totalItems: 0,
   projects: [],
+  listLoading: false,
   loading: false,
   isError: false,
   showMessage: false,
@@ -28,6 +29,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_PROJECT_LIST: {
       return {
         ...state,
+        listLoading: false,
         isFirstProject: payload.totalItems === 0,
         totalItems: payload.totalItems,
         projects: payload?.items || []

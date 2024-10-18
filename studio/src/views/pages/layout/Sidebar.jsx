@@ -9,8 +9,8 @@ import { authRoles } from "../../../auth/authRoles";
 
 export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerHeight, maxContentHeight, menuClicked, isSetupSelected, ...props }) {
   const isSmallScreen = maxContentHeight < 800;
-  const AuthUser = LocalStorageService.getItem("auth_user");
-  const Role = AuthUser?.role;
+  const UserInfo = LocalStorageService.getUserInfo();
+  const Role = UserInfo?.role;
   return (
     <aside
       className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"} bg-sky-950 text-white flex flex-col cursor-pointer h-screen shadow`}
@@ -98,10 +98,10 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false })
         />
         {icon && (
           <div className="mx-2 z-10">
-            <IconRenderer icon={icon} className="h-5 w-5" viewBox="0 0 30 30" />
+            <IconRenderer icon={icon} className="h-5 w-5" />
           </div>
         )}
-        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-xs cursor-pointer">{title}</label>}
+        {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-sm cursor-pointer">{title}</label>}
       </NavLink>
     </Tooltip>
   );

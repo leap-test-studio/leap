@@ -1,15 +1,17 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const Joi = require("joi");
+const { DEFAULT_DB_SECRET_ID, DEFAULT_SLACK_SECRET_ID } = require("../constants");
 
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid("production", "development", "test").default("production"),
-    PORT: Joi.number().default(9000),
+    PORT: Joi.number().default(9004),
     TIMEZONE: Joi.string().description("Time zone").default("+05:30"),
     EXPRESSJS_SECRET: Joi.string().description("Express Session Secret").default("S3cret"),
+    OKTA_ENABLED: Joi.boolean().description("Is Okta Login Enabled").default(true),
     DATABASE_NAME: Joi.string().description("Database name").default("automation"),
     DATABASE_SCHEMA_NAME: Joi.string().description("Database Schema name").default("public"),
     DATABASE_HOST: Joi.string().description("Database server host address").default("localhost"),
@@ -20,7 +22,9 @@ const envVarsSchema = Joi.object()
     DATABASE_MIN_CONNECTIONS: Joi.number().description("Database Minimum Connections").default(1),
     DATABASE_MAX_CONNECTIONS: Joi.number().description("Database Maximum Connections").default(9),
     DATABASE_LOGGING: Joi.boolean().description("Enable logging").default(false),
-    AWS_DB_SECRET_ID: Joi.string().description("The ARN or name of the secret to retrieve").default(null),
+    LOAD_FROM_AWS: Joi.boolean().description("Load Configurations from AWS secrets manager").default(false),
+    AWS_DB_SECRET_ID: Joi.string().description("The ARN or name of the secret to retrieve").default(DEFAULT_DB_SECRET_ID),
+    AWS_SLACK_SECRET_ID: Joi.string().description("The ARN or name of the secret to retrieve Slack Token").default(DEFAULT_SLACK_SECRET_ID),
     LOG_DIR: Joi.string().description("Log directory").default("/tmp"),
     LOG_LEVEL: Joi.string().valid("all", "trace", "debug", "info", "warn", "error", "fatal").default("all"),
     SMTP_ENABLED: Joi.boolean().description("SMTP enabled?").default(false),
@@ -31,12 +35,14 @@ const envVarsSchema = Joi.object()
     SMTP_PASSWORD: Joi.string().description("SMTP server password"),
     REDIS_HOST: Joi.string().description("REDIS server host address").default("localhost"),
     REDIS_PORT: Joi.number().description("REDIS server port number").default(6379),
-    REDIS_PASSWORD: Joi.string().description("REDIS server password").default("S3cret"),
+    REDIS_PASSWORD: Joi.string().description("REDIS server password"),
     REFRESH_TOKEN_EXPIRY: Joi.string().description("JWT refresh token expiration").default("1d"),
     JWT_TOKEN_EXPIRY: Joi.string().description("JWT token expiration").default("12h"),
     OTP_EXPIRY_TIME: Joi.string().description("OTP expiration time").default("12h"),
     MAX_ALLOWED_OTP: Joi.number().description("Maximum number of allowed OTP").default(5),
-    SELENIUM_GRID_URL: Joi.string().description("Selenium grid router URL")
+    SELENIUM_GRID_URL: Joi.string().description("Selenium grid router URL"),
+    SLACK_BOT_TOKEN: Joi.string().description("Slack bot Token"),
+    PUBLIC_URL: Joi.string().default("https://leap.dataplatform-np.rr-it.com")
   })
   .unknown();
 
@@ -106,7 +112,13 @@ module.exports = {
     cdrFormat: ":date[iso]|:transactionId|:remote-addr|:username|:method|:url|HTTP/:http-version|:status|:response-time|:referrer",
     log4js: {
       appenders: {
-        console: { type: "console" },
+        console: {
+          type: "console",
+          layout: {
+            type: "pattern",
+            pattern: "%d{ISO8601}|%p|%f{1}:%l|%m"
+          }
+        },
         orchestrator: {
           type: "dateFile",
           filename: "orchestrator.log",
@@ -117,7 +129,7 @@ module.exports = {
           }
         }
       },
-      categories: { default: { enableCallStack: true, level: envVars.LOG_LEVEL, appenders: ["orchestrator"] } }
+      categories: { default: { enableCallStack: true, level: envVars.LOG_LEVEL, appenders: ["console"] } }
     }
   },
   DBstore: {

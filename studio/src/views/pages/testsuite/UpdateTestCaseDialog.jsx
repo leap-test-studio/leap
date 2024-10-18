@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
+import merge from "lodash/merge";
 
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
@@ -48,12 +49,18 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
   const { settings, execSteps, ...rest } = testcase;
   const [nodeData, setNodeData] = useState(rest);
   const [payload, setPayoad] = useState({ settings, execSteps });
+  const [suggest, setSuggest] = useState([]);
+  const [schemas, setSchemas] = useState({});
   if (isEmpty(testcase) || isEmpty(testcase?.id)) return null;
 
   useEffect(() => {
     const { settings, execSteps, ...rest } = testcase;
     setPayoad({ settings, execSteps });
     setNodeData(rest);
+    return () => {
+      setSuggest([]);
+      setSchemas({});
+    };
   }, [testcase]);
 
   const loadProject = (id) => id && dispatch(fetchProject(id));
@@ -62,16 +69,20 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
     loadProject(project?.id);
   }, [project?.id]);
 
-  const payloadSchema = Schemas[nodeData.type] || {};
-
   const { projectData } = useSelector((state) => state.project);
 
-  const suggest = projectData?.settings?.env;
-  try {
-    const usch = JSON.stringify(payloadSchema.uischema);
-    payloadSchema.uischema = JSON.parse(usch.replaceAll('"$AUTOCOMPLETE$"', JSON.stringify(suggest)));
-  } catch (_) {}
-
+  useEffect(() => {
+    try {
+      const list = [];
+      merge(list, projectData?.settings?.env);
+      if (testscenario?.settings?.env?.length > 0) merge(list, testscenario?.settings?.env);
+      setSuggest(list);
+      const payloadSchema = { ...Schemas[nodeData.type] };
+      const usch = JSON.stringify(payloadSchema.uischema);
+      payloadSchema.uischema = JSON.parse(usch.replaceAll('"$AUTOCOMPLETE$"', JSON.stringify(list)));
+      setSchemas(payloadSchema);
+    } catch (_) {}
+  }, [projectData, testscenario]);
   return (
     <CustomDialog
       open={isOpen}
@@ -89,41 +100,45 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
       onSave={() =>
         onUpdate({
           type: nodeData.type,
-          title: nodeData.title,
-          given: nodeData.given,
-          when: nodeData.when,
-          then: nodeData.then,
-          tags: nodeData.tags,
-          execSteps: payload.execSteps,
+          title: nodeData.title || "",
+          given: nodeData.given || "",
+          when: nodeData.when || "",
+          then: nodeData.then || "",
+          tags: nodeData.tags || [],
+          execSteps: payload.execSteps || [],
           settings: payload.settings
         })
       }
       customHeight="h-[90vh]"
       customWidth="w-[90vw]"
     >
-      <TailwindRenderer
-        {...getSchema(suggest)}
-        data={nodeData}
-        onChange={({ data }) => {
-          if (!isEqual(nodeData, data)) {
-            setIsChange(true);
-            setNodeData(data);
-            if (nodeData.type !== data.type) {
-              setPayoad(defaults[data.type]);
-            }
-          }
-        }}
-      />
-      <TailwindRenderer
-        {...payloadSchema}
-        data={payload}
-        onChange={({ data }) => {
-          if (!isEqual(payload, data)) {
-            setIsChange(true);
-            setPayoad(data);
-          }
-        }}
-      />
+      {!isEmpty(schemas) && (
+        <>
+          <TailwindRenderer
+            {...getSchema(suggest)}
+            data={nodeData}
+            onChange={({ data }) => {
+              if (!isEqual(nodeData, data)) {
+                setIsChange(true);
+                setNodeData(data);
+                if (nodeData.type !== data.type) {
+                  setPayoad(defaults[data.type]);
+                }
+              }
+            }}
+          />
+          <TailwindRenderer
+            {...schemas}
+            data={payload}
+            onChange={({ data }) => {
+              if (!isEqual(payload, data)) {
+                setIsChange(true);
+                setPayoad(data);
+              }
+            }}
+          />
+        </>
+      )}
     </CustomDialog>
   );
 }

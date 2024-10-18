@@ -3,6 +3,7 @@ import * as actionTypes from "../actions";
 
 const initialState = {
   accounts: [],
+  listLoading: false,
   loading: false,
   isError: false,
   showMessage: false,
@@ -17,6 +18,7 @@ const AccountReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_ACCOUNT_LIST: {
       return {
         ...state,
+        listLoading: false,
         isFirstAccount: Array.isArray(payload?.items) && payload.items.length === 0,
         accounts: payload?.items || []
       };

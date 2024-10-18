@@ -6,6 +6,7 @@ const { TestType } = require("../constants");
 
 module.exports = {
   createHandler: (taskInfo) => {
+    logger.info("Create Test handler:", JSON.stringify(taskInfo));
     switch (taskInfo.type) {
       case TestType.API:
         return new APITestRunner(taskInfo);

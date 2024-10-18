@@ -3,6 +3,7 @@ import * as actionTypes from "../actions";
 
 const initialState = {
   tenants: [],
+  listLoading: false,
   loading: false,
   isError: false,
   showMessage: false,
@@ -17,6 +18,7 @@ const TenantReducer = function (state = initialState, { payload, type }) {
     case actionTypes.GET_TENANT_LIST: {
       return {
         ...state,
+        listLoading: false,
         isFirstTenant: Array.isArray(payload?.items) && payload.items.length === 0,
         tenants: payload?.items || []
       };

@@ -1,2 +1,0 @@
-export const DEFAULT_HEADER_HEIGHT = 56;
-export const DEFAULT_FOOTER_HEIGHT = 0;

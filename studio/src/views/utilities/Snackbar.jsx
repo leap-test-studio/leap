@@ -1,7 +1,5 @@
-import { useSelector } from "react-redux";
-import { Transition } from "@headlessui/react";
-
 import { IconRenderer } from "./iconrenderer";
+import Swal from "sweetalert2";
 
 export const Snackbar = ({ message, status }) => {
   let style;
@@ -51,19 +49,14 @@ export const LoadingSnackbar = ({ message }) => (
   </div>
 );
 
-export const ShowSnack = () => {
-  const message = useSelector((state) => state.message);
-  return (
-    <Transition
-      show={message.toggleSnackbar}
-      enter="transform ease-out duration-800 transition"
-      enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-      enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-      leave="transition ease-in duration-200"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      <Snackbar message={message.message} status={message.severity} />
-    </Transition>
-  );
-};
+export const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});

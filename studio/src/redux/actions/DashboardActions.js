@@ -2,6 +2,18 @@ import axios from "axios";
 // action - state management
 import * as actionTypes from "../actions";
 
+export const resetDashboardFlags =
+  (props = {}) =>
+  (dispatch) => {
+    dispatch({
+      type: actionTypes.RESET_DASHBOARD,
+      payload: {
+        listLoading: false,
+        ...props
+      }
+    });
+  };
+
 export const getBuildReports = (projectId) => (dispatch) => {
   axios.get(`/api/v1/dashboard/build/reports/${projectId}`).then((res) => {
     if (res?.data)
@@ -23,23 +35,45 @@ export const getBuildDetails = (projectId, buildNo) => (dispatch) => {
 };
 
 export const getRecentBuildSummary = () => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/recent").then((res) => {
-    if (res?.data)
-      dispatch({
-        type: actionTypes.GET_RECENT_BUILD_SUMMARY,
-        payload: res.data
-      });
-  });
+  dispatch(
+    resetDashboardFlags({
+      listLoading: true
+    })
+  );
+  axios
+    .get("/api/v1/dashboard/build/recent")
+    .then((res) => {
+      dispatch(resetDashboardFlags());
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_RECENT_BUILD_SUMMARY,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
+      dispatch(resetDashboardFlags());
+    });
 };
 
 export const getTotalStats = () => (dispatch) => {
-  axios.get("/api/v1/dashboard/build/total").then((res) => {
-    if (res?.data)
-      dispatch({
-        type: actionTypes.GET_TOTAL_STATS,
-        payload: res.data
-      });
-  });
+  dispatch(
+    resetDashboardFlags({
+      listLoading: true
+    })
+  );
+  axios
+    .get("/api/v1/dashboard/build/total")
+    .then((res) => {
+      dispatch(resetDashboardFlags());
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_TOTAL_STATS,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
+      dispatch(resetDashboardFlags());
+    });
 };
 
 export const getBuildTrend = (projectId) => (dispatch) => {

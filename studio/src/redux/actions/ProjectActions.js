@@ -8,6 +8,7 @@ export const resetProjectFlags =
     dispatch({
       type: actionTypes.RESET_PROJECT,
       payload: {
+        listLoading: false,
         loading: false,
         message: null,
         showMessage: false,
@@ -26,13 +27,28 @@ export const openProject = (openedProject) => (dispatch) => {
 };
 
 export const fetchProjectList = () => (dispatch) => {
-  axios.get("/api/v1/project").then((res) => {
-    if (res?.data)
+  dispatch(
+    resetProjectFlags({
+      listLoading: true
+    })
+  );
+  axios
+    .get("/api/v1/project")
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_PROJECT_LIST,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
       dispatch({
-        type: actionTypes.GET_PROJECT_LIST,
-        payload: res.data
+        type: actionTypes.RESET_PROJECT,
+        payload: {
+          listLoading: false
+        }
       });
-  });
+    });
 };
 
 export const fetchProject = (pid) => (dispatch) => {
@@ -84,7 +100,7 @@ export const createProject =
             loading: false,
             message: "Failed to Create Project",
             showMessage: "error",
-            details: e.response.data.error
+            details: e.response?.data?.error
           }
         });
       });
@@ -110,7 +126,7 @@ export const updateProject = (pid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_PROJECT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Update Project",
           details: `Project Id: ${pid}`
@@ -139,7 +155,7 @@ export const deleteProject = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_PROJECT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Delete Project",
           showMessage: "error",
           details: `Project Id: ${pid}`
@@ -171,14 +187,14 @@ export const triggerSequence = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.START_PROJECT_BUILDS,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           installing: false
         }
       });
     });
 };
 
-export const startProjectBuilds = (pid) => (dispatch) => {
+export const startProjectBuilds = (pid, payload) => (dispatch) => {
   dispatch({
     type: actionTypes.START_PROJECT_BUILDS,
     payload: {
@@ -186,7 +202,7 @@ export const startProjectBuilds = (pid) => (dispatch) => {
     }
   });
   axios
-    .post(`/api/v1/runner/${pid}/runProject`)
+    .post(`/api/v1/runner/${pid}/runProject`, payload)
     .then((res) => {
       if (res?.data)
         dispatch({
@@ -202,7 +218,7 @@ export const startProjectBuilds = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.START_PROJECT_BUILDS,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Start Project Execution"
         }
@@ -230,7 +246,7 @@ export const stopProjectBuilds = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.STOP_PROJECT_BUILDS,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Stop Project Execution",
           details: `Project Id: ${pid}`

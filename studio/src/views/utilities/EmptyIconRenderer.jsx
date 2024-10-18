@@ -1,5 +1,3 @@
-import { Centered } from "./Centered";
-
 const SvgComponent = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 50 400 400" {...props}>
     <defs>

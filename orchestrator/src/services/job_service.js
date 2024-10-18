@@ -13,7 +13,7 @@ module.exports = {
   getSettingsByTestId
 };
 
-async function getSettingsByTestId(id) {
+async function getSettingsByTestId(BuildMasterId, id) {
   try {
     logger.trace(`Get Job Settings, JobID:${id}`);
     const obj = await global.DbStoreModel.TestCase.findOne({
@@ -31,10 +31,18 @@ async function getSettingsByTestId(id) {
       nest: true
     });
 
+    const buildInfo = await global.DbStoreModel.BuildMaster.findOne({
+      attributes: ["options"],
+      where: { id: BuildMasterId },
+      raw: true,
+      nest: true
+    });
+
     let settings = {
       ...obj.settings,
       ...obj.TestScenario.settings,
-      ...obj.TestScenario.ProjectMaster.settings
+      ...obj.TestScenario.ProjectMaster.settings,
+      ...buildInfo.options
     };
 
     const env = settings.env;
@@ -66,7 +74,7 @@ async function getJobInfo(id) {
   logger.trace("Get JobInfo By ID:", id);
   let jobInfo = await global.DbStoreModel.Job.findByPk(id);
   if (!jobInfo) throw new Error(`Job ID:${id} not found`);
-  Object.assign(jobInfo, await getSettingsByTestId(jobInfo.TestCaseId));
+  Object.assign(jobInfo, await getSettingsByTestId(jobInfo.BuildMasterId, jobInfo.TestCaseId));
   return jobInfo;
 }
 
@@ -143,17 +151,15 @@ async function consolidate(buildId) {
       failed = rmap[TestStatus.FAIL] || 0,
       skipped = rmap[TestStatus.SKIP] || 0,
       running = rmap[TestStatus.RUNNING] || 0;
-    logger.trace("rmap", rmap);
     const sum = passed + failed + skipped + running;
 
     if (running > 0 || draft > 0) {
       status = TestStatus.RUNNING;
     } else if (sum === passed) {
       status = TestStatus.PASS;
-    } else if (failed > 0) {
+    } else if (failed > 0 || (passed === 0 && failed === 0 && skipped > 0)) {
       status = TestStatus.FAIL;
     }
-
     await _updateBuildStatus(buildId, { total, passed, failed, skipped, running, startTime, endTime, status });
   } catch (error) {
     logger.error(error);
@@ -161,7 +167,7 @@ async function consolidate(buildId) {
 }
 
 async function _updateBuildStatus(id, params) {
-  logger.trace("Update Build Status", id, params);
+  logger.trace("Update Build Status", id, JSON.stringify(params));
   const build = await getBuildInfo(id);
   Object.assign(build, params);
   build.changed("updatedAt", true);

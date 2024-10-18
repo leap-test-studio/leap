@@ -1,6 +1,6 @@
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom/client";
-import "./assets/css/index.css";
+import "./index.css";
 
 import App from "./App";
 import ContextProvider from "./views/context/ContextProvider";

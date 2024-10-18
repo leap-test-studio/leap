@@ -1,3 +1,5 @@
+import { PROFILE_STORAGE_KEY } from "../../Constants";
+
 class LocalStorageService {
   cache = {};
 
@@ -24,6 +26,10 @@ class LocalStorageService {
     }
   }
 
+  getUserInfo() {
+    return this.getItem(PROFILE_STORAGE_KEY);
+  }
+
   removeItem(key) {
     delete this.cache[key];
     localStorage.removeItem(key);
@@ -31,3 +37,5 @@ class LocalStorageService {
 }
 const Singleton = new LocalStorageService();
 export default Singleton;
+
+export const setStoreItem = (k, v) => (k != null && v != null ? localStorage.setItem(k, v) : localStorage.removeItem(k));

@@ -12,7 +12,7 @@ const IconLabel = ({ icon, label }) => (
 );
 
 export default function Header({ isProjectSelected, ...props }) {
-  const userProfile = LocalStorageService.getItem("auth_user");
+  const UserInfo = LocalStorageService.getUserInfo();
   return (
     <header
       className="sticky top-0 z-30 shadow-md select-none w-full h-10 grid grid-cols-12 grid-rows-1 gap-4 bg-white"
@@ -24,35 +24,32 @@ export default function Header({ isProjectSelected, ...props }) {
       <div className="col-span-8 flex flex-row items-center justify-start pl-2">{isProjectSelected && <SelectedProject {...props} />}</div>
       <span className="col-span-4 flex flex-row items-center justify-end">
         {isProjectSelected && <hr className="w-px h-5 bg-sky-950 mx-1.5" />}
-        {userProfile && (
+        {UserInfo && (
           <Tooltip
             title="User Information"
             content={
               <div className="p-2 m-1 rounded backdrop-blur-sm bg-slate-500/30 text-slate-300 items-center">
-                {userProfile?.name && <IconLabel label={userProfile.name} icon="PermIdentityTwoTone" />}
-                {userProfile?.tenant?.name && <IconLabel label={"Team: " + userProfile.tenant?.name} icon="Groups3TwoTone" />}
-                {userProfile?.role && <IconLabel label={"Role: " + userProfile.role} icon="AccountCircle" />}
-                {userProfile?.email && <IconLabel label={userProfile.email} icon="Email" />}
+                {UserInfo?.name && <IconLabel label={UserInfo.name} icon="PermIdentityTwoTone" />}
+                {UserInfo?.tenant?.name && <IconLabel label={"Team: " + UserInfo.tenant?.name} icon="Groups3TwoTone" />}
+                {UserInfo?.role && <IconLabel label={"Role: " + UserInfo.role} icon="AccountCircle" />}
+                {UserInfo?.email && <IconLabel label={UserInfo.email} icon="Email" />}
               </div>
             }
           >
             <div className="inline-flex items-center justify-end">
               <div className="px-1.5 py-0.5 mr-2 rounded bg-color-0100 border shadow text-color-label">
-                {userProfile?.name && (
-                  <IconLabel
-                    label={`${userProfile.tenant?.name ? userProfile.tenant?.name + " - " : ""}${userProfile.name}`}
-                    icon="PermIdentityTwoTone"
-                  />
+                {UserInfo?.name && (
+                  <IconLabel label={`${UserInfo.tenant?.name ? UserInfo.tenant?.name + " - " : ""}${UserInfo.name}`} icon="PermIdentityTwoTone" />
                 )}
               </div>
               <div className="px-1.5 py-0.5 mr-2 rounded bg-color-0100 border shadow text-color-label">
-                {userProfile?.role && <IconLabel label={"Role: " + userProfile.role} icon="AccountCircle" />}
+                {UserInfo?.role && <IconLabel label={"Role: " + UserInfo.role} icon="AccountCircle" />}
               </div>
             </div>
           </Tooltip>
         )}
         <HelpMenu {...props} />
-        <LogoutButton {...props} />
+        {!props.product.isOktaEnabled && <LogoutButton {...props} />}
       </span>
     </header>
   );

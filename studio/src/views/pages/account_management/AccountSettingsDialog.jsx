@@ -5,6 +5,13 @@ import isEmpty from "lodash/isEmpty";
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
 import { updateAccount } from "../../../redux/actions/AccountActions";
+import { authRoles } from "../../../auth/authRoles";
+
+const Roles = [
+  { const: "Manager", title: "Manager" },
+  { const: "Lead", title: "Lead" },
+  { const: "Engineer", title: "Engineer" }
+];
 
 const Model = {
   schema: {
@@ -24,11 +31,7 @@ const Model = {
       role: {
         title: "Role",
         type: "string",
-        oneOf: [
-          { const: "Manager", title: "Manager" },
-          { const: "Lead", title: "Lead" },
-          { const: "Engineer", title: "Engineer" }
-        ]
+        oneOf: Roles
       },
       TenantId: {
         title: "Tenant",
@@ -70,6 +73,15 @@ function AccountSettingsDialog({ showDialog, account, onClose }) {
   if (tenants?.length > 0) {
     Model.schema.properties.TenantId.oneOf = [{ const: null, title: "Select" }, ...tenants.map((t) => ({ const: t.id, title: t.name }))];
   }
+
+  if (account?.role) {
+    if (authRoles.admin.includes(account.role)) {
+      Model.schema.properties.role.oneOf = [{ const: "Admin", title: "Admin" }, ...Roles];
+    } else {
+      Model.schema.properties.role.oneOf = Roles;
+    }
+  }
+
   useEffect(() => {
     if (account)
       setData({

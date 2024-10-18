@@ -1,7 +1,7 @@
 import { IconRenderer } from "../../utilities";
 import { BuildTypes } from "../utils";
 
-function RecentBuilds({ recentBuildSummary }) {
+function RecentBuilds({ recentBuildSummary = [] }) {
   return (
     <>
       <div className="relative bg-white p-4 rounded-lg w-full hover:shadow-xl mt-1 border hover:bg-color-0050 hover:border-color-0300 cursor-pointer">
@@ -40,7 +40,7 @@ function RecentBuilds({ recentBuildSummary }) {
               </tr>
             </thead>
             <tbody className="text-xs font-medium divide-y divide-gray-100">
-              {recentBuildSummary?.slice(0, 10)?.map((record, index) => (
+              {recentBuildSummary.slice(0, 10)?.map((record, index) => (
                 <RenderRow key={index} {...record} />
               ))}
             </tbody>

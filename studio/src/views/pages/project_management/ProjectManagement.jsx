@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import copy from "copy-to-clipboard";
 import dayjs from "dayjs";
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import FirstTimeCard from "../common/FirstTimeCard";
-import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import CreateProjectDialog from "./CreateProjectDialog";
+import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
+import FirstTimeCard from "../common/FirstTimeCard";
 import ProjectSettingsDialog from "./ProjectSettingsDialog";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
 
 import {
   createProject,
   fetchProjectList,
   deleteProject,
   resetProjectFlags,
-  startProjectBuilds,
   stopProjectBuilds,
   updateProject,
   openProject
 } from "../../../redux/actions/ProjectActions";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, IconRenderer } from "../../utilities";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner, Toast } from "../../utilities";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import ProgressIndicator from "../common/ProgressIndicator";
+import WebContext from "../../context/WebContext";
+import ProjectExecutionDialog from "./ProjectExecutionDialog";
+import { ACCESS_TOKEN_STORAGE_KEY } from "../../../Constants";
 
 dayjs.extend(relativeTime);
 
@@ -35,7 +39,9 @@ const ProjectManagement = (props) => {
 
   const { product, project, changeProject, pageTitle } = props;
 
-  const { totalItems, showMessage, message, details, isFirstProject, loading, openedProject, projects } = useSelector((state) => state.project);
+  const { totalItems, showMessage, message, details, isFirstProject, loading, openedProject, projects, listLoading } = useSelector(
+    (state) => state.project
+  );
 
   const [search, setSearch] = useState("");
   const [selectedProject, setSelectedProject] = useState();
@@ -43,6 +49,32 @@ const ProjectManagement = (props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [showSettingsDialog, setSettingsDialog] = useState(false);
+  const [showExecDialog, setShowExecDialog] = useState(false);
+  const [filtered, setFiltered] = useState([]);
+  const { getRole } = useContext(WebContext);
+  const role = getRole();
+
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(
+      isEmpty(searchText)
+        ? projects
+        : projects.filter(
+            (s) =>
+              s.id.includes(searchText) ||
+              s.name.toLowerCase().includes(searchText) ||
+              s.description?.toLowerCase().includes(searchText) ||
+              s.updatedBy?.toLowerCase().includes(searchText) ||
+              s.AccountId?.toLowerCase().includes(searchText)
+          )
+    );
+  }, [search, projects]);
+
+  const fetchList = useCallback(() => {
+    if (!listLoading) {
+      dispatch(fetchProjectList());
+    }
+  }, [listLoading]);
 
   useEffect(() => {
     if (intervalId) clearInterval(intervalId);
@@ -81,8 +113,6 @@ const ProjectManagement = (props) => {
     }
   }, [showMessage]);
 
-  const fetchList = () => dispatch(fetchProjectList());
-
   const handleProjectSelection = (s) => dispatch(openProject(s));
 
   const handleCreateProject = (payload) => {
@@ -93,7 +123,6 @@ const ProjectManagement = (props) => {
   const handleCardAction = (action) => {
     if (action) {
       setSelectedProject(action.project);
-
       if (action.showCreateDialog) {
         setShowCreateDialog(!showCreateDialog);
       } else if (action.showDeleteDialog) {
@@ -102,16 +131,18 @@ const ProjectManagement = (props) => {
         setShowCloneDialog(!showCloneDialog);
       } else if (action.showSettingsDialog) {
         setSettingsDialog(!showSettingsDialog);
+      } else if (action.showExecDialog) {
+        setShowExecDialog(!showExecDialog);
       }
     }
   };
 
-  const filtered = projects.filter((s) => s.name.includes(search));
-
   return (
     <Page>
       <PageHeader show={!isFirstProject}>
-        <PageTitle>{`${pageTitle} (${totalItems})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={totalItems} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
           <ProgressIndicator title="Creating Project" show={loading} />
           <RoundedIconButton
@@ -122,18 +153,23 @@ const ProjectManagement = (props) => {
             icon="Refresh"
             onClick={fetchList}
           />
-          <SearchComponent search={search} placeholder="Search for Project" onChange={(ev) => setSearch(ev)} onClear={() => setSearch("")} />
+          <SearchComponent placeholder="Search for Project" onChange={setSearch} />
           <IconButton
             id="project-create-btn"
             title="Create"
             icon="AddCircle"
             onClick={() => setShowCreateDialog(true)}
             tooltip="Create New Project"
+            disabled={!role.isLeads}
           />
         </PageActions>
       </PageHeader>
       <PageBody>
-        {isFirstProject ? (
+        {listLoading && totalItems == 0 ? (
+          <Centered>
+            <Spinner>Loading</Spinner>
+          </Centered>
+        ) : isFirstProject ? (
           <Centered>
             <FirstTimeCard
               id="first-time-project"
@@ -160,8 +196,9 @@ const ProjectManagement = (props) => {
                 <div className="grid grid-cols-1 gap-y-2.5 pr-0">
                   {filtered.map((project, index) => (
                     <ProjectCard
-                      key={index}
                       {...props}
+                      role={role}
+                      key={index}
                       project={project}
                       handleProjectSelection={handleProjectSelection}
                       handleAction={handleCardAction}
@@ -179,7 +216,20 @@ const ProjectManagement = (props) => {
         )}
 
         <CreateProjectDialog showDialog={showCreateDialog} onClose={() => setShowCreateDialog(false)} createProject={handleCreateProject} />
-        <ProjectSettingsDialog showDialog={showSettingsDialog} onClose={() => setSettingsDialog(false)} project={selectedProject} />
+        <ProjectSettingsDialog
+          {...props}
+          role={role}
+          showDialog={showSettingsDialog}
+          onClose={() => setSettingsDialog(false)}
+          project={selectedProject}
+        />
+        <ProjectExecutionDialog
+          {...props}
+          role={role}
+          showDialog={showExecDialog}
+          onClose={() => setShowExecDialog(false)}
+          project={selectedProject}
+        />
       </PageBody>
     </Page>
   );
@@ -187,7 +237,7 @@ const ProjectManagement = (props) => {
 
 export default ProjectManagement;
 
-const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
+const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { isLeads } = { isLeads: false } }) => {
   const dispatch = useDispatch();
   const { id, name, description, status, createdAt, updatedAt, builds, AccountId, updatedBy } = project;
 
@@ -271,6 +321,17 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
       showSettingsDialog: true
     });
 
+  const copyAsCurl = () => {
+    copy(`curl '${window.location.origin}/api/v1/runner/${id}/runProject' \
+  -H 'Access-Control-Allow-Headers: Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Origin, Authorization, X-Requested-With, client-agent' \
+  -H 'Authorization: Bearer ${localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY)}' \
+  -H 'Content-Type: application/json' \
+  --data-raw '${JSON.stringify({ env: project.settings?.env || [] })}'`);
+    Toast.fire({
+      icon: "success",
+      title: "Copied cURL to Clipboard Successfully!"
+    });
+  };
   const handleDeleteProject = () => {
     Swal.fire({
       title: "Are you sure you want to Delete Project?",
@@ -289,16 +350,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
   };
 
   const handleStartExecution = () => {
-    Swal.fire({
-      title: "Start Project Execution?",
-      text: `Project Id: ${id}`,
-      icon: "question",
-      confirmButtonText: "YES",
-      showDenyButton: true
-    }).then((response) => {
-      if (response.isConfirmed) {
-        dispatch(startProjectBuilds(id));
-      }
+    handleAction({
+      project,
+      showExecDialog: true
     });
   };
 
@@ -335,15 +389,10 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
           )
         },
         {
-          icon: "Delete",
-          label: "Delete",
-          onClick: handleDeleteProject,
-          tooltip: "Delete Test Project",
-          description: (
-            <p>
-              Permanently purges the <strong>Project</strong> from system including all backups.
-            </p>
-          )
+          icon: "Link",
+          label: "Copy as cURL",
+          onClick: copyAsCurl,
+          tooltip: "Copy the start execution request for CI/CD"
         },
         {
           icon: "FileDownload",
@@ -357,6 +406,18 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               Filename: {`ProjectExport-${id}.json`}
             </p>
           )
+        },
+        {
+          icon: "Delete",
+          label: "Delete",
+          onClick: handleDeleteProject,
+          tooltip: "Delete Test Project",
+          disabled: !isLeads,
+          description: (
+            <p>
+              Permanently purges the <strong>Project</strong> from system including all backups.
+            </p>
+          )
         }
       ]}
       actions={
@@ -368,7 +429,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction }) => {
               </p>
             }
           >
-            <TailwindToggleRenderer small={true} path={"status-" + id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+            <TailwindToggleRenderer small={true} path={"status-" + id} visible={true} enabled={isLeads} data={status} handleChange={handleToggle} />
           </Tooltip>
           {status && (
             <>

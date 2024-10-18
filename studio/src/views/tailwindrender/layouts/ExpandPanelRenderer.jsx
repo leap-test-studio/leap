@@ -36,8 +36,7 @@ const ExpandPanelRenderer = React.memo((props) => {
     [uischemas, schema, path, uischema, rootSchema]
   );
   const appliedUiSchemaOptions = merge({}, config, schema.options, uischema.options);
-
-  let showAddItem = true;
+  let showAddItem = appliedUiSchemaOptions.showAddItem != null ? appliedUiSchemaOptions.showAddItem : true;
   if (!isNaN(appliedUiSchemaOptions.maximum)) {
     showAddItem = totalItems < Number(appliedUiSchemaOptions.maximum);
   }
@@ -55,14 +54,14 @@ const ExpandPanelRenderer = React.memo((props) => {
           <JsonFormsDispatch schema={schema} uischema={foundUISchema} path={childPath} key={childPath} renderers={renderers} cells={cells} />
         </Accordion>
       ) : (
-        <div className="flex flex-row w-full">
-          <p>{`${appliedUiSchemaOptions.rowTitle || "Record"} #${index + 1}`}</p>
+        <>
+          <p className="min-w-16">{`${appliedUiSchemaOptions.rowTitle || "Record"} #${index + 1}`}</p>
           <JsonFormsDispatch schema={schema} uischema={foundUISchema} path={childPath} key={childPath} renderers={renderers} cells={cells} />
-        </div>
+        </>
       )}
-      <div className="flex flex-row">
+      <>
         {!readonly && (
-          <div className="flex flex-col items-center justify-center">
+          <>
             <IconButton
               id={`${path}-delete-row-${index}`}
               icon="Delete"
@@ -83,10 +82,10 @@ const ExpandPanelRenderer = React.memo((props) => {
                 tooltip={`Clone and add ${appliedUiSchemaOptions.rowTitle || "Record"}`}
               />
             )}
-          </div>
+          </>
         )}
         {appliedUiSchemaOptions.showSortButtons && (
-          <div className="px-1 pt-0.5 text-xs flex flex-col items-center">
+          <div className="px-1 text-xs flex flex-col items-center">
             {enableMoveUp && (
               <IconButton
                 id={`moveup-item-${childPath}`}
@@ -95,6 +94,7 @@ const ExpandPanelRenderer = React.memo((props) => {
                 ariaLabel="Move up"
                 onClick={moveUp(path, index)}
                 bg=""
+                showShadow={false}
                 tooltip="Move Item Up"
               />
             )}
@@ -106,12 +106,13 @@ const ExpandPanelRenderer = React.memo((props) => {
                 ariaLabel="Move down"
                 onClick={moveDown(path, index)}
                 bg=""
+                showShadow={false}
                 tooltip="Move Item Down"
               />
             )}
           </div>
         )}
-      </div>
+      </>
     </div>
   );
 });

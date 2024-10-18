@@ -8,6 +8,7 @@ export const resetAccountFlags =
     dispatch({
       type: actionTypes.RESET_ACCOUNT,
       payload: {
+        listLoading: false,
         loading: false,
         message: null,
         showMessage: false,
@@ -17,13 +18,28 @@ export const resetAccountFlags =
   };
 
 export const fetchAccountList = () => (dispatch) => {
-  axios.get("/api/v1/accounts").then((res) => {
-    if (res?.data)
+  dispatch(
+    resetAccountFlags({
+      listLoading: true
+    })
+  );
+  axios
+    .get("/api/v1/accounts")
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_ACCOUNT_LIST,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
       dispatch({
-        type: actionTypes.GET_ACCOUNT_LIST,
-        payload: res.data
+        type: actionTypes.RESET_ACCOUNT,
+        payload: {
+          listLoading: false
+        }
       });
-  });
+    });
 };
 
 export const fetchAccount = (pid) => (dispatch) => {
@@ -61,7 +77,7 @@ export const createAccount = (data) => (dispatch) => {
           loading: false,
           message: "Failed to Create Account",
           showMessage: "error",
-          details: e.response.data.error
+          details: e.response?.data?.error
         }
       });
     });
@@ -87,7 +103,7 @@ export const updateAccount = (pid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_ACCOUNT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Update Account",
           details: `Account Id: ${pid}`
@@ -116,7 +132,7 @@ export const deleteAccount = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_ACCOUNT,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Delete Account",
           showMessage: "error",
           details: `Account Id: ${pid}`

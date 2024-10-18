@@ -34,7 +34,7 @@ class BuildManager extends events.EventEmitter {
       await connection.del(REDIS_KEY.JOB_PROCESSING_QUEUE);
       const queueSize = await connection.llen(REDIS_KEY.JOB_WAITING_QUEUE);
       const waitingList = [...new Set(await connection.lrange(REDIS_KEY.JOB_WAITING_QUEUE, 0, queueSize))];
-      logger.info("WaitingList", waitingList);
+      logger.info("WaitingList", JSON.stringify(waitingList));
       await this._addJobs(
         jobs
           .map((j) => {
@@ -108,6 +108,9 @@ class BuildManager extends events.EventEmitter {
             logger.trace(`BUILD_MAN: JID:${jobId} START_JOB`);
             await connection.rpush(REDIS_KEY.JOB_PROCESSING_QUEUE, jobId);
             const jobInfo = await getJobInfo(jobId);
+            if (!jobInfo) {
+              await this._stopJob(jobId);
+            }
             const runner = TaskHandler.createHandler(jobInfo);
             runner.on("UPDATE_STATUS", async ({ id, payload }) => {
               try {
@@ -155,7 +158,7 @@ exports.executeSequence = function ({ settings, ...context }) {
 
     const runtime = flowEngine.start();
     runtime.on("end", () => {
-      console.log(context);
+      logger.trace(context);
       resolve(context);
     });
   });

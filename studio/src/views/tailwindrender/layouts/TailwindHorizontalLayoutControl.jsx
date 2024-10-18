@@ -12,7 +12,7 @@ const TailwindHorizontalLayoutRenderer = ({ uischema, renderers, cells, schema, 
     direction: "row",
     visible
   };
-  return <TailwindLayoutRenderer layout="horizontal" {...childProps} renderers={renderers} cells={cells} />;
+  return <TailwindLayoutRenderer layout="horizontal" {...childProps} renderers={renderers} cells={cells} {...uischema.options} />;
 };
 
 export const tailwindHorizontalLayoutTester = rankWith(1002, uiTypeIs("HorizontalLayout"));

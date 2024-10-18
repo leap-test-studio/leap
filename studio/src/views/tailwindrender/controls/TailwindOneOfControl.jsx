@@ -83,7 +83,7 @@ const DropDownMenu = ({ selected, handleChange, infos, path, renderers, cells, s
         onChange={(option) => handleChange(option.value)}
         options={options}
         isSearchable={true}
-        className="rounded text-color-label border placeholder-slate-500 shadow focus:shadow-md"
+        className="rounded text-color-label border placeholder-slate-500"
         styles={ReactSelectCustomStyles}
         menuPosition="absolute"
         menuPlacement="auto"

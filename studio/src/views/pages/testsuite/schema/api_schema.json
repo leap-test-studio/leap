@@ -31,6 +31,11 @@
                   "type": "string",
                   "title": "",
                   "description": "Value"
+                },
+                "description": {
+                  "type": "string",
+                  "title": "",
+                  "description": "Description"
                 }
               }
             }
@@ -45,7 +50,71 @@
           },
           "statusCode": {
             "type": "integer",
-            "enum": [200, 201]
+            "oneOf": [
+              { "const": 100, "title": "100 - Continue" },
+              { "const": 101, "title": "101 - Switching Protocols" },
+              { "const": 102, "title": "102 - Processing" },
+              { "const": 103, "title": "103 - Early Hints" },
+              { "const": 200, "title": "200 - OK" },
+              { "const": 201, "title": "201 - Created" },
+              { "const": 202, "title": "202 - Accepted" },
+              { "const": 203, "title": "203 - Non-Authoritative Information" },
+              { "const": 204, "title": "204 - No Content" },
+              { "const": 205, "title": "205 - Reset Content" },
+              { "const": 206, "title": "206 - Partial Content" },
+              { "const": 207, "title": "207 - Multi-Status" },
+              { "const": 208, "title": "208 - Already Reported" },
+              { "const": 226, "title": "226 - IM Used" },
+              { "const": 300, "title": "300 - Multiple Choices" },
+              { "const": 301, "title": "301 - Moved Permanently" },
+              { "const": 302, "title": "302 - Found" },
+              { "const": 303, "title": "303 - See Other" },
+              { "const": 304, "title": "304 - Not Modified" },
+              { "const": 305, "title": "305 - Use Proxy" },
+              { "const": 306, "title": "306 - Switch Proxy" },
+              { "const": 307, "title": "307 - Temporary Redirect" },
+              { "const": 308, "title": "308 - Permanent Redirect" },
+              { "const": 400, "title": "400 - Bad Request" },
+              { "const": 401, "title": "401 - Unauthorized" },
+              { "const": 402, "title": "402 - Payment Required" },
+              { "const": 403, "title": "403 - Forbidden" },
+              { "const": 404, "title": "404 - Not Found" },
+              { "const": 405, "title": "405 - Method Not Allowed" },
+              { "const": 406, "title": "406 - Not Acceptable" },
+              { "const": 407, "title": "407 - Proxy Authentication Required" },
+              { "const": 408, "title": "408 - Request Timeout" },
+              { "const": 409, "title": "409 - Conflict" },
+              { "const": 410, "title": "410 - Gone" },
+              { "const": 411, "title": "411 - Length Required" },
+              { "const": 412, "title": "412 - Precondition Failed" },
+              { "const": 413, "title": "413 - Request Entity Too Large" },
+              { "const": 414, "title": "414 - Request-URI Too Long" },
+              { "const": 415, "title": "415 - Unsupported Media Type" },
+              { "const": 416, "title": "416 - Requested Range Not Satisfiable" },
+              { "const": 417, "title": "417 - Expectation Failed" },
+              { "const": 418, "title": "418 - I'm A Teapot" },
+              { "const": 421, "title": "421 - Misdirected Request" },
+              { "const": 422, "title": "422 - Unprocessable Entity" },
+              { "const": 423, "title": "423 - Locked" },
+              { "const": 424, "title": "424 - Failed Dependency" },
+              { "const": 425, "title": "425 - Too Early" },
+              { "const": 426, "title": "426 - Upgrade Required" },
+              { "const": 428, "title": "428 - Precondition Required" },
+              { "const": 429, "title": "429 - Too Many Requests" },
+              { "const": 431, "title": "431 - Request Header Fields Too Large" },
+              { "const": 451, "title": "451 - Unavailable For Legal Reasons" },
+              { "const": 500, "title": "500 - Internal Server Error" },
+              { "const": 501, "title": "501 - Not Implemented" },
+              { "const": 502, "title": "502 - Bad Gateway" },
+              { "const": 503, "title": "503 - Service Unavailable" },
+              { "const": 504, "title": "504 - Gateway Timeout" },
+              { "const": 505, "title": "505 - HTTP Version Not Supported" },
+              { "const": 506, "title": "506 - Variant Also Negotiates" },
+              { "const": 507, "title": "507 - Insufficient Storage" },
+              { "const": 508, "title": "508 - Loop Detected" },
+              { "const": 510, "title": "510 - Not Exetended" },
+              { "const": 511, "title": "511 - Network Authentication Required" }
+            ]
           },
           "resBody": {
             "type": "string"
@@ -97,8 +166,9 @@
         "scope": "#/properties/settings/properties/header",
         "options": {
           "disableExpand": true,
-          "showSortButtons": false,
+          "showSortButtons": true,
           "rowTitle": "Header",
+          "columns": 3,
           "detail": {
             "type": "HorizontalLayout",
             "elements": [
@@ -112,8 +182,15 @@
                 "options": {
                   "suggest": "$AUTOCOMPLETE$"
                 }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/description"
               }
-            ]
+            ],
+            "options": {
+              "columns": 3
+            }
           }
         }
       },

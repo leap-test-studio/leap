@@ -30,10 +30,10 @@ import { fetchProject, triggerSequence } from "../../../redux/actions/ProjectAct
 import TestScenarioNode from "./TestScenarioNode";
 import { CloseButton, IconButton, Tooltip } from "../../utilities";
 import { RequestSchemas } from "./NodeUtils";
-import { DEFAULT_HEADER_HEIGHT } from "../../context/constants";
 import { fetchTestPlan } from "../../../redux/actions/TestPlanActions";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import ProgressIndicator from "../common/ProgressIndicator";
+import { DEFAULT_HEADER_HEIGHT } from "../../../Constants";
 
 const nodeTypes = Object.freeze({
   [NodeTypes.START_TASK]: StartNode,

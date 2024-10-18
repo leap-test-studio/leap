@@ -11,7 +11,7 @@ import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
 import { fetchProjectList } from "../../redux/actions/ProjectActions";
 import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
 import { fetchTestScenarioList } from "../../redux/actions/TestScenarioActions";
-import { BuildTypes, TestCaseTypes } from "./utils";
+import { BuildTypes, cropString, mask, TestCaseTypes } from "./utils";
 import TailwindToggleRenderer from "../tailwindrender/renderers/TailwindToggleRenderer";
 import JsonView from "@uiw/react-json-view";
 import { lightTheme } from "@uiw/react-json-view/light";
@@ -293,16 +293,14 @@ function BuildEnvironmentVariables({ options }) {
   return (
     <div className="border-r p-2">
       <p className="select-all font-medium text-base">Environment Variables</p>
-      <table className="table-auto w-full text-xs">
+      <table className="table-auto w-full text-[9px]">
         <tbody>
-          {Object.entries(options).map(([key, value], i) =>
-            Object.entries(value).map(([key1, value1], j) => (
-              <tr key={key1 + i + j}>
-                <td>{key + " " + key1}</td>
-                <td>{value1}</td>
-              </tr>
-            ))
-          )}
+          {options?.env?.map(({ key, value }, i) => (
+            <tr key={key + "-" + i}>
+              <td>{key}</td>
+              <td>{String(key).toLowerCase().includes("password") ? mask(value) : cropString(value, 100)}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

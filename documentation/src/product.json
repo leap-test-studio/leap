@@ -1,18 +1,23 @@
 {
-  "name": "Vinashak",
-  "description": "Multi Channel Automation Tool",
-  "version": "3.0.0",
+  "name": "LEAP",
+  "description": "LEAN ENTERPRISE AUTOMATION PLATFORM",
+  "version": "1.0.0",
+  "page": {
+    "urlPrefix": "/studio",
+    "landingPage": "/dashboard",
+    "projectsListPage": "/projects"
+  },
+  "isOktaEnabled": true,
   "build": {
     "id": "0",
-    "date": "2022-12-12 08:15:14",
-    "host": "buildbng27-ykrishnaraju-129330-cn",
-    "user": "SIM"
+    "date": "Fri, 11 Oct 2024 12:14:14 GMT",
+    "host": "127.0.0.1"
   },
-  "copyrightYear": 2022,
+  "copyrightYear": 2024,
   "organization": {
-    "name": "Vinashak",
+    "name": "Rakuten Rewards",
     "address": ""
   },
-  "website": "https://vinashak.com/",
-  "baseURL": "/vinashak"
+  "website": "https://leap.dataplatform-np.rr-it.com",
+  "docBaseURL": "/documentation"
 }

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, SearchComponent, Spinner } from "../../utilities";
 import CloneTestScenarioDialog from "./CloneTestScenarioDialog";
 import CreateTestScenarioDialog from "./CreateTestScenarioDialog";
 import TestCaseManagement from "./TestCaseManagement";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, SearchComponent, IconRenderer } from "../../utilities";
+
 import {
   createTestScenario,
   fetchTestScenarioList,
@@ -18,11 +20,12 @@ import {
 } from "../../../redux/actions/TestScenarioActions";
 import { fetchTestCaseList } from "../../../redux/actions/TestCaseActions";
 import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "../common/PageLayoutComponents";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import FirstTimeCard from "../common/FirstTimeCard";
 import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
 import Swal from "sweetalert2";
 import TestScenarioSettingsDialog from "./TestScenarioSettingsDialog";
+import WebContext from "../../context/WebContext";
 
 dayjs.extend(relativeTime);
 
@@ -33,9 +36,36 @@ function TestSuiteManagement(props) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [showSettingsDialog, setSettingsDialog] = useState(false);
+  const [filtered, setFiltered] = useState([]);
 
-  const { totalItems, testsuites, isFirstTestScenario, showMessage, details, message, loading } = useSelector((state) => state.testsuite);
+  const { totalItems, testsuites, isFirstTestScenario, showMessage, details, message, loading, listLoading } = useSelector(
+    (state) => state.testsuite
+  );
   const { project, scenario, changeTestScenario, pageTitle } = props;
+  const { getRole } = useContext(WebContext);
+  const role = getRole();
+
+  useEffect(() => {
+    const searchText = search?.toLowerCase() || "";
+    setFiltered(
+      isEmpty(searchText)
+        ? testsuites
+        : testsuites.filter(
+            (s) =>
+              s.id.includes(searchText) ||
+              s.name.toLowerCase().includes(searchText) ||
+              s.description?.toLowerCase().includes(searchText) ||
+              s.updatedBy?.toLowerCase().includes(searchText) ||
+              s.AccountId?.toLowerCase().includes(searchText)
+          )
+    );
+  }, [search, testsuites]);
+
+  const fetchTestScenarios = useCallback(() => {
+    if (!listLoading && project?.id) {
+      dispatch(fetchTestScenarioList(project.id));
+    }
+  }, [listLoading, project]);
 
   useEffect(() => {
     if (project?.id) {
@@ -82,8 +112,6 @@ function TestSuiteManagement(props) {
     }
   };
 
-  const fetchTestScenarios = () => project?.id && dispatch(fetchTestScenarioList(project.id));
-
   const openTestScenario = (testscenario) => {
     if (project?.id && testscenario?.id) {
       changeTestScenario(testscenario);
@@ -121,19 +149,29 @@ function TestSuiteManagement(props) {
     );
   }
 
-  const filtered = search?.length > 0 ? testsuites?.filter((s) => s.name.includes(search)) : testsuites;
-
   return (
     <Page>
       <PageHeader show={!isFirstTestScenario}>
-        <PageTitle>{`${pageTitle} (${totalItems})`}</PageTitle>
+        <PageTitle>
+          <PageListCount pageTitle={pageTitle} count={totalItems} listLoading={listLoading} />
+        </PageTitle>
         <PageActions>
-          <SearchComponent search={search} placeholder="Search for Test Suite" onChange={setSearch} onClear={() => setSearch("")} />
-          <IconButton title="Create" icon="AddCircle" onClick={() => setShowCreateDialog(true)} tooltip="Create New Test Suite" />
+          <SearchComponent placeholder="Search for Test Suite" onChange={setSearch} />
+          <IconButton
+            title="Create"
+            icon="AddCircle"
+            onClick={() => setShowCreateDialog(true)}
+            tooltip="Create New Test Suite"
+            disabled={!role.isLeads}
+          />
         </PageActions>
       </PageHeader>
       <PageBody>
-        {isFirstTestScenario ? (
+        {listLoading && totalItems == 0 ? (
+          <Centered>
+            <Spinner>Loading</Spinner>
+          </Centered>
+        ) : isFirstTestScenario ? (
           <Centered>
             <FirstTimeCard
               id="first-test-suite"
@@ -160,7 +198,9 @@ function TestSuiteManagement(props) {
                 <div className="grid grid-cols-1 gap-y-2.5 pr-0">
                   {filtered.map((testscenario, index) => (
                     <TestScenarioCard
+                      {...props}
                       key={index}
+                      role={role}
                       testscenario={testscenario}
                       totalItems={totalItems}
                       projectId={project?.id}
@@ -192,6 +232,8 @@ function TestSuiteManagement(props) {
           />
         )}
         <TestScenarioSettingsDialog
+          {...props}
+          role={role}
           showDialog={showSettingsDialog}
           onClose={() => setSettingsDialog(false)}
           project={project}
@@ -212,7 +254,8 @@ const TestScenarioCard = ({
   setShowCloneDialog,
   setSettingsDialog,
   handleDeleteTestScenario,
-  runCompleteTestSuite
+  runCompleteTestSuite,
+  role
 }) => {
   const dispatch = useDispatch();
 
@@ -325,6 +368,7 @@ const TestScenarioCard = ({
         {
           icon: "FileCopy",
           label: "Clone",
+          disabled: !role.isLeads,
           onClick: handleCloneSuite,
           tooltip: "Clone Complete Test Suite",
           description: (
@@ -336,6 +380,7 @@ const TestScenarioCard = ({
         {
           icon: "Delete",
           label: "Delete",
+          disabled: !role.isLeads,
           onClick: handleDeleteSuite,
           tooltip: "Delete Test Suite",
           description: (
@@ -355,7 +400,14 @@ const TestScenarioCard = ({
               </p>
             }
           >
-            <TailwindToggleRenderer small={true} path={"status-" + id} visible={true} enabled={true} data={status} handleChange={handleToggle} />
+            <TailwindToggleRenderer
+              small={true}
+              path={"status-" + id}
+              visible={true}
+              enabled={role.isLeads}
+              data={status}
+              handleChange={handleToggle}
+            />
           </Tooltip>
           {status && (
             <ActionButton

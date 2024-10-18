@@ -5,6 +5,7 @@ const initialState = {
   totalItems: 0,
   testsuites: [],
   testcases: {},
+  listLoading: false,
   loading: false,
   showMessage: false,
   isError: false,
@@ -25,11 +26,13 @@ const TestScenarioReducer = function (state = initialState, { payload, type }) {
 
       return {
         ...state,
+        listLoading: false,
         isFirstTestScenario: payload.totalItems === 0,
         totalItems: payload.totalItems,
         testsuites: payload.items
       };
     }
+    case actionTypes.RESET_TEST_SCENARIO:
     case actionTypes.UPDATE_TEST_SCENARIO:
     case actionTypes.CREATE_TEST_SCENARIO:
     case actionTypes.CLONE_TEST_SCENARIO:

@@ -1,8 +1,8 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import TailwindRenderer from "../../tailwindrender";
 import { CustomDialog } from "../../utilities";
-import { useSelector } from "react-redux";
 
 const Model = {
   schema: {

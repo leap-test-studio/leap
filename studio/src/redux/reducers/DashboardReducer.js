@@ -46,6 +46,12 @@ const DashboardReducer = function (state = initialState, { payload, type }) {
         buildStats: payload
       };
     }
+    case actionTypes.RESET_DASHBOARD: {
+      return {
+        ...state,
+        ...payload
+      };
+    }
     default: {
       return {
         ...state

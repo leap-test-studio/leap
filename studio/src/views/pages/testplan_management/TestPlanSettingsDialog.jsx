@@ -100,7 +100,6 @@ function TestPlanSettingsDialog({ project, showDialog, testplan, onClose }) {
   };
 
   if (!showDialog || isEmpty(data)) return <></>;
-  console.log(data);
   return (
     <CustomDialog
       open={showDialog}

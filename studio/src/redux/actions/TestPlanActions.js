@@ -9,6 +9,7 @@ export const resetTestPlanFlags =
       type: actionTypes.RESET_TEST_PLAN,
       payload: {
         loading: false,
+        listLoading: false,
         message: null,
         showMessage: false,
         ...props
@@ -17,13 +18,24 @@ export const resetTestPlanFlags =
   };
 
 export const fetchTestPlanList = (id) => (dispatch) => {
-  axios.get(`/api/v1/test-plan/${id}/list`).then((res) => {
-    if (res?.data)
+  dispatch(resetTestPlanFlags({ listLoading: true }));
+  axios
+    .get(`/api/v1/test-plan/${id}/list`)
+    .then((res) => {
+      if (res?.data)
+        dispatch({
+          type: actionTypes.GET_TEST_PLAN_LIST,
+          payload: res.data
+        });
+    })
+    .catch((e) => {
       dispatch({
-        type: actionTypes.GET_TEST_PLAN_LIST,
-        payload: res.data
+        type: actionTypes.RESET_TEST_PLAN,
+        payload: {
+          listLoading: false
+        }
       });
-  });
+    });
 };
 
 export const fetchTestPlan = (tpid) => (dispatch) => {
@@ -63,7 +75,7 @@ export const createTestPlan =
             loading: false,
             message: "Failed to Create Test Plan",
             showMessage: "error",
-            details: e.response.data.error
+            details: e.response?.data?.error
           }
         });
       });
@@ -89,7 +101,7 @@ export const updateTestPlan = (tpid, data) => (dispatch) => {
       dispatch({
         type: actionTypes.UPDATE_TEST_PLAN,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           showMessage: "error",
           message: "Failed to Update Test Plan",
           details: `Test Plan Id: ${tpid}`
@@ -118,7 +130,7 @@ export const deleteTestPlan = (pid) => (dispatch) => {
       dispatch({
         type: actionTypes.DELETE_TEST_PLAN,
         payload: {
-          ...e.response.data,
+          ...e.response?.data,
           message: "Failed to Delete Test Plan",
           showMessage: "error",
           details: `Test Plan Id: ${pid}`

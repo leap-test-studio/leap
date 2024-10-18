@@ -11,7 +11,11 @@ let envFile = path.join(__dirname, "../.env");
 if (!fs.existsSync(envFile)) {
   envFile = path.join(__dirname, "../.env.development");
 }
+const JSONFile = path.join(__dirname, "../src", "product.json");
+const ProductJson = require(JSONFile);
+ProductJson.isOktaEnabled = true;
 
+fs.writeFileSync(JSONFile, JSON.stringify(ProductJson, null, 2));
 DotenvConfig.config({ path: envFile });
 
 module.exports = merge(common, {
@@ -24,15 +28,16 @@ module.exports = merge(common, {
   // Spin up a server for quick development
   devServer: {
     historyApiFallback: true,
-    open: true,
+    open: false,
     compress: true,
     hot: true,
-    port: process.env.PORT || 4000,
+    port: process.env.PORT || 5000,
     proxy: [
       {
         context: ["/api"],
-        target: process.env.API_URL || "http://localhost",
-        secure: false
+        target: process.env.API_URL || "http://localhost:9004",
+        secure: false,
+        changeOrigin: true
       },
       {
         context: ["/documentation"],

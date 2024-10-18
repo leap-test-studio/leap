@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import RecentBuilds from "./dashboard/RecentBuilds";
@@ -7,18 +7,21 @@ import MonthlyBuildStatus from "./dashboard/MonthlyBuildStatus";
 import { PageHeader, Page, PageBody, PageTitle } from "./common/PageLayoutComponents";
 import { getRecentBuildSummary, getTotalStats } from "../../redux/actions/DashboardActions";
 
-const INTERVAL = 10 * 1000;
+const INTERVAL = 30 * 1000;
 
 let timer = null;
 function DashboardPage({ pageTitle, ...props }) {
   const dispatch = useDispatch();
-  const { totalStats, recentBuildSummary } = useSelector((state) => state.dashboard);
+  const { totalStats, recentBuildSummary, listLoading } = useSelector((state) => state.dashboard);
 
-  useEffect(() => {
-    const fetchReports = () => {
+  const fetchReports = useCallback(() => {
+    if (!listLoading) {
       dispatch(getRecentBuildSummary());
       dispatch(getTotalStats());
-    };
+    }
+  }, [listLoading]);
+
+  useEffect(() => {
     fetchReports();
     timer = setInterval(() => {
       fetchReports();

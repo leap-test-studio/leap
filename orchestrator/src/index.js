@@ -59,7 +59,6 @@ app.use(helmet.xssFilter());
 app.use(helmet.noSniff());
 app.use(helmet.ieNoOpen());
 app.use(helmet.hidePoweredBy());
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   bodyParser.json({
@@ -69,7 +68,7 @@ app.use(
 app.use(cookieParser());
 
 // allow cors requests from any origin and with credentials
-const allowlist = ["https://github.com/yuviSomavamshi"];
+const allowlist = ["https://leap.dataplatform-np.rr-it.com"];
 const corsOptionsDelegate = (req, callback) => {
   let corsOptions = {
     origin: false,
@@ -97,12 +96,11 @@ app.use("/api/v1", require("./controllers"));
 
 // global error handler
 app.use((req, res) => {
-  console.log(req);
+  logger.trace(req);
   res.status(status.NOT_FOUND).send({ message: status[`${status.NOT_FOUND}_MESSAGE`] });
 });
 
 app.use((err, req, res, next) => {
-  logger.error(err);
   //error response for validation error
   if (typeof err === "string" && err.startsWith("Invalid input")) {
     return res.status(status.BAD_REQUEST).send({ error: err, message: status[`${status.BAD_REQUEST}_MESSAGE`] });
@@ -124,22 +122,22 @@ if (process.env.NODE_ENV === "production") {
   port = global.config.PORT || 443;
 } else {
   server = http.createServer(app);
-  port = global.config.PORT || 9000;
+  port = global.config.PORT || 9004;
 }
-server.listen(port, () => console.log("Server listening on port " + port));
+server.listen(port, () => logger.info("Server listening on port " + port));
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
 process.on("uncaughtException", (err) => {
-  console.error("uncaughtException", err);
+  logger.error("uncaughtException", err);
 });
 
 process.on("unhandledRejection", (reason, p) => {
-  console.error("unhandledRejection", reason, p);
+  logger.error("unhandledRejection", reason, p);
 });
 
 function shutdown() {
-  console.log("Received kill signal. Initiating shutdown...");
+  logger.trace("Received kill signal. Initiating shutdown...");
   process.exit(1);
 }

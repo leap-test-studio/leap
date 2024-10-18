@@ -5,7 +5,6 @@ import DashboardReducer from "./DashboardReducer";
 import TestScenarioReducer from "./TestScenarioReducer";
 import TestCaseReducer from "./TestCaseReducer";
 import TestSequencerReducer from "./TestSequencerReducer";
-import MessageReducer from "./MessageReducer";
 import AccountReducer from "./AccountReducer";
 import TenantReducer from "./TenantReducer";
 import TestPlanReducer from "./TestPlanReducer";
@@ -19,8 +18,7 @@ const RootReducer = combineReducers({
   testsuite: TestScenarioReducer,
   testcase: TestCaseReducer,
   testplan: TestPlanReducer,
-  sequencer: TestSequencerReducer,
-  message: MessageReducer
+  sequencer: TestSequencerReducer
 });
 
 export default RootReducer;

@@ -16,12 +16,21 @@ exports.STATUSCODES = Object.freeze({
   ERROR: "ERROR"
 });
 
-exports.TASK_TYPES = Object.freeze({
+exports.JOB_TYPES = Object.freeze({
   START_TASK: "START_TASK",
   TIMER_TASK: "TIMER_TASK",
   CASE_TASK: "CASE_TASK",
   SCENARIO_TASK: "SCENARIO_TASK",
   STOP_TASK: "STOP_TASK"
+});
+
+exports.JOB_STATUS = Object.freeze({
+  READY: "READY",
+  ACTIVE: "ACTIVE",
+  COMPLETED: "COMPLETED",
+  ERRORED: "ERRORED",
+  SKIPPED: "SKIPPED",
+  ABORTED: "ABORTED"
 });
 
 /**
@@ -89,3 +98,6 @@ exports.TestType = Object.freeze({
     return this[name];
   }
 });
+
+exports.DEFAULT_DB_SECRET_ID = "/enrich/shared/flow/dev-admin-db";
+exports.DEFAULT_SLACK_SECRET_ID = "/enrich/shared/flow/slack-token";

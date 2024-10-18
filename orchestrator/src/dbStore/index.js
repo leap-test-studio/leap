@@ -1,15 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
-const config = global.config.DBstore;
+const AwsConfigLoader = require("../config/aws_secrets");
 
 global.DbStoreModel = {};
 module.exports = {
   init: () => {
-    logger.info("Initializing the DbStore");
-
+    const config = global.config.DBstore;
     return new Promise(async (resolve) => {
       try {
+        if (global.config.LOAD_FROM_AWS) {
+          await AwsConfigLoader.InitDbConfig();
+          await AwsConfigLoader.InitSlackConfig();
+        }
+        logger.info("Initializing the DbStore, HOST:", config.host);
         const basename = path.basename(module.filename);
         const dbDir = path.join(__dirname, "models");
 
@@ -44,7 +48,7 @@ module.exports = {
         logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
         resolve(result);
       } catch (e) {
-        console.error("Failed to sync DbStore", e);
+        logger.error("Failed to sync DbStore", e);
         resolve(null);
       }
     });
@@ -52,11 +56,11 @@ module.exports = {
   seedUsers: () => {
     return new Promise(async (resolve) => {
       const accounts = await global.DbStoreModel.Account.count();
-      if (accounts == 0) {
-        const { register } = require("../services/account.service");
+      if (accounts === 0) {
+        const { register } = require("../services/account_service");
         await register({
-          name: "Default Admin",
-          email: "admin@example.com",
+          name: "Super Admin",
+          email: "ykrishnaraju@ebates.com",
           password: "Admin@123",
           confirmPassword: "Admin@123",
           acceptTerms: true,

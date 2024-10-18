@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { IconRenderer } from "./iconrenderer";
-import { Tooltip } from "./tooltip";
+import { Tooltip } from "./Tooltip";
 
 export const IconButton = ({
   id,
