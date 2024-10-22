@@ -80,11 +80,11 @@ export const CustomDialog = ({
                 leaveTo="translate-y-full"
               >
                 <div
-                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded h-fit ${
+                  className={`inline-block p-1.5 text-left align-middle transition-all transform bg-white shadow-xl rounded ${
                     largeScreen ? "w-[60vw]" : "w-[28vw]"
-                  } ${customWidth} ${customHeight}`}
+                  } ${customWidth}`}
                 >
-                  <div className="flex flex-col" style={contentHeight}>
+                  <div className="h-full flex flex-col justify-between" style={contentHeight}>
                     {title != null && (
                       <div className="text-base font-medium leading-6 text-color-label group flex items-start justify-between p-1 border-b border-solid border-slate-300 rounded-t">
                         <div className="text-color-label font-medium text-lg tracking-wide select-none">{title}</div>
@@ -93,7 +93,9 @@ export const CustomDialog = ({
                         </button>
                       </div>
                     )}
-                    <div className="flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar px-2 py-1">
+                    <div
+                      className={`flex flex-col grow items-center w-full h-full overflow-x-hidden overflow-y-auto custom-scrollbar px-2 py-1 ${customHeight}`}
+                    >
                       {children}
                     </div>
                     {onSave && (

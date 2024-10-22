@@ -83,6 +83,19 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
       setSchemas(payloadSchema);
     } catch (_) {}
   }, [projectData, testscenario]);
+
+  const handleSave = () =>
+    onUpdate({
+      type: nodeData.type,
+      title: nodeData.title || "",
+      given: nodeData.given || "",
+      when: nodeData.when || "",
+      then: nodeData.then || "",
+      tags: nodeData.tags || [],
+      execSteps: payload.execSteps || [],
+      settings: payload.settings
+    });
+
   return (
     <CustomDialog
       open={isOpen}
@@ -97,18 +110,7 @@ function UpdateTestCaseDialog({ isOpen, onClose, testscenario, testcase, onUpdat
         </div>
       }
       saveTitle="Save"
-      onSave={() =>
-        onUpdate({
-          type: nodeData.type,
-          title: nodeData.title || "",
-          given: nodeData.given || "",
-          when: nodeData.when || "",
-          then: nodeData.then || "",
-          tags: nodeData.tags || [],
-          execSteps: payload.execSteps || [],
-          settings: payload.settings
-        })
-      }
+      onSave={handleSave}
       customHeight="h-[90vh]"
       customWidth="w-[90vw]"
     >

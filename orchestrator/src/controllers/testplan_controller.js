@@ -1,6 +1,6 @@
 const express = require("express");
 const Joi = require("joi");
-const status = require("http-status");
+const { status } = require("http-status");
 
 const router = express.Router();
 const TestPlanService = require("../services/testplan_service");
@@ -23,12 +23,12 @@ module.exports = router;
 function planSchema(req, _, next) {
   validateRequest(req, next, {
     name: Joi.string().min(4).required(),
-    description: Joi.string(),
+    description: Joi.string().default(""),
     ProjectMasterId: Joi.string().required(),
     nodes: Joi.array().optional().default([]),
     edges: Joi.array().optional().default([]),
-    cron: Joi.string().optional(),
-    type: Joi.number().optional()
+    cron: Joi.string().default(""),
+    type: Joi.number()
   });
 }
 

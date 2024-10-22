@@ -1,4 +1,4 @@
-const status = require("http-status");
+const { status } = require("http-status");
 
 module.exports = (err, req, res) => {
   try {

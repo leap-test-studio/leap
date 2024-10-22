@@ -14,7 +14,7 @@ const Role = require("../_helpers/role").Role;
 
 const { getPagination, getPagingData } = require("../utils");
 const { isEmpty } = require("lodash");
-const status = require("http-status");
+const { status } = require("http-status");
 const { jwtDecode } = require("jwt-decode");
 
 const OTP_EXPIRY_TIME = timeParser(global.config.OTP_EXPIRY_TIME);

@@ -30,6 +30,12 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
       }));
   }
 
+  const handleSave = () =>
+    onUpdate({
+      ...selectedNode,
+      data: nodeData
+    });
+
   return (
     <CustomDialog
       open={isOpen}
@@ -49,14 +55,9 @@ function UpdateNodeConfigDialog({ isOpen, onClose, selectedNode, onUpdate }) {
       }
       saveTitle="Save"
       buttonDiabled={disableSave}
-      onSave={() =>
-        onUpdate({
-          ...selectedNode,
-          data: nodeData
-        })
-      }
-      customWidth="w-[40vw]"
-      customHeight="h-[20vh]"
+      onSave={handleSave}
+      customWidth={`${selectedNode?.type === "TIMER_TASK" ? "w-[30vw]" : "w-[40vw]"}`}
+      customHeight="min-h-[20vh] h-[20vh]"
     >
       <TailwindRenderer
         schema={schema}

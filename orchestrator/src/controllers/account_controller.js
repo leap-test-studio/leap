@@ -1,7 +1,7 @@
 ﻿const express = require("express");
 const Joi = require("joi");
 const moment = require("moment");
-const status = require("http-status");
+const { status } = require("http-status");
 const uuid = require("uuid");
 
 const validateRequest = require("../_middleware/validate-request");

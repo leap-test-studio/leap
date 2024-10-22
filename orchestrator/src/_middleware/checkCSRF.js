@@ -1,4 +1,4 @@
-const status = require("http-status");
+const { status } = require("http-status");
 
 module.exports = function (req, res, next) {
   if (global.config.OKTA_ENABLED) {

@@ -1,5 +1,6 @@
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
+const { merge } = require("lodash");
 
 const { TestStatus } = require("../constants");
 
@@ -31,19 +32,21 @@ async function getSettingsByTestId(BuildMasterId, id) {
       nest: true
     });
 
-    const buildInfo = await global.DbStoreModel.BuildMaster.findOne({
-      attributes: ["options"],
-      where: { id: BuildMasterId },
-      raw: true,
-      nest: true
-    });
+    let settings = {};
 
-    let settings = {
-      ...obj.settings,
-      ...obj.TestScenario.settings,
-      ...obj.TestScenario.ProjectMaster.settings,
-      ...buildInfo.options
-    };
+    merge(settings, obj.TestScenario.ProjectMaster.settings);
+    merge(settings, obj.TestScenario.settings);
+    merge(settings, obj.settings);
+
+    if (BuildMasterId) {
+      const buildInfo = await global.DbStoreModel.BuildMaster.findOne({
+        attributes: ["options"],
+        where: { id: BuildMasterId },
+        raw: true,
+        nest: true
+      });
+      merge(settings, buildInfo.options);
+    }
 
     const env = settings.env;
 

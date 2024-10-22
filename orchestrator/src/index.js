@@ -16,7 +16,7 @@ const nocache = require("nocache");
 require("dotenv").config();
 const RedisStore = require("connect-redis").default;
 const session = require("express-session");
-const status = require("http-status");
+const { status } = require("http-status");
 const { setStartTime, setTxnId, setTenantId } = require("./_middleware/transaction");
 const logger = require("./logger");
 

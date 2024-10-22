@@ -2,7 +2,7 @@ const { expressjwt: jwt } = require("express-jwt");
 const { jwtDecode } = require("jwt-decode");
 const fs = require("fs");
 const path = require("path");
-const status = require("http-status");
+const { status } = require("http-status");
 const { isEmpty } = require("lodash");
 const PUB_KEY = fs.readFileSync(path.join(__dirname, "../..", "/keys/id_rsa_pub.pem"), "utf8");
 

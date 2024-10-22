@@ -1,5 +1,5 @@
 const express = require("express");
-const status = require("http-status");
+const { status } = require("http-status");
 
 const isEmpty = require("lodash/isEmpty");
 

@@ -34,7 +34,7 @@ const TestPlanManagement = (props) => {
   const [filtered, setFiltered] = useState([]);
   const { getRole } = useContext(WebContext);
   const role = getRole();
-  console.log(isFirstTestPlan, loading, testplans, listLoading);
+
   useEffect(() => {
     const searchText = search?.toLowerCase() || "";
     setFiltered(isEmpty(searchText) ? testplans : testplans.filter((s) => s.name.toLowerCase().includes(searchText)));

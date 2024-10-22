@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authorize = require("../_middleware/authorize");
 const DashboardService = require("../services/dashboard_service");
-const status = require("http-status");
+const { status } = require("http-status");
 
 const AuthRoles = require("../_helpers/role");
 

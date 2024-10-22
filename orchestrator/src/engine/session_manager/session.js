@@ -1,10 +1,10 @@
 "use strict";
-const EventEmitter = require("events");
+const { EventEmitter } = require("events");
 const uuid = require("uuid");
 
-const { SessionStates } = require("./status");
+const { SessionStates } = require("../status");
 const { default: Queue } = require("../../utils/queue");
-const JobTreeParser = require("./job_tree");
+const JobTreeParser = require("../test/job_tree");
 
 class Session extends EventEmitter {
   #waitingQueue;
@@ -59,8 +59,8 @@ class Session extends EventEmitter {
 
   #run() {
     do {
-        this.#waitingQueue.push(...this.#jobTree.getTasks());
-        
+      this.#waitingQueue.push(...this.#jobTree.getTasks());
+
       setInterval(() => this.emit("run"), 5000);
     } while (this.status === SessionStates.RUNNING);
   }

@@ -91,9 +91,9 @@ function TestPlanSettingsDialog({ project, showDialog, testplan, onClose }) {
       updateTestPlan(testplan.id, {
         ProjectMasterId: project?.id,
         name: data.name,
-        description: data.description,
+        description: data.description || "-",
         type: data.type,
-        cron: data.cron
+        cron: data.cron || "-"
       })
     );
     onClose();
@@ -108,14 +108,14 @@ function TestPlanSettingsDialog({ project, showDialog, testplan, onClose }) {
         onClose();
       }}
       title={
-        <p>
-          Test Plan Setting
-          <br /> <label className="text-xs">{`ID: ${testplan.id}`}</label>
-        </p>
+        <div className="flex flex-col">
+          <span>Test Plan Setting</span>
+          <span className="text-xs select-all cursor-pointer">{`ID: ${testplan.id}`}</span>
+        </div>
       }
       saveTitle="Save"
       onSave={saveTestPlan}
-      customWidth="w-[50vw]"
+      customWidth="w-[30vw]"
       customHeight="w-[50vh]"
     >
       <TailwindRenderer {...Model} data={data} onChange={(d) => setData(d.data)} />

@@ -91,7 +91,7 @@ const TestCaseSequencer = ({ testPlan, windowDimension, pageTitle, onClose, proj
     (ns = [], es = []) => {
       dispatch(
         updateSequence(testPlan?.id, {
-          ProjectMasterId: settings.ProjectMasterId,
+          ProjectMasterId: project?.id,
           nodes: isEmpty(ns) ? [] : ns,
           edges: isEmpty(es) ? [] : es
         })

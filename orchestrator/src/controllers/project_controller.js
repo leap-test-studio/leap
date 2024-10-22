@@ -1,6 +1,6 @@
 const express = require("express");
 const Joi = require("joi");
-const status = require("http-status");
+const { status } = require("http-status");
 
 const validateRequest = require("../_middleware/validate-request");
 const authorize = require("../_middleware/authorize");
