@@ -1,0 +1,23 @@
+# IDE
+.idea
+.vscode
+*.iml
+
+# bundle
+*.tgz
+
+# testing
+build_results
+coverage
+
+# dev build
+.tmp
+
+# log
+logs
+*.log
+
+# ci generated
+eslint.xml
+stylelint.xml
+jest-unit.xml
