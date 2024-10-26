@@ -13,7 +13,6 @@ module.exports = merge(common, {
   output: {
     path: paths.build,
     publicPath: "https://leap.dataplatform-np.rr-it.com/",
-    //publicPath: "http://localhost:5000/",
     filename: "js/[name].bundle.js"
   },
   plugins: [
@@ -32,14 +31,14 @@ module.exports = merge(common, {
     minimizer: [
       // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
       // `...`,
-      new TerserPlugin(),
+      new TerserPlugin({
+        parallel: true
+      }),
       new CssMinimizerPlugin(),
       new JsonMinimizerPlugin()
     ]
   },
   performance: {
-    hints: false,
-    maxEntrypointSize: 512000,
-    maxAssetSize: 512000
+    hints: false
   }
 });

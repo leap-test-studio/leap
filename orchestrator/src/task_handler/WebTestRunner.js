@@ -201,7 +201,13 @@ class TestRunner extends Task {
   }
 
   async getActionHandler(actionType, data) {
-    const getElement = (by, ele, UntilType = "elementLocated") => this.WebDriver.wait(until[UntilType](By[by](ele)), 10000);
+    const getElement = async (by, ele, UntilType = "elementLocated") => {
+      const element = await this.WebDriver.findElement(By[by](ele));
+      if (!element) {
+        element = await this.WebDriver.wait(until[UntilType](By[by](ele)), 10000);
+      }
+      return element;
+    };
 
     const Handlers = {
       captureScreenshot: async ({ value }) => {

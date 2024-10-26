@@ -63,7 +63,7 @@ module.exports = router;
 function projectSchema(req, _, next) {
   validateRequest(req, next, {
     name: Joi.string().min(4).required(),
-    description: Joi.string().optional(),
+    description: Joi.string().min(0).optional().default(""),
     settings: Joi.object().optional(),
     TestScenarios: Joi.array().optional()
   });
@@ -72,7 +72,7 @@ function projectSchema(req, _, next) {
 function projectUpdateSchema(req, _, next) {
   validateRequest(req, next, {
     name: Joi.string().min(4),
-    description: Joi.string(),
+    description: Joi.string().min(0),
     status: Joi.boolean(),
     settings: Joi.object()
   });
