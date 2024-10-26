@@ -60,7 +60,7 @@ module.exports = {
         const { register } = require("../services/account_service");
         await register({
           name: "Super Admin",
-          email: "ykrishnaraju@ebates.com",
+          email: global.config.SUPER_ADMIN,
           password: "Admin@123",
           confirmPassword: "Admin@123",
           acceptTerms: true,

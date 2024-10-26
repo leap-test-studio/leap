@@ -57,12 +57,12 @@ COPY config/nginx-prod.conf /etc/nginx/nginx.conf
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy AWS certificate file
-COPY config/SM_cacert.pem /app/SM_cacert.pem
+#COPY config/SM_cacert.pem /app/SM_cacert.pem
 
 # Set Environment Variables
 ENV LOG_DIR /app/logs
 
-ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
+#ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
 # Expose ports
 EXPOSE 80
 

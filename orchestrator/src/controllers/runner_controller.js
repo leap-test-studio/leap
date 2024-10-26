@@ -19,7 +19,7 @@ router.post(
       if (token === "ci") {
         const account = await global.DbStoreModel.Account.findOne({
           where: {
-            email: "ykrishnaraju@ebates.com"
+            email: global.config.SUPER_ADMIN
           }
         });
         req.ciaccount = account;

@@ -3,7 +3,7 @@ const path = require("path");
 
 const now = new Date();
 
-let isOktaEnabled = true;
+let isOktaEnabled = false;
 
 const Product = {
   name: "LEAP",
@@ -22,10 +22,10 @@ const Product = {
   },
   copyrightYear: now.getFullYear(),
   organization: {
-    name: "Rakuten Rewards",
+    name: "",
     address: "",
   },
-  website: "https://leap.dataplatform-np.rr-it.com",
+  website: "https://leap.com",
   docBaseURL: "/documentation",
 };
 

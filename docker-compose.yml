@@ -12,24 +12,45 @@ services:
       vinashak-network:
         ipv4_address: 10.5.0.5
 
+  # vinashak-database:
+  #   image: mysql:latest
+  #   container_name: vinashak-database
+  #   ports:
+  #     - 3306:3306
+  #   #command: --init-file /data/application/init.sql
+  #   command: --sort_buffer_size=512K
+  #   volumes:
+  #     #- ./init.sql:/data/application/init.sql
+  #     - ./data/mysql/:/var/lib/mysql/
+  #   environment:
+  #     MYSQL_ROOT_USER: root
+  #     MYSQL_ROOT_PASSWORD: S3cret
+  #     MYSQL_DATABASE: automation
+  #     MYSQL_USER: automation
+  #     MYSQL_PASSWORD: S3cret
+  #   healthcheck:
+  #     test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+  #     timeout: 20s
+  #     retries: 10
+  #   networks:
+  #     vinashak-network:
+  #       ipv4_address: 10.5.0.6
+
   vinashak-database:
-    image: mysql:latest
+    image: postgres:latest
     container_name: vinashak-database
     ports:
-      - 3306:3306
-    #command: --init-file /data/application/init.sql
-    command: --sort_buffer_size=512K
+      - 5432:5432
     volumes:
-      #- ./init.sql:/data/application/init.sql
-      - ./data/mysql/:/var/lib/mysql/
+      - ./data/postgres/:/var/lib/postgres/
     environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: S3cret
-      MYSQL_DATABASE: automation
-      MYSQL_USER: automation
-      MYSQL_PASSWORD: S3cret
+      POSTGRES_ROOT_USER: root
+      POSTGRES_ROOT_PASSWORD: S3cret
+      POSTGRES_DB: automation
+      POSTGRESL_USER: automation
+      POSTGRES_PASSWORD: S3cret
     healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      test: ["CMD-SHELL", "pg_isready"]
       timeout: 20s
       retries: 10
     networks:

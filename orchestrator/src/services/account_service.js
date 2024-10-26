@@ -331,7 +331,7 @@ async function registerOktaUser(req) {
       email: auth.sub
     }
   });
-  if (!account && auth.iss === "https://ebates.okta.com/oauth2/default") {
+  if (!account && auth.iss === global.config.OKTA_ISS) {
     account = await register({
       email: auth.sub,
       name: req.body.name,
@@ -540,7 +540,7 @@ async function sendSlackMessage(account) {
   return await web.chat.postMessage({
     channel: SLACK_CHANNEL_ID,
     text: `Welcome *${account.name}* to LEAP Studio.
-*User:* <@${account.email.replace("@ebates.com", "")}>
+*User:* <@${account.email.replace("@" + global.config.DOMAIN, "")}>
 *Email:* ${account.email}
 *Role:* ${account.role}
 *Tenant*: Default

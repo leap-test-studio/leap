@@ -113,3 +113,4 @@ audit.json
 orchestrator/src/runner/flow.json
 orchestrator/src/runner/settings.json
 .DS_Store
+*/src/product.json

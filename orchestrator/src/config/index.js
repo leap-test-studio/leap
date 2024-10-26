@@ -12,6 +12,8 @@ const envVarsSchema = Joi.object()
     TIMEZONE: Joi.string().description("Time zone").default("+05:30"),
     EXPRESSJS_SECRET: Joi.string().description("Express Session Secret").default("S3cret"),
     OKTA_ENABLED: Joi.boolean().description("Is Okta Login Enabled").default(true),
+    OKTA_ISS: Joi.string().description("Okta Issuer").default("https://leap.okta.com/oauth2/default"),
+    SUPER_ADMIN: Joi.string().description("Super Admin email ID").default("admin@leap.com"),
     DATABASE_NAME: Joi.string().description("Database name").default("automation"),
     DATABASE_SCHEMA_NAME: Joi.string().description("Database Schema name").default("public"),
     DATABASE_HOST: Joi.string().description("Database server host address").default("localhost"),
@@ -42,7 +44,8 @@ const envVarsSchema = Joi.object()
     MAX_ALLOWED_OTP: Joi.number().description("Maximum number of allowed OTP").default(5),
     SELENIUM_GRID_URL: Joi.string().description("Selenium grid router URL"),
     SLACK_BOT_TOKEN: Joi.string().description("Slack bot Token"),
-    PUBLIC_URL: Joi.string().default("https://leap.dataplatform-np.rr-it.com")
+    PUBLIC_URL: Joi.string().default("https://leap.com"),
+    DOMAIN: Joi.string().default("leap.com")
   })
   .unknown();
 
