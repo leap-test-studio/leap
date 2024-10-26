@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "NODE_OPTIONS='--max-old-space-size=2048' webpack --config config/webpack.prod.js",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' webpack --config config/webpack.prod.js",
     "build:win": "set NODE_OPTIONS='--max-old-space-size=2048' && webpack --config config/webpack.prod.js",
     "build:css": "tailwindcss -i src/tailwind.css -o src/index.css",
     "build:css:watch": "echo 'Start Watching tailwindcss' && npm run build:css -- --watch",
