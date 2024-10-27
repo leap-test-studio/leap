@@ -14,5 +14,11 @@ module.exports = {
   // Static files that get copied to build folder
   public: path.resolve(__dirname, "../public"),
 
-  node_modules: path.resolve(__dirname, "../node_modules")
+  node_modules: path.resolve(__dirname, "../node_modules"),
+
+  envFile: path.resolve(__dirname, "../", ".env"),
+
+  envProdFile: path.resolve(__dirname, "../", ".env.production"),
+
+  envLocalFile: path.resolve(__dirname, "../", ".env.development")
 };

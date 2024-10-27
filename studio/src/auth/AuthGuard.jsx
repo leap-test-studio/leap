@@ -15,8 +15,9 @@ axios.defaults.withCredentials = true;
 
 const tokens = {};
 
+const isOktaEnabled = process.env.OKTA_ENABLED;
+
 function AuthGuard({ product, children }) {
-  const isOktaEnabled = product.isOktaEnabled;
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();

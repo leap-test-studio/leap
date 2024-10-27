@@ -1,22 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const DotenvConfig = require("dotenv");
-
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-
-let envFile = path.join(__dirname, "../.env");
-
-if (!fs.existsSync(envFile)) {
-  envFile = path.join(__dirname, "../.env.development");
-}
-const JSONFile = path.join(__dirname, "../src", "product.json");
-const ProductJson = require(JSONFile);
-ProductJson.isOktaEnabled = true;
-
-fs.writeFileSync(JSONFile, JSON.stringify(ProductJson, null, 2));
-DotenvConfig.config({ path: envFile });
 
 module.exports = merge(common, {
   // Set the mode to development or production
@@ -28,7 +12,7 @@ module.exports = merge(common, {
   // Spin up a server for quick development
   devServer: {
     historyApiFallback: true,
-    open: false,
+    open: true,
     compress: true,
     hot: true,
     port: process.env.PORT || 5000,
@@ -39,6 +23,14 @@ module.exports = merge(common, {
         secure: false,
         changeOrigin: true
       },
+      {
+        context: ["/events"],
+        target: process.env.API_URL || "http://localhost:9004",
+        secure: false,
+        changeOrigin: true,
+        ws: true
+      },
+
       {
         context: ["/documentation"],
         target: process.env.DOCS_URL || "http://localhost:3000",

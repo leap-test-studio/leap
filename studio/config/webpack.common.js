@@ -7,9 +7,16 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // extract css to files
 const tailwindcss = require("tailwindcss");
 const autoprefixer = require("autoprefixer"); // help tailwindcss to work
+const Dotenv = require("dotenv-webpack");
+const Webpack = require("webpack");
+
+const env = process.env.NODE_ENV;
+const envpath = env === "production" ? paths.envProdFile : paths.envFile;
 module.exports = {
   watchOptions: {
-    ignored: [paths.node_modules, paths.build]
+    aggregateTimeout: 600,
+    poll: 1000, // Check for changes every second
+    ignored: [paths.node_modules, "**/node_modules", paths.build]
   },
 
   // Where webpack looks to start building the bundle
@@ -24,6 +31,10 @@ module.exports = {
 
   // Customize the webpack build process
   plugins: [
+    new Dotenv({
+      safe: false,
+      path: envpath
+    }),
     // Removes/cleans build folders and unused assets when rebuilding
     new CleanWebpackPlugin(),
 
@@ -51,7 +62,8 @@ module.exports = {
       favicon: paths.public + "/favicon.svg",
       template: paths.public + "/index.html", // template file
       filename: "index.html" // output file
-    })
+    }),
+    new Webpack.ProvidePlugin({ process: "process/browser.js" })
   ],
 
   // Determine how modules within the project are treated
