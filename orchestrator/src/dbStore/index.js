@@ -61,8 +61,8 @@ module.exports = {
         await register({
           name: "Super Admin",
           email: global.config.SUPER_ADMIN,
-          password: "Admin@123",
-          confirmPassword: "Admin@123",
+          password: global.config.SUPER_PASS,
+          confirmPassword: global.config.SUPER_PASS,
           acceptTerms: true,
           verified: true
         });

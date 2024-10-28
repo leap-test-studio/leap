@@ -14,6 +14,7 @@ const envVarsSchema = Joi.object()
     OKTA_ENABLED: Joi.boolean().description("Is Okta Login Enabled").default(true),
     OKTA_ISS: Joi.string().description("Okta Issuer").default("https://leap.okta.com/oauth2/default"),
     SUPER_ADMIN: Joi.string().description("Super Admin email ID").default("admin@leap.com"),
+    SUPER_ADMIN: Joi.string().description("Super Admin password").default("Admin@123"),
     DATABASE_NAME: Joi.string().description("Database name").default("automation"),
     DATABASE_SCHEMA_NAME: Joi.string().description("Database Schema name").default("public"),
     DATABASE_HOST: Joi.string().description("Database server host address").default("localhost"),
