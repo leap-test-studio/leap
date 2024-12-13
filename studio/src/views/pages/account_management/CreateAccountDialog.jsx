@@ -1,8 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { E_ROLE } from "engine_utils";
 
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog } from "../../utilities";
+import TailwindRenderer from "@tailwindrender/.";
+import { CustomDialog } from "@utilities/.";
+
+const Roles = [E_ROLE.Manager, E_ROLE.Lead, E_ROLE.Engineer].map((role) => ({ const: role, title: role }));
 
 const Model = {
   schema: {
@@ -34,11 +37,7 @@ const Model = {
       role: {
         title: "Role",
         type: "string",
-        oneOf: [
-          { const: "Manager", title: "Manager" },
-          { const: "Lead", title: "Lead" },
-          { const: "Engineer", title: "Engineer" }
-        ]
+        oneOf: Roles
       },
       TenantId: {
         title: "Tenant",

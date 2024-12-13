@@ -103,7 +103,7 @@ const FSUsage = ({ filesystem }) => {
         <ReactEcharts style={{ height: "180px" }} option={option} />
       ) : (
         <div className="flex flex-col items-center justify-center mt-4">
-          <div className="bg-slate-200 animate-pulse h-32 w-32 rounded-full" />
+          <div className="bg-slate-200 animate-pulse size-32 rounded-full" />
         </div>
       )}
     </>

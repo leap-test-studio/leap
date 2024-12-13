@@ -1,6 +1,6 @@
 import axios from "axios";
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 
 export const resetTenantFlags =
   (props = {}) =>

@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { getRecentBuildSummary, getTotalStats } from "@redux-actions/.";
+
 import RecentBuilds from "./dashboard/RecentBuilds";
 import TotalCards from "./dashboard/TotalCards";
 import MonthlyBuildStatus from "./dashboard/MonthlyBuildStatus";
 import { PageHeader, Page, PageBody, PageTitle } from "./common/PageLayoutComponents";
-import { getRecentBuildSummary, getTotalStats } from "../../redux/actions/DashboardActions";
 
 const INTERVAL = 30 * 1000;
 

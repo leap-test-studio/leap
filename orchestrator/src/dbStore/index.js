@@ -5,70 +5,70 @@ const AwsConfigLoader = require("../config/aws_secrets");
 
 global.DbStoreModel = {};
 module.exports = {
-  init: () => {
-    const config = global.config.DBstore;
-    return new Promise(async (resolve) => {
-      try {
-        if (global.config.LOAD_FROM_AWS) {
-          await AwsConfigLoader.InitDbConfig();
-          await AwsConfigLoader.InitSlackConfig();
-        }
-        logger.info("Initializing the DbStore, HOST:", config.host);
-        const basename = path.basename(module.filename);
-        const dbDir = path.join(__dirname, "models");
+    init: () => {
+        const config = global.config.DBstore;
+        return new Promise(async (resolve) => {
+            try {
+                if (global.config.LOAD_FROM_AWS) {
+                    await AwsConfigLoader.InitDbConfig();
+                    await AwsConfigLoader.InitSlackConfig();
+                }
+                logger.info("Initializing the DbStore, HOST:", config.host);
+                const basename = path.basename(module.filename);
+                const dbDir = path.join(__dirname, "models");
 
-        const sequelize = new Sequelize(config.database, config.username, config.password, config);
-        await sequelize.authenticate();
-        logger.trace("Connection has been established successfully.");
+                const sequelize = new Sequelize(config.database, config.username, config.password, config);
+                await sequelize.authenticate();
+                logger.trace("Connection has been established successfully.");
 
-        fs.readdirSync(dbDir)
-          .filter((file) => {
-            return file.indexOf(".") != 0 && file != basename;
-          })
-          .forEach((file) => {
-            if (file.slice(-3) != ".js") {
-              return;
+                fs.readdirSync(dbDir)
+                    .filter((file) => {
+                        return file.indexOf(".") != 0 && file != basename;
+                    })
+                    .forEach((file) => {
+                        if (file.slice(-3) != ".js") {
+                            return;
+                        }
+                        const filepath = path.join(dbDir, file);
+                        logger.trace("Importing model file: " + filepath);
+                        const model = require(filepath)(sequelize, Sequelize.DataTypes);
+                        global.DbStoreModel[model.name] = model;
+                    });
+
+                Object.keys(global.DbStoreModel).forEach(function (modelName) {
+                    if (global.DbStoreModel[modelName].associate) {
+                        global.DbStoreModel[modelName].associate(global.DbStoreModel);
+                    }
+                });
+
+                global.DbStoreModel.sequelize = sequelize;
+                await global.DbStoreModel.sequelize.sync();
+                const result = await global.DbStoreModel.sequelize.query("SELECT 1");
+
+                logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
+                resolve(result);
+            } catch (e) {
+                logger.error("Failed to sync DbStore", e);
+                resolve(null);
             }
-            const filepath = path.join(dbDir, file);
-            logger.trace("Importing model file: " + filepath);
-            const model = require(filepath)(sequelize, Sequelize.DataTypes);
-            global.DbStoreModel[model.name] = model;
-          });
-
-        Object.keys(global.DbStoreModel).forEach(function (modelName) {
-          if (global.DbStoreModel[modelName].associate) {
-            global.DbStoreModel[modelName].associate(global.DbStoreModel);
-          }
         });
-
-        global.DbStoreModel.sequelize = sequelize;
-        await global.DbStoreModel.sequelize.sync();
-        const result = await global.DbStoreModel.sequelize.query("SELECT 1");
-
-        logger.info("Database Test:", result?.length > 0 ? "Pass" : "Fail");
-        resolve(result);
-      } catch (e) {
-        logger.error("Failed to sync DbStore", e);
-        resolve(null);
-      }
-    });
-  },
-  seedUsers: () => {
-    return new Promise(async (resolve) => {
-      const accounts = await global.DbStoreModel.Account.count();
-      if (accounts === 0) {
-        const { register } = require("../services/account_service");
-        await register({
-          name: "Super Admin",
-          email: global.config.SUPER_ADMIN,
-          password: global.config.SUPER_PASS,
-          confirmPassword: global.config.SUPER_PASS,
-          acceptTerms: true,
-          verified: true
+    },
+    seedUsers: () => {
+        return new Promise(async (resolve) => {
+            const accounts = await global.DbStoreModel.Account.count();
+            if (accounts === 0) {
+                const { register } = require("../services/account_service");
+                await register({
+                    name: "Super Admin",
+                    email: global.config.SUPER_ADMIN,
+                    password: global.config.SUPER_PASS,
+                    confirmPassword: global.config.SUPER_PASS,
+                    acceptTerms: true,
+                    verified: true
+                });
+            }
+            resolve();
         });
-      }
-      resolve();
-    });
-  },
-  Sequelize
+    },
+    Sequelize
 };

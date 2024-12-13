@@ -1,8 +1,9 @@
-import { IconRenderer, Tooltip } from "../../utilities";
+import { IconRenderer, Tooltip } from "@utilities/.";
 import SelectedProject from "../project_management/SelectedProject";
 import HelpMenu from "./HelpMenu";
 import LogoutButton from "./LogoutButton";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+import { OKTA_ENABLED } from "../../../Constants";
 
 const IconLabel = ({ icon, label }) => (
   <p className="text-xs flex items-center">
@@ -36,20 +37,20 @@ export default function Header({ isProjectSelected, ...props }) {
               </div>
             }
           >
-            <div className="inline-flex items-center justify-end">
-              <div className="px-1.5 py-0.5 mr-2 rounded bg-color-0100 border shadow text-color-label">
+            <div className="inline-flex items-center justify-end space-x-2">
+              <div className="px-1.5 py-0.5 rounded bg-color-0100 border shadow text-color-label">
                 {UserInfo?.name && (
                   <IconLabel label={`${UserInfo.tenant?.name ? UserInfo.tenant?.name + " - " : ""}${UserInfo.name}`} icon="PermIdentityTwoTone" />
                 )}
               </div>
-              <div className="px-1.5 py-0.5 mr-2 rounded bg-color-0100 border shadow text-color-label">
+              <div className="px-1.5 py-0.5 rounded bg-color-0100 border shadow text-color-label">
                 {UserInfo?.role && <IconLabel label={"Role: " + UserInfo.role} icon="AccountCircle" />}
               </div>
             </div>
           </Tooltip>
         )}
         <HelpMenu {...props} />
-        {!props.product.isOktaEnabled && <LogoutButton {...props} />}
+        {!OKTA_ENABLED && <LogoutButton {...props} />}
       </span>
     </header>
   );

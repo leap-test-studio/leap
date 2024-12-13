@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -6,29 +6,38 @@ import { jwtDecode } from "jwt-decode";
 import { Security } from "@okta/okta-react";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
 
-import * as actionTypes from "../redux/actions";
-import WebContext from "../views/context/WebContext";
-import LocalStorageService, { setStoreItem } from "../redux/actions/LocalStorageService";
-import { ACCESS_TOKEN_STORAGE_KEY, CSRF_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY as REFRESH_TOKEN_STOTAGE_KEY } from "../Constants";
+import { actionTypes } from "@redux-actions/.";
+import LocalStorageService, { setStoreItem } from "@redux-actions/LocalStorageService";
+import WebContext from "@WebContext";
+
+import {
+  ACCESS_TOKEN_STORAGE_KEY,
+  CSRF_TOKEN_STORAGE_KEY,
+  OKTA_ENABLED,
+  OKTA_CLIENTID,
+  OKTA_ISSUER,
+  REFRESH_TOKEN_STORAGE_KEY as REFRESH_TOKEN_STOTAGE_KEY
+} from "../Constants";
 
 axios.defaults.withCredentials = true;
 
 const tokens = {};
-
-const isOktaEnabled = process.env.OKTA_ENABLED;
+let oktaAuth;
 
 function AuthGuard({ product, children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  let oktaAuth =
-    isOktaEnabled &&
-    new OktaAuth({
-      issuer: "https://ebates.okta.com/oauth2/default",
-      clientId: "0oa1ylxe5w88aKR1U0h8",
-      redirectUri: `${window.location.origin}${product.page.urlPrefix}/callback`,
-      scopes: ["openid", "profile", "email"]
-    });
+  if (!oktaAuth) {
+    oktaAuth =
+      OKTA_ENABLED &&
+      new OktaAuth({
+        issuer: OKTA_ISSUER,
+        clientId: OKTA_CLIENTID,
+        redirectUri: `${window.location.origin}${product.page.urlPrefix}/callback`,
+        scopes: ["openid", "profile", "email"]
+      });
+  }
 
   const { jwtToken: token } = useSelector((state) => state.login);
   const { project, scenario } = useContext(WebContext);
@@ -92,7 +101,7 @@ function AuthGuard({ product, children }) {
   };
 
   useEffect(() => {
-    if (!isOktaEnabled) {
+    if (!OKTA_ENABLED) {
       dispatch({
         type: actionTypes.LOGIN_TOKEN,
         payload: {
@@ -104,7 +113,7 @@ function AuthGuard({ product, children }) {
   }, []);
 
   useEffect(() => {
-    if (!isOktaEnabled) {
+    if (!OKTA_ENABLED) {
       const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
       if (token) {
         updateRequestInterceptor();
@@ -199,9 +208,9 @@ function AuthGuard({ product, children }) {
         redirectToLogin();
       }
     }
-  }, [isOktaEnabled, token]);
+  }, [OKTA_ENABLED, token]);
 
-  if (isOktaEnabled)
+  if (OKTA_ENABLED)
     return (
       <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
         {children}

@@ -16,9 +16,9 @@ module.exports = {
 
   node_modules: path.resolve(__dirname, "../node_modules"),
 
-  envFile: path.resolve(__dirname, "../", ".env"),
+  envFile: path.join(__dirname, "../", ".env"),
 
-  envProdFile: path.resolve(__dirname, "../", ".env.production"),
+  envProdFile: path.join(__dirname, "../", ".env.production"),
 
-  envLocalFile: path.resolve(__dirname, "../", ".env.development")
+  envDevFile: path.join(__dirname, "../", ".env.development")
 };

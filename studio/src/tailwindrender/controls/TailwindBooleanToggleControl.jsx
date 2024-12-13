@@ -1,0 +1,19 @@
+import { isBooleanControl, rankWith, optionIs, and } from "@jsonforms/core";
+import { withJsonFormsControlProps } from "@jsonforms/react";
+
+import LabelRenderer from "../renderers/common/LabelRenderer";
+import TailwindToggleRenderer from "../renderers/TailwindToggleRenderer";
+
+const TailwindBooleanToggle = (props) => {
+  if (!props.visible) return null;
+  return (
+    <div className="flex flex-row items-center rounded bg-color-0050/80 hover:bg-color-0050 border grow px-2 py-1 space-x-2">
+      <TailwindToggleRenderer {...props} />
+      {props.label?.length > 0 && <LabelRenderer {...props} fontSize="12px" />}
+    </div>
+  );
+};
+
+export const tailwindBooleanToggleControlTester = rankWith(1003, and(isBooleanControl, optionIs("toggle", true)));
+
+export const TailwindBooleanToggleControl = withJsonFormsControlProps(TailwindBooleanToggle);

@@ -1,10 +1,11 @@
 import axios, { CanceledError } from "axios";
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 import { jwtDecode } from "jwt-decode";
 import { ACCESS_TOKEN_STORAGE_KEY, CSRF_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "../../Constants";
+import { RoleGroups } from "engine_utils";
 
-const Roles = ["Admin", "Manager", "Lead", "Engineer"];
+const Roles = RoleGroups.All;
 
 export const setOktaLoading = (loadingOktaInfo) => (dispatch) => {
   dispatch({

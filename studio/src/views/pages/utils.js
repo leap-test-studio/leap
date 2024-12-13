@@ -99,12 +99,6 @@ export const useConstructor = (callBack = () => {}) => {
   setHasBeenCalled(true);
 };
 
-export const BuildTypes = ["P", "TC", "TS"];
-
-export const TestCaseTypes = ["Definition", "REST API", "Web", "SSH"];
-
-export const TestCaseTypesOneOf = TestCaseTypes.map((type, index) => ({ const: index, title: type }));
-
 export const mask = (string, mask) => {
   mask = mask || "*";
   let maskLength = string.length;

@@ -1,22 +1,25 @@
+// THIRD-PARTY-MODULES
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import isEmpty from "lodash/isEmpty";
-import React, { useCallback, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import { authRoles } from "../../../auth/authRoles";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "../../utilities";
-import { createAccount, fetchAccountList, deleteAccount, resetAccountFlags, updateAccount } from "../../../redux/actions/AccountActions";
-import { fetchTenantList } from "../../../redux/actions/TenantActions";
-import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
+// INTERNAL-MODULES
+import { RoleGroups } from "engine_utils";
+import TailwindToggleRenderer from "@tailwindrender/renderers/TailwindToggleRenderer";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "@utilities/.";
+import { createAccount, fetchAccountList, deleteAccount, resetAccountFlags, updateAccount, fetchTenantList } from "@redux-actions/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+
+// LOCAL
 import AccountSettingsDialog from "./AccountSettingsDialog";
 import CreateAccountDialog from "./CreateAccountDialog";
+import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
 import FirstTimeCard from "../common/FirstTimeCard";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
 import ProgressIndicator from "../common/ProgressIndicator";
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 
 dayjs.extend(relativeTime);
 
@@ -62,7 +65,9 @@ const AccountManagement = (props) => {
         title: message,
         icon: showMessage,
         text: details,
-        width: 550
+        width: 550,
+        allowEscapeKey: false,
+        allowOutsideClick: false
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetAccountFlags());
@@ -185,7 +190,9 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: `${status ? "red" : "green"}`,
-      cancelButtonColor: `${status ? "green" : "red"}`
+      cancelButtonColor: `${status ? "green" : "red"}`,
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(
@@ -257,7 +264,9 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: "red",
-      cancelButtonColor: "green"
+      cancelButtonColor: "green",
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(deleteAccount(id));
@@ -271,7 +280,7 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
       description={email}
       status={status}
       actions={
-        <>
+        <div className="inline-flex items-center space-x-2">
           <Tooltip
             title={
               <p>
@@ -290,7 +299,7 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
           </Tooltip>
           <ActionButton
             icon="Settings"
-            disabled={id === activeUser?.id && !authRoles.admin.includes(role)}
+            disabled={id === activeUser?.id && !RoleGroups.Admins.includes(role)}
             onClick={handleSettings}
             tooltip="Account Settings"
             description={
@@ -302,7 +311,7 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
           <ActionButton
             icon="Delete"
             disabled={id === activeUser?.id}
-            className="text-red-600 hover:text-red-500"
+            className="group-hover:text-red-500"
             onClick={handleAccountDelete}
             tooltip="Delete Account"
             description={
@@ -311,7 +320,7 @@ const AccountCard = ({ account, handleAction, activeUser }) => {
               </p>
             }
           />
-        </>
+        </div>
       }
       records={labels}
     />

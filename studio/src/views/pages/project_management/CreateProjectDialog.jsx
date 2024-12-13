@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog, UploadFile } from "../../utilities";
-import * as actionTypes from "../../../redux/actions";
 import { useDispatch } from "react-redux";
+
+import TailwindRenderer from "@tailwindrender/.";
+import { CustomDialog, UploadFile } from "@utilities/.";
+import { actionTypes } from "@redux-actions";
 
 const Model = {
   schema: {
@@ -69,7 +69,6 @@ function CreateProjectDialog({ showDialog, createProject, onClose }) {
       formdata.append("description", data.description);
       formdata.append("upload-file", selectedFile);
       const response = await UploadFile("POST", "/api/v1/project/importer/json", formdata, (percent) => setProgress(Math.floor(percent)));
-      console.log(response);
       if (response.status === 200) {
         onClose();
         resetState();

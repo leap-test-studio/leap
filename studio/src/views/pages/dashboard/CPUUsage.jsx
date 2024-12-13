@@ -6,7 +6,7 @@ import * as echarts from "echarts/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { IconRenderer } from "../../utilities";
+import { IconRenderer } from "@utilities/.";
 
 dayjs.extend(relativeTime);
 // Register the required components
@@ -86,7 +86,7 @@ const CPUUsage = React.memo(({ usage, bootTime }) => {
     <>
       <div className="relative bg-white rounded-md h-full w-full shadow-xl select-none">
         <div id="toast-success" className="p-2 flex items-center text-gray-500">
-          <div className="inline-flex flex-shrink-0 justify-center items-center h-6 w-6 text-green-300 bg-green-100 rounded-md">
+          <div className="inline-flex flex-shrink-0 justify-center items-center size-6 text-green-300 bg-green-100 rounded-md">
             <span className="sr-only">Check icon</span>
             <IconRenderer icon="DeveloperBoard" fontSize="10" />
           </div>
@@ -94,7 +94,7 @@ const CPUUsage = React.memo(({ usage, bootTime }) => {
         </div>
 
         {!isNaN(usage) ? (
-          <div className="mt-2 mb-2">
+          <div className="my-2">
             <ReactEChartsCore echarts={echarts} option={options} notMerge={true} lazyUpdate={true} style={{ height: "110px" }} />
             <div className="-mt-2">
               <div className="font-semibold text-color-label text-xs text-center pb-1">Uptime</div>
@@ -103,7 +103,7 @@ const CPUUsage = React.memo(({ usage, bootTime }) => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center mt-4">
-            <div className="bg-slate-200 animate-pulse h-20 w-20 rounded-full" />
+            <div className="bg-slate-200 animate-pulse size-20 rounded-full" />
             <div className="font-semibold text-color-label text-sm text-center pb-1">Uptime</div>
             <div className="bg-slate-200 w-10/12 animate-pulse h-4 rounded-2xl" />
           </div>

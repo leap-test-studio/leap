@@ -1,5 +1,5 @@
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
-import { IconRenderer } from "../../utilities";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+import { IconRenderer } from "@utilities/.";
 
 const IconLabel = ({ icon, label }) => (
   <p className="text-xs flex items-center break-all">

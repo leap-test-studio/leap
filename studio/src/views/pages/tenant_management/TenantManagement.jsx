@@ -5,15 +5,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "../../utilities";
-import { createTenant, fetchTenantList, deleteTenant, resetTenantFlags, updateTenant } from "../../../redux/actions/TenantActions";
+import TailwindToggleRenderer from "@tailwindrender/renderers/TailwindToggleRenderer";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner } from "@utilities/.";
+import { createTenant, fetchTenantList, deleteTenant, resetTenantFlags, updateTenant } from "@redux-actions/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+
 import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import CreateTenantDialog from "./CreateTenantDialog";
 import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
 import FirstTimeCard from "../common/FirstTimeCard";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
 import ProgressIndicator from "../common/ProgressIndicator";
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import TenantSettingsDialog from "./TenantSettingsDialog";
 
 dayjs.extend(relativeTime);
@@ -66,7 +67,9 @@ const TenantManagement = (props) => {
         title: message,
         icon: showMessage,
         text: details,
-        width: 550
+        width: 550,
+        allowEscapeKey: false,
+        allowOutsideClick: false
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetTenantFlags());
@@ -184,7 +187,9 @@ const TenantCard = ({ tenant, handleAction, activeUser }) => {
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: `${status ? "red" : "green"}`,
-      cancelButtonColor: `${status ? "green" : "red"}`
+      cancelButtonColor: `${status ? "green" : "red"}`,
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(
@@ -238,7 +243,9 @@ const TenantCard = ({ tenant, handleAction, activeUser }) => {
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: "red",
-      cancelButtonColor: "green"
+      cancelButtonColor: "green",
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(deleteTenant(id));
@@ -252,7 +259,7 @@ const TenantCard = ({ tenant, handleAction, activeUser }) => {
       description={description}
       status={status}
       actions={
-        <>
+        <div className="inline-flex items-center space-x-2">
           {id !== activeUser?.id && (
             <Tooltip
               title={
@@ -277,7 +284,7 @@ const TenantCard = ({ tenant, handleAction, activeUser }) => {
           {id !== activeUser?.id && (
             <ActionButton
               icon="Delete"
-              className="text-red-600 hover:text-red-500"
+              className="group-hover:text-red-500"
               onClick={handleTenantDelete}
               tooltip="Delete Tenant"
               description={
@@ -287,7 +294,7 @@ const TenantCard = ({ tenant, handleAction, activeUser }) => {
               }
             />
           )}
-        </>
+        </div>
       }
       records={labels}
     />

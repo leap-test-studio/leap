@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 
 import AboutDialog from "./AboutDialog";
-import { IconRenderer } from "../../utilities";
+import { IconRenderer } from "@utilities/.";
 
 const openInNewTab = (url) => {
   const newWindow = window.open(url, "_blank", "noopener,noreferrer");
@@ -41,7 +41,7 @@ function Help(props) {
     <div className="relative inline-flex mx-2">
       <button
         ref={trigger}
-        className={`w-7 h-7 flex items-center justify-center ${
+        className={`size-7 flex items-center justify-center ${
           dropdownOpen ? "bg-slate-300" : "bg-slate-200"
         } hover:bg-slate-300 transition duration-150 rounded-full border border-slate-300`}
         aria-haspopup="true"
@@ -73,7 +73,7 @@ function Help(props) {
                   openInNewTab(`${window.location.origin}/documentation`);
                 }}
               >
-                <svg className="w-3 h-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
+                <svg className="size-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
                   <rect y="3" width="12" height="9" rx="1" />
                   <path d="M2 0h8v2H2z" />
                 </svg>
@@ -89,7 +89,7 @@ function Help(props) {
                   setShowAbout(!showAbout);
                 }}
               >
-                <svg className="w-3 h-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
+                <svg className="size-3 fill-current text-color-0600 shrink-0 mr-2" viewBox="0 0 12 12">
                   <path d="M11.854.146a.5.5 0 00-.525-.116l-11 4a.5.5 0 00-.015.934l4.8 1.921 1.921 4.8A.5.5 0 007.5 12h.008a.5.5 0 00.462-.329l4-11a.5.5 0 00-.116-.525z" />
                 </svg>
                 <span>About</span>

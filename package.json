@@ -1,21 +1,26 @@
 {
-  "name": "vinashak",
+  "name": "leap",
   "version": "1.0.0",
   "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "start": "docker-compose up -d --remove-orphans",
-    "start:deps":"docker-compose -f docker-compose.yml up -d --build vinashak-cache vinashak-database selenium-event-bus selenium-session-queue selenium-sessions selenium-distributor selenium-router selenium-chrome",
     "stop": "docker-compose down",
     "build": "docker-compose build",
+    "start:podman": "podman-compose up -d --remove-orphans",
+    "stop:podman": "podman-compose down",
+    "build:podman": "podman-compose build",
     "clean:images": "docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force",
     "clean:node_modules": "rm -rf */node_modules",
     "clean": "npm run clean:node_modules && npm run clean:images",
     "dev": "npm run dev:install && npm run dev:upgrade && npm run dev:prettify",
-    "dev:install": "npm run dev:install:orchestrator && npm run dev:install:studio && npm run dev:install:documentation",
+    "dev:install": "npm run dev:install:engine_utils && npm run dev:install:orchestrator && npm run dev:install:studio && npm run dev:install:documentation",
+    "dev:install:engine_utils": "cd engine_utils && npm run upgrade && npm run build",
     "dev:install:orchestrator": "cd orchestrator && npm i --force",
     "dev:install:studio": "cd studio && npm i --force",
     "dev:install:documentation": "cd documentation && npm i --force",
-    "dev:upgrade": "npm run dev:upgrade:orchestrator && npm run dev:upgrade:studio && npm run dev:upgrade:documentation",
+    "dev:upgrade": "npm run upgrade && npm run dev:install:engine_utils && npm run dev:upgrade:orchestrator && npm run dev:upgrade:studio && npm run dev:upgrade:documentation",
     "dev:upgrade:orchestrator": "cd orchestrator && npm run upgrade",
     "dev:upgrade:studio": "cd studio && npm run upgrade",
     "dev:upgrade:documentation": "cd documentation && npm run dev:upgrade",
@@ -26,6 +31,23 @@
     "dev:pull": "git pull --recurse-submodules",
     "dev:prune": "docker system prune --volumes -a",
     "ship": "sh -xe export_docker_images.sh",
-    "first-time": "npm i -g npm-check-updates && npm run dev"
+    "first-time": "npm i -g -f npm-check-updates yarn serve && npm run dev:install",
+    "prepare": "husky",
+    "version": "yarn conventional-changelog --config changelog.config.js -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "upgrade": "npm-check-updates -u && npm i --force"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "concurrently": "^9.1.0",
+    "conventional-changelog-cli": "^5.0.0",
+    "conventional-github-releaser": "^3.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo \"[Husky] pre-commit\""
+    }
   }
 }

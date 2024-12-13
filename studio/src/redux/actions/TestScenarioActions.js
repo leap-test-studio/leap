@@ -1,6 +1,6 @@
 import axios from "axios";
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 
 export const resetTestScenarioFlags = (options) => (dispatch) => {
   dispatch({
@@ -164,9 +164,9 @@ export const cloneTestScenario = (pid, sid, data) => (dispatch) => {
     });
 };
 
-export const runTestScenario = (pid, sid) => (dispatch) => {
+export const runTestSuite = (pid, sid) => (dispatch) => {
   axios
-    .post(`/api/v1/runner/${pid}/runTestScenario/${sid}`)
+    .post(`/api/v1/runner/${pid}/runTestSuite/${sid}`)
     .then((res) => {
       if (res?.data)
         dispatch({

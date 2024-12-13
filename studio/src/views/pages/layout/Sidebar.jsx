@@ -2,10 +2,11 @@ import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import snakeCase from "lodash/snakeCase";
 
+import { RoleGroups } from "engine_utils";
+import { Tooltip, IconRenderer } from "@utilities/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+
 import LogoRenderer, { LOGO } from "./LogoRenderer";
-import { Tooltip, IconRenderer } from "../../utilities";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
-import { authRoles } from "../../../auth/authRoles";
 
 export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerHeight, maxContentHeight, menuClicked, isSetupSelected, ...props }) {
   const isSmallScreen = maxContentHeight < 800;
@@ -16,14 +17,14 @@ export default function Sidebar({ showSidebar, base, mode, sideBarItems, headerH
       className={`transition-all duration-500 ${showSidebar ? "w-[12%]" : "w-12"} bg-sky-950 text-white flex flex-col cursor-pointer h-screen shadow`}
     >
       <div className="border-b-[1px] border-slate-400 mx-px py-2 flex flex-row items-center justify-start my-2">
-        <LogoRenderer className="h-8 w-8 ml-1" name={props?.product.name} />
+        <LogoRenderer className="size-8 ml-1" name={props?.product.name} />
         {showSidebar && <LOGO className="w-20 ml-4" />}
       </div>
       <SidebarRender showSidebar={showSidebar} isSmallScreen={isSmallScreen} {...props}>
         {sideBarItems.map((item, index) =>
           (item.divider && item.mode?.includes(mode)) || (item.mode === undefined && item.divider) ? (
             <SidebarDividerItem key={index} title={item.title} showSidebar={showSidebar} />
-          ) : (item.access != null ? item.access.includes(Role) : authRoles.All.includes(Role)) &&
+          ) : (item.access != null ? item.access.includes(Role) : RoleGroups.All.includes(Role)) &&
             (item.mode === undefined || item.mode?.includes(mode)) ? (
             <SidebarItem key={index} showTitle={showSidebar} base={base} isSmallScreen={isSmallScreen} {...item} />
           ) : null
@@ -96,11 +97,7 @@ function SidebarItem({ showTitle, base, path, title, icon, openNewTab = false })
             hovered ? "right-0 w-full bg-slate-900 text-white" : "right-full w-0"
           }`}
         />
-        {icon && (
-          <div className="mx-2 z-10">
-            <IconRenderer icon={icon} className="h-5 w-5" />
-          </div>
-        )}
+        {icon && <div className="mx-2 z-10">{typeof icon === "string" ? <IconRenderer icon={icon} className="size-5" /> : icon}</div>}
         {showTitle && title && <label className="break-words pr-1 z-10 font-medium text-sm cursor-pointer">{title}</label>}
       </NavLink>
     </Tooltip>

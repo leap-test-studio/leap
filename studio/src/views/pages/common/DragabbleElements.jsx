@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
+import isEmpty from "lodash/isEmpty";
+import { FiMinusCircle, FiPlusCircle } from "react-icons/fi";
 
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
-import TailwindInputText from "../../tailwindrender/renderers/TailwindInputText";
-import { Accordion, Tooltip, IconRenderer } from "../../utilities";
+import TailwindToggleRenderer from "@tailwindrender/renderers/TailwindToggleRenderer";
+import TailwindInputText from "@tailwindrender/renderers/TailwindInputText";
 
-const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, showFilter = true, showIcon = true }) => {
+import { Accordion, Tooltip, IconRenderer } from "@utilities/.";
+
+const DragabbleElements = ({ title = "Palettes", elements = [], showExpand = true, showFilter = true, showIcon = true }) => {
   const [expand, setExpand] = useState(false);
   const [filter, setFilter] = useState("");
-  const [displayElements, setDisplayElements] = useState([]);
+  const [displayElements, setDisplayElements] = useState(elements);
+  const [showDraggables, setShowDraggables] = useState(false);
 
   useEffect(() => {
     setDisplayElements(elements);
   }, [elements]);
+
   const handleChange = (value) => {
     setFilter(value);
     if (value.trim().length <= 0) {
@@ -24,37 +29,55 @@ const DragabbleElements = ({ title = "Palettes", elements, showExpand = true, sh
   };
 
   return (
-    <div className="sticky top-0 w-[10%]">
-      <div className="p-1 shadow h-full flex flex-col items-center justify-center text-slate-600 bg-slate-100 rounded">
-        <div className="w-full flex flex-row items-center justify-center p-[0.1rem] border-b">
-          <Tooltip title={`Drag and Drop ${title}`} content="Drag the item from the list and drop onto the canvas." placement="left">
-            <span className="text-xs select-none font-bold">{title}</span>
-          </Tooltip>
-          {showExpand && (
-            <Tooltip title="Expand/Collapse All" placement="left">
-              <TailwindToggleRenderer path="expand" visible={true} enabled={true} data={expand} handleChange={(_, ev) => setExpand(ev)} />
-            </Tooltip>
-          )}
-        </div>
-        <div className="mt-1 w-full">
-          <TailwindInputText
-            id="search"
-            visible={showFilter}
-            enabled={true}
-            uischema={{}}
-            path="search"
-            errors=""
-            schema={{}}
-            trim={true}
-            description="Filter"
-            handleChange={(_, ev) => handleChange(ev)}
-            readonly={false}
-            data={filter}
-          />
-        </div>
-        <div key="dragabble-items" className="w-full p-0.5 ml-2 flex flex-col items-center h-0.95 overflow-y-scroll custom-scrollbar">
-          {RenderElements(displayElements, expand, showIcon)}
-        </div>
+    <div className={`sticky top-0 ${showDraggables ? "w-32" : "w-fit"}`}>
+      <div className="h-full flex flex-col justify-center text-slate-600 space-y-1 p-1">
+        {!isEmpty(title) && (
+          <div className="w-full flex flex-row items-center justify-between p-[0.1rem] space-x-2">
+            {showDraggables && (
+              <Tooltip title={`Drag and Drop ${title}`} content="Drag the item from the list and drop onto the canvas." placement="left">
+                <span className="text-xs select-none font-bold ml-2">{title}</span>
+              </Tooltip>
+            )}
+            <>
+              {showExpand && (
+                <Tooltip title="Expand/Collapse All" placement="left">
+                  <TailwindToggleRenderer path="expand" visible={true} enabled={true} data={expand} handleChange={(_, ev) => setExpand(ev)} />
+                </Tooltip>
+              )}
+              <Tooltip title={`${showDraggables ? "Hide" : "Show"} ${title}`}>
+                <button
+                  className={`bg-white ${showDraggables ? "bg-slate-100" : ""} hover:bg-slate-100 cursor-pointer p-2 rounded-lg`}
+                  onClick={() => setShowDraggables(!showDraggables)}
+                >
+                  {showDraggables ? <FiMinusCircle /> : <FiPlusCircle />}
+                </button>
+              </Tooltip>
+            </>
+          </div>
+        )}
+        {showFilter && (
+          <div className="w-full">
+            <TailwindInputText
+              id="search"
+              visible={showFilter}
+              enabled={true}
+              uischema={{}}
+              path="search"
+              errors=""
+              schema={{}}
+              trim={true}
+              description="Filter"
+              handleChange={(_, ev) => handleChange(ev)}
+              readonly={false}
+              data={filter}
+            />
+          </div>
+        )}
+        {showDraggables && (
+          <div id="dragabble-items" className="w-full p-0.5 flex flex-col items-center space-y-3 border-t pt-2">
+            {RenderElements(displayElements, expand, showIcon)}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -108,7 +131,7 @@ const RenderElement = React.memo(({ id, type, value, label, description, showIco
   return (
     <div
       id={`draggable-item-${id}`}
-      className="group shadow hover:shadow-xl mx-1 mb-2.5 h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-0.95"
+      className="group shadow hover:shadow-xl h-fit rounded cursor-pointer flex flex-col items-center justify-center bg-white w-full space-y-0.5 py-2 border"
       onDragStart={(ev) => onDragStart(ev, id, type, value)}
       draggable
     >

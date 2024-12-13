@@ -11,7 +11,7 @@ function AboutDialog({ showDialog, closeDialog, product }) {
         <DialogTitle className="text-color-label font-medium text-lg tracking-wide">{name}</DialogTitle>
         <Description as="div" className="text-color-label">
           <div className="flex justify-center">
-            <LogoRenderer className="h-32 w-32" name={name} />
+            <LogoRenderer className="size-32" name={name} />
           </div>
           <span className="justify-center">
             Version: {version}

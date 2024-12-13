@@ -1,23 +1,26 @@
 import { useContext, useEffect, useState } from "react";
+import { LoginCallback } from "@okta/okta-react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { RiFlowChart } from "react-icons/ri";
+import { SiRundeck, SiSelenium } from "react-icons/si";
+
+import { RoleGroups } from "engine_utils";
+import { Centered, Spinner } from "@utilities/.";
+import WebContext from "@WebContext";
 
 import history from "./history";
 import Layout from "./views/pages/layout/Layout";
 import SignInPage from "./views/pages/SignInPage";
 import ReactComponentLoader from "./views/pages/ReactComponentLoader";
 import AuthGuard from "./auth/AuthGuard";
-import WebContext from "./views/context/WebContext";
-import { authRoles } from "./auth/authRoles";
-import { LoginCallback } from "@okta/okta-react";
-import { Centered, Spinner } from "./views/utilities";
 import PageNotFound from "./views/pages/common/PageNotFound";
 import DashboardPage from "./views/pages/DashboardPage";
 import ProjectManagement from "./views/pages/project_management/ProjectManagement";
 import AccountManagement from "./views/pages/account_management/AccountManagement";
 import TenantManagement from "./views/pages/tenant_management/TenantManagement";
-import TestSuiteManagement from "./views/pages/testsuite/TestSuiteManagement";
+import TestSuiteManagement from "./views/pages/testsuite_management/TestSuiteManagement";
 import TestRunner from "./views/pages/TestRunner";
-import TestPlanManagement from "./views/pages/testplan_management/TestPlanManagement";
+import WorkflowManagement from "./views/pages/workflow_management/WorkflowManagement";
 import TestReports from "./views/pages/TestReports";
 import SeleniumGridView from "./views/pages/SeleniumGridView";
 
@@ -51,7 +54,7 @@ export default function App(props) {
       path: "account-management",
       page: AccountManagement,
       projectSelectionRequired: false,
-      access: authRoles.manager
+      access: RoleGroups.Managers
     },
     {
       sideBar: true,
@@ -60,7 +63,7 @@ export default function App(props) {
       path: "tenant-management",
       page: TenantManagement,
       projectSelectionRequired: false,
-      access: authRoles.admin
+      access: RoleGroups.Admins
     },
     {
       sideBar: true,
@@ -73,17 +76,17 @@ export default function App(props) {
     {
       sideBar: true,
       title: "Test Runs",
-      icon: "CodeTwoTone",
+      icon: <SiRundeck size={20} className="mr-1" />,
       path: "test-runs",
       page: TestRunner,
       projectSelectionRequired: true
     },
     {
       sideBar: true,
-      title: "Test Plans",
-      icon: "LibraryBooksTwoTone",
-      path: "test-plans",
-      page: TestPlanManagement,
+      title: "Workflow",
+      icon: <RiFlowChart size={20} className="mr-1" />,
+      path: "workflow",
+      page: WorkflowManagement,
       projectSelectionRequired: true
     },
     {
@@ -91,13 +94,12 @@ export default function App(props) {
       title: "Test Reports",
       icon: "QueryStatsTwoTone",
       path: "test-reports",
-      page: TestReports,
-      projectSelectionRequired: true
+      page: TestReports
     },
     {
       sideBar: true,
       title: "Selenium Grid",
-      icon: "GridOnTwoTone",
+      icon: <SiSelenium size={20} className="mr-1" />,
       path: "selenium-grid",
       page: SeleniumGridView
     }
@@ -108,6 +110,9 @@ export default function App(props) {
 
   useEffect(() => {
     document.title = product.name + "-" + product.description;
+  }, []);
+
+  useEffect(() => {
     setRoutes(InititialRoutes.filter((r) => r.projectSelectionRequired == null || isProjectSelected === r.projectSelectionRequired));
   }, [isProjectSelected]);
 

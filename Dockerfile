@@ -1,14 +1,26 @@
+FROM --platform=linux/amd64 node:18 as libs
+RUN apt-get update
+WORKDIR /app/libs/
+COPY .npmrc ~/.npmrc
+COPY engine_utils/package.json .
+RUN npm i -g -f npm npm-check-updates
+RUN npm i --force
+COPY engine_utils/. .
+RUN npm run build
+
 FROM --platform=linux/amd64 node:18 as studio
 RUN apt-get update
+
+COPY --from=libs /app/libs /app/engine_utils
 
 WORKDIR /app/studio/
 COPY pre_build.js .
 RUN rm -rf /app/studio/build ~/.npmrc
 COPY .npmrc ~/.npmrc
 COPY studio/package.json .
-RUN npm i -g npm@latest
-RUN npm install --omit=dev --unsafe-perm=true --force --silent
-RUN npm install --unsafe-perm=true --force --silent
+RUN npm i -g -f npm yarn
+RUN npm i --save /app/engine_utils -f
+RUN npm i --force
 COPY studio/. .
 RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
@@ -22,9 +34,8 @@ COPY pre_build.js .
 RUN rm -rf /app/documentation/build ~/.npmrc
 COPY documentation/package.json .
 COPY .npmrc ~/.npmrc
-RUN npm i -g npm@latest
-RUN npm install --omit=dev --unsafe-perm=true --force --silent
-RUN npm install --unsafe-perm=true --force --silent
+RUN npm i -g -f npm yarn
+RUN npm i --force
 COPY documentation/. .
 RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
@@ -43,11 +54,13 @@ COPY --from=documentation /app/documentation/. /app/documentation
 
 # Create app directory
 WORKDIR /app
+COPY --from=libs /app/libs /app/engine_utils
+
 COPY orchestrator/package.json .
 COPY .npmrc ~/.npmrc
-RUN npm i -g npm@latest serve@latest
-RUN npm install --omit=dev --unsafe-perm=true --force --silent
-RUN npm install --unsafe-perm=true --force --silent
+RUN npm i -g -f npm serve yarn
+RUN npm i --save /app/engine_utils -f
+RUN npm i --force
 COPY orchestrator/. .
 
 # Copy Nginx configuration file
@@ -57,12 +70,12 @@ COPY config/nginx-prod.conf /etc/nginx/nginx.conf
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy AWS certificate file
-#COPY config/SM_cacert.pem /app/SM_cacert.pem
+COPY config/SM_cacert.pem /app/SM_cacert.pem
 
 # Set Environment Variables
 ENV LOG_DIR /app/logs
 
-#ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
+ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
 # Expose ports
 EXPOSE 80
 

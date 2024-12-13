@@ -1,6 +1,7 @@
 import { useContext } from "react";
+import WebContext from "@WebContext";
+
 import { PageHeader, Page, PageBody, PageTitle } from "./common/PageLayoutComponents";
-import WebContext from "../context/WebContext";
 
 export default function SeleniumGridView({ pageTitle }) {
   const { windowDimension } = useContext(WebContext);

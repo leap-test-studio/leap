@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
-import WebContext from "./WebContext";
-import { CustomAlertDialog } from "../utilities";
-import LocalStorageService from "../../redux/actions/LocalStorageService";
-import { openProject } from "../../redux/actions/ProjectActions";
-import { authRoles } from "../../auth/authRoles";
-import { resetTestScenarioFlags } from "../../redux/actions/TestScenarioActions";
-import { resetTestCaseFlags } from "../../redux/actions/TestCaseActions";
+import { E_ROLE, E_SSE, RoleGroups } from "engine_utils";
+import { CustomAlertDialog } from "@utilities/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+import { openProject, resetTestScenarioFlags, resetTestCaseFlags, actionTypes } from "@redux-actions/.";
+import WebContext from "@WebContext";
+
 import { DEFAULT_FOOTER_HEIGHT, DEFAULT_HEADER_HEIGHT, PROJECT_STORAGE_KEY, SUITE_STORAGE_KEY } from "../../Constants";
+import Events from "./events";
 
 const initialState = {
   project: null,
@@ -24,6 +24,8 @@ const initialState = {
   }
 };
 
+const eventStream = new Events("/event-stream");
+
 function ContextProvider({ children }) {
   const dispatch = useDispatch();
 
@@ -34,11 +36,12 @@ function ContextProvider({ children }) {
     project: LocalStorageService.getItem(PROJECT_STORAGE_KEY),
     scenario: LocalStorageService.getItem(SUITE_STORAGE_KEY)
   });
+  const [isOnline, setIsOnline] = useState(false);
 
   const [windowDimension, detectHW] = useState({
     headerHeight: DEFAULT_HEADER_HEIGHT,
     footerHeight: DEFAULT_FOOTER_HEIGHT,
-    maxContentHeight: window.innerHeight - DEFAULT_HEADER_HEIGHT - DEFAULT_FOOTER_HEIGHT - 1,
+    maxContentHeight: window.innerHeight - DEFAULT_HEADER_HEIGHT - DEFAULT_FOOTER_HEIGHT,
     winWidth: window.innerWidth,
     winHeight: window.innerHeight
   });
@@ -110,10 +113,10 @@ function ContextProvider({ children }) {
     setState({
       ...state,
       role: {
-        isAdmins: authRoles.admin.includes(role),
-        isManagers: authRoles.manager.includes(role),
-        isLeads: authRoles.lead.includes(role),
-        isEngineer: role === "Engineer"
+        isAdmins: RoleGroups.Admins.includes(role),
+        isManagers: RoleGroups.Managers.includes(role),
+        isLeads: RoleGroups.Leads.includes(role),
+        isEngineer: role === E_ROLE.Engineer
       }
     });
   };
@@ -122,18 +125,44 @@ function ContextProvider({ children }) {
     const UserInfo = LocalStorageService.getUserInfo();
     const role = UserInfo?.role;
     return {
-      isAdmins: authRoles.admin.includes(role),
-      isManagers: authRoles.manager.includes(role),
-      isLeads: authRoles.lead.includes(role),
-      isEngineer: role === "Engineer"
+      isAdmins: RoleGroups.Admins.includes(role),
+      isManagers: RoleGroups.Managers.includes(role),
+      isLeads: RoleGroups.Leads.includes(role),
+      isEngineer: role === E_ROLE.Engineer
     };
   };
+
   useEffect(() => {
     if (user?.role) {
       setUserRole(user?.role);
     }
   }, [user]);
 
+  useEffect(() => {
+    const updateOnlineStatus = (event) => setIsOnline(event?.type === "online");
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+
+    eventStream.client.onerror = () => setIsOnline(false);
+    eventStream.client.addEventListener("open", () => setIsOnline(true));
+    eventStream.register(E_SSE.WF_LOG, (event) => {
+      try {
+        console.log(event);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+    eventStream.register(E_SSE.WF_STATUS, (event) => {
+      try {
+        dispatch({
+          type: actionTypes.GET_WF,
+          payload: { wf: event }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, []);
   return (
     <WebContext.Provider
       value={{
@@ -146,7 +175,8 @@ function ContextProvider({ children }) {
         setUserProfile,
         setUserRole,
         getRole,
-        windowDimension
+        windowDimension,
+        online: isOnline
       }}
     >
       {children}

@@ -2,16 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog } from "../../utilities";
-import { updateAccount } from "../../../redux/actions/AccountActions";
-import { authRoles } from "../../../auth/authRoles";
+import { E_ROLE, RoleGroups } from "engine_utils";
+import TailwindRenderer from "@tailwindrender/.";
+import { CustomDialog } from "@utilities/.";
+import { updateAccount } from "@redux-actions/.";
 
-const Roles = [
-  { const: "Manager", title: "Manager" },
-  { const: "Lead", title: "Lead" },
-  { const: "Engineer", title: "Engineer" }
-];
+const Roles = [E_ROLE.Manager, E_ROLE.Lead, E_ROLE.Engineer].map((role) => ({ const: role, title: role }));
 
 const Model = {
   schema: {
@@ -75,8 +71,8 @@ function AccountSettingsDialog({ showDialog, account, onClose }) {
   }
 
   if (account?.role) {
-    if (authRoles.admin.includes(account.role)) {
-      Model.schema.properties.role.oneOf = [{ const: "Admin", title: "Admin" }, ...Roles];
+    if (RoleGroups.Admins.includes(account.role)) {
+      Model.schema.properties.role.oneOf = [{ const: E_ROLE.Admin, title: E_ROLE.Admin }, ...Roles];
     } else {
       Model.schema.properties.role.oneOf = Roles;
     }

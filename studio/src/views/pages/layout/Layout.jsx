@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { Centered, Spinner, Toast } from "../../utilities";
+import { Centered, Spinner } from "@utilities/.";
 import { RequiredAuth } from "../../../auth/RequiredAuth";
 
 function Layout({ disableLayout, base, sideBarItems, children, ...props }) {

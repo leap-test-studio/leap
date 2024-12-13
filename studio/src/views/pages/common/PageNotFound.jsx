@@ -1,4 +1,4 @@
-import { Centered } from "../../utilities";
+import { Centered } from "@utilities/.";
 import { Page, PageBody } from "./PageLayoutComponents";
 
 const PageNotFound = () => {

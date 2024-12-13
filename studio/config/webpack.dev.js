@@ -24,13 +24,12 @@ module.exports = merge(common, {
         changeOrigin: true
       },
       {
-        context: ["/events"],
+        context: ["/event-stream"],
         target: process.env.API_URL || "http://localhost:9004",
         secure: false,
         changeOrigin: true,
         ws: true
       },
-
       {
         context: ["/documentation"],
         target: process.env.DOCS_URL || "http://localhost:3000",

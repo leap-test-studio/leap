@@ -8,25 +8,17 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Swal from "sweetalert2";
 
+import TailwindToggleRenderer from "@tailwindrender/renderers/TailwindToggleRenderer";
+import { createProject, fetchProjectList, deleteProject, resetProjectFlags, stopProjectBuilds, updateProject, openProject } from "@redux-actions/.";
+import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner, Toast } from "@utilities/.";
+import WebContext from "@WebContext";
+
 import { PageHeader, Page, PageActions, PageBody, PageTitle, PageListCount } from "../common/PageLayoutComponents";
 import CreateProjectDialog from "./CreateProjectDialog";
 import DisplayCard, { ActionButton, CardHeaders } from "../common/DisplayCard";
 import FirstTimeCard from "../common/FirstTimeCard";
 import ProjectSettingsDialog from "./ProjectSettingsDialog";
-
-import {
-  createProject,
-  fetchProjectList,
-  deleteProject,
-  resetProjectFlags,
-  stopProjectBuilds,
-  updateProject,
-  openProject
-} from "../../../redux/actions/ProjectActions";
-import { Centered, IconButton, Tooltip, EmptyIconRenderer, RoundedIconButton, SearchComponent, Spinner, Toast } from "../../utilities";
-import TailwindToggleRenderer from "../../tailwindrender/renderers/TailwindToggleRenderer";
 import ProgressIndicator from "../common/ProgressIndicator";
-import WebContext from "../../context/WebContext";
 import ProjectExecutionDialog from "./ProjectExecutionDialog";
 import { ACCESS_TOKEN_STORAGE_KEY } from "../../../Constants";
 
@@ -103,7 +95,9 @@ const ProjectManagement = (props) => {
         title: message,
         icon: showMessage,
         text: details,
-        width: 550
+        width: 550,
+        allowEscapeKey: false,
+        allowOutsideClick: false
       }).then((response) => {
         if (response.isConfirmed || response.isDismissed) {
           dispatch(resetProjectFlags());
@@ -252,7 +246,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: `${status ? "red" : "green"}`,
-      cancelButtonColor: `${status ? "green" : "red"}`
+      cancelButtonColor: `${status ? "green" : "red"}`,
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(
@@ -326,6 +322,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
   -H 'Access-Control-Allow-Headers: Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Origin, Authorization, X-Requested-With, client-agent' \
   -H 'Authorization: Bearer ${localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY)}' \
   -H 'Content-Type: application/json' \
+  -X POST \
   --data-raw '${JSON.stringify({ env: project.settings?.env || [] })}'`);
     Toast.fire({
       icon: "success",
@@ -341,7 +338,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
       confirmButtonText: "YES",
       cancelButtonText: "NO",
       confirmButtonColor: "red",
-      cancelButtonColor: "green"
+      cancelButtonColor: "green",
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(deleteProject(id));
@@ -362,7 +361,9 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
       text: `Project Id: ${id}`,
       icon: "question",
       confirmButtonText: "YES",
-      showDenyButton: true
+      showDenyButton: true,
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(stopProjectBuilds(id));
@@ -413,6 +414,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
           onClick: handleDeleteProject,
           tooltip: "Delete Test Project",
           disabled: !isLeads,
+          className: "group-hover:text-red-500",
           description: (
             <p>
               Permanently purges the <strong>Project</strong> from system including all backups.
@@ -421,7 +423,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
         }
       ]}
       actions={
-        <>
+        <div className="inline-flex items-center space-x-2">
           <Tooltip
             title={
               <p>
@@ -438,7 +440,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
                   icon="Stop"
                   onClick={handleStopExecution}
                   tooltip="Stop Execution of Project Automation"
-                  className="text-red-600 hover:text-red-500"
+                  className="group-hover:text-red-500"
                 />
               ) : (
                 <ActionButton icon="PlayArrow" onClick={handleStartExecution} tooltip="Start Execution of Project Automation" />
@@ -461,7 +463,7 @@ const ProjectCard = ({ project, handleProjectSelection, handleAction, role: { is
               </>
             }
           />
-        </>
+        </div>
       }
       records={labels}
       onClick={selectProject}

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import isEmpty from "lodash/isEmpty";
+import TailwindRenderer from "@tailwindrender/.";
 
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog } from "../../utilities";
-import { updateTenant } from "../../../redux/actions/TenantActions";
+import { CustomDialog } from "@utilities/.";
+import { updateTenant } from "@redux-actions/.";
 
 const Model = {
   schema: {

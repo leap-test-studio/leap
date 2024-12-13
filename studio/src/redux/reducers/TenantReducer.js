@@ -1,5 +1,5 @@
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 
 const initialState = {
   tenants: [],

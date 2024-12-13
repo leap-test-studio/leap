@@ -1,6 +1,6 @@
 import axios from "axios";
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 
 export const resetDashboardFlags =
   (props = {}) =>
@@ -44,7 +44,7 @@ export const getRecentBuildSummary = () => (dispatch) => {
     .get("/api/v1/dashboard/build/recent")
     .then((res) => {
       dispatch(resetDashboardFlags());
-      if (res?.data)
+      if (Array.isArray(res?.data))
         dispatch({
           type: actionTypes.GET_RECENT_BUILD_SUMMARY,
           payload: res.data

@@ -1,12 +1,12 @@
-import { IconRenderer } from "../../utilities";
-import { BuildTypes } from "../utils";
+import { BuildTypes } from "engine_utils";
+import { IconRenderer } from "@utilities/.";
 
 function RecentBuilds({ recentBuildSummary = [] }) {
   return (
     <>
       <div className="relative bg-white p-4 rounded-lg w-full hover:shadow-xl mt-1 border hover:bg-color-0050 hover:border-color-0300 cursor-pointer">
         <div className="text-white flex items-center absolute rounded-md p-2 shadow-xl bg-yellow-500 left-4 -top-4 select-none">
-          <IconRenderer icon="Summarize" className="h-10 w-10" />
+          <IconRenderer icon="Summarize" className="size-10" />
           <p className="text-sm font-semibold ml-3">Recent Build Summary</p>
         </div>
         <div className="mt-5">
@@ -40,7 +40,7 @@ function RecentBuilds({ recentBuildSummary = [] }) {
               </tr>
             </thead>
             <tbody className="text-xs font-medium divide-y divide-gray-100">
-              {recentBuildSummary.slice(0, 10)?.map((record, index) => (
+              {recentBuildSummary?.slice(0, 10)?.map((record, index) => (
                 <RenderRow key={index} {...record} />
               ))}
             </tbody>

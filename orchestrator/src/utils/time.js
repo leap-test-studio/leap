@@ -5,5 +5,5 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 exports.getLocalTime = () => {
-  return dayjs.tz(new Date().getTime(), "Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss");
+    return dayjs.tz(new Date().getTime(), "Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss");
 };

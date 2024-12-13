@@ -1,8 +1,9 @@
 import { useState } from "react";
 import ReactEcharts from "echarts-for-react";
 
+import TailwindSelectRenderer from "@tailwindrender/renderers/TailwindSelectRenderer";
+
 import { cashFormat } from "../utils";
-import TailwindSelectRenderer from "../../tailwindrender/renderers/TailwindSelectRenderer";
 
 const types = [
   { label: "Bytes", value: "bytes" },

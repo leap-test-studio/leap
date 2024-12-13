@@ -3,10 +3,10 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 
-import { IconRenderer } from "../../utilities";
-import WebContext from "../../context/WebContext";
-import { logoutUser } from "../../../redux/actions/LoginActions";
-import LocalStorageService from "../../../redux/actions/LocalStorageService";
+import { IconRenderer } from "@utilities/.";
+import { logoutUser } from "@redux-actions/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
+import WebContext from "@WebContext";
 
 export default function UserMenu({ product }) {
   const dispatch = useDispatch();

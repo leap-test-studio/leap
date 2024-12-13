@@ -1,11 +1,12 @@
 import { useContext } from "react";
 
-import WebContext from "../../context/WebContext";
+import WebContext from "@WebContext";
+
 import { DEFAULT_BODY_PADDING } from "../../../Constants";
 
 export function PageHeader({ show = true, children }) {
   if (!show) return null;
-  return <div className="sticky top-0 p-2 mt-1 flex justify-between items-center">{children}</div>;
+  return <div className="sticky top-0 p-2 flex justify-between items-center">{children}</div>;
 }
 
 export function PageTitle({ children }) {
@@ -22,7 +23,7 @@ export function PageListCount({ pageTitle, count, listLoading }) {
 }
 
 export function PageActions({ children }) {
-  return <div className="flex flex-row items-center justify-end grow">{children}</div>;
+  return <div className="flex flex-row items-center justify-end grow space-x-2.5">{children}</div>;
 }
 
 export function Page({ children, className = "" }) {

@@ -4,9 +4,7 @@ export default function ReportCard({ title, icon, value, total, bgColor }) {
   return (
     <div className="card p-3 hover:shadow-md rounded-lg bg-white select-none border hover:bg-color-0050 hover:border-color-0300 flex items-center cursor-pointer">
       <div className="flex flex-col items-center">
-        <div className={`p-3 rounded-full text-center mr-4 ${bgColor}`}>
-          <i className={`w-6 ${icon}`} />
-        </div>
+        <div className={`p-3 rounded-full text-center mr-4 ${bgColor}`}>{icon}</div>
       </div>
       <div>
         <p className="mb-2 text-md font-medium text-color-label">{title}</p>

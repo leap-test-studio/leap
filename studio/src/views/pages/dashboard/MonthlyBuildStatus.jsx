@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactEcharts from "echarts-for-react";
 
-import { IconRenderer } from "../../utilities";
-import { getBuildTrend } from "../../../redux/actions/DashboardActions";
+import { IconRenderer } from "@utilities/.";
+import { getBuildTrend } from "@redux-actions/.";
 
 const INTERVAL = 10 * 1000;
 
@@ -86,7 +86,7 @@ const MonthlyBuildStatus = ({ project }) => {
       {project && (
         <div className="relative bg-white p-4 rounded-md w-full hover:shadow-xl mt-1 border hover:bg-color-0050 hover:border-color-0300 cursor-pointer">
           <div className="text-white flex items-center absolute rounded-md p-2 shadow-xl bg-violet-500 left-4 -top-4 select-none">
-            <IconRenderer icon="LineAxis" className="h-10 w-10" />
+            <IconRenderer icon="LineAxis" className="size-10" />
             <p className="text-sm font-semibold ml-3">Project Build Trend</p>
           </div>
           <div className="mt-5">

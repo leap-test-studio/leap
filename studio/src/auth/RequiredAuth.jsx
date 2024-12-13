@@ -1,25 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useOktaAuth } from "@okta/okta-react";
-import { Centered, Spinner } from "../views/utilities";
-import WebContext from "../views/context/WebContext";
+
+import { Centered, Spinner } from "@utilities/.";
+import { registerOktaUser, actionTypes } from "@redux-actions/.";
+import LocalStorageService, { setStoreItem } from "@redux-actions/LocalStorageService";
+import WebContext from "@WebContext";
+
 import Product from "../product.json";
-import { useDispatch, useSelector } from "react-redux";
-import { registerOktaUser } from "../redux/actions/LoginActions";
 import { Page } from "../views/pages/common/PageLayoutComponents";
-import LocalStorageService, { setStoreItem } from "../redux/actions/LocalStorageService";
-import * as actionTypes from "../redux/actions";
-import { ACCESS_TOKEN_STORAGE_KEY, PROFILE_STORAGE_KEY } from "../Constants";
+import { ACCESS_TOKEN_STORAGE_KEY, OKTA_ENABLED, PROFILE_STORAGE_KEY } from "../Constants";
 
 export const RequiredAuth = ({ children }) => {
   const dispatch = useDispatch();
   const { setUserProfile, project, scenario } = useContext(WebContext);
-  const { page, isOktaEnabled } = Product;
-  const { oktaAuth, authState } = isOktaEnabled ? useOktaAuth() : {};
+  const { page } = Product;
+  const { oktaAuth, authState } = OKTA_ENABLED ? useOktaAuth() : {};
   const { oktaUserProfile } = useSelector((state) => state.login);
 
   useEffect(() => {
-    if (isOktaEnabled) {
+    if (OKTA_ENABLED) {
       axios.interceptors.request.use((config) => {
         const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
         if (token) {
@@ -43,10 +44,10 @@ export const RequiredAuth = ({ children }) => {
         return config;
       });
     }
-  }, [isOktaEnabled]);
+  }, [OKTA_ENABLED]);
 
   useEffect(() => {
-    if (!isOktaEnabled || oktaUserProfile) {
+    if (!OKTA_ENABLED || oktaUserProfile) {
       return;
     }
     axios.interceptors.response.use(
@@ -60,25 +61,23 @@ export const RequiredAuth = ({ children }) => {
     );
     oktaAuth.isAuthenticated().then((isAuthenticated) => {
       if (isAuthenticated) {
-        const UserInfo = LocalStorageService.getUserInfo();
-        !UserInfo &&
-          oktaAuth
-            .getUser()
-            .then((userProfile) => {
-              const token = oktaAuth.getAccessToken();
-              token && setStoreItem(ACCESS_TOKEN_STORAGE_KEY, token);
-              setUserProfile(userProfile);
-              dispatch({
-                type: actionTypes.LOGIN_TOKEN,
-                payload: {
-                  oktaUserProfile: userProfile
-                }
-              });
-              dispatch(registerOktaUser(userProfile));
-            })
-            .catch((error) => {
-              console.error(error);
+        oktaAuth
+          .getUser()
+          .then((userProfile) => {
+            const token = oktaAuth.getAccessToken();
+            token && setStoreItem(ACCESS_TOKEN_STORAGE_KEY, token);
+            setUserProfile(userProfile);
+            dispatch({
+              type: actionTypes.LOGIN_TOKEN,
+              payload: {
+                oktaUserProfile: userProfile
+              }
             });
+            dispatch(registerOktaUser(userProfile));
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } else {
         oktaAuth
           .signInWithRedirect({ originalUri: `${page.urlPrefix}${page.landingPage}` })
@@ -101,9 +100,9 @@ export const RequiredAuth = ({ children }) => {
           });
       }
     });
-  }, [isOktaEnabled, oktaUserProfile, oktaAuth, authState?.isAuthenticated]);
+  }, [OKTA_ENABLED, oktaUserProfile, oktaAuth, authState?.isAuthenticated]);
 
-  if (isOktaEnabled && (!authState || !authState?.isAuthenticated)) {
+  if (OKTA_ENABLED && (!authState || !authState?.isAuthenticated)) {
     return (
       <Page>
         <Centered>

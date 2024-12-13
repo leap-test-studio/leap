@@ -2,24 +2,25 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useOktaAuth } from "@okta/okta-react";
+import isEmpty from "lodash/isEmpty";
+
+import { IconRenderer } from "@utilities/.";
+import { loginWithEmailAndPassword, actionTypes } from "@redux-actions/.";
+import LocalStorageService from "@redux-actions/LocalStorageService";
 
 import LogoRenderer, { LOGO } from "./layout/LogoRenderer";
-import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
-import * as actionTypes from "../../redux/actions";
-import LocalStorageService from "../../redux/actions/LocalStorageService";
-import isEmpty from "lodash/isEmpty";
-import { IconRenderer } from "../utilities";
+import { OKTA_ENABLED } from "../../Constants";
 
 export function SignInPage({ product }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { success, error, loading, oktaUserProfile } = useSelector((state) => state.login);
-  const { name, version, description, page, isOktaEnabled } = product;
-  const { oktaAuth } = isOktaEnabled ? useOktaAuth() : {};
+  const { name, version, description, page } = product;
+  const { oktaAuth } = OKTA_ENABLED ? useOktaAuth() : {};
 
   useEffect(() => {
     document.title = `${name} - ${description}`;
-    if (isOktaEnabled) {
+    if (OKTA_ENABLED) {
       oktaAuth.isAuthenticated().then((isAuthenticated) => {
         if (isAuthenticated) {
           setTimeout(() => {
@@ -36,7 +37,7 @@ export function SignInPage({ product }) {
   }, []);
 
   useEffect(() => {
-    if (!isOktaEnabled) {
+    if (!OKTA_ENABLED) {
       if (!isEmpty(error)) {
         setTimeout(
           () =>
@@ -51,7 +52,7 @@ export function SignInPage({ product }) {
         navigate(`${page.urlPrefix}${page?.landingPage}`, { replace: true });
       }
     }
-  }, [isOktaEnabled, success, error]);
+  }, [OKTA_ENABLED, success, error]);
 
   const [formdata, setformdata] = useState({ email: "", password: "" });
 
@@ -75,7 +76,7 @@ export function SignInPage({ product }) {
       <div className="flex w-1/2 h-screen items-center justify-center">
         <div className="max-w-sm transform duration-[300ms] hover:scale-110 cursor-pointer items-center justify-center">
           <div className="flex flex-col justify-center items-center">
-            <LogoRenderer className="h-40 w-40" />
+            <LogoRenderer className="size-40" />
             <div className="flex flex-row space-x-5 items-center">
               <div className="flex flex-col space-y-2 items-center">
                 <LOGO className="w-60" />
@@ -87,7 +88,7 @@ export function SignInPage({ product }) {
         </div>
       </div>
       <div className="flex flex-col w-1/2 h-screen items-center justify-center">
-        {!isOktaEnabled ? (
+        {!OKTA_ENABLED ? (
           <div
             className="py-4 px-10 max-w-7xl items-center justify-center backdrop-blur-sm bg-white/10 p-5 rounded shadow-md"
             style={{ border: "1.5px solid #475569" }}
@@ -138,7 +139,7 @@ export function SignInPage({ product }) {
                   } w-full text-center inline-flex items-center justify-center px-4 py-2 text-xs font-semibold font-display leading-6 text-white transition duration-150 ease-in-out rounded bg-gradient-to-b from-color-0500 to-color-0700 hover:from-color-0400 hover:to-color-0700 shadow-lg`}
                 >
                   {loading && (
-                    <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="size-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path
                         className="opacity-75"

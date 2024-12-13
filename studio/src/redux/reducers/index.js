@@ -4,10 +4,9 @@ import ProjectReducer from "./ProjectReducer";
 import DashboardReducer from "./DashboardReducer";
 import TestScenarioReducer from "./TestScenarioReducer";
 import TestCaseReducer from "./TestCaseReducer";
-import TestSequencerReducer from "./TestSequencerReducer";
 import AccountReducer from "./AccountReducer";
 import TenantReducer from "./TenantReducer";
-import TestPlanReducer from "./TestPlanReducer";
+import WorkflowReducer from "./WorkflowReducer";
 
 const RootReducer = combineReducers({
   login: LoginReducer,
@@ -17,8 +16,7 @@ const RootReducer = combineReducers({
   dashboard: DashboardReducer,
   testsuite: TestScenarioReducer,
   testcase: TestCaseReducer,
-  testplan: TestPlanReducer,
-  sequencer: TestSequencerReducer
+  workflow: WorkflowReducer
 });
 
 export default RootReducer;

@@ -1,6 +1,6 @@
 import axios from "axios";
 // action - state management
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 
 export const resetProjectFlags =
   (props = {}) =>
@@ -172,7 +172,7 @@ export const triggerSequence = (pid) => (dispatch) => {
     }
   });
   axios
-    .post(`/api/v1/runner/${pid}/trigger-sequence`)
+    .post(`/api/v1/workflow/${pid}/trigger`)
     .then((res) => {
       if (res?.data)
         dispatch({

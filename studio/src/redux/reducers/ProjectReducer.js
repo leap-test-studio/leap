@@ -1,6 +1,6 @@
-// action - state management
-import { NodeTypes } from "../../views/pages/sequencer/Constants";
-import * as actionTypes from "../actions";
+import { E_EVENT_TYPE } from "engine_utils";
+
+import * as actionTypes from "../actionsTypes";
 
 const initialState = {
   totalItems: 0,
@@ -16,11 +16,6 @@ const initialState = {
   projectData: null,
   testsuites: {},
   testcases: {},
-  draggableItems: [],
-  settings: {
-    nodes: [],
-    edges: []
-  },
   builds: null
 };
 
@@ -40,51 +35,13 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
       const testcases = {};
       const testsuites = {};
 
-      const draggableItems = [
-        {
-          title: "Internal",
-          type: "group",
-          elements: [
-            {
-              id: 0,
-              type: NodeTypes.TIMER_TASK,
-              value: {
-                timer: 0,
-                label: "Timer Event"
-              },
-              icon: "Timer",
-              label: "Timer",
-              description: "Timer Task"
-            }
-          ]
-        }
-      ];
-      if (!state.settings) state.settings = { nodes: [], edges: [] };
-      if (payload?.settings) {
-        if (payload.settings.nodes) {
-          state.settings.nodes = [...payload.settings.nodes];
-        }
-        if (payload.settings.edges) {
-          state.settings.edges = [...payload.settings.edges];
-        }
-      } else {
-        state.settings.nodes = [
-          {
-            id: "start",
-            type: NodeTypes.START_TASK,
-            data: { label: "Start" },
-            position: { x: 50, y: 300 }
-          }
-        ];
-      }
-
       payload &&
         payload.TestScenarios?.forEach((ts) => {
           testsuites[ts.id] = ts;
           const elements = [
             {
               id: ts.id,
-              type: NodeTypes.SCENARIO_TASK,
+              type: E_EVENT_TYPE.TEST_SUITE_EVENT,
               value: ts,
               label: ts.name,
               icon: "NextWeekRounded",
@@ -96,7 +53,7 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
             if (tc.enabled) {
               elements.push({
                 ...tc,
-                type: NodeTypes.CASE_TASK,
+                type: E_EVENT_TYPE.TEST_CASE_EVENT,
                 value: tc,
                 label: tc.label,
                 icon: (
@@ -130,20 +87,13 @@ const ProjectReducer = function (state = initialState, { payload, type }) {
               });
             }
           });
-          if (elements.length > 0)
-            draggableItems.push({
-              title: `Scenario: ${ts.name}`,
-              type: "group",
-              elements
-            });
         });
       return {
         ...state,
         ...payload,
         testcases,
         testsuites,
-        projectData: payload,
-        draggableItems
+        projectData: payload
       };
     }
     case actionTypes.RESET_PROJECT:

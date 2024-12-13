@@ -50,3 +50,9 @@ export const Colors = {
   9: "#E25142",
   0: "#8F38A9"
 };
+
+export const OKTA_ENABLED = process.env.OKTA_ENABLED == "true";
+export const OKTA_ISSUER = process.env.OKTA_ISSUER;
+export const OKTA_CLIENTID = process.env.OKTA_CLIENTID;
+
+export const POLLING_INTERVAL = 10000;

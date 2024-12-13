@@ -1,6 +1,6 @@
 // action - state management
 import { ACCESS_TOKEN_STORAGE_KEY, CSRF_TOKEN_STORAGE_KEY, PROFILE_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "../../Constants";
-import * as actionTypes from "../actions";
+import * as actionTypes from "../actionsTypes";
 import LocalStorageService, { setStoreItem } from "../actions/LocalStorageService";
 
 const initialState = {

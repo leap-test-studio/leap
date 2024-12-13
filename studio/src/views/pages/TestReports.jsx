@@ -1,31 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import isEmpty from "lodash/isEmpty";
-
-import TailwindSelectRenderer from "../tailwindrender/renderers/TailwindSelectRenderer";
-import { IconButton, Tooltip, NewlineText, EmptyIconRenderer, Centered } from "../utilities";
-import { getBuildReports, getBuildDetails } from "../../redux/actions/DashboardActions";
-import LabelRenderer from "../tailwindrender/renderers/common/LabelRenderer";
-import { fetchProjectList } from "../../redux/actions/ProjectActions";
-import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
-import { fetchTestScenarioList } from "../../redux/actions/TestScenarioActions";
-import { BuildTypes, cropString, mask, TestCaseTypes } from "./utils";
-import TailwindToggleRenderer from "../tailwindrender/renderers/TailwindToggleRenderer";
 import JsonView from "@uiw/react-json-view";
 import { lightTheme } from "@uiw/react-json-view/light";
+import { FaCalendar, FaClock } from "react-icons/fa6";
+import { TestCaseTypes, BuildTypes, TestStatus, E_EXEC_STATE } from "engine_utils";
 
-const TestStatus = Object.freeze({
-  0: "Draft",
-  1: "Running",
-  2: "Pass",
-  3: "Fail",
-  4: "Unknown",
-  5: "Skipped",
-  6: "Aborted",
-  999: "Invalid Testcase"
-});
+import TailwindSelectRenderer from "@tailwindrender/renderers/TailwindSelectRenderer";
+import LabelRenderer from "@tailwindrender/renderers/common/LabelRenderer";
+import TailwindToggleRenderer from "@tailwindrender/renderers/TailwindToggleRenderer";
+import { getBuildReports, getBuildDetails, fetchProjectList, fetchTestScenarioList } from "@redux-actions/.";
+import { IconButton, Tooltip, NewlineText, EmptyIconRenderer, Centered } from "@utilities/.";
+
+import { PageHeader, Page, PageActions, PageBody, PageTitle } from "./common/PageLayoutComponents";
+import { cropString, mask } from "./utils";
+import { POLLING_INTERVAL } from "../../Constants";
 
 const TestTypeMapping = Object.freeze({
   4: 2,
@@ -88,14 +79,20 @@ export default function TestReports({ project: selectedPrject, product, changeTe
     };
   }, [windowDimenion]);
 
+  const fetchBuildDetails = useCallback(
+    (ev) => {
+      if (project?.id) {
+        dispatch(getBuildDetails(project?.id, ev));
+      }
+    },
+    [project?.id, dispatch, getBuildDetails]
+  );
   const handleBuildChange = (_, ev) => {
     clearInterval(interval);
     if (project?.id) {
       setBuildNo(ev);
-      dispatch(getBuildDetails(project?.id, ev));
-      interval = setInterval(() => {
-        dispatch(getBuildDetails(project?.id, ev));
-      }, 10000);
+      fetchBuildDetails(ev);
+      interval = setInterval(() => fetchBuildDetails(ev), POLLING_INTERVAL);
     }
   };
 
@@ -140,7 +137,7 @@ export default function TestReports({ project: selectedPrject, product, changeTe
         <PageTitle>Test Automation Report</PageTitle>
         <PageActions>
           {isEmpty(selectedPrject) && (
-            <div className="inline-flex px-2">
+            <div className="inline-flex items-center space-x-0.5">
               <LabelRenderer label="Project" />
               <TailwindSelectRenderer
                 options={projects.map((item) => {
@@ -151,22 +148,24 @@ export default function TestReports({ project: selectedPrject, product, changeTe
               />
             </div>
           )}
-          <div className="inline-flex px-2">
+          <div className="inline-flex items-center space-x-0.5">
             <LabelRenderer label="Build No." />
             <div className="w-32">
               <TailwindSelectRenderer options={buildList} data={buildNo} handleChange={handleBuildChange} enabled={project != null} />
             </div>
           </div>
-          <LabelRenderer label="Detailed Report" />
-          <Tooltip title="Enable Detailed Report" placement="bottom">
-            <TailwindToggleRenderer
-              path="show-detailed-report"
-              visible={true}
-              enabled={true}
-              data={detailedReport}
-              handleChange={(_, ev) => setDetailedReport(ev)}
-            />
-          </Tooltip>
+          <div className="inline-flex items-center space-x-0.5">
+            <LabelRenderer label="Detailed Report" />
+            <Tooltip title="Enable Detailed Report" placement="bottom">
+              <TailwindToggleRenderer
+                path="show-detailed-report"
+                visible={true}
+                enabled={true}
+                data={detailedReport}
+                handleChange={(_, ev) => setDetailedReport(ev)}
+              />
+            </Tooltip>
+          </div>
           <IconButton
             title="PDF Export"
             icon="PictureAsPdf"
@@ -212,7 +211,7 @@ function toNumber(num) {
 }
 
 function BuildDetails({ project, status, buildInfo, buildNo, triggeredBy }) {
-  const isRunning = TestStatus[status] === "Running";
+  const isRunning = E_EXEC_STATE.RUNNING === status;
   const report = TestStatus[status];
   return (
     <div className="border-r p-1">
@@ -259,8 +258,8 @@ function BuildDetails({ project, status, buildInfo, buildNo, triggeredBy }) {
           {!isRunning && buildInfo.startTime && buildInfo.endTime && (
             <tr>
               <td>Duration</td>
-              <td className="inline-flex items-center">
-                <i className="text-indigo-700 fad fa-solid fa-clock w-6 text-center" />
+              <td className="inline-flex items-center space-x-1">
+                <FaClock className="text-purple-700" />
                 <label>{convertDatesToHM(buildInfo.startTime, buildInfo.endTime)}</label>
               </td>
             </tr>
@@ -268,8 +267,8 @@ function BuildDetails({ project, status, buildInfo, buildNo, triggeredBy }) {
           {buildInfo.startTime && (
             <tr>
               <td>Started</td>
-              <td className="inline-flex items-center">
-                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
+              <td className="inline-flex items-center space-x-1">
+                <FaCalendar className="text-purple-700" />
                 <label>{buildInfo.startTime}</label>
               </td>
             </tr>
@@ -277,8 +276,8 @@ function BuildDetails({ project, status, buildInfo, buildNo, triggeredBy }) {
           {!isRunning && buildInfo.endTime && (
             <tr>
               <td>Ended</td>
-              <td className="inline-flex items-center">
-                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
+              <td className="inline-flex items-center space-x-1">
+                <FaCalendar className="text-purple-700" />
                 <label>{buildInfo.endTime}</label>
               </td>
             </tr>
@@ -450,7 +449,7 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
           </Tooltip>
           {showDetails && <NewlineText text={TestCase?.TestScenario?.description} className="font-normal" style={{ fontSize: 10 }} />}
         </td>
-        <td className="px-3 border border-color-0300 w-[59%] justify-start">
+        <td className="px-3 border border-color-0300 w-[50%] justify-start">
           <div className="inline-flex items-center w-full border-b border-color-0300 py-2">
             <strong>Title</strong>
             <NewlineText text={TestCase?.title} className="font-normal ml-2" />
@@ -500,12 +499,12 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
             {status}
           </div>
         </td>
-        <td className="p-1 border border-color-0300 w-[10%]">
+        <td className="p-1 px-2 border border-color-0300 w-[5%]">
           {endTime && startTime && (
             <div className="flex flex-col">
               <strong>Duration</strong>
-              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                <i className="text-indigo-700 fad fa-solid fa-clock w-6 text-center" />
+              <div className="inline-flex items-center space-x-1" style={{ fontSize: 10 }}>
+                <FaClock className="text-purple-700" />
                 <label>{convertDatesToHM(startTime, endTime)}</label>
               </div>
             </div>
@@ -513,18 +512,18 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
           {startTime && (
             <div className="flex flex-col">
               <strong>Start</strong>
-              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
-                <label>{startTime}</label>
+              <div className="inline-flex items-center space-x-1" style={{ fontSize: 10 }}>
+                <FaCalendar className="text-purple-700" />
+                <label>{startTime?.replace("T", " ")}</label>
               </div>
             </div>
           )}
           {endTime && (
             <div className="flex flex-col">
               <strong>End</strong>
-              <div className="inline-flex items-center" style={{ fontSize: 10 }}>
-                <i className="text-purple-700 fad fa-solid fa-calendar w-6 text-center" />
-                <label>{endTime}</label>
+              <div className="inline-flex items-center space-x-1" style={{ fontSize: 10 }}>
+                <FaCalendar className="text-purple-700" />
+                <label>{endTime?.replace("T", " ")}</label>
               </div>
             </div>
           )}
@@ -558,11 +557,11 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                   <td className="border-r border-color-0300 w-18">
                     <p
                       className={`rounded text-xs text-center font-medium w-16 mx-2 py-0.5 ${
-                        TestStatus[outcome.result] === "Running"
+                        E_EXEC_STATE.RUNNING === outcome.result
                           ? "bg-cds-blue-0600 animate-pulse"
-                          : TestStatus[outcome.result] === "Pass"
+                          : E_EXEC_STATE.PASS === outcome.result
                             ? "bg-cds-green-0600"
-                            : TestStatus[outcome.result] === "Fail"
+                            : E_EXEC_STATE.FAIL === outcome.result || E_EXEC_STATE.ABORT === outcome.result
                               ? "bg-red-500"
                               : "bg-material-yellow-600"
                       } text-white select-none`}

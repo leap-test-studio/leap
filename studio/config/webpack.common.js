@@ -11,7 +11,7 @@ const Dotenv = require("dotenv-webpack");
 const Webpack = require("webpack");
 
 const env = process.env.NODE_ENV;
-const envpath = env === "production" ? paths.envProdFile : paths.envFile;
+const envpath = env === "production" ? paths.envProdFile : env === "development" ? paths.envDevFile : paths.envFile;
 module.exports = {
   watchOptions: {
     aggregateTimeout: 600,
@@ -120,6 +120,13 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"]
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    alias: {
+      "@tailwindrender": path.resolve("src/tailwindrender"),
+      "@redux-actions": path.resolve("src/redux/actions"),
+      "@utilities": path.resolve("src/utilities"),
+      "@hooks": path.resolve("src/hooks"),
+      "@WebContext": path.resolve("src/views/context/WebContext.js")
+    }
   }
 };

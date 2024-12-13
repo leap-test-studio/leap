@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import isEmpty from "lodash/isEmpty";
-
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog } from "../../utilities";
-import { startProjectBuilds, updateProject } from "../../../redux/actions/ProjectActions";
-import { useHandleClose } from "../hooks";
 import isEqual from "lodash/isEqual";
 import Swal from "sweetalert2";
+
+import TailwindRenderer from "@tailwindrender/.";
+import { useHandleClose } from "@hooks/.";
+import { CustomDialog } from "@utilities/.";
+import { startProjectBuilds } from "@redux-actions/.";
 
 const Model = {
   schema: {
@@ -98,7 +98,9 @@ function ProjectExecutionDialog({ showDialog, project, onClose, role: { isLeads 
       text: `Project Id: ${project.id}`,
       icon: "question",
       confirmButtonText: "YES",
-      showDenyButton: true
+      showDenyButton: true,
+      allowEscapeKey: false,
+      allowOutsideClick: false
     }).then((response) => {
       if (response.isConfirmed) {
         dispatch(startProjectBuilds(project.id, { env: data.settings?.env || [] }));

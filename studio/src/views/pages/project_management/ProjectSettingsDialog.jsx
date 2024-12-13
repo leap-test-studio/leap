@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import isEmpty from "lodash/isEmpty";
-
-import TailwindRenderer from "../../tailwindrender";
-import { CustomDialog } from "../../utilities";
-import { updateProject } from "../../../redux/actions/ProjectActions";
-import { useHandleClose } from "../hooks";
 import isEqual from "lodash/isEqual";
+import { useHandleClose } from "@hooks/.";
+
+import TailwindRenderer from "@tailwindrender/.";
+import { CustomDialog } from "@utilities/.";
+import { updateProject } from "@redux-actions/.";
 
 const Model = {
   schema: {
