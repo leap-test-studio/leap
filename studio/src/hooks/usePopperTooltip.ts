@@ -194,7 +194,7 @@ export function usePopperTooltip(config: Config = {}, popperOptions: PopperOptio
     onChange: finalConfig.onVisibleChange
   });
 
-  const timer = useRef<number>();
+  const timer = useRef<number>(0);
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const { styles, attributes, ...popperProps } = usePopper(finalConfig.followCursor ? virtualElement : triggerRef, tooltipRef, finalPopperOptions);

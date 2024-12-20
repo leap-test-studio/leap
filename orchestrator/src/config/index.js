@@ -11,7 +11,7 @@ const envVarsSchema = Joi.object()
         PORT: Joi.number().default(9004),
         TIMEZONE: Joi.string().description("Time zone").default("+05:30"),
         EXPRESSJS_SECRET: Joi.string().description("Express Session Secret").default("S3cret"),
-        OKTA_ENABLED: Joi.boolean().description("Is Okta Login Enabled").default(true),
+        OKTA_ENABLED: Joi.boolean().description("Is Okta Login Enabled").default(false),
         OKTA_ISSUER: Joi.string().description("Okta Issuer").default("https://leap.okta.com/oauth2/default"),
         SUPER_ADMIN: Joi.string().description("Super Admin email ID").default("admin@leap.com"),
         SUPER_ADMIN: Joi.string().description("Super Admin password").default("Admin@123"),
