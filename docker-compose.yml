@@ -1,7 +1,7 @@
 services:
-  vinashak-cache:
+  leap-cache:
     image: redis/redis-stack-server:latest
-    container_name: vinashak-cache
+    container_name: leap-cache
     ports:
       - 6379:6379
     environment:
@@ -9,36 +9,12 @@ services:
     volumes:
       - ./data/redis/:/data
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.5
 
-  # vinashak-database:
-  #   image: mysql:latest
-  #   container_name: vinashak-database
-  #   ports:
-  #     - 3306:3306
-  #   #command: --init-file /data/application/init.sql
-  #   command: --sort_buffer_size=512K
-  #   volumes:
-  #     #- ./init.sql:/data/application/init.sql
-  #     - ./data/mysql/:/var/lib/mysql/
-  #   environment:
-  #     MYSQL_ROOT_USER: root
-  #     MYSQL_ROOT_PASSWORD: S3cret
-  #     MYSQL_DATABASE: automation
-  #     MYSQL_USER: automation
-  #     MYSQL_PASSWORD: S3cret
-  #   healthcheck:
-  #     test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-  #     timeout: 20s
-  #     retries: 10
-  #   networks:
-  #     vinashak-network:
-  #       ipv4_address: 10.5.0.6
-
-  vinashak-database:
+  leap-database:
     image: postgres:latest
-    container_name: vinashak-database
+    container_name: leap-database
     ports:
       - 5432:5432
     volumes:
@@ -54,47 +30,46 @@ services:
       timeout: 20s
       retries: 10
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.6
 
-  vinashak-studio:
-    image: vinashakstudio/vinashak-studio:latest
-    container_name: vinashak-studio
+  leap-studio:
+    image: leapworkflow/studio:latest
+    container_name: leap-studio
     build: .
     links:
-      - vinashak-database
-      - vinashak-cache
+      - leap-database
+      - leap-cache
       - selenium-router
     depends_on:
-      vinashak-database:
+      leap-database:
         condition: service_healthy
-      vinashak-cache:
+      leap-cache:
         condition: service_started
       selenium-router:
         condition: service_started
     environment:
       - SELENIUM_GRID_URL=http://selenium-router:4444
-      - DATABASE_HOST=vinashak-database
-      - REDIS_HOST=vinashak-cache
+      - DATABASE_HOST=leap-database
+      - REDIS_HOST=leap-cache
       - JWT_TOKEN_EXPIRY=1d
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all
-      - PORT=8080
-      - DATABASE_LOGGING=true
+      - PORT=9004
     volumes:
-      - ./data/vinashak/:/app/logs
-      - ./data/vinashak/nginx:/var/log/nginx
+      - ./data/leap/:/app/logs
+      - ./data/leap/nginx:/var/log/nginx
     ports:
       - 80:80
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.9
 
   selenium-event-bus:
     image: selenium/event-bus:latest
     container_name: selenium-event-bus
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.10
 
   selenium-sessions:
@@ -107,14 +82,14 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.11
 
   selenium-session-queue:
     image: selenium/session-queue:latest
     container_name: selenium-session-queue
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.12
 
   selenium-distributor:
@@ -133,7 +108,7 @@ services:
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.13
 
   selenium-router:
@@ -153,7 +128,7 @@ services:
       - SE_SESSION_QUEUE_HOST=selenium-session-queue
       - SE_SESSION_QUEUE_PORT=5559
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.14
 
   selenium-chrome:
@@ -172,11 +147,11 @@ services:
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - VNC_NO_PASSWORD=1
     networks:
-      vinashak-network:
+      leap-network:
         ipv4_address: 10.5.0.15
 
 networks:
-  vinashak-network:
+  leap-network:
     driver: bridge
     ipam:
       config:

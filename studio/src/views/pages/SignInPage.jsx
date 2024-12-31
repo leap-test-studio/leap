@@ -66,7 +66,6 @@ export function SignInPage({ product }) {
 
   const showpassword = () => {
     setPasswordShow(!passwordShow);
-    pass.current.type = passwordShow ? "password" : "text";
   };
   return (
     <div
@@ -115,7 +114,7 @@ export function SignInPage({ product }) {
                   id="#/properties/password"
                   ref={pass}
                   className="block h-9 z-10 w-full rounded-md text-sm font-light bg-color-1000/10 backdrop-blur-sm"
-                  type="password"
+                  type={passwordShow ? "text" : "password"}
                   placeholder="Enter Password"
                   value={password}
                   name="password"

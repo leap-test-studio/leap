@@ -128,7 +128,7 @@ if (process.env.NODE_ENV === "production") {
 }
 server.listen(port, () => logger.info("Server listening on port " + port));
 
-process.on("SIGHUP", handleHup);
+//process.on("SIGHUP", handleHup);
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 

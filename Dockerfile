@@ -62,6 +62,7 @@ RUN apk add procps nginx supervisor -f
 # Copy npmrc setting
 COPY .npmrc ~/.npmrc
 
+RUN npm i -g serve
 # Copy package.json file
 COPY orchestrator/package.json .
 RUN npm uninstall engine_utils -f
