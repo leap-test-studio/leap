@@ -12,3 +12,5 @@ temp
 *.md
 *.json
 *.d.ts
+
+dist/

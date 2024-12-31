@@ -86,7 +86,7 @@
         "@types/selenium-webdriver": "^4.1.27",
         "@types/sequelize": "^4.28.20",
         "@types/uuid": "^10.0.0",
-        "@typescript-eslint/parser": "^8.18.2",
+        "@typescript-eslint/parser": "^8.19.0",
         "dotenv": "^16.4.7",
         "nodemon": "^3.1.9",
         "prettier": "^3.4.2",

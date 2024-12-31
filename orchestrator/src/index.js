@@ -128,6 +128,7 @@ if (process.env.NODE_ENV === "production") {
 }
 server.listen(port, () => logger.info("Server listening on port " + port));
 
+process.on("SIGHUP", handleHup);
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
@@ -142,4 +143,8 @@ process.on("unhandledRejection", (reason, p) => {
 function shutdown() {
     logger.trace("Received kill signal. Initiating shutdown...");
     process.exit(1);
+}
+
+function handleHup(signal) {
+    logger.trace(`*^!@4=> Received event: ${signal}`);
 }

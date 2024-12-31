@@ -1,64 +1,73 @@
-FROM --platform=linux/amd64 node:20 as engine_utils
-COPY .npmrc ~/.npmrc
-RUN apt-get update
+FROM --platform=linux/amd64 node:lts-alpine as engine_utils
+
+# Update apk
+RUN apk update
+
 WORKDIR /app/engine_utils
+ENV NODE_ENV production
+COPY .npmrc ~/.npmrc
 COPY engine_utils/package.json .
-RUN npm i -g npm
-RUN npm i -f
+RUN npm i --omit=dev -f
 COPY engine_utils/. .
 RUN npm run build
 
-FROM --platform=linux/amd64 node:20 as studio
-COPY .npmrc ~/.npmrc
-RUN apt-get update
-RUN mkdir -p /app/engine_utils
+FROM --platform=linux/amd64 node:lts-alpine as studio
 
-COPY --from=engine_utils /app/engine_utils/. /app/engine_utils
-RUN ls -lrta /app/engine_utils
+# Update apk
+RUN apk update
+
 WORKDIR /app/studio/
-COPY pre_build.js .
+COPY .npmrc ~/.npmrc
 COPY studio/package.json .
-RUN npm i -g npm
-RUN npm i --save -f /app/engine_utils
+
+RUN npm uninstall engine_utils -f
+RUN rm -rf node_modules/engine_utils && mkdir -p node_modules/engine_utils
 RUN npm i -f
+COPY --from=engine_utils /app/engine_utils/. node_modules/engine_utils/
 COPY studio/. .
+COPY pre_build.js .
 RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
-RUN rm -rf ./pre_build.js
 
-FROM --platform=linux/amd64 node:20 as documentation
-COPY .npmrc ~/.npmrc
-RUN apt-get update
+FROM --platform=linux/amd64 node:lts-alpine as documentation
+
+# Update apk
+RUN apk update
 
 WORKDIR /app/documentation
-COPY pre_build.js .
-RUN rm -rf /app/documentation/build ~/.npmrc
+COPY .npmrc ~/.npmrc
 COPY documentation/package.json .
-RUN npm i -g npm
-RUN npm i -f
+
+RUN npm i --omit=dev -f
 COPY documentation/. .
+COPY pre_build.js .
 RUN node ./pre_build.js $imageTag $oktaEnabled
 RUN npm run build
-RUN rm -rf ./pre_build.js
 
 # Use an official Node.js runtime as a parent image
-FROM --platform=linux/amd64 node:20
-COPY .npmrc ~/.npmrc
+FROM --platform=linux/amd64 node:lts-alpine as app
+WORKDIR /app/orchestrator
 
-# Install Nginx
-RUN apt-get update
-RUN apt-get install procps nginx supervisor -y
-RUN mkdir -p /app/studio /app/documentation /app/logs /app/engine_utils
-# RUN rm -rf ~/.npmrc
+# Update apk
+RUN apk update
+
+# Copy necessary files for UI
+RUN mkdir -p /app/studio /app/documentation /app/logs /app/certs
 COPY --from=studio /app/studio/build /app/studio
 COPY --from=documentation /app/documentation/. /app/documentation
-COPY --from=engine_utils /app/engine_utils/. /app/engine_utils
 
-WORKDIR /app/orchestrator
+# Install Nginx and Supervisor
+RUN apk add procps nginx supervisor -f
+
+# Copy npmrc setting
+COPY .npmrc ~/.npmrc
+
+# Copy package.json file
 COPY orchestrator/package.json .
-RUN npm i -g npm serve
-RUN npm i --save --f /app/engine_utils
+RUN npm uninstall engine_utils -f
 RUN npm i -f
+RUN mkdir -p /app/orchestrator/node_modules/engine_utils
+COPY --from=engine_utils /app/engine_utils/. /app/orchestrator/node_modules/engine_utils
 COPY orchestrator/. .
 
 # Copy Nginx configuration file
@@ -68,12 +77,13 @@ COPY config/nginx-prod.conf /etc/nginx/nginx.conf
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy AWS certificate file
-COPY orchestrator/keys/id_rsa_priv.pem /app/SM_cacert.pem
+COPY orchestrator/keys/id_rsa_priv.pem /app/certs/SM_cacert.pem
 
 # Set Environment Variables
 ENV LOG_DIR /app/logs
+ENV NODE_ENV production
+ENV NODE_EXTRA_CA_CERTS /app/certs/SM_cacert.pem
 
-ENV NODE_EXTRA_CA_CERTS /app/SM_cacert.pem
 # Expose ports
 EXPOSE 80
 

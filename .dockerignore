@@ -1,3 +1,9 @@
+studio/node_modules/
+studio/build/
+documentation/node_modules/
+documentation/build/
+orchestrator/node_modules/
+engine_utils/node_modules/
 node_modules/
 build/
 *.sqlite
