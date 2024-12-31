@@ -70,7 +70,7 @@ app.use(
 app.use(cookieParser());
 
 // allow cors requests from any origin and with credentials
-const allowlist = ["https://leap.dataplatform-np.rr-it.com"];
+const allowlist = [global.config.PUBLIC_URL, "http://localhost:5000", "http://localhost:80"];
 const corsOptionsDelegate = (req, callback) => {
     let corsOptions = {
         origin: false,

@@ -12,7 +12,7 @@ module.exports = merge(common, {
   devtool: false,
   output: {
     path: paths.build,
-    publicPath: "https://leap.dataplatform-np.rr-it.com/",
+    publicPath: "auto",
     filename: "js/[name].bundle.js"
   },
   plugins: [
