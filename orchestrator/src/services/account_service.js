@@ -140,7 +140,7 @@ async function authenticate({ email, password, ipAddress, userAgent }) {
         throw new Error("User account activation is pending.");
     }
 
-    if (!account.isExpired) {
+    if (account.isExpired) {
         throw new Error("User account has expired");
     }
 

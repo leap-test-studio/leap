@@ -1,5 +1,3 @@
-const moment = require("moment");
-
 module.exports = (sequelize, DataTypes) => {
     const Account = sequelize.define(
         "Account",
@@ -35,13 +33,13 @@ module.exports = (sequelize, DataTypes) => {
             isActivated: {
                 type: DataTypes.VIRTUAL,
                 get() {
-                    return this.activationDt && moment(this.activationDt).utc().millisecond() < moment(Date.now()).utc().millisecond();
+                    return this.activationDt && Date.parse(this.activationDt) <= Date.now();
                 }
             },
             isExpired: {
                 type: DataTypes.VIRTUAL,
                 get() {
-                    return this.expiryDt && moment(this.expiryDt).utc().millisecond() < moment(Date.now()).utc().millisecond();
+                    return this.expiryDt && Date.parse(this.expiryDt) <= Date.now();
                 }
             },
             isVerified: {

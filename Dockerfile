@@ -67,9 +67,11 @@ RUN npm i -g serve
 COPY orchestrator/package.json .
 RUN npm uninstall engine_utils -f
 RUN npm i -f
-RUN mkdir -p /app/orchestrator/node_modules/engine_utils
-COPY --from=engine_utils /app/engine_utils/. /app/orchestrator/node_modules/engine_utils
-COPY orchestrator/. .
+RUN mkdir -p node_modules/engine_utils src keys
+COPY --from=engine_utils /app/engine_utils/. node_modules/engine_utils
+COPY orchestrator/src src
+COPY orchestrator/keys keys
+COPY orchestrator/tsconfig.json .
 
 # Copy Nginx configuration file
 COPY config/nginx-prod.conf /etc/nginx/nginx.conf

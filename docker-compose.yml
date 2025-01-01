@@ -51,7 +51,12 @@ services:
     environment:
       - SELENIUM_GRID_URL=http://selenium-router:4444
       - DATABASE_HOST=leap-database
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_DIALECT=postgres
+      - OKTA_ENABLED=false
       - REDIS_HOST=leap-cache
+      - REDIS_PASSWORD=S3cret
       - JWT_TOKEN_EXPIRY=1d
       - LOG_DIR=/app/logs
       - LOG_LEVEL=all

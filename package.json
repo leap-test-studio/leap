@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "start": "docker-compose up -d --remove-orphans",
+    "start": "docker-compose up -d --build --remove-orphans",
     "stop": "docker-compose down",
     "build": "docker-compose build",
     "start:podman": "podman-compose up -d --remove-orphans",

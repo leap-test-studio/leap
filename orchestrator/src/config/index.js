@@ -76,6 +76,15 @@ if (["mysql", "mariadb", "postgres"].includes(envVars.DATABASE_DIALECT)) {
     databaseConfig.timezone = "+05:30";
 }
 
+const redis = {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT,
+    password: envVars.REDIS_PASSWORD
+};
+
+if (!redis.password) {
+    delete redis.password;
+}
 module.exports = {
     ...envVars,
     security: {
@@ -145,11 +154,7 @@ module.exports = {
         dialect: envVars.DATABASE_DIALECT,
         ...databaseConfig
     },
-    redis: {
-        host: envVars.REDIS_HOST,
-        port: envVars.REDIS_PORT,
-        password: envVars.REDIS_PASSWORD
-    },
+    redis,
     bypass: process.env.no_proxy || process.env.NO_PROXY,
     proxy: process.env.proxy || process.env.PROXY
 };

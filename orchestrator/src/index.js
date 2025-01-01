@@ -69,6 +69,11 @@ app.use(
 );
 app.use(cookieParser());
 
+app.get("/ping", (_req, res, _next) => {
+    console.log("PING Request");
+    res.status(200).send("PONG");
+});
+
 // allow cors requests from any origin and with credentials
 const allowlist = [global.config.PUBLIC_URL, "http://localhost:5000", "http://localhost:80"];
 const corsOptionsDelegate = (req, callback) => {
@@ -88,11 +93,7 @@ const corsOptionsDelegate = (req, callback) => {
     callback(null, corsOptions);
 };
 
-app.use(cors(corsOptionsDelegate));
-
-app.get("/ping", (_req, res, _next) => {
-    res.status(200).send("PONG");
-});
+//app.use(cors(corsOptionsDelegate));
 
 app.use("/api/v1", require("./controllers"));
 
@@ -117,15 +118,15 @@ app.use((err, req, res, next) => {
 // start server
 tls.CLIENT_RENEG_LIMIT = 0;
 var server;
-if (process.env.NODE_ENV === "production") {
-    const privateKey = fs.readFileSync(path.join(__dirname, "privkey.pem"), "utf8");
-    const certificate = fs.readFileSync(path.join(__dirname, "fullchain.pem"), "utf8");
-    server = https.createServer({ key: privateKey, cert: certificate }, app);
-    port = global.config.PORT || 443;
-} else {
-    server = http.createServer(app);
-    port = global.config.PORT || 9004;
-}
+// if (process.env.NODE_ENV === "production") {
+//     const privateKey = fs.readFileSync(path.join(__dirname, "privkey.pem"), "utf8");
+//     const certificate = fs.readFileSync(path.join(__dirname, "fullchain.pem"), "utf8");
+//     server = https.createServer({ key: privateKey, cert: certificate }, app);
+//     port = global.config.PORT || 443;
+// } else {
+server = http.createServer(app);
+port = global.config.PORT || 9004;
+//}
 server.listen(port, () => logger.info("Server listening on port " + port));
 
 //process.on("SIGHUP", handleHup);

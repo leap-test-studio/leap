@@ -80,7 +80,7 @@
         "@types/jwt-decode": "^3.1.0",
         "@types/lodash": "^4.17.13",
         "@types/mysql": "^2.15.26",
-        "@types/node": "^22.10.2",
+        "@types/node": "^22.10.3",
         "@types/pg": "^8.11.10",
         "@types/request": "^2.48.12",
         "@types/selenium-webdriver": "^4.1.27",
