@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const Joi = require("joi");
+const isEmpty = require("lodash/isEmpty");
 const { DEFAULT_DB_SECRET_ID, DEFAULT_SLACK_SECRET_ID } = require("../constants");
 
 dotenv.config({ path: path.join(__dirname, "../../.env") });
@@ -78,12 +79,11 @@ if (["mysql", "mariadb", "postgres"].includes(envVars.DATABASE_DIALECT)) {
 
 const redis = {
     host: envVars.REDIS_HOST,
-    port: envVars.REDIS_PORT,
-    password: envVars.REDIS_PASSWORD
+    port: envVars.REDIS_PORT
 };
 
-if (!redis.password) {
-    delete redis.password;
+if (!isEmpty(envVars.REDIS_PASSWORD)) {
+    redis.password = envVars.REDIS_PASSWORD;
 }
 module.exports = {
     ...envVars,

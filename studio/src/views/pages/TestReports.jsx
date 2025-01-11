@@ -31,7 +31,6 @@ export default function TestReports({ project: selectedPrject, product, changeTe
   const { projects } = useSelector((state) => state.project);
 
   const dispatch = useDispatch();
-  const reportRef = useRef(null);
 
   const [buildNo, setBuildNo] = useState(null);
   const [detailedReport, setDetailedReport] = useState(false);
@@ -53,11 +52,6 @@ export default function TestReports({ project: selectedPrject, product, changeTe
       dispatch(fetchTestScenarioList(project.id));
     }
   }, [project]);
-
-  const exportReport2PDF = useReactToPrint({
-    content: () => reportRef.current,
-    documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}-${buildNumber}`
-  });
 
   const [windowDimenion, detectHW] = useState({
     winWidth: window.innerWidth,
@@ -131,6 +125,17 @@ export default function TestReports({ project: selectedPrject, product, changeTe
 
   const buildSelected = buildNo && buildInfo && buildDetails;
 
+  const contentRef = useRef(null);
+
+  const reactToPrintFn = useReactToPrint({
+    content: () => contentRef.current,
+    documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}-${buildNumber}`
+  });
+
+  const exportReport2PDF = () => {
+    reactToPrintFn();
+  };
+
   return (
     <Page>
       <PageHeader>
@@ -176,31 +181,33 @@ export default function TestReports({ project: selectedPrject, product, changeTe
         </PageActions>
       </PageHeader>
       <PageBody>
-        {buildSelected ? (
-          <div id="BuildReport" ref={reportRef} className="p-4 rounded-lg bg-white">
-            <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
-              <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}${buildNumber}`} />
-              {!isEmpty(buildDetails?.options) && (
-                <div className="col-span-2">
-                  <BuildEnvironmentVariables options={buildDetails.options} />
-                </div>
-              )}
-              {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
+        <div id="BuildReport" ref={contentRef}>
+          {buildSelected ? (
+            <div className="p-4 rounded-lg bg-white">
+              <div className="grid grid-cols-4 items-start justify-between w-full transition-all duration-500">
+                <BuildDetails project={project} buildInfo={buildInfo} {...buildDetails} buildNo={`${BuildTypes[buildType]}${buildNumber}`} />
+                {!isEmpty(buildDetails?.options) && (
+                  <div className="col-span-2">
+                    <BuildEnvironmentVariables options={buildDetails.options} />
+                  </div>
+                )}
+                {completionRate == 100 && <TestExecutionResults rate={toNumber(buildDetails.successRate)} />}
+              </div>
+              <BuildSummary data={data} onClick={handleFilter} testType={testType} />
+              <ReportTable
+                {...buildDetails}
+                testType={testType}
+                product={product}
+                changeTestScenario={changeTestScenario}
+                showDetails={detailedReport}
+              />
             </div>
-            <BuildSummary data={data} onClick={handleFilter} testType={testType} />
-            <ReportTable
-              {...buildDetails}
-              testType={testType}
-              product={product}
-              changeTestScenario={changeTestScenario}
-              showDetails={detailedReport}
-            />
-          </div>
-        ) : (
-          <Centered>
-            <EmptyIconRenderer title="Report Not Found" />
-          </Centered>
-        )}
+          ) : (
+            <Centered>
+              <EmptyIconRenderer title="Report Not Found" />
+            </Centered>
+          )}
+        </div>
       </PageBody>
     </Page>
   );
@@ -603,7 +610,9 @@ function JobDetails({ TestCase, result, steps, startTime, endTime, screenshot, a
                 <label className="font-semibold text-sm">
                   {`${s?.title ? "Title: " + s?.title + ", " : ""} Step Number: ${s?.stepNo === "Evidence" ? s?.stepNo : s?.stepNo + ", Capture Number: " + (i + 1)}`}
                 </label>
-                <img src={`data:image/*;base64,${s.buffer}`} className="rounded border border-slate-500" alt="" style={{ height: "400px" }} />
+                {s?.buffer && (
+                  <img src={`data:image/*;base64,${s.buffer}`} className="rounded border border-slate-500" alt="" style={{ height: "400px" }} />
+                )}
               </div>
             ))}
           </td>

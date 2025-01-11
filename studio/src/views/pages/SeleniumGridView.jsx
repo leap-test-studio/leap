@@ -13,7 +13,13 @@ export default function SeleniumGridView({ pageTitle }) {
         <PageTitle>{pageTitle}</PageTitle>
       </PageHeader>
       <PageBody>
-        <iframe width="100%" height={windowDimension?.maxContentHeight - padding} src="/ui" title={pageTitle} style={{ marginTop: -65 }} />
+        <iframe
+          width="100%"
+          height={windowDimension?.maxContentHeight - padding}
+          src="http://localhost:4444/ui/#/sessions"
+          title={pageTitle}
+          style={{ marginTop: -65 }}
+        />
       </PageBody>
     </Page>
   );

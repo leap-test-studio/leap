@@ -10,7 +10,7 @@
         "upgrade": "npm-check-updates -u --packageFile package.json && npm i --force"
     },
     "dependencies": {
-        "@aws-sdk/client-secrets-manager": "^3.723.0",
+        "@aws-sdk/client-secrets-manager": "^3.726.1",
         "@okta/oidc-middleware": "^5.4.2",
         "@slack/web-api": "^7.8.0",
         "axios": "^1.7.9",
@@ -55,7 +55,7 @@
         "sequelize": "^6.37.5",
         "ssh2-promise": "^1.0.3",
         "swig-email-templates": "^7.0.0",
-        "uuid": "^11.0.4",
+        "uuid": "^11.0.5",
         "whiteboard-pubsub": "^0.0.3"
     },
     "devDependencies": {
