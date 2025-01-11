@@ -125,10 +125,10 @@ export default function TestReports({ project: selectedPrject, product, changeTe
 
   const buildSelected = buildNo && buildInfo && buildDetails;
 
-  const contentRef = useRef(null);
+  const contentRef = useRef();
 
   const reactToPrintFn = useReactToPrint({
-    content: () => contentRef.current,
+    contentRef,
     documentTitle: `Test Automation Report-${project?.name != null ? project.name + "-" : ""}${BuildTypes[buildType]}-${buildNumber}`
   });
 
